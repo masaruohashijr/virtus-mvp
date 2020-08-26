@@ -1,0 +1,30 @@
+{{define "List-Measures"}}
+<!-- List Measures -->
+<div id="main" class="w3-row-padding">
+		{{ template "Table-Header" .Title }}
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <thead>
+            <tr>
+                <th>Ord</th>
+                <th>Id</th>
+                <th>Nome</th>
+				<th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $measure := .Measures }}
+            <tr>
+                <td>#{{$measure.Order}}</td>
+                <td>{{$measure.Id}}</td>
+                <td>{{$measure.Name}}</td>
+                <td>
+                    <button class="w3-btn w3-teal" onclick="updatemeasure(this);">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deletemeasure(this)">Apagar</button>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}

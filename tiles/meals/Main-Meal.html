@@ -1,0 +1,15 @@
+{{ define "Main-Meal" }}
+<html lang="pt">
+	{{ template "Header" .Title}}
+<body>
+{{ template "Menu" }}
+{{ template "Create-Meal" .MealTypes }}
+{{ template "Edit-Meal" .MealTypes }}
+{{ template "Delete-Meal" }}
+{{ template "Create-Item" .Foods }}
+{{ template "Edit-Item" .Foods }}
+{{ template "Delete-Item" }}
+{{ template "List-Meals" . }}
+</body>
+</html>
+{{end}}
