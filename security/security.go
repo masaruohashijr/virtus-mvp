@@ -1,10 +1,12 @@
 package security
 
 import (
+	mdl "beerwh/models"
 	"net/http"
 )
 
 var Authenticated = false
+var LoggedUser mdl.User
 
 func CheckInternalServerError(err error, w http.ResponseWriter) {
 	if err != nil {
@@ -13,8 +15,10 @@ func CheckInternalServerError(err error, w http.ResponseWriter) {
 	}
 }
 
-func IsAuthenticated(w http.ResponseWriter, r *http.Request) {
+func IsAuthenticated(w http.ResponseWriter, r *http.Request) bool {
 	if !Authenticated {
 		http.Redirect(w, r, "/login", 301)
+		return false
 	}
+	return true
 }

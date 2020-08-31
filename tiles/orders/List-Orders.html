@@ -1,0 +1,42 @@
+{{define "List-Orders"}}
+<!-- List Orders -->
+<div id="main" class="w3-row-padding">
+    <div class="w3-card-2">
+		{{template "Table-Header" .Title }}
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <thead>
+            <tr>
+                <th>Ord</th>
+                <th>Id</th>
+                <th>Cliente</th>
+                <th>Pedido em</th>
+                <th>Retirado em</th>
+				<th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+			{{$auxData := ( index .Orders 0 ).CTakeOutAt }}
+            {{range $index, $order := .Orders }}
+				{{if or (eq $index 0) (ne $auxData $order.CTakeOutAt)}}
+	            <tr>
+	                <td colspan="10" bgcolor="lightgreen" style="font-size:1.2em;text-align:left">{{$order.CTakeOutAt}}</td>
+            	</tr>
+				{{$auxData = $order.CTakeOutAt }}
+				{{end}}
+	            <tr>
+					<td>{{$order.Order}}</td>
+					<td>{{$order.Id}}</td>
+	                <td>{{$order.ClientName}}<input type="hidden" value="{{$order.ClientId}}"></td>
+	                <td>{{$order.COrderedDateTime}}</td>
+	                <td>{{$order.CTakeOutDateTime}}</td>
+	                <td>
+	                    <button class="w3-btn w3-teal" onclick="contexto='edit';updateorder(this);">Editar</button>
+	                    <button class="w3-btn w3-red" onclick="deleteorder(this)">Apagar</button>
+	                </td>
+	            </tr>
+			{{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}

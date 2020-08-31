@@ -2,7 +2,6 @@ package routes
 
 import ()
 
-var MealsRoute = "/listarRefeicoes"
-var MealTypesRoute = "/listarTiposRefeicoes"
-var FoodsRoute = "/listarFoods"
-var MeasuresRoute = "/listarMedidasUsuais"
+var OrdersRoute = "/orders"
+var ClientsRoute = "/clients"
+var BeersRoute = "/cervejas"

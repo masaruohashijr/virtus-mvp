@@ -1,0 +1,34 @@
+{{define "List-Beers"}}
+<!-- List Beers -->
+<div id="main" class="w3-row-padding">
+		{{ template "Table-Header" .Title }}
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <thead>
+            <tr>
+                <th>Ord</th>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Qtd</th>
+                <th>Preço</th>
+				<th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $beer := .Beers}}
+            <tr>
+                <td>#{{$beer.Order}}</td>
+                <td>{{$beer.Id}}</td>
+                <td>{{$beer.Name}}</td>
+                <td>{{$beer.Qtd}}</td>
+                <td>{{$beer.Price}}</td>
+                <td>
+                    <button class="w3-btn w3-teal" onclick="updatebeer(this);">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deletebeer(this)">Apagar</button>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}

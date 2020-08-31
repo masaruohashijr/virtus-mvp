@@ -13,56 +13,50 @@ type User struct {
 	Role     int64  `json:"role"`
 }
 
-type Food struct {
-	Order   int
-	Id      int64   `json:"id"`
-	Name    string  `json:"name"`
-	Measure string  `json:"measure"`
-	Qtd     float64 `json:"qtd"`
-	Cho     float64 `json:"cho"`
-	Kcal    float64 `json:"kcal"`
+type Beer struct {
+	Order int
+	Id    int64   `json:"id"`
+	Name  string  `json:"name"`
+	Qtd   int     `json:"qtd"`
+	Price float64 `json:"price"`
 }
 
 type Item struct {
-	Order      int
-	Id         int64   `json:"id"`
-	MealId     int64   `json:"mealId"`
-	FoodId     int64   `json:"foodId"`
-	FoodName   string  `json:"foodName"`
-	QtdMeasure float64 `json:"qtdMeasure"`
-	Qtd        float64 `json:"qtd"`
-	Cho        float64 `json:"cho"`
-	Kcal       float64 `json:"kcal"`
+	Order     int
+	Id        int64   `json:"id"`
+	IdOrder   int64   `json:"orderId"`
+	BeerId    int64   `json:"beerId"`
+	BeerName  string  `json:"beerName"`
+	Qtt       float64 `json:"qtd"`
+	Price     float64 `json:"price"`
+	ItemValue float64 `json:"value"`
 }
 
-type Meal struct {
-	Order        int
-	Id           int64    `json:"id"`
-	MealTypeName string   `json:"mealTypeName"`
-	MealTypeId   int64    `json:"mealTypeId"`
-	Date         NullTime `json:"date"`
-	StartAt      NullTime `json:"startAt"`
-	EndAt        NullTime `json:"endAt"`
-	CDate        string   `json:"cdate"`
-	CStartAt     string   `json:"cstartAt"`
-	CEndAt       string   `json:"cendAt"`
-	CCho         string   `json:"ccho"`
-	CKcal        string   `json:"ckcal"`
-	Bolus        float64  `json:"bolus"`
+type Order struct {
+	Order            int
+	Id               int64     `json:"id"`
+	ClientId         int64     `json:"clientId"`
+	ClientName       string    `json:"clientName`
+	OrderedAt        time.Time `json:"orderedAt`
+	TakeOutAt        time.Time `json:"endAt"`
+	COrderedDateTime string    `json:"corderedDateTime`
+	CTakeOutDateTime string    `json:"ctakeOutDateTime`
+	COrderedAt       string    `json:"corderedAt`
+	CTakeOutAt       string    `json:"ctakeOutAt`
 }
 
 type NullTime struct {
 	pq.NullTime
 }
 
-type MealType struct {
+type Client struct {
 	Order    int
-	Id       int64     `json:"id"`
-	Name     string    `json:"name"`
-	StartAt  time.Time `json:"startAt"`
-	EndAt    time.Time `json:"endAt"`
-	CStartAt string    `json:"cstartAt"`
-	CEndAt   string    `json:"cendAt"`
+	Id       int64  `json:"id"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+	Mobile   string `json:"mobile"`
 	Selected bool
 }
 
@@ -77,19 +71,20 @@ type PageMeasures struct {
 	Measures []Measure
 }
 
-type PageMeals struct {
-	Title     string
-	Meals     []Meal
-	MealTypes []MealType
-	Foods     []Food
+type PageOrders struct {
+	Title   string
+	UserId  int
+	Orders  []Order
+	Beers   []Beer
+	Clients []Client
 }
 
-type PageMealTypes struct {
-	Title     string
-	MealTypes []MealType
+type PageClients struct {
+	Title   string
+	Clients []Client
 }
 
-type PageFoods struct {
+type PageBeers struct {
 	Title string
-	Foods []Food
+	Beers []Beer
 }

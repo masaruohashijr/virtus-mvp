@@ -1,22 +1,19 @@
 package handlers
 
 import (
+	mdl "beerwh/models"
+	route "beerwh/routes"
+	sec "beerwh/security"
 	"database/sql"
-	mdl "diaria/models"
-	route "diaria/routes"
-	sec "diaria/security"
 	"golang.org/x/crypto/bcrypt"
-	//	"log"
 	"net/http"
-	//	"strconv"
 )
 
 var Db *sql.DB
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	//	log.Println("sec.Authenticated: " + strconv.FormatBool(sec.Authenticated))
 	sec.IsAuthenticated(w, r)
-	http.Redirect(w, r, route.MealsRoute, 200)
+	http.Redirect(w, r, route.OrdersRoute, 200)
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +25,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("psw")
 	var user mdl.User
 	// bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	err := Db.QueryRow("SELECT username, password FROM users WHERE username=$1", &username).Scan(&user.Username, &user.Password)
+	err := Db.QueryRow("SELECT id, username, password FROM clients WHERE username=$1", &username).Scan(&user.Id, &user.Username, &user.Password)
 	sec.CheckInternalServerError(err, w)
 	// validate password
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
@@ -36,5 +33,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", 301)
 	}
 	sec.Authenticated = true
-	http.Redirect(w, r, route.MealsRoute, 301)
+	sec.LoggedUser = user
+	http.Redirect(w, r, route.OrdersRoute, 301)
 }

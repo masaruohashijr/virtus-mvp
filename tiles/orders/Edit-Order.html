@@ -1,0 +1,67 @@
+{{define "Edit-Order"}}
+<!-- Edit Order Form -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 800px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar pedido</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/updateOrder" method="post">
+                <label class="w3-label">Pedido</label>
+				<br>	
+				<input type="hidden" name="Id" id="OrderIdForUpdate">
+	            <select name="ClientForUpdate" id="ClientForUpdate">
+					<option value=""></option>
+					{{range $index, $client := .Clients }}
+		                <option value="{{$client.Id}}" {{if eq true $client.Selected}} selected="selected"{{end}}>
+							{{$client.Name}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<br>
+                <label class="w3-label">Dia Pedido</label>
+                <input class="w3-input" type="date" id="OrderDateForUpdate" name="OrderDateForUpdate" value="">
+                <label class="w3-label">Horário Pedido</label>
+                <input class="w3-input" type="time" id="OrderedAtForUpdate" name="OrderedAtForUpdate" value="">
+                <label class="w3-label">Dia Retirada</label>
+                <input class="w3-input" type="date" id="TakeOutDateForUpdate" name="TakeOutDateForUpdate" value="">
+                <label class="w3-label">Horário Retirada</label>
+                <input class="w3-input" type="time" id="TakeOutAtForUpdate" name="TakeOutAtForUpdate" value="">
+		        <header class="w3-container w3-center w3-teal">
+		            <div class="w3-row">
+		                <div class="w3-half">
+		                    <h4 class="w3-right">Itens</h4>
+		                </div>
+		                <div class="w3-half w3-text-right" style="position:relative;z-index:2">
+		                    <div class="w3-right">
+		                        <a href="#" onclick="contexto='edit';document.getElementById('create-item-form').style.display='block'">
+		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+		                        </a>
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-items-edit">
+		            <thead>
+		            <tr>
+		                <th>Cerveja</th>
+		                <th>Quantidade</th>
+		                <th>Preço Unitário</th>
+		                <th>Valor</th>
+						<th>Ações</th>
+		            </tr>
+		            </thead>
+		            <tbody>
+		            </tbody>
+		        </table>
+                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

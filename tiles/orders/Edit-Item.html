@@ -1,0 +1,54 @@
+{{define "Edit-Item"}}
+<!-- Edit Item Form -->
+<div class="w3-container">
+    <div id="edit-item-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar item do pedido</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-item-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container">
+				<input type="hidden" id="id-edit" value="">
+                <label class="w3-label">Cerveja</label>
+				<br>	
+				<script>
+					var ar = [];
+					var i = 0;
+				</script>					
+	            <select onchange="resetFields('edit');" id="beer-edit">
+					<option value=""></option>
+					{{range $index, $beer := .Beers }}
+	                <option value="{{$beer.Id}}">
+						{{$beer.Name}}
+					</option>
+					<script>
+						ar[i] = "{{$beer.Id}}#{{$beer.Qtd}}#{{$beer.Price}}";
+						i ++;
+					</script>
+	            	{{end}}
+	            </select>
+				<br>
+				<br>
+				<label class="w3-label">Quantidade</label>
+                <input class="w3-input" type="number" id="qtd-edit" name="qtd-edit" value="" onblur="if(validaQtd(this, 'edit')){calcularValorItem(this, 'edit')}">
+                <label class="w3-label">Estoque</label>
+                <input class="w3-input" type="number" id="stock-edit" name="stock-edit" value="" readonly="readonly" disabled="disabled">
+				<label class="w3-label">Preço Unitário</label>
+                <input class="w3-input" type="number" id="price-edit" name="price-edit" value="" readonly="readonly" disabled="disabled">
+				<label class="w3-label">Valor do Item</label>
+                <input class="w3-input" type="number" id="value-edit" name="value-edit" value="" readonly="readonly" disabled="disabled">
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="editarItem()"
+					>Salvar
+				</button>
+                <input type="hidden" id="order-edit" value="" readonly="readonly" disabled="disabled">
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

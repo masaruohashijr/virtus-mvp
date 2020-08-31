@@ -1,10 +1,9 @@
 package main
 
 import (
-	hd "beer-warehouse/handlers"
+	hd "beerwh/handlers"
+	route "beerwh/routes"
 	"database/sql"
-	//	sec "diaria/security"
-	route "beer-warehouse/routes"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
@@ -16,7 +15,7 @@ var (
 )
 
 func dbConn() (db *sql.DB) {
-	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/aria?sslmode=disable")
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/beerwh?sslmode=disable")
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
 		panic(err)
@@ -32,30 +31,27 @@ func dbConn() (db *sql.DB) {
 func main() {
 	database := dbConn()
 	log.Println("O database está disponível.")
-	// injetando a variável Authenticated
+	// injeta	ndo a variável Authenticated
 	hd.Db = database
 	http.HandleFunc("/", hd.IndexHandler)
 	http.HandleFunc("/login", hd.LoginHandler)
-	// ----------------- FOODS
-	http.HandleFunc(route.FoodsRoute, hd.ListFoodsHandler)
-	http.HandleFunc("/createFood", hd.CreateFoodHandler)
-	http.HandleFunc("/updateFood", hd.UpdateFoodHandler)
-	http.HandleFunc("/deleteFood", hd.DeleteFoodHandler)
-	// ----------------- MEAL TYPES
-	http.HandleFunc(route.MealTypesRoute, hd.ListMealTypesHandler)
-	http.HandleFunc("/createMealType", hd.CreateMealTypeHandler)
-	http.HandleFunc("/updateMealType", hd.UpdateMealTypeHandler)
-	http.HandleFunc("/deleteMealType", hd.DeleteMealTypeHandler)
-	// ----------------- MEASURES
-	http.HandleFunc(route.MeasuresRoute, hd.ListMeasuresHandler)
-	http.HandleFunc("/createMeasure", hd.CreateMeasureHandler)
-	http.HandleFunc("/updateMeasure", hd.UpdateMeasureHandler)
-	http.HandleFunc("/deleteMeasure", hd.DeleteMeasureHandler)
-	// ----------------- MEALS
-	http.HandleFunc(route.MealsRoute, hd.ListarMealsHandler)
-	http.HandleFunc("/createMeal", hd.CreateMealHandler)
-	http.HandleFunc("/updateMeal", hd.UpdateMealHandler)
-	http.HandleFunc("/deleteMeal", hd.DeleteMealHandler)
+	// ----------------- BEERS
+	http.HandleFunc(route.BeersRoute, hd.ListBeersHandler)
+	http.HandleFunc("/createBeer", hd.CreateBeerHandler)
+	http.HandleFunc("/updateBeer", hd.UpdateBeerHandler)
+	http.HandleFunc("/deleteBeer", hd.DeleteBeerHandler)
+	// ----------------- CLIENTS
+	http.HandleFunc(route.ClientsRoute, hd.ListClientsHandler)
+	http.HandleFunc("/createClient", hd.CreateClientHandler)
+	http.HandleFunc("/updateClient", hd.UpdateClientHandler)
+	http.HandleFunc("/deleteClient", hd.DeleteClientHandler)
+	// ----------------- ORDERS
+	http.HandleFunc(route.OrdersRoute, hd.ListOrdersHandler)
+	http.HandleFunc("/createOrder", hd.CreateOrderHandler)
+	http.HandleFunc("/updateOrder", hd.UpdateOrderHandler)
+	http.HandleFunc("/deleteOrder", hd.DeleteOrderHandler)
+	// ----------------- ITEMS
+	http.HandleFunc("/loadItemsByOrderId", hd.LoadItemsByOrderId)
 	// ----------------- STATICS
 	http.Handle("/statics/",
 		http.StripPrefix("/statics/", http.FileServer(http.Dir("./statics"))),
