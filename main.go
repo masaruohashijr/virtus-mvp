@@ -9,8 +9,16 @@ import (
 	"log"
 	"net/http"
 	"os"
-	
+	"fmt"
 )
+
+func determineListenAddress() (string, error) {
+  port := os.Getenv("PORT")
+  if port == "" {
+    return "", fmt.Errorf("$PORT not set")
+  }
+  return ":" + port, nil
+}
 
 func dbConn() *sql.DB{
 	dbase, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -20,7 +28,6 @@ func dbConn() *sql.DB{
 	}
 	return dbase
 }
-
 
 func main() {
 
@@ -50,6 +57,13 @@ func main() {
 	http.Handle("/statics/",
 		http.StripPrefix("/statics/", http.FileServer(http.Dir("./statics"))),
 	)
-	http.ListenAndServe(":5000", nil)
+	addr, err := determineListenAddress()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Listening on %s...\n", addr)
+	if err := http.ListenAndServe(addr, nil); err != nil {
+	    panic(err)
+    }	
 	defer hd.Db.Close()
 }
