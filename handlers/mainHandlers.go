@@ -14,7 +14,7 @@ var Db *sql.DB
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	//sec.IsAuthenticated(w, r)
-	http.Redirect(w, r, route.OrdersRoute, 200)
+	http.Redirect(w, r, route.BeersRoute, 200)
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
