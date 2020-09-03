@@ -2,37 +2,31 @@ package main
 
 import (
 	hd "beerwh/handlers"
+	dpk "beerwh/db"
 	route "beerwh/routes"
 	"database/sql"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
+	"os"
+	
 )
 
-var (
-	db  *sql.DB
-	err error
-)
-
-func dbConn() (db *sql.DB) {
-	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/beerwh?sslmode=disable")
+func dbConn() *sql.DB{
+	dbase, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	log.Println(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
-		panic(err)
 	}
-	// test connection
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	return db
+	return dbase
 }
 
+
 func main() {
-	database := dbConn()
-	log.Println("O database está disponível.")
+
+	hd.Db = dbConn()	
 	// injeta	ndo a variável Authenticated
-	hd.Db = database
+	dpk.Initialize()
 	http.HandleFunc("/", hd.IndexHandler)
 	http.HandleFunc("/login", hd.LoginHandler)
 	// ----------------- BEERS
@@ -57,5 +51,5 @@ func main() {
 		http.StripPrefix("/statics/", http.FileServer(http.Dir("./statics"))),
 	)
 	http.ListenAndServe(":5000", nil)
-	defer database.Close()
+	defer hd.Db.Close()
 }
