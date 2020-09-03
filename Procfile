@@ -1,1 +1,1 @@
-web: bin/beerwh.exe
+web: bin/beerwh
