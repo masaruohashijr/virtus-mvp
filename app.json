@@ -1,0 +1,12 @@
+{
+  "name": "Beewh",
+  "description": "Go beerwh App",
+  "keywords": [
+    "beers",
+    "go",
+    "sample",
+    "example"
+  ],
+  "website": "http://github.com/heroku/beerwh",
+  "repository": "http://github.com/heroku/beerwh"
+}
