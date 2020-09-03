@@ -224,7 +224,7 @@ func LoadItemsByOrderId(w http.ResponseWriter, r *http.Request) {
 
 func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Orders")
-	sec.IsAuthenticated(w, r)
+	//sec.IsAuthenticated(w, r)
 	query := "SELECT a.id, a.client_id, b.name, a.ordered_at, a.take_out_at, " +
 		" coalesce(to_char(a.ordered_at,'DD/MM/YYYY'),'') as c_ordered_date," +
 		" coalesce(to_char(a.take_out_at,'DD/MM/YYYY'),'') as c_takeout_date," +
