@@ -13,6 +13,7 @@ func Initialize(){
 	createAdmin()
 	createPKey()
 	createFKey()
+	createBeer()
 }
 
 func createFKey(){
@@ -45,9 +46,16 @@ func createAdmin(){
 		" WHERE NOT EXISTS (SELECT id FROM clients WHERE username = 'aria')"
 	log.Println(query)
 	db.Exec(query)
-	
 }
 
+func createBeer(){
+	query:="INSERT INTO beers (id, name, qtd, price)" +
+		" SELECT 1, 'Molson', 100, 100" +
+		" WHERE NOT EXISTS (SELECT name FROM beers WHERE name = 'Molson')"
+	log.Println(query)
+	db.Exec(query)
+	
+}
 
 func createSeq(){
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.beers_id_seq " +
