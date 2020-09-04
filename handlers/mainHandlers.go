@@ -5,6 +5,7 @@ import (
 	route "beerwh/routes"
 	sec "beerwh/security"
 	"database/sql"
+	"encoding/json"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -44,7 +45,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "beerwh")
 	bytesUser, _ := json.Marshal(user)
 	session.Values["user"] = string(bytesUser)
-	sessions.Save(r, rw)
+	sessions.Save(r, w)
 	log.Println("antes OrdersRoute")
 	http.Redirect(w, r, route.OrdersRoute, 301)
 }

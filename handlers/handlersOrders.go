@@ -34,7 +34,7 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 		var user mdl.User
 		session, _ := store.Get(r, "beerwh")
 		strUser := session.Values["user"].(string)
-		json.Unmarshal([]byte(strUserId), &user)
+		json.Unmarshal([]byte(strUser), &user)
 
 		err := Db.QueryRow(sqlStatement, user.Id, orderedAt, takeOutAt).Scan(&orderId)
 		sec.CheckInternalServerError(err, w)
@@ -265,11 +265,11 @@ func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	var client mdl.Client
 	for rows.Next() {
 		err = rows.Scan(&client.Id, &client.Name)
-		if client.Id == sec.LoggedUser.Id {
-			client.Selected = true
-		} else {
-			client.Selected = false
-		}
+		//		if client.Id == sec.LoggedUser.Id {
+		//			client.Selected = true
+		//		} else {
+		//			client.Selected = false
+		//		}
 		sec.CheckInternalServerError(err, w)
 		clients = append(clients, client)
 	}
