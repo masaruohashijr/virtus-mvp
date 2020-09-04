@@ -6,7 +6,6 @@ import (
 )
 
 var Authenticated = false
-var LoggedUser mdl.User
 
 func CheckInternalServerError(err error, w http.ResponseWriter) {
 	if err != nil {

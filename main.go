@@ -1,26 +1,26 @@
 package main
 
 import (
-	hd "beerwh/handlers"
 	dpk "beerwh/db"
+	hd "beerwh/handlers"
 	route "beerwh/routes"
 	"database/sql"
+	"fmt"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
-	"fmt"
 )
 
 func determineListenAddress() (string, error) {
-  port := os.Getenv("PORT")
-  if port == "" {
-    return "", fmt.Errorf("$PORT not set")
-  }
-  return ":" + port, nil
+	port := os.Getenv("PORT")
+	if port == "" {
+		return "", fmt.Errorf("$PORT not set")
+	}
+	return ":" + port, nil
 }
 
-func dbConn() *sql.DB{
+func dbConn() *sql.DB {
 	dbase, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	log.Println(os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -31,7 +31,7 @@ func dbConn() *sql.DB{
 
 func main() {
 
-	hd.Db = dbConn()	
+	hd.Db = dbConn()
 	// injeta	ndo a variável Authenticated
 	dpk.Initialize()
 	http.HandleFunc("/", hd.IndexHandler)
@@ -63,7 +63,7 @@ func main() {
 	}
 	log.Printf("Listening on %s...\n", addr)
 	if err := http.ListenAndServe(addr, nil); err != nil {
-	    panic(err)
-    }	
+		panic(err)
+	}
 	defer hd.Db.Close()
 }

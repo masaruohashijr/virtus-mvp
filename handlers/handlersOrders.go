@@ -31,7 +31,12 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 			" client_id, ordered_at, take_out_at ) " +
 			" VALUES ($1, TO_TIMESTAMP($2, 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS')) RETURNING id"
 		orderId := 0
-		err := Db.QueryRow(sqlStatement, sec.LoggedUser.Id, orderedAt, takeOutAt).Scan(&orderId)
+		var user mdl.User
+		session, _ := store.Get(r, "beerwh")
+		strUser := session.Values["user"].(string)
+		json.Unmarshal([]byte(strUserId), &user)
+
+		err := Db.QueryRow(sqlStatement, user.Id, orderedAt, takeOutAt).Scan(&orderId)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())

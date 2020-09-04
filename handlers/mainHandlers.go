@@ -5,9 +5,10 @@ import (
 	route "beerwh/routes"
 	sec "beerwh/security"
 	"database/sql"
+	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 	"log"
+	"net/http"
 )
 
 var Db *sql.DB
@@ -17,6 +18,8 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, route.BeersRoute, 200)
 }
 
+var store = sessions.NewCookieStore([]byte("beerwh"))
+
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		log.Println("entrei login")
@@ -24,9 +27,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	username := r.FormValue("usrname")
-		log.Println("user")
+	log.Println("user")
 	password := r.FormValue("psw")
-		log.Println("senha")
+	log.Println("senha")
 	var user mdl.User
 	// bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	err := Db.QueryRow("SELECT id, username, password FROM clients WHERE username=$1", &username).Scan(&user.Id, &user.Username, &user.Password)
@@ -38,7 +41,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", 301)
 	}
 	sec.Authenticated = true
-	sec.LoggedUser = user
-		log.Println("antes OrdersRoute")
+	session, _ := store.Get(r, "beerwh")
+	bytesUser, _ := json.Marshal(user)
+	session.Values["user"] = string(bytesUser)
+	sessions.Save(r, rw)
+	log.Println("antes OrdersRoute")
 	http.Redirect(w, r, route.OrdersRoute, 301)
 }
