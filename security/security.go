@@ -1,7 +1,6 @@
 package security
 
 import (
-	mdl "beerwh/models"
 	"net/http"
 )
 
