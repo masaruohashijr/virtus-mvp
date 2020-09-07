@@ -33,15 +33,16 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 		orderId := 0
 		var user mdl.User
 		session, _ := store.Get(r, "beerwh")
-		strUser := session.Values["user"].(string)
-		json.Unmarshal([]byte(strUser), &user)
-
-		err := Db.QueryRow(sqlStatement, user.Id, orderedAt, takeOutAt).Scan(&orderId)
-		sec.CheckInternalServerError(err, w)
-		if err != nil {
-			panic(err.Error())
+		sessionUser := session.Values["user"]
+		if sessionUser != nil {
+			strUser := sessionUser.(string)
+			json.Unmarshal([]byte(strUser), &user)
+			err := Db.QueryRow(sqlStatement, user.Id, orderedAt, takeOutAt).Scan(&orderId)
+			sec.CheckInternalServerError(err, w)
+			if err != nil {
+				panic(err.Error())
+			}
 		}
-
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "item") {
 				array := strings.Split(value[0], "#")
@@ -57,16 +58,15 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					panic(err.Error())
 				}
+				sec.CheckInternalServerError(err, w)
+				l := "INSERT: Id: " + strconv.Itoa(orderId)
+				l += " | OrderedDate: " + orderedDate
+				l += " | OrderedAt: " + orderedAt
+				l += " | TakeOutDate: " + takeOutDate
+				l += " | TakeOutAt: " + takeOutAt
+				log.Println(l)
 			}
 		}
-
-		sec.CheckInternalServerError(err, w)
-		l := "INSERT: Id: " + strconv.Itoa(orderId)
-		l += " | OrderedDate: " + orderedDate
-		l += " | OrderedAt: " + orderedAt
-		l += " | TakeOutDate: " + takeOutDate
-		l += " | TakeOutAt: " + takeOutAt
-		log.Println(l)
 	}
 	http.Redirect(w, r, route.OrdersRoute, 301)
 }
@@ -229,7 +229,7 @@ func LoadItemsByOrderId(w http.ResponseWriter, r *http.Request) {
 
 func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Orders")
-	//sec.IsAuthenticated(w, r)
+	sec.IsAuthenticated(w, r)
 	query := "SELECT a.id, a.client_id, b.name, a.ordered_at, a.take_out_at, " +
 		" coalesce(to_char(a.ordered_at,'DD/MM/YYYY'),'') as c_ordered_date," +
 		" coalesce(to_char(a.take_out_at,'DD/MM/YYYY'),'') as c_takeout_date," +
@@ -263,13 +263,20 @@ func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	sec.CheckInternalServerError(err, w)
 	var clients []mdl.Client
 	var client mdl.Client
+	var savedUser mdl.User
+	session, _ := store.Get(r, "beerwh")
+	sessionUser := session.Values["user"]
+	if sessionUser != nil {
+		strUser := sessionUser.(string)
+		json.Unmarshal([]byte(strUser), &savedUser)
+	}
 	for rows.Next() {
 		err = rows.Scan(&client.Id, &client.Name)
-		//		if client.Id == sec.LoggedUser.Id {
-		//			client.Selected = true
-		//		} else {
-		//			client.Selected = false
-		//		}
+		if client.Id == savedUser.Id {
+			client.Selected = true
+		} else {
+			client.Selected = false
+		}
 		sec.CheckInternalServerError(err, w)
 		clients = append(clients, client)
 	}

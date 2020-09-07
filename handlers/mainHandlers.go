@@ -23,15 +23,12 @@ var store = sessions.NewCookieStore([]byte("beerwh"))
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		log.Println("entrei login")
 		http.ServeFile(w, r, "tmpl/login.html")
 		return
 	}
 	username := r.FormValue("usrname")
-	log.Println("user")
 	password := r.FormValue("psw")
-	log.Println("senha")
-	var user mdl.User
+	var user, savedUser mdl.User
 	// bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	err := Db.QueryRow("SELECT id, username, password FROM clients WHERE username=$1", &username).Scan(&user.Id, &user.Username, &user.Password)
 	sec.CheckInternalServerError(err, w)
@@ -46,6 +43,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	bytesUser, _ := json.Marshal(user)
 	session.Values["user"] = string(bytesUser)
 	sessions.Save(r, w)
-	log.Println("antes OrdersRoute")
+	log.Println("User Saved")
+	sessionUser := session.Values["user"]
+	if sessionUser != nil {
+		strUser := sessionUser.(string)
+		json.Unmarshal([]byte(strUser), &savedUser)
+	}
+	log.Println("Saved User is " + savedUser.Username)
 	http.Redirect(w, r, route.OrdersRoute, 301)
 }

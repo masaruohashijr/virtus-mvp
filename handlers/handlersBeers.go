@@ -70,7 +70,7 @@ func DeleteBeerHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListBeersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Beers")
-	//sec.IsAuthenticated(w, r)
+	sec.IsAuthenticated(w, r)
 	rows, err := Db.Query("SELECT id, name, qtd, price FROM beers order by id asc")
 	sec.CheckInternalServerError(err, w)
 	var beers []mdl.Beer
