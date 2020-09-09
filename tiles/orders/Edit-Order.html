@@ -14,11 +14,11 @@
                 <label class="w3-label">Pedido</label>
 				<br>	
 				<input type="hidden" name="Id" id="OrderIdForUpdate">
-	            <select name="ClientForUpdate" id="ClientForUpdate">
+	            <select name="UserForUpdate" id="UserForUpdate">
 					<option value=""></option>
-					{{range $index, $client := .Clients }}
-		                <option value="{{$client.Id}}" {{if eq true $client.Selected}} selected="selected"{{end}}>
-							{{$client.Name}}
+					{{range $index, $user := .Users }}
+		                <option value="{{$user.Id}}" {{if eq true $user.Selected}} selected="selected"{{end}}>
+							{{$user.Name}}
 						</option>
 		            {{end}}
 	            </select>

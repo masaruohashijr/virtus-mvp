@@ -1,0 +1,12 @@
+{{ define "Main-Users" }}
+<html lang="pt">
+	{{ template "Header" .Title}}
+<body>
+{{ template "Menu" }}
+{{ template "Delete-User" }}
+{{ template "Edit-User" . }}
+{{ template "Create-User" . }}
+{{ template "List-Users" . }}
+</body>
+</html>
+{{end}}

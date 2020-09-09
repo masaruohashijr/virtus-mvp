@@ -3,5 +3,10 @@ package routes
 import ()
 
 var OrdersRoute = "/orders"
-var ClientsRoute = "/clients"
-var BeersRoute = "/cervejas"
+var UsersRoute = "/users"
+var BeersRoute = "/beers"
+var RolesRoute = "/roles"
+var FeaturesRoute = "/features"
+var StatusRoute = "/status"
+var ActionsRoute = "/actions"
+var WorkflowsRoute = "/workflows"

@@ -5,12 +5,38 @@ import (
 	"time"
 )
 
-type User struct {
+type Role struct {
 	Order    int
 	Id       int64  `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Role     int64  `json:"role"`
+	Name     string `json:"name"`
+	Selected bool
+	Features []Feature
+}
+
+type Feature struct {
+	Order int
+	Id    int64  `json:"id"`
+	Name  string `json:"name"`
+	Code  string `json:"code"`
+}
+
+type Workflow struct {
+	Order int
+	Id    int64  `json:"id"`
+	Name  string `json:"name"`
+}
+
+type Action struct {
+	Order int
+	Id    int64  `json:"id"`
+	Name  string `json:"name"`
+}
+
+type Status struct {
+	Order      int
+	Id         int64  `json:"id"`
+	Name       string `json:"name"`
+	Stereotype string `json:"stereotype"`
 }
 
 type Beer struct {
@@ -35,8 +61,8 @@ type Item struct {
 type Order struct {
 	Order            int
 	Id               int64     `json:"id"`
-	ClientId         int64     `json:"clientId"`
-	ClientName       string    `json:"clientName`
+	UserId           int64     `json:"clientId"`
+	UserName         string    `json:"clientName`
 	OrderedAt        time.Time `json:"orderedAt`
 	TakeOutAt        time.Time `json:"endAt"`
 	COrderedDateTime string    `json:"corderedDateTime`
@@ -49,15 +75,18 @@ type NullTime struct {
 	pq.NullTime
 }
 
-type Client struct {
-	Order    int
-	Id       int64  `json:"id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	Mobile   string `json:"mobile"`
-	Selected bool
+type User struct {
+	Order         int
+	Id            int64  `json:"id"`
+	Name          string `json:"name"`
+	Username      string `json:"username"`
+	Password      string `json:"password"`
+	Email         string `json:"email"`
+	Mobile        string `json:"mobile"`
+	Role          int64  `json:"role"`
+	RoleName      string `json:"rolename"`
+	HasPermission func(string) bool
+	Selected      bool
 }
 
 type Measure struct {
@@ -72,19 +101,46 @@ type PageMeasures struct {
 }
 
 type PageOrders struct {
-	Title   string
-	UserId  int
-	Orders  []Order
-	Beers   []Beer
-	Clients []Client
+	Title  string
+	UserId int
+	Orders []Order
+	Beers  []Beer
+	Users  []User
 }
 
-type PageClients struct {
-	Title   string
-	Clients []Client
+type PageUsers struct {
+	Title string
+	Users []User
+	Roles []Role
 }
 
 type PageBeers struct {
 	Title string
 	Beers []Beer
+}
+
+type PageRoles struct {
+	Title    string
+	Roles    []Role
+	Features []Feature
+}
+
+type PageFeatures struct {
+	Title    string
+	Features []Feature
+}
+
+type PageStatus struct {
+	Title  string
+	Status []Status
+}
+
+type PageAction struct {
+	Title   string
+	Actions []Action
+}
+
+type PageWorkflow struct {
+	Title     string
+	Workflows []Workflow
 }

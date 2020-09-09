@@ -1,0 +1,30 @@
+{{define "List-Actions"}}
+<!-- List Actions -->
+<div id="main" class="w3-row-padding">
+		{{ template "Table-Header" .Title }}
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <thead>
+            <tr>
+                <th>Ord</th>
+                <th>Id</th>
+                <th>Nome</th>
+				<th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $action := .Actions}}
+            <tr>
+                <td>#{{$action.Order}}</td>
+                <td>{{$action.Id}}</td>
+                <td>{{$action.Name}}</td>
+                <td>
+                    <button class="w3-btn w3-teal" onclick="updateaction(this);">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteaction(this)">Apagar</button>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}

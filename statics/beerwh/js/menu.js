@@ -1,8 +1,3 @@
-var opened = false;
-var item;
-var items = [];
-var contexto;
-	
 function navGadget(){
 	if(opened){
 		closeNav();

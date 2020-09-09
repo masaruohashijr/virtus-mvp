@@ -1,0 +1,41 @@
+{{define "Create-User"}}
+<!-- Create User -->
+<div class="w3-container">
+    <div id="create-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Criar novo usuário</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/createUser" method="post">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" name="Name" value="">
+                <label class="w3-label">Usuário</label>
+                <input class="w3-input" type="text" name="Username" value="">
+                <label class="w3-label">Senha</label>
+                <input class="w3-input" type="text" name="Password" value="">
+                <label class="w3-label">E-mail</label>
+                <input class="w3-input" type="text" name="Email" value="">
+                <label class="w3-label">Celular</label>
+                <input class="w3-input" type="text" name="Mobile" value="">
+				<label class="w3-label">Papel</label>
+				<br>	
+				<br>
+	            <select name="RoleForInsert" id="RoleForInsert">
+					<option value=""></option>
+					{{range $index, $role := .Roles }}
+		                <option value="{{$role.Id}}" {{if eq true $role.Selected}} selected="selected"{{end}}>
+							{{$role.Name}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

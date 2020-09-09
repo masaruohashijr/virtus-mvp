@@ -1,0 +1,42 @@
+{{define "List-Users"}}
+<!-- List Users -->
+<div id="main" class="w3-row-padding">
+	<div class="w3-card-2">
+		{{ template "Table-Header" .Title }}
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <thead>
+            <tr>
+                <th>Ord</th>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Username</th>
+                <th>E-mail</th>
+                <th>Celular</th>
+                <th>Papel</th>
+				<th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $user := .Users }}
+            <tr>
+                <td>#{{$user.Order}}</td>
+                <td>{{$user.Id}}</td>
+                <td>{{$user.Name}}</td>
+                <td>{{$user.Username}}</td>
+                <td>{{$user.Email}}</td>
+                <td>{{$user.Mobile}}</td>
+                <td>
+					<input type="hidden" value="{{$user.Role}}">
+					{{$user.RoleName}}
+				</td>
+                <td>
+                    <button class="w3-btn w3-teal" onclick="updateUser(this);">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteUser(this)">Apagar</button>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}

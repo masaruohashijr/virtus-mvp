@@ -2,11 +2,9 @@ package handlers
 
 import (
 	mdl "beerwh/models"
+	route "beerwh/routes"
 	sec "beerwh/security"
 	"encoding/json"
-	//	"encoding/json"
-	//	pq "github.com/lib/pq"
-	route "beerwh/routes"
 	"html/template"
 	"log"
 	"net/http"
@@ -28,7 +26,7 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("orderedAt: " + orderedAt)
 		log.Println("takeOutAt: " + takeOutAt)
 		sqlStatement := "INSERT INTO public.orders ( " +
-			" client_id, ordered_at, take_out_at ) " +
+			" user_id, ordered_at, take_out_at ) " +
 			" VALUES ($1, TO_TIMESTAMP($2, 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS')) RETURNING id"
 		orderId := 0
 		var user mdl.User
@@ -108,7 +106,7 @@ func UpdateOrderHandler(w http.ResponseWriter, r *http.Request) {
 		sec.IsAuthenticated(w, r)
 		orderId := r.FormValue("Id")
 		log.Println("OrderId: " + orderId)
-		clientId := r.FormValue("ClientForUpdate")
+		userId := r.FormValue("UserForUpdate")
 		orderedDate := r.FormValue("OrderDateForUpdate")
 		orderedAt := r.FormValue("OrderedAtForUpdate")
 		orderedDT := orderedDate + " " + orderedAt
@@ -116,7 +114,7 @@ func UpdateOrderHandler(w http.ResponseWriter, r *http.Request) {
 		takeoutAt := r.FormValue("TakeOutAtForUpdate")
 		takeoutDT := takeoutDate + " " + takeoutAt
 		sqlStatement := "UPDATE orders SET " +
-			" client_id = $1, " +
+			" user_id = $1, " +
 			" ordered_at = TO_TIMESTAMP($2, 'YYYY-MM-DD HH24:MI:SS'), " +
 			" take_out_at = TO_TIMESTAMP($3, 'YYYY-MM-DD HH24:MI:SS') " +
 			" WHERE id = $4"
@@ -127,9 +125,9 @@ func UpdateOrderHandler(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(clientId, orderedDT, takeoutDT, orderId)
+		updtForm.Exec(userId, orderedDT, takeoutDT, orderId)
 		log.Println("UPDATE: Id: " + orderId +
-			" | Client Id: " + clientId +
+			" | User Id: " + userId +
 			" | Ordered At: " + orderedDT +
 			" | Take Out At: " + takeoutDT)
 
@@ -164,8 +162,8 @@ func UpdateOrderHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				var diffDB []mdl.Item = itemsDB
 				for n := range itemsPage {
-					if contains(diffDB, itemsPage[n]) {
-						diffDB = remove(diffDB, itemsPage[n])
+					if containsItem(diffDB, itemsPage[n]) {
+						diffDB = removeItem(diffDB, itemsPage[n])
 					}
 				}
 				DeleteItemsHandler(diffDB) //DONE
@@ -173,8 +171,8 @@ func UpdateOrderHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			var diffPage []mdl.Item = itemsPage
 			for n := range itemsDB {
-				if contains(diffPage, itemsDB[n]) {
-					diffPage = remove(diffPage, itemsDB[n])
+				if containsItem(diffPage, itemsDB[n]) {
+					diffPage = removeItem(diffPage, itemsDB[n])
 				}
 			}
 			itemId := 0
@@ -197,7 +195,7 @@ func UpdateOrderHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func contains(items []mdl.Item, itemCompared mdl.Item) bool {
+func containsItem(items []mdl.Item, itemCompared mdl.Item) bool {
 	for n := range items {
 		if items[n].Id == itemCompared.Id {
 			return true
@@ -206,7 +204,7 @@ func contains(items []mdl.Item, itemCompared mdl.Item) bool {
 	return false
 }
 
-func remove(items []mdl.Item, itemToBeRemoved mdl.Item) []mdl.Item {
+func removeItem(items []mdl.Item, itemToBeRemoved mdl.Item) []mdl.Item {
 	var newItems []mdl.Item
 	for i := range items {
 		if items[i].Id != itemToBeRemoved.Id {
@@ -230,12 +228,12 @@ func LoadItemsByOrderId(w http.ResponseWriter, r *http.Request) {
 func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Orders")
 	sec.IsAuthenticated(w, r)
-	query := "SELECT a.id, a.client_id, b.name, a.ordered_at, a.take_out_at, " +
+	query := "SELECT a.id, a.user_id, b.name, a.ordered_at, a.take_out_at, " +
 		" coalesce(to_char(a.ordered_at,'DD/MM/YYYY'),'') as c_ordered_date," +
 		" coalesce(to_char(a.take_out_at,'DD/MM/YYYY'),'') as c_takeout_date," +
 		" coalesce(to_char(a.ordered_at,'DD/MM/YYYY HH24:MI:SS'),'') as c_ordered_date_time," +
 		" coalesce(to_char(a.take_out_at,'DD/MM/YYYY HH24:MI:SS'),'') as c_takeout_date_time" +
-		" FROM orders a, clients b where a.client_id = b.id order by a.take_out_at desc "
+		" FROM orders a, users b where a.user_id = b.id order by a.take_out_at desc "
 	rows, err := Db.Query(query)
 	log.Println("Query: " + query)
 	sec.CheckInternalServerError(err, w)
@@ -245,8 +243,8 @@ func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		err = rows.Scan(
 			&order.Id,
-			&order.ClientId,
-			&order.ClientName,
+			&order.UserId,
+			&order.UserName,
 			&order.OrderedAt,
 			&order.TakeOutAt,
 			&order.COrderedAt,
@@ -259,10 +257,10 @@ func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		i++
 		orders = append(orders, order)
 	}
-	rows, err = Db.Query("SELECT id, name FROM clients order by name")
+	rows, err = Db.Query("SELECT id, name FROM users order by name")
 	sec.CheckInternalServerError(err, w)
-	var clients []mdl.Client
-	var client mdl.Client
+	var users []mdl.User
+	var user mdl.User
 	var savedUser mdl.User
 	session, _ := store.Get(r, "beerwh")
 	sessionUser := session.Values["user"]
@@ -271,17 +269,17 @@ func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		json.Unmarshal([]byte(strUser), &savedUser)
 	}
 	for rows.Next() {
-		err = rows.Scan(&client.Id, &client.Name)
-		if client.Id == savedUser.Id {
-			client.Selected = true
+		err = rows.Scan(&user.Id, &user.Name)
+		if user.Id == savedUser.Id {
+			user.Selected = true
 		} else {
-			client.Selected = false
+			user.Selected = false
 		}
 		sec.CheckInternalServerError(err, w)
-		clients = append(clients, client)
+		users = append(users, user)
 	}
 	var page mdl.PageOrders
-	page.Clients = clients
+	page.Users = users
 	rows, err = Db.Query("SELECT id, name, qtd, price FROM beers order by name")
 	sec.CheckInternalServerError(err, w)
 	var beers []mdl.Beer

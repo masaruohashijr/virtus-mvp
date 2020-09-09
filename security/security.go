@@ -1,6 +1,9 @@
 package security
 
 import (
+	mdl "beerwh/models"
+	"encoding/json"
+	"github.com/gorilla/sessions"
 	"net/http"
 )
 
@@ -19,4 +22,16 @@ func IsAuthenticated(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 	return true
+}
+
+func getLoggedUser(r *http.Request) mdl.User {
+	var user mdl.User
+	var store = sessions.NewCookieStore([]byte("beerwh"))
+	session, _ := store.Get(r, "beerwh")
+	sessionUser := session.Values["user"]
+	if sessionUser != nil {
+		strUser := sessionUser.(string)
+		json.Unmarshal([]byte(strUser), &user)
+	}
+	return user
 }

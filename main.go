@@ -36,16 +36,26 @@ func main() {
 	dpk.Initialize()
 	http.HandleFunc("/", hd.IndexHandler)
 	http.HandleFunc("/login", hd.LoginHandler)
+	// ----------------- FEATURES
+	http.HandleFunc(route.FeaturesRoute, hd.ListFeaturesHandler)
+	http.HandleFunc("/createFeature", hd.CreateFeatureHandler)
+	http.HandleFunc("/updateFeature", hd.UpdateFeatureHandler)
+	http.HandleFunc("/deleteFeature", hd.DeleteFeatureHandler)
+	// ----------------- ROLES
+	http.HandleFunc(route.RolesRoute, hd.ListRolesHandler)
+	http.HandleFunc("/createRole", hd.CreateRoleHandler)
+	http.HandleFunc("/updateRole", hd.UpdateRoleHandler)
+	http.HandleFunc("/deleteRole", hd.DeleteRoleHandler)
 	// ----------------- BEERS
 	http.HandleFunc(route.BeersRoute, hd.ListBeersHandler)
 	http.HandleFunc("/createBeer", hd.CreateBeerHandler)
 	http.HandleFunc("/updateBeer", hd.UpdateBeerHandler)
 	http.HandleFunc("/deleteBeer", hd.DeleteBeerHandler)
-	// ----------------- CLIENTS
-	http.HandleFunc(route.ClientsRoute, hd.ListClientsHandler)
-	http.HandleFunc("/createClient", hd.CreateClientHandler)
-	http.HandleFunc("/updateClient", hd.UpdateClientHandler)
-	http.HandleFunc("/deleteClient", hd.DeleteClientHandler)
+	// ----------------- USERS
+	http.HandleFunc(route.UsersRoute, hd.ListUsersHandler)
+	http.HandleFunc("/createUser", hd.CreateUserHandler)
+	http.HandleFunc("/updateUser", hd.UpdateUserHandler)
+	http.HandleFunc("/deleteUser", hd.DeleteUserHandler)
 	// ----------------- ORDERS
 	http.HandleFunc(route.OrdersRoute, hd.ListOrdersHandler)
 	http.HandleFunc("/createOrder", hd.CreateOrderHandler)
@@ -53,6 +63,7 @@ func main() {
 	http.HandleFunc("/deleteOrder", hd.DeleteOrderHandler)
 	// ----------------- ITEMS
 	http.HandleFunc("/loadItemsByOrderId", hd.LoadItemsByOrderId)
+	http.HandleFunc("/loadFeaturesByRoleId", hd.LoadFeaturesByRoleId)
 	// ----------------- STATICS
 	http.Handle("/statics/",
 		http.StripPrefix("/statics/", http.FileServer(http.Dir("./statics"))),

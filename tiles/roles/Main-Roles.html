@@ -1,0 +1,12 @@
+{{ define "Main-Roles" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" }}
+{{ template "Delete-Role" }}
+{{ template "Edit-Role" . }}
+{{ template "Create-Role" . }}
+{{ template "List-Roles" . }}
+</body>
+</html>
+{{end}}

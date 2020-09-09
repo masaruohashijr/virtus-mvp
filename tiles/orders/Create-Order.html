@@ -11,13 +11,13 @@
             </div>
 
             <form class="w3-container" action="/createOrder" method="post">
-                <label class="w3-label">Cliente</label>
+                <label class="w3-label">Usuário</label>
 				<br>	
-	            <select name="ClientForInsert" id="ClientForInsert">
+	            <select name="UserForInsert" id="UserForInsert">
 					<option value=""></option>
-					{{range $index, $client := .Clients }}
-		                <option value="{{$client.Id}}" {{if eq true $client.Selected}} selected="selected"{{end}}>
-							{{$client.Name}}
+					{{range $index, $user := .Users }}
+		                <option value="{{$user.Id}}" {{if eq true $user.Selected}} selected="selected"{{end}}>
+							{{$user.Name}}
 						</option>
 		            {{end}}
 	            </select>

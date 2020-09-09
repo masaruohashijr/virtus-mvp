@@ -1,0 +1,12 @@
+{{ define "Main-Features" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" }}
+{{ template "Delete-Feature" }}
+{{ template "Edit-Feature" }}
+{{ template "Create-Feature" }}
+{{ template "List-Features" . }}
+</body>
+</html>
+{{end}}
