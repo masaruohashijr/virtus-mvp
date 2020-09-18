@@ -9,11 +9,10 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
-
-            <form class="w3-container" action="/createOrder" method="post">
+            <form class="w3-container" id="create-order-form" action="/createOrder" method="post">
                 <label class="w3-label">Usuário</label>
 				<br>	
-	            <select name="UserForInsert" id="UserForInsert">
+	            <select class="w3-input" name="UserForInsert" id="UserForInsert">
 					<option value=""></option>
 					{{range $index, $user := .Users }}
 		                <option value="{{$user.Id}}" {{if eq true $user.Selected}} selected="selected"{{end}}>
@@ -21,8 +20,6 @@
 						</option>
 		            {{end}}
 	            </select>
-				<br>
-				<br>
                 <label class="w3-label">Dia Pedido</label>
                 <input class="w3-input" type="date" id="OrderDateForInsert" name="OrderDateForInsert" value="">
                 <label class="w3-label">Horário Pedido</label>
@@ -33,11 +30,11 @@
                 <input class="w3-input" type="time" id="TakeOutAtForInsert" name="TakeOutAtForInsert" value="">
 		        <header class="w3-container w3-center w3-teal">
 		            <div class="w3-row">
-		                <div class="w3-half">
+		                <div class="w3-half" style="text-align: center;z-index:0">
 		                    <h4 class="w3-right">Itens</h4>
 		                </div>
-		                <div class="w3-half w3-text-right" style="position:relative;z-index:2">
-		                    <div class="w3-right">
+		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
+		                    <div class="w3-right" id="create-form-item-btn" >
 		                        <a href="#" onclick="contexto='insert';document.getElementById('create-item-form').style.display='block'">
 		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
 		                        </a>

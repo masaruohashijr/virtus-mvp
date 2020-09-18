@@ -6,6 +6,28 @@ function wipeRows(tableID) {
 	}
 }
 
+function updateRow(tableID, order){
+	let tableRef = document.getElementById(tableID);
+	let rowNumber = 3+parseInt(order);
+	let row = tableRef.childNodes[1].childNodes[rowNumber];
+	let celula = row.childNodes[0];
+	celula.innerText = items[order].beerName;
+	var jsonItem = JSON.stringify(items[order]);
+	jsonItem = jsonItem.split(',').join('#');
+	jsonItem = jsonItem.split('"').join('');
+	jsonItem = jsonItem.split('{').join('');
+	jsonItem = jsonItem.split('}').join('');
+	celula.innerHTML = '<input type="hidden" name="item'+order+'" value="'+jsonItem+'"/>'+celula.innerHTML;
+	celula.innerHTML = '<input type="hidden" name="beerid" value="'+items[order].beerId+'"/>'+celula.innerHTML;
+	celula.innerHTML = '<input type="hidden" name="id" value="'+items[order].id+'"/>'+celula.innerHTML;
+	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
+	row.childNodes[1].innerText = items[order].qtd;
+	row.childNodes[2].innerText = items[order].price;
+	row.childNodes[3].innerText = items[order].value;
+}
+
+
+
 function addRow(tableID) {
 	let tableRef = document.getElementById(tableID);
 	let newRow = tableRef.insertRow(-1);
@@ -42,6 +64,7 @@ function addRow(tableID) {
 	var btnEditar = document.createElement('input');
 	btnEditar.type = "button";
 	btnEditar.className = "w3-btn w3-teal";
+	btnEditar.style = "margin-right: 10px";
 	btnEditar.value = "Editar";
 	btnEditar.onclick = function() {updateitem(btnEditar)};
 	newCell.appendChild(btnEditar);
@@ -52,24 +75,4 @@ function addRow(tableID) {
 	btnApagar.value = "Apagar";
 	btnApagar.onclick = function() {showDeleteItemForm(btnApagar)};
 	newCell.appendChild(btnApagar);
-}
-
-function updateRow(tableID, order){
-	let tableRef = document.getElementById(tableID);
-	let rowNumber = 3+parseInt(order);
-	let row = tableRef.childNodes[1].childNodes[rowNumber];
-	let celula = row.childNodes[0];
-	celula.innerText = items[order].beerName;
-	var jsonItem = JSON.stringify(items[order]);
-	jsonItem = jsonItem.split(',').join('#');
-	jsonItem = jsonItem.split('"').join('');
-	jsonItem = jsonItem.split('{').join('');
-	jsonItem = jsonItem.split('}').join('');
-	celula.innerHTML = '<input type="hidden" name="item'+order+'" value="'+jsonItem+'"/>'+celula.innerHTML;
-	celula.innerHTML = '<input type="hidden" name="beerid" value="'+items[order].beerId+'"/>'+celula.innerHTML;
-	celula.innerHTML = '<input type="hidden" name="id" value="'+items[order].id+'"/>'+celula.innerHTML;
-	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
-	row.childNodes[1].innerText = items[order].qtd;
-	row.childNodes[2].innerText = items[order].price;
-	row.childNodes[3].innerText = items[order].value;
 }

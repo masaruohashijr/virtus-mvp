@@ -1,15 +1,15 @@
 package main
 
 import (
-	dpk "beerwh/db"
-	hd "beerwh/handlers"
-	route "beerwh/routes"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
+	dpk "virtus/db"
+	hd "virtus/handlers"
+	route "virtus/routes"
 )
 
 func determineListenAddress() (string, error) {
@@ -36,6 +36,21 @@ func main() {
 	dpk.Initialize()
 	http.HandleFunc("/", hd.IndexHandler)
 	http.HandleFunc("/login", hd.LoginHandler)
+	// ----------------- WORKFLOWS
+	http.HandleFunc(route.WorkflowsRoute, hd.ListWorkflowsHandler)
+	http.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler)
+	http.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler)
+	http.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler)
+	// ----------------- ACTIONS
+	http.HandleFunc(route.ActionsRoute, hd.ListActionsHandler)
+	http.HandleFunc("/createAction", hd.CreateActionHandler)
+	http.HandleFunc("/updateAction", hd.UpdateActionHandler)
+	http.HandleFunc("/deleteAction", hd.DeleteActionHandler)
+	// ----------------- STATUS
+	http.HandleFunc(route.StatusRoute, hd.ListStatusHandler)
+	http.HandleFunc("/createStatus", hd.CreateStatusHandler)
+	http.HandleFunc("/updateStatus", hd.UpdateStatusHandler)
+	http.HandleFunc("/deleteStatus", hd.DeleteStatusHandler)
 	// ----------------- FEATURES
 	http.HandleFunc(route.FeaturesRoute, hd.ListFeaturesHandler)
 	http.HandleFunc("/createFeature", hd.CreateFeatureHandler)
@@ -47,10 +62,10 @@ func main() {
 	http.HandleFunc("/updateRole", hd.UpdateRoleHandler)
 	http.HandleFunc("/deleteRole", hd.DeleteRoleHandler)
 	// ----------------- BEERS
-	http.HandleFunc(route.BeersRoute, hd.ListBeersHandler)
-	http.HandleFunc("/createBeer", hd.CreateBeerHandler)
-	http.HandleFunc("/updateBeer", hd.UpdateBeerHandler)
-	http.HandleFunc("/deleteBeer", hd.DeleteBeerHandler)
+	//	http.HandleFunc(route.BeersRoute, hd.ListBeersHandler)
+	//	http.HandleFunc("/createBeer", hd.CreateBeerHandler)
+	//	http.HandleFunc("/updateBeer", hd.UpdateBeerHandler)
+	//	http.HandleFunc("/deleteBeer", hd.DeleteBeerHandler)
 	// ----------------- USERS
 	http.HandleFunc(route.UsersRoute, hd.ListUsersHandler)
 	http.HandleFunc("/createUser", hd.CreateUserHandler)
@@ -64,6 +79,11 @@ func main() {
 	// ----------------- ITEMS
 	http.HandleFunc("/loadItemsByOrderId", hd.LoadItemsByOrderId)
 	http.HandleFunc("/loadFeaturesByRoleId", hd.LoadFeaturesByRoleId)
+	http.HandleFunc("/loadRolesByActionId", hd.LoadRolesByActionId)
+	http.HandleFunc("/loadActivitiesByWorkflowId", hd.LoadActivitiesByWorkflowId)
+	http.HandleFunc("/loadAllowedActions", hd.LoadAllowedActions)
+	http.HandleFunc("/loadAvailableFeatures", hd.LoadAvailableFeatures)
+	http.HandleFunc("/executeAction", hd.ExecuteActionHandler)
 	// ----------------- STATICS
 	http.Handle("/statics/",
 		http.StripPrefix("/statics/", http.FileServer(http.Dir("./statics"))),

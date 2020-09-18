@@ -13,6 +13,31 @@
             <form class="w3-container" action="/createAction" method="post">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Name" value="">
+				<br>	
+				<label class="w3-label">Status Origem</label>
+				<br>
+				<label class="w3-label">Exceto</label>&nbsp;<input type="checkbox" name="Except" value="Except">
+				<br>	
+	            <select class="w3-input" name="OriginStatusForInsert" id="OriginStatusForInsert" style="width:100%">
+		            <option value=""></option>
+					{{range $index, $status := .Statuss }}
+		                <option value="{{$status.Id}}">
+							{{$status.Name}}{{if ne $status.Stereotype ""}} (estereótipo: {{$status.Stereotype}}){{end}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Status Destino</label>
+				<br>	
+	            <select class="w3-input" name="DestinationStatusForInsert" id="DestinationStatusForInsert" style="width:100%">
+					<option value=""></option>
+					{{range $index, $status := .Statuss }}
+		                <option value="{{$status.Id}}">
+							{{$status.Name}}{{if ne $status.Stereotype ""}} (estereótipo: {{$status.Stereotype}}){{end}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
                 <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
             </form>
         </div>

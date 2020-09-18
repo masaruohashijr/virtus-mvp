@@ -1,1 +1,1 @@
-web: bin/beerwh
+web: bin/virtus

@@ -2,7 +2,44 @@
 <!-- List Orders -->
 <div id="main" class="w3-row-padding">
     <div class="w3-card-2">
-		{{template "Table-Header" .Title }}
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				<div style="text-align: center;margin: auto;position:absolute;width:90%;z-index:0">
+				    <h3>{{.Title}}</h3>
+				</div>
+				<div style="margin-top: 10px;text-align: right;z-index:1">
+					{{$allowed := (call .LoggedUser.HasPermission "createOrder")}}
+					{{if $allowed}}
+					    <a href="#" onclick="setTime();document.getElementById('create-form').style.display='block'">
+							<i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+					    </a>
+					{{end}}
+				    <a href="/logout">
+						<i class="icon ion-log-out w3-xxlarge hoverbtn"></i>
+				    </a>
+				</div>
+		    </div>
+		</header>
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 10px;text-align: right;z-index:1">
+			        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" style="background-color:#004DAB;width:100%">
+			            <tr>
+			                <td >Inspetor</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Supervisor</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Gerente</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Comitê</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Administrador</td>
+			            </tr>
+			        </table>
+			    </div>
+		    </div>
+		</header>
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
             <thead>
             <tr>
@@ -10,8 +47,11 @@
                 <th>Id</th>
                 <th>Cliente</th>
                 <th>Pedido em</th>
-                <th>Retirado em</th>
+                <th>Retirar em</th>
+                <th>Status</th>
+				{{if $allowed}}
 				<th>Ações</th>
+				{{end}}
             </tr>
             </thead>
             <tbody>
@@ -19,20 +59,23 @@
             {{range $index, $order := .Orders }}
 				{{if or (eq $index 0) (ne $auxData $order.CTakeOutAt)}}
 	            <tr>
-	                <td colspan="10" bgcolor="lightgreen" style="font-size:1.2em;text-align:left">{{$order.CTakeOutAt}}</td>
+	                <td colspan="10" bgcolor="#00A4FF" style="font-size:1.2em;text-align:left">{{$order.CTakeOutAt}}</td>
             	</tr>
 				{{$auxData = $order.CTakeOutAt }}
 				{{end}}
 	            <tr>
 					<td>{{$order.Order}}</td>
 					<td>{{$order.Id}}</td>
-	                <td>{{$order.ClientName}}<input type="hidden" value="{{$order.ClientId}}"></td>
+	                <td>{{$order.UserName}}<input type="hidden" value="{{$order.UserId}}"></td>
 	                <td>{{$order.COrderedDateTime}}</td>
 	                <td>{{$order.CTakeOutDateTime}}</td>
+	                <td>{{$order.CStatus}}<input type="hidden" value="{{$order.StatusId}}"></td>
+					{{if $allowed}}
 	                <td>
 	                    <button class="w3-btn w3-teal" onclick="contexto='edit';updateorder(this);">Editar</button>
 	                    <button class="w3-btn w3-red" onclick="deleteorder(this)">Apagar</button>
 	                </td>
+					{{end}}
 	            </tr>
 			{{end}}
             </tbody>

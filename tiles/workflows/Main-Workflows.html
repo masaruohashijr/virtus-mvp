@@ -2,10 +2,13 @@
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
-{{ template "Menu" }}
+{{ template "Menu" . }}
 {{ template "Delete-Workflow" }}
 {{ template "Edit-Workflow" }}
 {{ template "Create-Workflow" }}
+{{ template "Delete-Activity" . }}
+{{ template "Edit-Activity" . }}
+{{ template "Create-Activity" . }}
 {{ template "List-Workflows" . }}
 </body>
 </html>

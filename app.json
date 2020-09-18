@@ -1,12 +1,12 @@
 {
   "name": "Beewh",
-  "description": "Go beerwh App",
+  "description": "Go virtus App",
   "keywords": [
     "beers",
     "go",
     "sample",
     "example"
   ],
-  "website": "http://github.com/heroku/beerwh",
-  "repository": "http://github.com/heroku/beerwh"
+  "website": "http://github.com/heroku/virtus",
+  "repository": "http://github.com/heroku/virtus"
 }

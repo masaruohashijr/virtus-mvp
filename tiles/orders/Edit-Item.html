@@ -13,12 +13,11 @@
             <form class="w3-container">
 				<input type="hidden" id="id-edit" value="">
                 <label class="w3-label">Cerveja</label>
-				<br>	
 				<script>
 					var ar = [];
 					var i = 0;
 				</script>					
-	            <select onchange="resetFields('edit');" id="beer-edit">
+	            <select class="w3-input" onchange="resetFields('edit');" id="beer-edit">
 					<option value=""></option>
 					{{range $index, $beer := .Beers }}
 	                <option value="{{$beer.Id}}">
@@ -30,8 +29,6 @@
 					</script>
 	            	{{end}}
 	            </select>
-				<br>
-				<br>
 				<label class="w3-label">Quantidade</label>
                 <input class="w3-input" type="number" id="qtd-edit" name="qtd-edit" value="" onblur="if(validaQtd(this, 'edit')){calcularValorItem(this, 'edit')}">
                 <label class="w3-label">Estoque</label>

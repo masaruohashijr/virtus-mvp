@@ -1,14 +1,37 @@
 {{ define "Menu" }}
 <div id="mySidenav" class="sidenav">
+	<div sytle="position:absolute;top:0px;left:25px;z-index:1"><br>
+	    <img src="/statics/images/Banner_Previc.png" alt="Virtus" class="logo">
+	    <!--img src="/statics/images/previc-logo-fundo-azul-.jpg" alt="Virtus" class="logo"-->
+	</div>
+	<br>
+	<br>
   <a href="javascript:void(0)" class="closebtn" onclick="navGadget()">&times;</a>
   <a href="#">Sobre</a>
+  <a href="/elementos">Elementos</a>
+  {{if (call .LoggedUser.HasPermission "listOrders")}}
   <a href="/orders">Pedidos</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listUsers")}}
   <a href="/users">Usuários</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listBeers")}}
   <a href="/beers">Cervejas</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listRoles")}}
   <a href="/roles">Papéis</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listFeatures")}}
   <a href="/features">Funcionalidades</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listStatus")}}
   <a href="/status">Status</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listActions")}}
   <a href="/actions">Ações</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listWorkflows")}}
   <a href="/workflows">Workflows</a>
+  {{end}}
 </div>
 {{end}}

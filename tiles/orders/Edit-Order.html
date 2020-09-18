@@ -10,11 +10,11 @@
                       onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/updateOrder" method="post">
+            <form class="w3-container" id="update-order-form" action="/updateOrder" method="post">
                 <label class="w3-label">Pedido</label>
 				<br>	
 				<input type="hidden" name="Id" id="OrderIdForUpdate">
-	            <select name="UserForUpdate" id="UserForUpdate">
+	            <select class="w3-input" name="UserForUpdate" id="UserForUpdate">
 					<option value=""></option>
 					{{range $index, $user := .Users }}
 		                <option value="{{$user.Id}}" {{if eq true $user.Selected}} selected="selected"{{end}}>
@@ -22,8 +22,8 @@
 						</option>
 		            {{end}}
 	            </select>
-				<br>
-				<br>
+                <label class="w3-label">Status</label>
+                <input class="w3-input" type="text" readonly id="StatusForUpdate" name="StatusForUpdate" value="">
                 <label class="w3-label">Dia Pedido</label>
                 <input class="w3-input" type="date" id="OrderDateForUpdate" name="OrderDateForUpdate" value="">
                 <label class="w3-label">Horário Pedido</label>
@@ -34,11 +34,11 @@
                 <input class="w3-input" type="time" id="TakeOutAtForUpdate" name="TakeOutAtForUpdate" value="">
 		        <header class="w3-container w3-center w3-teal">
 		            <div class="w3-row">
-		                <div class="w3-half">
+		                <div class="w3-half" style="text-align: center;z-index:0">
 		                    <h4 class="w3-right">Itens</h4>
 		                </div>
-		                <div class="w3-half w3-text-right" style="position:relative;z-index:2">
-		                    <div class="w3-right">
+		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
+		                    <div class="w3-right" id="edit-form-item-btn">
 		                        <a href="#" onclick="contexto='edit';document.getElementById('create-item-form').style.display='block'">
 		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
 		                        </a>

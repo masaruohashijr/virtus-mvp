@@ -1,0 +1,76 @@
+{{define "Create-Activity"}}
+<!-- Create Activity Form -->
+<div class="w3-container">
+    <div id="create-activity-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Criar nova atividade</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-activity-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container">
+                <label class="w3-label">Ação</label>
+				<br>	
+				<script>
+					var i = 0;
+				</script>					
+	            <select class="w3-input" id="action-create" name="action-create">
+					<option value=""></option>
+					{{range $index, $action := .Actions }}
+	                <option value="{{$action.Id}}">
+						{{$action.Name}}
+					</option>
+					<script>
+						actions_array[i] = new Action("{{$action.Id}}","{{$action.Origin}}","{{$action.Destination}}");
+						i++;
+					</script>
+	            	{{end}}
+	            </select>
+				<label class="w3-label">Funcionalidades Disponíveis</label>
+				<br>
+	            <select class="w3-input" name="FeaturesForInsert" id="features-create" multiple style="width:100%">
+					{{range $index, $feature := .Features }}
+		                <option value="{{$feature.Id}}">
+							{{$feature.Name}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>                
+				<label class="w3-label">Inicia em</label>
+                <input class="w3-input" type="date" id="start-at-create" value="">
+                <label class="w3-label">Termina em</label>
+                <input class="w3-input" type="date" id="end-at-create" value="">
+                <label class="w3-label">Período de Expiração</label>
+                <input class="w3-input" type="number" id="exp-time-create" value="">
+                <label class="w3-label">Ação de Expiração</label>
+				<br>	
+	            <select class="w3-input" id="exp-action-create" name="exp-action-create">
+					<option value=""></option>
+					{{range $index, $action := .Actions }}
+	                <option value="{{$action.Id}}">
+						{{$action.Name}}
+					</option>
+	            	{{end}}
+	            </select>
+				<label class="w3-label">Papéis Permitidos</label>
+				<br>	
+	            <select class="w3-input" name="RolesForInsert" id="roles-create" multiple style="width:100%">
+					{{range $index, $role := .Roles }}
+		                <option value="{{$role.Id}}">
+							{{$role.Name}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="criarActivity();"
+					>Criar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

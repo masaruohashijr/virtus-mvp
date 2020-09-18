@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	mdl "beerwh/models"
-	//	sec "beerwh/security"
+	mdl "virtus/models"
+	//	sec "virtus/security"
 	//	"reflect"
 	//	pq "github.com/lib/pq"
 	//	"html/template"
@@ -76,8 +76,16 @@ func updateItemHandler(i mdl.Item, itemDB mdl.Item) {
 		"beer_id=$1, price=$2, quantity=$3, " +
 		"item_value=$4 WHERE id=$5"
 	updtForm, _ := Db.Prepare(sqlStatement)
-	updtForm.Exec(i.BeerId, i.Price, i.Qtt, i.ItemValue, i.Id)
-	log.Println("UPDATE: " + sqlStatement)
+	log.Println(i.Beer)
+	log.Println(i.Price)
+	log.Println(i.Qtt)
+	log.Println(i.ItemValue)
+	log.Println(i.Id)
+	_, err := updtForm.Exec(i.Beer, i.Price, i.Qtt, i.ItemValue, i.Id)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println("Statement: " + sqlStatement)
 }
 
 func DeleteItemsHandler(diffDB []mdl.Item) {

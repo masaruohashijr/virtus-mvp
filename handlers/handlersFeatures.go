@@ -1,13 +1,14 @@
 package handlers
 
 import (
-	mdl "beerwh/models"
-	route "beerwh/routes"
-	sec "beerwh/security"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	mdl "virtus/models"
+	route "virtus/routes"
+	sec "virtus/security"
 )
 
 func CreateFeatureHandler(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +67,27 @@ func DeleteFeatureHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, route.FeaturesRoute, 301)
 }
 
+func DeleteFeaturesByRoleHandler(roleId string) {
+	sqlStatement := "DELETE FROM features_roles WHERE role_id=$1"
+	deleteForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	deleteForm.Exec(roleId)
+	log.Println("DELETE features_roles in Role Id: " + roleId)
+}
+func DeleteFeaturesHandler(diffDB []mdl.Feature) {
+	sqlStatement := "DELETE FROM features_roles WHERE feature_id=$1"
+	deleteForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	for n := range diffDB {
+		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
+		log.Println("DELETE: Feature Id: " + strconv.FormatInt(int64(diffDB[n].Id), 10))
+	}
+}
+
 func ListFeaturesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Features")
 	sec.IsAuthenticated(w, r)
@@ -83,7 +105,9 @@ func ListFeaturesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var page mdl.PageFeatures
 	page.Features = features
+	page.AppName = mdl.AppName
 	page.Title = "Funcionalidades"
+	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 	var tmpl = template.Must(template.ParseGlob("tiles/features/*"))
 	tmpl.ParseGlob("tiles/*")
 	tmpl.ExecuteTemplate(w, "Main-Features", page)
@@ -104,4 +128,35 @@ func ListFeaturesByRoleIdHandler(roleId string) []mdl.Feature {
 		features = append(features, feature)
 	}
 	return features
+}
+
+func LoadAvailableFeatures(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Load Available Features")
+	r.ParseForm()
+	savedUser := GetUserInCookie(w, r)
+	var statusId = r.FormValue("statusId")
+	var entityType = r.FormValue("entityType")
+	log.Println("entityType: " + entityType)
+	log.Println("statusId: " + statusId)
+	sql := " SELECT a.id, a.name, a.code " +
+		" FROM features a INNER JOIN features_activities b ON a.id = b.feature_id " +
+		" INNER JOIN activities c ON c.id = b.activity_id " +
+		" INNER JOIN actions d ON c.action_id = d.id " +
+		" INNER JOIN workflows e ON c.workflow_id = e.id " +
+		" WHERE e.end_at IS null " +
+		" AND e.entity_type = $1 " +
+		" AND d.origin_status_id = $2 " +
+		" AND a.id in ( SELECT feature_id from features_roles where role_id = $3 ) "
+	log.Println("Query Available Features: " + sql)
+	rows, _ := Db.Query(sql, entityType, statusId, savedUser.Role)
+	var features []mdl.Feature
+	var feature mdl.Feature
+	for rows.Next() {
+		rows.Scan(&feature.Id, &feature.Name, &feature.Code)
+		features = append(features, feature)
+		log.Println(features)
+	}
+	jsonFeatures, _ := json.Marshal(features)
+	w.Write([]byte(jsonFeatures))
+	log.Println("JSON Load Features")
 }

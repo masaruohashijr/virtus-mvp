@@ -24,7 +24,7 @@
 				<label class="w3-label">Papel</label>
 				<br>	
 				<br>
-	            <select name="RoleForInsert" id="RoleForInsert">
+	            <select class="w3-input" name="RoleForInsert" id="RoleForInsert">
 					<option value=""></option>
 					{{range $index, $role := .Roles }}
 		                <option value="{{$role.Id}}" {{if eq true $role.Selected}} selected="selected"{{end}}>

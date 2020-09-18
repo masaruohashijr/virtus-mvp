@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	mdl "beerwh/models"
-	route "beerwh/routes"
-	sec "beerwh/security"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	mdl "virtus/models"
+	route "virtus/routes"
+	sec "virtus/security"
 )
 
 func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -132,7 +132,9 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 	var page mdl.PageUsers
 	page.Users = users
 	page.Roles = roles
+	page.AppName = mdl.AppName
 	page.Title = "Usuários"
+	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 	var tmpl = template.Must(template.ParseGlob("tiles/users/*"))
 	tmpl.ParseGlob("tiles/*")
 	tmpl.ExecuteTemplate(w, "Main-Users", page)

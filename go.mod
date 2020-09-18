@@ -1,4 +1,4 @@
-module beerwh
+module virtus
 
 go 1.14
 

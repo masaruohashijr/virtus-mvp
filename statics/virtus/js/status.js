@@ -6,9 +6,9 @@ function updatestatus(e) {
     var statusId = e.parentNode.parentNode.childNodes[3].innerText;
     var statusName = e.parentNode.parentNode.childNodes[5].innerText;
     var statusStereotype = e.parentNode.parentNode.childNodes[7].innerText;
-	document.getElementById('statusIdToUpdate').value = statusId;
-    document.getElementById('statusName').value = statusName;
-    document.getElementById('statusStereotype').value = statusStereotype;
+	document.getElementById('statusIdForUpdate').value = statusId;
+    document.getElementById('statusNameForUpdate').value = statusName;
+    document.getElementById('statusStereotypeForUpdate').value = statusStereotype;
 }
 
 function deletestatus(e) {

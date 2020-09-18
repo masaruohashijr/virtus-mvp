@@ -11,11 +11,18 @@
             </div>
 
             <form class="w3-container" action="/updateStatus" method="post">
-                <input type="hidden" name="Id" id="statusIdToUpdate">
+                <input type="hidden" name="Id" id="statusIdForUpdate">
                 <label class="w3-label">Nome</label>
-                <input class="w3-input" type="text" id="statusName" name="Name" value="">
+                <input class="w3-input" type="text" id="statusNameForUpdate" name="Name" value="">
                 <label class="w3-label">Estereótipo</label>
-                <input class="w3-input" type="text" id="statusStereotype" name="Name" value="">
+                <br>	
+				<br>	
+	            <select class="w3-input" name="Stereotype" id="statusStereotypeForUpdate" style="width:100%">
+	                <option value=""></option>
+	                <option value="Start">Start</option>
+	                <option value="End">End</option>
+	            </select>
+				<br>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
             </form>
         </div>

@@ -2,8 +2,11 @@
 var item_tobe_deleted;
 	
 class Item {
-	constructor(id, beerId, beerName, qtd, price, value) {
+	constructor(order, id, orderId, beer, beerId, beerName, qtd, price, value) {
+		this.order = order;
 		this.id = id;
+		this.orderId = orderId;
+		this.beer = beer;
 		this.beerId = beerId;
 		this.beerName = beerName;
 		this.qtd = qtd;
@@ -61,7 +64,6 @@ function criarItem(){
 	var beerId = a.options[a.selectedIndex].value;
 	var beerName = a.options[a.selectedIndex].text;
 	var qtd = document.getElementById('qtd-create').value;
-	var value = document.getElementById('value-create').value;
 	var erros = '';
 	if(beerId=='' || qtd == ''){
 		if(beerId==''){
@@ -73,7 +75,8 @@ function criarItem(){
 		alert(erros);
 		return;
 	}
-	item = new Item(items.length, beerId, beerName, qtd, price, value);
+	var value = document.getElementById('value-create').value;
+	item = new Item(0, items.length, 0, 0, beerId, beerName, qtd, price, value);
 	items.push(item);
 	addRow("table-items-"+contexto);
 	limparCamposItemForm('create');
@@ -101,7 +104,7 @@ function editarItem(){
 		alert(erros);
 		return;
 	}
-	item = new Item(id, beerId, beerName, qtd, price, value);
+	item = new Item(0, id, order, 0, beerId, beerName, qtd, price, value);
 	items[order]=item;
 	updateRow("table-items-"+contexto,order);
 	limparCamposItemForm('edit');
@@ -185,7 +188,7 @@ function loadItemsByOrderId(idOrder){
 					items[order]=itemsEdit[order];
 					addRow("table-items-"+contexto);
 				}
-			return items;
+				return items;
 			}
 	}
 	xmlhttp.open("GET","/loadItemsByOrderId?idOrder="+idOrder,true);

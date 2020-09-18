@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	mdl "beerwh/models"
-	route "beerwh/routes"
-	sec "beerwh/security"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	mdl "virtus/models"
+	route "virtus/routes"
+	sec "virtus/security"
 )
 
 func CreateBeerHandler(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +85,9 @@ func ListBeersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var page mdl.PageBeers
 	page.Beers = beers
+	page.AppName = mdl.AppName
 	page.Title = "Cervejas"
+	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 	var tmpl = template.Must(template.ParseGlob("tiles/beers/*"))
 	tmpl.ParseGlob("tiles/*")
 	tmpl.ExecuteTemplate(w, "Main-Beers", page)

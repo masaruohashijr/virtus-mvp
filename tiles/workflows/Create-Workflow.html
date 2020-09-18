@@ -2,7 +2,7 @@
 <!-- Create Workflow -->
 <div class="w3-container">
     <div id="create-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Criar novo workflow</h2>
@@ -11,8 +11,46 @@
             </div>
 
             <form class="w3-container" action="/createWorkflow" method="post">
+				<input type="hidden" name="Id" id="WorkflowIdForInsert" value="0">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Name" value="">
+				<br>
+                <label class="w3-label">Entidade no Sistema</label>
+	            <select size="3" class="w3-input" name="EntityTypeForInsert" id="entity-type-create" style="width:100%">
+	                <option value="order">Pedido</option>
+	                <option value="user">Usuário</option>
+	                <option value="beer">Cerveja</option>
+	            </select>
+				<br>
+		        <header class="w3-container w3-center w3-teal">
+		            <div class="w3-row">
+		                <div class="w3-half" style="text-align: center;z-index:0">
+		                    <h4 class="w3-right">Atividades</h4>
+		                </div>
+		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
+		                    <div class="w3-right">
+		                        <a href="#" onclick="contexto='insert';document.getElementById('create-activity-form').style.display='block'">
+		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+		                        </a>
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-activities-insert">
+		            <thead>
+		            <tr>
+		                <th>Ação</th>
+		                <th>Status Origem</th>
+		                <th>Status Destino</th>
+		                <th>Inicia Em</th>
+		                <th>Termina Em</th>
+		                <th>Papéis</th>
+						<th>Ações</th>
+		            </tr>
+		            </thead>
+		            <tbody>
+		            </tbody>
+		        </table>
                 <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
             </form>
         </div>

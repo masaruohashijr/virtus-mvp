@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	mdl "beerwh/models"
-	route "beerwh/routes"
-	sec "beerwh/security"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	mdl "virtus/models"
+	route "virtus/routes"
+	sec "virtus/security"
 )
 
 func CreateStatusHandler(w http.ResponseWriter, r *http.Request) {
@@ -56,10 +56,10 @@ func DeleteStatusHandler(w http.ResponseWriter, r *http.Request) {
 		id := r.FormValue("Id")
 		sqlStatement := "DELETE FROM status WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
+		_, err = deleteForm.Exec(id)
 		if err != nil {
 			panic(err.Error())
 		}
-		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
 	}
@@ -83,7 +83,9 @@ func ListStatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var page mdl.PageStatus
 	page.Status = status_array
+	page.AppName = mdl.AppName
 	page.Title = "Status"
+	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 	var tmpl = template.Must(template.ParseGlob("tiles/status/*"))
 	tmpl.ParseGlob("tiles/*")
 	tmpl.ExecuteTemplate(w, "Main-Status", page)

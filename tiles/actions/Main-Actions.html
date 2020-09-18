@@ -2,10 +2,10 @@
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
-{{ template "Menu" }}
+{{ template "Menu" . }}
 {{ template "Delete-Action" }}
-{{ template "Edit-Action" }}
-{{ template "Create-Action" }}
+{{ template "Edit-Action" . }}
+{{ template "Create-Action" . }}
 {{ template "List-Actions" . }}
 </body>
 </html>

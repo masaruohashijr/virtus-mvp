@@ -1,14 +1,56 @@
 {{define "List-Workflows"}}
 <!-- List Workflows -->
 <div id="main" class="w3-row-padding">
-		{{ template "Table-Header" .Title }}
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				<div style="text-align: center;margin: auto;position:absolute;width:100%;z-index:0">
+				    <h3>{{.Title}}</h3>
+				</div>
+				<div style="margin-top: 10px;text-align: right;z-index:1">
+					{{$allowed := (call .LoggedUser.HasPermission "createWorkflow")}}
+					{{if $allowed}}
+					    <a href="#" onclick="setTime();document.getElementById('create-form').style.display='block'">
+							<i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+					    </a>
+					{{end}}
+				    <a href="/logout">
+						<i class="icon ion-log-out w3-xxlarge hoverbtn"></i>
+				    </a>
+				</div>
+		    </div>
+		</header>
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 10px;text-align: right;z-index:1">
+			        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" style="background-color:#004DAB;width:100%">
+			            <tr>
+			                <td >Inspetor</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Supervisor</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Gerente</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Comitê</td>
+			                <td class="w3-border w3-bordered w3-hoverable">Administrador</td>
+			            </tr>
+			        </table>
+			    </div>
+		    </div>
+		</header>
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
             <thead>
             <tr>
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Nome</th>
+                <th>Entidade</th>
+                <th>Inicia em</th>
+                <th>Termina em</th>
+				{{if $allowed}}
 				<th>Ações</th>
+				{{end}}
             </tr>
             </thead>
             <tbody>
@@ -17,10 +59,15 @@
                 <td>#{{$workflow.Order}}</td>
                 <td>{{$workflow.Id}}</td>
                 <td>{{$workflow.Name}}</td>
+                <td>{{$workflow.EntityType}}</td>
+                <td>{{$workflow.StartAt}}</td>
+                <td>{{$workflow.EndAt}}</td>
+				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updateworkflow(this);">Editar</button>
+                    <button class="w3-btn w3-teal" style="margin-right:10px" onclick="contexto='edit';updateworkflow(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteworkflow(this)">Apagar</button>
                 </td>
+				{{end}}
             </tr>
             {{end}}
             </tbody>
