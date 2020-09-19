@@ -18,7 +18,7 @@ var CookieName = "virtus"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	sec.IsAuthenticated(w, r)
-	http.Redirect(w, r, route.BeersRoute, 200)
+	http.Redirect(w, r, route.OrdersRoute, 200)
 }
 
 var store = sessions.NewCookieStore([]byte("vindixit123581321"))
@@ -62,6 +62,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Abrindo o Cookie
 	savedUser := GetUserInCookie(w, r)
 	log.Println("MAIN Saved User is " + savedUser.Username)
+	Papel
+	listOrdersByStartStatus
 	http.Redirect(w, r, route.OrdersRoute, 301)
 }
 
