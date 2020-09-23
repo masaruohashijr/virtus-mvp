@@ -25,21 +25,21 @@ func ListItemsHandler(idOrder string) []mdl.Item {
 	var items []mdl.Item
 	var item mdl.Item
 	for rows.Next() {
-		rows.Scan(&item.Id, &item.IdOrder, &item.BeerId, &item.BeerName, &item.Qtt, &item.Price, &item.ItemValue)
+		rows.Scan(&item.Id, &item.Qtt, &item.Price, &item.ItemValue)
 		items = append(items, item)
 		log.Println(items)
 	}
 	return items
 }
 
-func DeleteItemsByOrderHandler(orderId string) {
-	sqlStatement := "DELETE FROM Items WHERE order_id=$1"
+func DeleteItemsByElementoHandler(elementoId string) {
+	sqlStatement := "DELETE FROM Items WHERE elemento_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
-	deleteForm.Exec(orderId)
-	log.Println("DELETE Items in Order Id: " + orderId)
+	deleteForm.Exec(elementoId)
+	log.Println("DELETE Items in Order Id: " + elementoId)
 }
 
 func UpdateItemsHandler(itemsPage []mdl.Item, itemsDB []mdl.Item) {
@@ -60,8 +60,6 @@ func UpdateItemsHandler(itemsPage []mdl.Item, itemsDB []mdl.Item) {
 func hasSomeFieldChanged(itemPage mdl.Item, itemDB mdl.Item) bool {
 	if itemPage.Qtt != itemDB.Qtt {
 		return true
-	} else if itemPage.BeerId != itemDB.BeerId {
-		return true
 	} else if itemPage.Price != itemDB.Price {
 		return true
 	} else if itemPage.ItemValue != itemDB.ItemValue {
@@ -76,12 +74,11 @@ func updateItemHandler(i mdl.Item, itemDB mdl.Item) {
 		"beer_id=$1, price=$2, quantity=$3, " +
 		"item_value=$4 WHERE id=$5"
 	updtForm, _ := Db.Prepare(sqlStatement)
-	log.Println(i.Beer)
 	log.Println(i.Price)
 	log.Println(i.Qtt)
 	log.Println(i.ItemValue)
 	log.Println(i.Id)
-	_, err := updtForm.Exec(i.Beer, i.Price, i.Qtt, i.ItemValue, i.Id)
+	_, err := updtForm.Exec(i.Price, i.Qtt, i.ItemValue, i.Id)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -8,15 +8,11 @@
 	<br>
   <a href="javascript:void(0)" class="closebtn" onclick="navGadget()">&times;</a>
   <a href="#">Sobre</a>
+  {{if (call .LoggedUser.HasPermission "listElementos")}}
   <a href="/elementos">Elementos</a>
-  {{if (call .LoggedUser.HasPermission "listOrders")}}
-  <a href="/orders">Pedidos</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listUsers")}}
   <a href="/users">Usuários</a>
-  {{end}}
-  {{if (call .LoggedUser.HasPermission "listBeers")}}
-  <a href="/beers">Cervejas</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listRoles")}}
   <a href="/roles">Papéis</a>

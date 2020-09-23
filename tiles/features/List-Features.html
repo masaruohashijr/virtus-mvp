@@ -12,7 +12,7 @@
 				    <h3>{{.Title}}</h3>
 				</div>
 				<div style="margin-top: 10px;text-align: right;z-index:1">
-					{{$allowed := (call .LoggedUser.HasPermission "createAction")}}
+					{{$allowed := (call .LoggedUser.HasPermission "createFeature")}}
 					{{if $allowed}}
 					    <a href="#" onclick="setTime();document.getElementById('create-form').style.display='block'">
 							<i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>

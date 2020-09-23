@@ -36,6 +36,7 @@ func main() {
 	dpk.Initialize()
 	http.HandleFunc("/", hd.IndexHandler)
 	http.HandleFunc("/login", hd.LoginHandler)
+	http.HandleFunc("/logout", hd.LogoutHandler)
 	// ----------------- WORKFLOWS
 	http.HandleFunc(route.WorkflowsRoute, hd.ListWorkflowsHandler)
 	http.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler)
@@ -61,23 +62,17 @@ func main() {
 	http.HandleFunc("/createRole", hd.CreateRoleHandler)
 	http.HandleFunc("/updateRole", hd.UpdateRoleHandler)
 	http.HandleFunc("/deleteRole", hd.DeleteRoleHandler)
-	// ----------------- BEERS
-	//	http.HandleFunc(route.BeersRoute, hd.ListBeersHandler)
-	//	http.HandleFunc("/createBeer", hd.CreateBeerHandler)
-	//	http.HandleFunc("/updateBeer", hd.UpdateBeerHandler)
-	//	http.HandleFunc("/deleteBeer", hd.DeleteBeerHandler)
 	// ----------------- USERS
 	http.HandleFunc(route.UsersRoute, hd.ListUsersHandler)
 	http.HandleFunc("/createUser", hd.CreateUserHandler)
 	http.HandleFunc("/updateUser", hd.UpdateUserHandler)
 	http.HandleFunc("/deleteUser", hd.DeleteUserHandler)
-	// ----------------- ORDERS
-	http.HandleFunc(route.OrdersRoute, hd.ListOrdersHandler)
-	http.HandleFunc("/createOrder", hd.CreateOrderHandler)
-	http.HandleFunc("/updateOrder", hd.UpdateOrderHandler)
-	http.HandleFunc("/deleteOrder", hd.DeleteOrderHandler)
+	// ----------------- ELEMENTOS
+	http.HandleFunc(route.ElementosRoute, hd.ListElementosHandler)
+	http.HandleFunc("/createElemento", hd.CreateElementoHandler)
+	http.HandleFunc("/updateElemento", hd.UpdateElementoHandler)
+	http.HandleFunc("/deleteElemento", hd.DeleteElementoHandler)
 	// ----------------- ITEMS
-	http.HandleFunc("/loadItemsByOrderId", hd.LoadItemsByOrderId)
 	http.HandleFunc("/loadFeaturesByRoleId", hd.LoadFeaturesByRoleId)
 	http.HandleFunc("/loadRolesByActionId", hd.LoadRolesByActionId)
 	http.HandleFunc("/loadActivitiesByWorkflowId", hd.LoadActivitiesByWorkflowId)

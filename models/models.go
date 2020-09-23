@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/lib/pq"
-	"time"
 )
 
 var AppName = "Virtus"
@@ -73,39 +72,22 @@ type Status struct {
 	Stereotype string `json:"stereotype"`
 }
 
-type Beer struct {
-	Order int
-	Id    int64   `json:"id"`
-	Name  string  `json:"name"`
-	Qtd   int     `json:"qtd"`
-	Price float64 `json:"price"`
-}
-
 type Item struct {
-	Order     int     `json:"order"`
-	Id        int64   `json:"id"`
-	IdOrder   int64   `json:"orderId"`
-	Beer      string  `json:"beer"`
-	BeerId    int64   `json:"beerId"`
-	BeerName  string  `json:"beerName"`
-	Qtt       float64 `json:"qtd"`
-	Price     float64 `json:"price"`
-	ItemValue float64 `json:"value"`
+	Ordem      int     `json:"ordem"`
+	Id         int64   `json:"id"`
+	IdElemento int64   `json:"elementoId"`
+	Qtt        float64 `json:"qtd"`
+	Price      float64 `json:"price"`
+	ItemValue  float64 `json:"value"`
 }
 
-type Order struct {
-	Order            int
-	Id               int64     `json:"id"`
-	UserId           int64     `json:"clientId"`
-	UserName         string    `json:"clientName`
-	OrderedAt        time.Time `json:"orderedAt`
-	TakeOutAt        time.Time `json:"endAt"`
-	COrderedDateTime string    `json:"corderedDateTime`
-	CTakeOutDateTime string    `json:"ctakeOutDateTime`
-	COrderedAt       string    `json:"corderedAt`
-	CTakeOutAt       string    `json:"ctakeOutAt`
-	StatusId         int64     `json:"statusId`
-	CStatus          string    `json:"cStatus`
+type Elemento struct {
+	Order    int
+	Id       int64  `json:"id"`
+	Titulo   string `json:"titulo`
+	AuthorId int64  `json:"authorId"`
+	StatusId int64  `json:"statusId`
+	CStatus  string `json:"cStatus`
 }
 
 type NullTime struct {
@@ -131,25 +113,11 @@ type User struct {
 	Selected bool      `json:"selected"`
 }
 
-type Measure struct {
-	Order int
-	Id    int64  `json:"id"`
-	Name  string `json:"name"`
-}
-
-type PageMeasures struct {
-	AppName    string
-	Title      string
-	Measures   []Measure
-	LoggedUser LoggedUser
-}
-
-type PageOrders struct {
+type PageElementos struct {
 	AppName    string
 	Title      string
 	UserId     int
-	Orders     []Order
-	Beers      []Beer
+	Elementos  []Elemento
 	Users      []User
 	LoggedUser LoggedUser
 }
@@ -159,13 +127,6 @@ type PageUsers struct {
 	Title      string
 	Users      []User
 	Roles      []Role
-	LoggedUser LoggedUser
-}
-
-type PageBeers struct {
-	AppName    string
-	Title      string
-	Beers      []Beer
 	LoggedUser LoggedUser
 }
 

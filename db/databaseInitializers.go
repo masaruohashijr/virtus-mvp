@@ -17,30 +17,28 @@ func Initialize() {
 	createRoleAdmin()
 	createRoleFeatures()
 	createAdmin()
-	createBeer()
 	createPKey()
 	createFKey()
 	createUniqueKey()
 }
 
 func createFeatures() {
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (1, 'Listar Cervejas', 'listBeers')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (2, 'Criar Cerveja', 'createBeer')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (3, 'Listar Workflows', 'listWorkflows')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (4, 'Criar Workflow', 'createWorkflow')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (5, 'Listar Pedidos', 'listOrders')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (6, 'Criar Pedido', 'createOrder')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (7, 'Listar Usuários', 'listUsers')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (8, 'Criar Usuário', 'createUser')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (9, 'Listar Papéis', 'listRoles')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (10, 'Criar Papel', 'createRole')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (11, 'Listar Status', 'listStatus')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (12, 'Criar Status', 'createStatus')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (13, 'Listar Funcionalidades', 'listFeatures')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (14, 'Criar Funcionalidade', 'createFeature')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (15, 'Listar Ações', 'listActions')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (16, 'Criar Ação', 'createAction')")
-	db.Exec("INSERT INTO public.features (id, name, code) VALUES (17, 'Criar Item', 'createItem')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (1, 'Listar Workflows', 'listWorkflows')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (2, 'Criar Workflow', 'createWorkflow')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (3, 'Listar Elementos', 'listElementos')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (4, 'Criar Elemento', 'createElemento')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (5, 'Listar Usuários', 'listUsers')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (6, 'Criar Usuário', 'createUser')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (7, 'Listar Papéis', 'listRoles')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (8, 'Criar Papel', 'createRole')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (9, 'Listar Status', 'listStatus')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (10, 'Criar Status', 'createStatus')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (11, 'Listar Funcionalidades', 'listFeatures')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (12, 'Criar Funcionalidade', 'createFeature')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (13, 'Listar Ações', 'listActions')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (14, 'Criar Ação', 'createAction')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (15, 'Criar Item', 'createItem')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (16, 'Listar Itens', 'listItens')")
 }
 
 func createUniqueKey() {
@@ -48,7 +46,7 @@ func createUniqueKey() {
 		" ADD CONSTRAINT action_status_unique_key UNIQUE (action_id, origin_status_id, destination_status_id)")
 
 	db.Exec(" ALTER TABLE ONLY public.features_roles" +
-		" ADD CONSTRAINT feature_role_unique_key UNIQUE (feature_id, role_id)")
+		" ADD CONSTRAINT feature_role_unique_key UNIQUE (role_id, feature_id)")
 
 	db.Exec(" ALTER TABLE ONLY public.users" +
 		" ADD CONSTRAINT username_unique_key UNIQUE (username)")
@@ -76,10 +74,6 @@ func createFKey() {
 		" REFERENCES public.workflows (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
 		" ON DELETE RESTRICT")
-
-	db.Exec("ALTER TABLE ONLY public.items" +
-		" ADD CONSTRAINT beers_fkey FOREIGN KEY (beer_id)" +
-		" REFERENCES public.beers(id) ON UPDATE RESTRICT ON DELETE RESTRICT")
 
 	db.Exec("ALTER TABLE ONLY public.items" +
 		" ADD CONSTRAINT orders_fkey FOREIGN KEY (order_id)" +
@@ -179,7 +173,6 @@ func createFKey() {
 
 func createPKey() {
 	db.Exec("ALTER TABLE ONLY public.activities ADD CONSTRAINT activities_pkey PRIMARY KEY (id)")
-	db.Exec("ALTER TABLE ONLY public.beers ADD CONSTRAINT beers_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.roles ADD CONSTRAINT roles_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.features ADD CONSTRAINT features_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.items ADD CONSTRAINT items_pkey PRIMARY KEY (id)")
@@ -212,64 +205,56 @@ func createRoleAdmin() {
 }
 
 func createRoleFeatures() {
-	query := " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 1) "
+	query := " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 1) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 2) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 2) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 3) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 3) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 4) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 4) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 5) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 5) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 6) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 6) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 7) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 7) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 8) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 8) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1, 9) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1, 9) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,10) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,10) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,11) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,11) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,12) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,12) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,13) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,13) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,14) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,14) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,15) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,15) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,16) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,16) "
 	//log.Println(query)
 	db.Exec(query)
-	query = " INSERT INTO features_roles (feature_id, role_id) VALUES (1,17) "
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,17) "
 	//log.Println(query)
-	db.Exec(query)
-}
-
-func createBeer() {
-	query := "INSERT INTO beers (id, name, qtd, price)" +
-		" SELECT 1, 'Molson', 100, 100" +
-		" WHERE NOT EXISTS (SELECT name FROM beers WHERE name = 'Molson')"
-	log.Println(query)
 	db.Exec(query)
 }
 
@@ -344,13 +329,6 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
-	// Sequence BEERS_ID_SEQ
-	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.beers_id_seq " +
-		" START WITH 1" +
-		" INCREMENT BY 1" +
-		" NO MINVALUE" +
-		" NO MAXVALUE" +
-		" CACHE 1")
 	// Sequence USERS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.users_id_seq " +
 		" START WITH 2" +
@@ -365,8 +343,8 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
-	// Sequence ORDERS_ID_SEQ
-	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.orders_id_seq " +
+	// Sequence ELEMENTOS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.elementos_id_seq " +
 		" START WITH 1" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
@@ -463,23 +441,36 @@ func createTable() {
 			" mobile character varying(255) NOT NULL," +
 			" role_id integer NOT NULL," +
 			" name character varying(255))")
-	// Table ITEMS
-	db.Exec(
-		" CREATE TABLE IF NOT EXISTS public.items (" +
-			" id integer DEFAULT nextval('public.items_id_seq'::regclass) NOT NULL," +
-			" quantity double precision," +
-			" beer_id integer," +
-			" price double precision," +
-			" item_value double precision," +
-			" order_id integer)")
 
-	// Table ORDERS
+	// Table NOTAS
 	db.Exec(
-		" CREATE TABLE IF NOT EXISTS public.orders (" +
-			" id integer DEFAULT nextval('public.orders_id_seq'::regclass) NOT NULL," +
-			" user_id integer," +
-			" ordered_at timestamp without time zone," +
-			" take_out_at timestamp without time zone, " +
+		" CREATE TABLE IF NOT EXISTS public.notas (" +
+			" id integer DEFAULT nextval('public.notas_id_seq'::regclass) NOT NULL," +
+			" elemento_id integer," +
+			" tipo_nota_id integer," +
+			" nota double precision," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone )")
+
+	// Table ITENS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.itens (" +
+			" id integer DEFAULT nextval('public.itens_id_seq'::regclass) NOT NULL," +
+			" elemento_id integer," +
+			" titulo character varying(255) NOT NULL," +
+			" avaliacao character varying(4000) NOT NULL," +
+			" data_criacao timestamp without time zone," +
+			" author_id integer)")
+
+	// Table ELEMENTOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.elementos (" +
+			" id integer DEFAULT nextval('public.elementos_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
 			" status_id integer)")
 
 	// Table ACTIONS_STATUS

@@ -1,0 +1,12 @@
+{{ define "Main-Elementos" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Elemento" }}
+{{ template "Edit-Elemento" }}
+{{ template "Create-Elemento" }}
+{{ template "List-Elementos" . }}
+</body>
+</html>
+{{end}}

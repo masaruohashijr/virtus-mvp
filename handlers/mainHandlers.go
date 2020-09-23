@@ -15,13 +15,21 @@ import (
 var Db *sql.DB
 
 var CookieName = "virtus"
+var store = sessions.NewCookieStore([]byte("vindixit123581321"))
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	sec.IsAuthenticated(w, r)
-	http.Redirect(w, r, route.OrdersRoute, 200)
+	http.Redirect(w, r, route.ElementosRoute, 200)
 }
 
-var store = sessions.NewCookieStore([]byte("vindixit123581321"))
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Logout Handler")
+	session, _ := store.Get(r, CookieName)
+	delete(session.Values, "user")
+	session.Options.MaxAge = -1
+	_ = session.Save(r, w)
+	http.ServeFile(w, r, "tmpl/login.html")
+}
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -42,7 +50,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("erro do /login")
 		http.Redirect(w, r, "/login", 301)
 	}
-
 	query := "SELECT " +
 		"A.feature_id, B.code FROM features_roles A, features B " +
 		"WHERE A.feature_id = B.id AND A.role_id = $1"
@@ -56,15 +63,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(feature)
 	}
 	user.Features = features
-	sec.Authenticated = true
-
 	AddUserInCookie(w, r, user)
 	// Abrindo o Cookie
 	savedUser := GetUserInCookie(w, r)
 	log.Println("MAIN Saved User is " + savedUser.Username)
-	Papel
-	listOrdersByStartStatus
-	http.Redirect(w, r, route.OrdersRoute, 301)
+	http.Redirect(w, r, route.ElementosRoute, 301)
 }
 
 func GetUserInCookie(w http.ResponseWriter, r *http.Request) mdl.User {

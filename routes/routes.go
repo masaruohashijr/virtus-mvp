@@ -2,7 +2,7 @@ package routes
 
 import ()
 
-var OrdersRoute = "/orders"
+var ElementosRoute = "/elementos"
 var UsersRoute = "/users"
 var BeersRoute = "/beers"
 var RolesRoute = "/roles"
