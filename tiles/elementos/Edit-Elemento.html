@@ -11,9 +11,17 @@
             </div>
 
             <form class="w3-container" action="/updateElemento" method="POST">
-                <input type="hidden" name="Id" id="ElementoIdToUpdate">
+                <input type="hidden" name="Id" id="IdElementoForUpdate">
                 <label class="w3-label">Título</label>
-                <input class="w3-input" type="text" id="ElementoTitulo" name="Titulo" value="">
+                <input class="w3-input" type="text" name="TituloElementoForUpdate" value="">
+                <label class="w3-label">Descrição</label>
+                <input class="w3-input" type="textarea" name="DescricaoElementoForUpdate" value="">
+                <label class="w3-label">Status</label>
+                <input class="w3-input" type="text" name="StatusElementoForUpdate" value="">
+                <label class="w3-label">Data de Criação</label>
+                <input class="w3-input" type="date" name="DataCriacaoElementoForUpdate" value="">
+                <label class="w3-label">Criado Por</label>
+                <input class="w3-input" type="text" name="Autor" value="">
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
             </form>
         </div>

@@ -11,7 +11,6 @@ var db *sql.DB
 func Initialize() {
 	db = hd.Db
 	createSeq()
-	//	createDropTable()
 	createTable()
 	createFeatures()
 	createRoleAdmin()
@@ -39,6 +38,20 @@ func createFeatures() {
 	db.Exec("INSERT INTO public.features (id, name, code) VALUES (14, 'Criar Ação', 'createAction')")
 	db.Exec("INSERT INTO public.features (id, name, code) VALUES (15, 'Criar Item', 'createItem')")
 	db.Exec("INSERT INTO public.features (id, name, code) VALUES (16, 'Listar Itens', 'listItens')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (17, 'Listar Componentes', 'listComponentes')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (18, 'Criar Componente', 'createComponente')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (19, 'Listar Matrizes', 'listMatrizes')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (20, 'Criar Matriz', 'createMatriz')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (21, 'Listar Ciclos', 'listCiclos')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (22, 'Criar Ciclo', 'createCiclo')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (23, 'Listar Entidades', 'listEntidades')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (24, 'Criar Entidade', 'createEntidade')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (25, 'Listar Planos', 'listPlanos')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (26, 'Criar Plano', 'createPlano')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (27, 'Listar Equipes', 'listEquipes')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (28, 'Criar Equipe', 'createEquipe')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (29, 'Listar Carteiras', 'listCarteiras')")
+	db.Exec("INSERT INTO public.features (id, name, code) VALUES (30, 'Criar Carteira', 'createCarteira')")
 }
 
 func createUniqueKey() {
@@ -60,6 +73,119 @@ func createUniqueKey() {
 
 func createFKey() {
 
+	// ELEMENTOS
+	db.Exec("ALTER TABLE ONLY public.elementos" +
+		" ADD CONSTRAINT users_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.elementos" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// COMPONENTES
+	db.Exec("ALTER TABLE ONLY public.componentes" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.componentes" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// MATRIZES
+	db.Exec("ALTER TABLE ONLY public.matrizes" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.matrizes" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// CICLOS
+	db.Exec("ALTER TABLE ONLY public.ciclos" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.ciclos" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// ENTIDADES
+	db.Exec("ALTER TABLE ONLY public.entidades" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.entidades" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// PLANOS
+	db.Exec("ALTER TABLE ONLY public.planos" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.planos" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// EQUIPES
+	db.Exec("ALTER TABLE ONLY public.equipes" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.equipes" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// CARTEIRAS
+	db.Exec("ALTER TABLE ONLY public.carteiras" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.carteiras" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// ACTIVITIES
 	db.Exec("ALTER TABLE public.activities ADD CONSTRAINT action_fkey FOREIGN KEY (action_id)" +
 		" REFERENCES public.actions (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
@@ -74,23 +200,6 @@ func createFKey() {
 		" REFERENCES public.workflows (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
 		" ON DELETE RESTRICT")
-
-	db.Exec("ALTER TABLE ONLY public.items" +
-		" ADD CONSTRAINT orders_fkey FOREIGN KEY (order_id)" +
-		" REFERENCES public.orders(id) ON UPDATE RESTRICT ON DELETE RESTRICT")
-
-	db.Exec("ALTER TABLE ONLY public.orders" +
-		" ADD CONSTRAINT users_fkey FOREIGN KEY (user_id)" +
-		" REFERENCES public.users (id) MATCH SIMPLE" +
-		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
-		" NOT VALID")
-
-	db.Exec("ALTER TABLE ONLY public.orders" +
-		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
-		" REFERENCES public.status (id) MATCH SIMPLE" +
-		" ON UPDATE RESTRICT" +
-		" ON DELETE RESTRICT" +
-		" NOT VALID")
 
 	db.Exec("ALTER TABLE ONLY public.actions " +
 		" ADD CONSTRAINT destination_status_fkey FOREIGN KEY (destination_status_id)" +
@@ -174,9 +283,14 @@ func createFKey() {
 func createPKey() {
 	db.Exec("ALTER TABLE ONLY public.activities ADD CONSTRAINT activities_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.roles ADD CONSTRAINT roles_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.entidades ADD CONSTRAINT entidades_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.planos ADD CONSTRAINT planos_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.ciclos ADD CONSTRAINT ciclos_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.matrizes ADD CONSTRAINT matrizes_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.componentes ADD CONSTRAINT componentes_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.elementos ADD CONSTRAINT elementos_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.features ADD CONSTRAINT features_pkey PRIMARY KEY (id)")
-	db.Exec("ALTER TABLE ONLY public.items ADD CONSTRAINT items_pkey PRIMARY KEY (id)")
-	db.Exec("ALTER TABLE ONLY public.orders ADD CONSTRAINT order_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.itens ADD CONSTRAINT itens_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.users ADD CONSTRAINT users_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.workflows ADD CONSTRAINT workflows_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.status ADD CONSTRAINT status_pkey PRIMARY KEY (id)")
@@ -254,6 +368,45 @@ func createRoleFeatures() {
 	//log.Println(query)
 	db.Exec(query)
 	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,17) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,18) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,19) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,20) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,21) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,22) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,23) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,24) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,25) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,26) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,27) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,28) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,29) "
+	//log.Println(query)
+	db.Exec(query)
+	query = " INSERT INTO features_roles (role_id, feature_id) VALUES (1,30) "
 	//log.Println(query)
 	db.Exec(query)
 }
@@ -336,8 +489,8 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
-	// Sequence ITEMS_ID_SEQ
-	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.items_id_seq " +
+	// Sequence ITENS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.itens_id_seq " +
 		" START WITH 1" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
@@ -350,10 +503,55 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
-}
-
-func createDropTable() {
-	db.Exec(" DROP TABLE public.users")
+	// Sequence COMPONENTES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.componentes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence MATRIZES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.matrizes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence CICLOS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.ciclos_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence ENTIDADES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.entidades_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence PLANOS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.planos_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence EQUIPES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.equipes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence CARTEIRAS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.carteiras_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
 }
 
 func createTable() {
@@ -458,19 +656,10 @@ func createTable() {
 			" id integer DEFAULT nextval('public.itens_id_seq'::regclass) NOT NULL," +
 			" elemento_id integer," +
 			" titulo character varying(255) NOT NULL," +
-			" avaliacao character varying(4000) NOT NULL," +
+			" descricao character varying(4000)," +
+			" avaliacao character varying(4000)," +
 			" data_criacao timestamp without time zone," +
-			" author_id integer)")
-
-	// Table ELEMENTOS
-	db.Exec(
-		" CREATE TABLE IF NOT EXISTS public.elementos (" +
-			" id integer DEFAULT nextval('public.elementos_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
-			" tipo_media character varying(20)," +
-			" peso integer," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
 			" status_id integer)")
 
 	// Table ACTIONS_STATUS
@@ -480,4 +669,92 @@ func createTable() {
 			" action_id integer," +
 			" origin_status_id integer," +
 			" destination_status_id integer)")
+
+	// Table ELEMENTOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.elementos (" +
+			" id integer DEFAULT nextval('public.elementos_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" descricao character varying(4000)," +
+			" peso integer DEFAULT 1 NOT NULL," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
+
+	// Table COMPONENTES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.componentes (" +
+			" id integer DEFAULT nextval('public.componentes_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
+
+	// Table MATRIZES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.matrizes (" +
+			" id integer DEFAULT nextval('public.matrizes_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
+
+	// Table CICLOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.ciclos (" +
+			" id integer DEFAULT nextval('public.ciclos_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
+
+	// Table ENTIDADES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.entidades (" +
+			" id integer DEFAULT nextval('public.entidades_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
+
+	// Table PLANOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.planos (" +
+			" id integer DEFAULT nextval('public.planos_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
+
+	// Table EQUIPES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.equipes (" +
+			" id integer DEFAULT nextval('public.equipes_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
+
+	// Table CARTEIRAS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.carteiras (" +
+			" id integer DEFAULT nextval('public.carteiras_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" tipo_media character varying(20)," +
+			" peso integer," +
+			" author_id integer," +
+			" data_criacao timestamp without time zone," +
+			" status_id integer)")
 }

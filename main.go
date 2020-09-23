@@ -67,12 +67,48 @@ func main() {
 	http.HandleFunc("/createUser", hd.CreateUserHandler)
 	http.HandleFunc("/updateUser", hd.UpdateUserHandler)
 	http.HandleFunc("/deleteUser", hd.DeleteUserHandler)
+	// ----------------- CARTEIRAS
+	http.HandleFunc(route.CarteirasRoute, hd.ListCarteirasHandler)
+	http.HandleFunc("/createCarteira", hd.CreateCarteiraHandler)
+	http.HandleFunc("/updateCarteira", hd.UpdateCarteiraHandler)
+	http.HandleFunc("/deleteCarteira", hd.DeleteCarteiraHandler)
+	// ----------------- EQUIPES
+	http.HandleFunc(route.EquipesRoute, hd.ListEquipesHandler)
+	http.HandleFunc("/createEquipe", hd.CreateEquipeHandler)
+	http.HandleFunc("/updateEquipe", hd.UpdateEquipeHandler)
+	http.HandleFunc("/deleteEquipe", hd.DeleteEquipeHandler)
+	// ----------------- ENTIDADES
+	http.HandleFunc(route.EntidadesRoute, hd.ListEntidadesHandler)
+	http.HandleFunc("/createEntidade", hd.CreateEntidadeHandler)
+	http.HandleFunc("/updateEntidade", hd.UpdateEntidadeHandler)
+	http.HandleFunc("/deleteEntidade", hd.DeleteEntidadeHandler)
+	// ----------------- PLANOS
+	http.HandleFunc(route.PlanosRoute, hd.ListPlanosHandler)
+	http.HandleFunc("/createPlano", hd.CreatePlanoHandler)
+	http.HandleFunc("/updatePlano", hd.UpdatePlanoHandler)
+	http.HandleFunc("/deletePlano", hd.DeletePlanoHandler)
+	// ----------------- CICLOS
+	http.HandleFunc(route.CiclosRoute, hd.ListCiclosHandler)
+	http.HandleFunc("/createCiclo", hd.CreateCicloHandler)
+	http.HandleFunc("/updateCiclo", hd.UpdateCicloHandler)
+	http.HandleFunc("/deleteCiclo", hd.DeleteCicloHandler)
+	// ----------------- MATRIZES
+	http.HandleFunc(route.MatrizesRoute, hd.ListMatrizesHandler)
+	http.HandleFunc("/createMatriz", hd.CreateMatrizHandler)
+	http.HandleFunc("/updateMatriz", hd.UpdateMatrizHandler)
+	http.HandleFunc("/deleteMatriz", hd.DeleteMatrizHandler)
+	// ----------------- COMPONENTES
+	http.HandleFunc(route.ComponentesRoute, hd.ListComponentesHandler)
+	http.HandleFunc("/createComponente", hd.CreateComponenteHandler)
+	http.HandleFunc("/updateComponente", hd.UpdateComponenteHandler)
+	http.HandleFunc("/deleteComponente", hd.DeleteComponenteHandler)
 	// ----------------- ELEMENTOS
 	http.HandleFunc(route.ElementosRoute, hd.ListElementosHandler)
 	http.HandleFunc("/createElemento", hd.CreateElementoHandler)
 	http.HandleFunc("/updateElemento", hd.UpdateElementoHandler)
 	http.HandleFunc("/deleteElemento", hd.DeleteElementoHandler)
 	// ----------------- ITEMS
+	http.HandleFunc("/loadItensByElementoId", hd.LoadItensByElementoId)
 	http.HandleFunc("/loadFeaturesByRoleId", hd.LoadFeaturesByRoleId)
 	http.HandleFunc("/loadRolesByActionId", hd.LoadRolesByActionId)
 	http.HandleFunc("/loadActivitiesByWorkflowId", hd.LoadActivitiesByWorkflowId)

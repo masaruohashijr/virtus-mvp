@@ -1,0 +1,12 @@
+{{ define "Main-Equipes" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Equipe" }}
+{{ template "Edit-Equipe" }}
+{{ template "Create-Equipe" }}
+{{ template "List-Equipes" . }}
+</body>
+</html>
+{{end}}

@@ -73,15 +73,87 @@ type Status struct {
 }
 
 type Item struct {
-	Ordem      int     `json:"ordem"`
-	Id         int64   `json:"id"`
-	IdElemento int64   `json:"elementoId"`
-	Qtt        float64 `json:"qtd"`
-	Price      float64 `json:"price"`
-	ItemValue  float64 `json:"value"`
+	Ordem        int    `json:"ordem"`
+	Id           int64  `json:"id"`
+	ElementoId   int64  `json:"elementoid"`
+	Titulo       string `json:"titulo"`
+	Descricao    string `json:"descricao"`
+	Avaliacao    string `json:"avaliacao"`
+	AuthorId     int64  `json:"authorId"`
+	AuthorName   string `json:"authorName"`
+	CDataCriacao string `json:"cDataCriacao`
+	StatusId     int64  `json:"statusId`
+	CStatus      string `json:"cStatus`
 }
 
 type Elemento struct {
+	Order        int
+	Id           int64  `json:"id"`
+	Titulo       string `json:"titulo`
+	Descricao    string `json:"descricao`
+	AuthorId     int64  `json:"authorId"`
+	AuthorName   string `json:"authorName"`
+	Peso         int    `json:"weight"`
+	CDataCriacao string `json:"cDataCriacao`
+	StatusId     int64  `json:"statusId`
+	CStatus      string `json:"cStatus`
+}
+
+type Componente struct {
+	Order    int
+	Id       int64  `json:"id"`
+	Titulo   string `json:"titulo`
+	AuthorId int64  `json:"authorId"`
+	StatusId int64  `json:"statusId`
+	CStatus  string `json:"cStatus`
+}
+
+type Matriz struct {
+	Order    int
+	Id       int64  `json:"id"`
+	Titulo   string `json:"titulo`
+	AuthorId int64  `json:"authorId"`
+	StatusId int64  `json:"statusId`
+	CStatus  string `json:"cStatus`
+}
+
+type Ciclo struct {
+	Order    int
+	Id       int64  `json:"id"`
+	Titulo   string `json:"titulo`
+	AuthorId int64  `json:"authorId"`
+	StatusId int64  `json:"statusId`
+	CStatus  string `json:"cStatus`
+}
+
+type Entidade struct {
+	Order    int
+	Id       int64  `json:"id"`
+	Titulo   string `json:"titulo`
+	AuthorId int64  `json:"authorId"`
+	StatusId int64  `json:"statusId`
+	CStatus  string `json:"cStatus`
+}
+
+type Plano struct {
+	Order    int
+	Id       int64  `json:"id"`
+	Titulo   string `json:"titulo`
+	AuthorId int64  `json:"authorId"`
+	StatusId int64  `json:"statusId`
+	CStatus  string `json:"cStatus`
+}
+
+type Carteira struct {
+	Order    int
+	Id       int64  `json:"id"`
+	Titulo   string `json:"titulo`
+	AuthorId int64  `json:"authorId"`
+	StatusId int64  `json:"statusId`
+	CStatus  string `json:"cStatus`
+}
+
+type Equipe struct {
 	Order    int
 	Id       int64  `json:"id"`
 	Titulo   string `json:"titulo`
@@ -118,6 +190,68 @@ type PageElementos struct {
 	Title      string
 	UserId     int
 	Elementos  []Elemento
+	Users      []User
+	LoggedUser LoggedUser
+}
+
+type PageComponentes struct {
+	AppName     string
+	Title       string
+	UserId      int
+	Componentes []Componente
+	Users       []User
+	LoggedUser  LoggedUser
+}
+
+type PageMatrizes struct {
+	AppName    string
+	Title      string
+	UserId     int
+	Matrizes   []Matriz
+	Users      []User
+	LoggedUser LoggedUser
+}
+
+type PageCiclos struct {
+	AppName    string
+	Title      string
+	UserId     int
+	Ciclos     []Ciclo
+	Users      []User
+	LoggedUser LoggedUser
+}
+
+type PageEntidades struct {
+	AppName    string
+	Title      string
+	UserId     int
+	Entidades  []Entidade
+	Users      []User
+	LoggedUser LoggedUser
+}
+
+type PagePlanos struct {
+	AppName    string
+	Title      string
+	UserId     int
+	Planos     []Plano
+	Users      []User
+	LoggedUser LoggedUser
+}
+
+type PageEquipes struct {
+	AppName    string
+	Title      string
+	UserId     int
+	Equipes    []Equipe
+	Users      []User
+	LoggedUser LoggedUser
+}
+type PageCarteiras struct {
+	AppName    string
+	Title      string
+	UserId     int
+	Carteiras  []Carteira
 	Users      []User
 	LoggedUser LoggedUser
 }

@@ -12,9 +12,9 @@
 				    <h3>{{.Title}}</h3>
 				</div>
 				<div style="margin-top: 10px;text-align: right;z-index:1">
-					{{$allowed := (call .LoggedUser.HasPermission "createAction")}}
+					{{$allowed := (call .LoggedUser.HasPermission "createElemento")}}
 					{{if $allowed}}
-					    <a href="#" onclick="setTime();document.getElementById('create-form').style.display='block'">
+					    <a href="#" onclick="document.getElementById('create-form').style.display='block'">
 							<i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
 					    </a>
 					{{end}}
@@ -30,6 +30,10 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Título</th>
+                <th>Descrição</th>
+                <th>Autor</th>
+                <th>Data de Criação</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -41,6 +45,10 @@
                 <td>#{{$elemento.Order}}</td>
                 <td>{{$elemento.Id}}</td>
                 <td>{{$elemento.Titulo}}</td>
+                <td>{{$elemento.Descricao}}</td>
+                <td>{{$elemento.AuthorName}}</td>
+                <td>{{$elemento.CDataCriacao}}</td>
+                <td>{{$elemento.CStatus}}</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="updateElemento(this);">Editar</button>

@@ -94,10 +94,10 @@ func BuildLoggedUser(user mdl.User) mdl.LoggedUser {
 	loggedUser.HasPermission = func(feature string) bool {
 		for _, value := range user.Features {
 			if value.Code == feature {
-				// log.Println("PASSOU: " + feature)
 				return true
 			}
 		}
+		log.Println("NÃO PASSOU: " + feature)
 		return false
 	}
 	return loggedUser

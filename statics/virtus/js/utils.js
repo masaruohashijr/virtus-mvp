@@ -49,16 +49,15 @@ function resetFields(form){
 	document.getElementById('kcal-'+form).value='';
 }
 
-function setTime(){
-	if(document.getElementById("OrderDateForInsert")){
+function setTimeNow(nomeCampo){
+	campo = document.getElementsByName(nomeCampo);
+	if(campo){
 		var now = new Date();
 		var tomorrow = new Date();
 		tomorrow.setDate(tomorrow.getDate() + 1);
-		document.getElementById("OrderDateForInsert").value= now.format('yyyy-mm-dd');
-		document.getElementById("TakeOutDateForInsert").value= tomorrow.format('yyyy-mm-dd');
+		campo.value= now.format('yyyy-mm-dd');
 		dateFormat.masks.hammerTime = 'HH:MM';
 		var vl = now.format("hammerTime");
-		document.getElementById("OrderedAtForInsert").value= vl;
-		document.getElementById("TakeOutAtForInsert").value= vl;
+		campo.value= vl;
 	}
 }

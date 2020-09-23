@@ -1,0 +1,12 @@
+{{ define "Main-Componentes" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Componente" }}
+{{ template "Edit-Componente" }}
+{{ template "Create-Componente" }}
+{{ template "List-Componentes" . }}
+</body>
+</html>
+{{end}}

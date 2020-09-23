@@ -1,0 +1,12 @@
+{{ define "Main-Entidades" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Entidade" }}
+{{ template "Edit-Entidade" }}
+{{ template "Create-Entidade" }}
+{{ template "List-Entidades" . }}
+</body>
+</html>
+{{end}}
