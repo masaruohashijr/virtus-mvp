@@ -10,17 +10,19 @@
                       onclick="document.getElementById('edit-item-form').style.display='none'">&times;</span>
             </div>
             <form class="w3-container">
+				<input type="hidden" id="id-edit" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="order-edit" value="" readonly="readonly" disabled="disabled">
                 <label class="w3-label">Título</label>
-				<input class="w3-input" type="text" name="TituloElementoForUpdate" value="">
+				<input class="w3-input" type="text" id="TituloElementoForUpdate" name="TituloElementoForUpdate" value="">
                 <label class="w3-label">Descrição</label>
-				<textarea rows="10" class="w3-input" type="text" name="DescricaoElementoForUpdate" value=""></textarea>
+				<textarea rows="4" class="w3-input" type="text" id="DescricaoElementoForUpdate" name="DescricaoElementoForUpdate" value=""></textarea>
                 <label class="w3-label">Avaliação</label>
-				<textarea rows="10" class="w3-input" type="text" name="AvaliacaoElementoForUpdate" value=""></textarea>
+				<textarea rows="4" class="w3-input" type="text" id="AvaliacaoElementoForUpdate" name="AvaliacaoElementoForUpdate" value=""></textarea>
 				<br>	
                 <button 
 					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					type="button"
-					onclick="criarItem();"
+					onclick="updateItem();"
 					>Criar
 				</button>
             </form>

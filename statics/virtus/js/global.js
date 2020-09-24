@@ -1,6 +1,6 @@
 var opened = false;
 var item;
-var items = [];
+var itens = [];
 var activity;
 var activities = [];
 var contexto;

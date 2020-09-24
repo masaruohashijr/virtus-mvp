@@ -17,23 +17,18 @@ class Item {
 }
 
 function criarItem(){
-	var elementoId = document.getElementById('elementoId-create').value;
-	var titulo = document.getElementById('titulo-create').value;
-	var descricao = document.getElementById('descricao-create').value;
-	var avaliacao = document.getElementById('avaliacao-create').value;
-	var autorId = document.getElementById('autorId-create').value;
-	var autorNome = document.getElementById('autorNome-create').value;
-	var dataCriacao = document.getElementById('dataCriacao-create').value;
-	var status = document.getElementById('status-create').value;
+	var titulo = document.getElementById('TituloElementoForInsert').value;
+	var descricao = document.getElementById('DescricaoElementoForInsert').value;
+	var avaliacao = document.getElementById('AvaliacaoElementoForInsert').value;
 	var erros = '';
 	if(titulo==''){
 		erros += 'Falta preencher o título.\n';
 		alert(erros);
 		return;
 	}
-	item = new Item(0, items.length, elementoId, titulo, descricao, avaliacao, autorId, autorNome, dataCriacao, status);
-	items.push(item);
-	addRow("table-items-create");
+	item = new Item(0, itens.length, 0, titulo, descricao, avaliacao, '', '', '', '');
+	itens.push(item);
+	addRow("table-itens-create");
 	limparCamposItemForm('create');
 	document.getElementById('create-item-form').style.display='none';
 }
@@ -62,16 +57,16 @@ function editarItem(){
 	document.getElementById('edit-item-form').style.display='none';
 }
 
-function limparCamposItemForm(form){
-	document.getElementById('order-'+form).value;
-	document.getElementById('elementoId-'+form).value;
-	document.getElementById('titulo-'+form).value;
-	document.getElementById('descricao-'+form).value;
-	document.getElementById('avaliacao-'+form).value;
-	document.getElementById('autorId-'+form).value;
-	document.getElementById('autorNome-'+form).value;
-	document.getElementById('dataCriacao-'+form).value;
-	document.getElementById('status-'+form).value;
+function limparCamposItemForm(tipoForm){
+	if(tipoForm == 'create'){
+		document.getElementById('TituloElementoForInsert').value;
+		document.getElementById('DescricaoElementoForInsert').value;
+		document.getElementById('AvaliacaoElementoForInsert').value;
+	} else {
+		document.getElementById('TituloElementoForUpdate').value;
+		document.getElementById('DescricaoElementoForUpdate').value;
+		document.getElementById('AvaliacaoElementoForUpdate').value;
+	}
 }
 
 
@@ -81,51 +76,36 @@ function showDeleteItemForm(e){
 	item_tobe_deleted = e;
 }
 
-function deleteitem() {
+function deleteItem() {
 	var order = item_tobe_deleted.parentNode.parentNode.childNodes[0].childNodes[0].value;
-	var newItems = [];
-	for(i=0;i<items.length;i++){
+	var newItens = [];
+	for(i=0;i<itens.length;i++){
 		if(i != order){
-			newItems.push(items[i]);
+			newItens.push(itens[i]);
 		}
 	}
-	items = newItems;
+	itens = newItens;
 	item_tobe_deleted.parentNode.parentNode.innerHTML = '';
 	var deleteItemForm = document.getElementById('delete-item-form');
 	deleteItemForm.style.display = 'none';
 }
 
 
-function updateitem(e) {
+function updateItem(e) {
 	var editItemForm = document.getElementById('edit-item-form');
 	editItemForm.style.display = 'block';
-	var id = e.parentNode.parentNode.childNodes[0].childNodes[1].value;
-	var beerId = e.parentNode.parentNode.childNodes[0].childNodes[2].value;
+	
 	var order = e.parentNode.parentNode.childNodes[0].childNodes[0].value;
-	var qtd = e.parentNode.parentNode.childNodes[1].innerText;
-	var price = e.parentNode.parentNode.childNodes[2].innerText;
-	var value = e.parentNode.parentNode.childNodes[3].innerText;
+	var id = e.parentNode.parentNode.childNodes[0].childNodes[1].value;
+	var titulo = e.parentNode.parentNode.childNodes[0].innerText;
+	var descricao = e.parentNode.parentNode.childNodes[1].innerText;
+	var avaliacao = e.parentNode.parentNode.childNodes[1].childNodes[0].value;
 	// Atribuindo os valores de edit-item-form
 	document.getElementById('id-edit').value=id;
-	var options = document.getElementById('beer-edit').options;
-	for(i=0;i<options.length;i++){
-		if(options[i].value == beerId){
-			options[i].selected = true;
-			break;
-		}	
-	}
-	for(i=0;i<ar.length;i++){
-		var reg = ar[i].split('#');
-		if(reg[0]==beerId){
-			stockValue = parseInt(reg[1]);
-			document.getElementById('stock-edit').value=stockValue - qtd;
-			break;
-		}
-	}
-	document.getElementById('qtd-edit').value=qtd;
-	document.getElementById('price-edit').value=price;
-	document.getElementById('value-edit').value=value;
 	document.getElementById('order-edit').value=order;
+	document.getElementById('TituloElementoForUpdate').value=titulo;
+	document.getElementById('DescricaoElementoForUpdate').value=descricao;
+	document.getElementById('AvaliacaoElementoForUpdate').value=avaliacao;
 }
 
 function loadItensByElementoId(elementoId){
@@ -135,19 +115,17 @@ function loadItensByElementoId(elementoId){
 	{
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
-				// var itensEdit = JSON.parse(xmlhttp.responseText);
+				var itensEdit = JSON.parse(xmlhttp.responseText);
 				var itensEdit = xmlhttp.responseText;
-				alert(itensEdit);
-				/*wipeRows("table-itens-edit")
+				wipeRows("table-itens-edit")
 				items = [];
 				for(order = 0;order<itensEdit.length;order++){
 					items[order]=itemsEdit[order];
 					addRow("table-itens-edit");
 				}
-				return itens;*/
+				return itens;
 			}
 	}
-	alert('loadItensByElementoId');
 	xmlhttp.open("GET","/loadItensByElementoId?elementoId="+elementoId,true);
 	xmlhttp.send();
 }

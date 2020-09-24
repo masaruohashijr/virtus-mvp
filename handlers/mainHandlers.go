@@ -39,10 +39,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("usrname")
 	password := r.FormValue("psw")
 	var user mdl.User
-	// bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	err := Db.QueryRow("SELECT id, "+
+	bytes, err := bcrypt.GenerateFromPassword([]byte("masaru"), bcrypt.DefaultCost)
+	log.Println("masaru: " + string(bytes))
+	err = Db.QueryRow("SELECT id, name, "+
 		" username, password, COALESCE(role_id, 0)"+
-		" FROM users WHERE username=$1", &username).Scan(&user.Id, &user.Username, &user.Password, &user.Role)
+		" FROM users WHERE username=$1", &username).Scan(&user.Id, &user.Name, &user.Username, &user.Password, &user.Role)
 	sec.CheckInternalServerError(err, w)
 	// validate password
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))

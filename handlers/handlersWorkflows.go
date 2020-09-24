@@ -20,11 +20,14 @@ func GetStartStatus(entityType string) int {
 		" entity_type = $1 and end_at is null))) " +
 		" and stereotype = 'Start' LIMIT 1"
 	log.Println("List WF -> Query: " + query)
+	log.Println("entityType: " + entityType)
 	rows, _ := Db.Query(query, entityType)
 	startStatusId := 0
+	log.Println("startStatusId: " + strconv.Itoa(startStatusId))
 	for rows.Next() {
 		rows.Scan(&startStatusId)
 	}
+	log.Println("Saindo!")
 	return startStatusId
 }
 

@@ -13,8 +13,9 @@
 				</div>
 				<div style="margin-top: 10px;text-align: right;z-index:1">
 					{{$allowed := (call .LoggedUser.HasPermission "createWorkflow")}}
+					{{.LoggedUser.User.Name}}
 					{{if $allowed}}
-					    <a href="#" onclick="setTime();document.getElementById('create-form').style.display='block'">
+					    <a href="#" onclick="document.getElementById('create-form').style.display='block'">
 							<i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
 					    </a>
 					{{end}}

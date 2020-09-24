@@ -15,6 +15,7 @@ func Initialize() {
 	createFeatures()
 	createRoleAdmin()
 	createRoleFeatures()
+	createStatusZERO()
 	createAdmin()
 	createPKey()
 	createFKey()
@@ -301,11 +302,19 @@ func createPKey() {
 	db.Exec("ALTER TABLE ONLY public.features_roles ADD CONSTRAINT features_roles_pkey PRIMARY KEY (id)")
 }
 
+func createStatusZERO() {
+	query := "INSERT INTO status (id, name, stereotype)" +
+		" SELECT 0, '-', '' " +
+		" WHERE NOT EXISTS (SELECT id FROM users WHERE id = 0)"
+	log.Println(query)
+	db.Exec(query)
+}
+
 func createAdmin() {
 	query := "INSERT INTO users (id, username, password, email, mobile, name, role_id)" +
-		" SELECT 1, 'aria', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
-		" 'aria@vindixit.com', '61 984385415', 'Ária Ohashi', 1" +
-		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'aria')"
+		" SELECT 1, 'masaru', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" 'masaru@vindixit.com', '61 984385415', 'Masaru Ohashi Jr', 1" +
+		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'masaru')"
 	log.Println(query)
 	db.Exec(query)
 }

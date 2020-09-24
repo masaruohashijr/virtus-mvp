@@ -16,44 +16,41 @@ import (
 func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Create Elemento")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		currentUser := GetUserInCookie(w, r)
+		statusElementoId := GetStartStatus("elemento")
 		titulo := r.FormValue("TituloElementoForInsert")
 		descricao := r.FormValue("DescricaoElementoForInsert")
-		sqlStatement := "INSERT INTO elementos(titulo, descricao, author_id, data_criacao) VALUES ($1, $2, $3, $4) RETURNING id"
-		id := 0
+		sqlStatement := "INSERT INTO elementos(titulo, descricao, author_id, data_criacao, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		elementoId := 0
 		authorId := strconv.FormatInt(GetUserInCookie(w, r).Id, 10)
-		err := Db.QueryRow(sqlStatement, titulo, descricao, authorId, time.Now()).Scan(&id)
+		err := Db.QueryRow(sqlStatement, titulo, descricao, authorId, time.Now(), statusElementoId).Scan(&elementoId)
 		log.Println(sqlStatement + " :: " + titulo)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Título: " + titulo)
+		log.Println("INSERT: Id: " + strconv.Itoa(elementoId) + " | Título: " + titulo)
+		statusItemId := GetStartStatus("itemAAvaliar")
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "item") {
 				array := strings.Split(value[0], "#")
 				log.Println(value[0])
-				activityId := 0
-				actionId := strings.Split(array[3], ":")[1]
-				startAt, _ := time.Parse("yyyy-mm-dd", strings.Split(array[8], ":")[1])
-				endAt, _ := time.Parse("yyyy-mm-dd", strings.Split(array[9], ":")[1])
-				expTime := strings.Split(array[7], ":")[1]
-				if expTime == "" {
-					expTime = "0"
-				}
-				expActionId := strings.Split(array[5], ":")[1]
-				log.Println("actionId: " + actionId)
-				sqlStatement := "INSERT INTO " +
-					"activities(workflow_id, action_id, start_at, end_at, expiration_time_days, expiration_action_id) " +
-					"VALUES ($1,$2,$3,$4,$5,$6) RETURNING id"
+				itemId := 0
+				tituloItem := strings.Split(array[3], ":")[1]
+				descricaoItem := strings.Split(array[4], ":")[1]
+				avaliacaoItem := strings.Split(array[5], ":")[1]
+				log.Println("itemId: " + strconv.Itoa(itemId))
+				sqlStatement := "INSERT INTO public.itens( " +
+					" elemento_id, titulo, descricao, avaliacao, data_criacao, author_id, status_id ) " +
+					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
-				log.Println("wId: " + strconv.Itoa(id) + " | Action: " + actionId + " | ExpDays: " + expTime + " | ExpAction: " + expActionId)
-				if expActionId == "" {
-					err := Db.QueryRow(sqlStatement, id, actionId, startAt, endAt, expTime, nil).Scan(&activityId)
-					sec.CheckInternalServerError(err, w)
-				} else {
-					err := Db.QueryRow(sqlStatement, id, actionId, startAt, endAt, expTime, expActionId).Scan(&activityId)
-					sec.CheckInternalServerError(err, w)
+				log.Println("elementoId: " + strconv.Itoa(elementoId))
+				err = Db.QueryRow(sqlStatement, elementoId, tituloItem, descricaoItem, avaliacaoItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				log.Println("itemId: " + strconv.Itoa(itemId))
+				if err != nil {
+					panic(err.Error())
 				}
 			}
+			http.Redirect(w, r, route.ElementosRoute, 301)
 		}
 	} else {
 		http.Redirect(w, r, "/logout", 301)
