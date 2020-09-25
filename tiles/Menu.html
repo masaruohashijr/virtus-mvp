@@ -1,14 +1,17 @@
 {{ define "Menu" }}
 <div id="mySidenav" class="sidenav">
-	<div sytle="position:absolute;top:0px;left:25px;z-index:1"><br>
+  <div style="float: right;"><a href="javascript:void(0)" class="closebtn" onclick="navGadget()">&times;</a></div>
+  <div sytle="position:absolute;top:0px;left:25px;z-index:1"><br>
 	    <img src="/statics/images/Banner_Previc.png" alt="Virtus" class="logo">
 	</div>
 	<br>
 	<br>
-  <a href="javascript:void(0)" class="closebtn" onclick="navGadget()">&times;</a>
+  
   <a href="#">Sobre</a>
   {{if (call .LoggedUser.HasPermission "listEntidades")}}
-  <a href="/entidades">Entidades</a>
+
+  <!-- <a href="/entidades">Entidades</a> -->
+  <a href="/entidades" onmouseover="this.style.cssText = 'color: red;'"  onmouseout="this.style.cssText = 'color: white;'">Entidades</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listPlanos")}}
   <a href="/planos">Planos</a>
