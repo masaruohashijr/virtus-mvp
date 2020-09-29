@@ -73,17 +73,17 @@ type Status struct {
 }
 
 type Item struct {
-	Ordem        int    `json:"ordem"`
+	Order        int    `json:"order"`
 	Id           int64  `json:"id"`
-	ElementoId   int64  `json:"elementoid"`
+	ElementoId   int64  `json:"elementoId"`
 	Titulo       string `json:"titulo"`
 	Descricao    string `json:"descricao"`
 	Avaliacao    string `json:"avaliacao"`
-	AuthorId     int64  `json:"authorId"`
-	AuthorName   string `json:"authorName"`
-	CDataCriacao string `json:"cDataCriacao`
-	StatusId     int64  `json:"statusId`
-	CStatus      string `json:"cStatus`
+	AuthorId     int64  `json:"autorId"`
+	AuthorName   string `json:"autorNome"`
+	CDataCriacao string `json:"dataCriacao"`
+	StatusId     int64  `json:"status"`
+	CStatus      string `json:"cStatus"`
 }
 
 type Elemento struct {

@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
@@ -14,26 +13,27 @@ import (
 
 var Db *sql.DB
 
-var CookieName = "virtus"
-var store = sessions.NewCookieStore([]byte("vindixit123581321"))
-
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
-	http.Redirect(w, r, route.ElementosRoute, 200)
+	if sec.IsAuthenticated(w, r) {
+		http.Redirect(w, r, route.EntidadesRoute, 200)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
+	}
+	log.Println("IndexHandler")
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Logout Handler")
-	session, _ := store.Get(r, CookieName)
+	session, _ := sec.Store.Get(r, sec.CookieName)
 	delete(session.Values, "user")
 	session.Options.MaxAge = -1
 	_ = session.Save(r, w)
-	http.ServeFile(w, r, "tmpl/login.html")
+	http.ServeFile(w, r, "tiles/login.html")
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		http.ServeFile(w, r, "tmpl/login.html")
+		http.ServeFile(w, r, "tiles/login.html")
 		return
 	}
 	username := r.FormValue("usrname")
@@ -68,11 +68,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Abrindo o Cookie
 	savedUser := GetUserInCookie(w, r)
 	log.Println("MAIN Saved User is " + savedUser.Username)
-	http.Redirect(w, r, route.ElementosRoute, 301)
+	http.Redirect(w, r, route.EntidadesRoute, 301)
 }
 
 func GetUserInCookie(w http.ResponseWriter, r *http.Request) mdl.User {
-	session, _ := store.Get(r, CookieName)
+	session, _ := sec.Store.Get(r, sec.CookieName)
 	var savedUser mdl.User
 	sessionUser := session.Values["user"]
 	if sessionUser != nil {
@@ -83,7 +83,7 @@ func GetUserInCookie(w http.ResponseWriter, r *http.Request) mdl.User {
 }
 
 func AddUserInCookie(w http.ResponseWriter, r *http.Request, user mdl.User) {
-	session, _ := store.Get(r, CookieName)
+	session, _ := sec.Store.Get(r, sec.CookieName)
 	bytesUser, _ := json.Marshal(&user)
 	session.Values["user"] = string(bytesUser)
 	session.Save(r, w)
@@ -98,7 +98,7 @@ func BuildLoggedUser(user mdl.User) mdl.LoggedUser {
 				return true
 			}
 		}
-		log.Println("NÃO PASSOU: " + feature)
+		// log.Println("NÃO PASSOU: " + feature)
 		return false
 	}
 	return loggedUser

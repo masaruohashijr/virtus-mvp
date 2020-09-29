@@ -32,7 +32,7 @@ func dbConn() *sql.DB {
 func main() {
 
 	hd.Db = dbConn()
-	// injeta	ndo a variável Authenticated
+	// injetando a variável Authenticated
 	dpk.Initialize()
 	http.HandleFunc("/", hd.IndexHandler)
 	http.HandleFunc("/login", hd.LoginHandler)

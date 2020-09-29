@@ -27,7 +27,7 @@ func GetStartStatus(entityType string) int {
 	for rows.Next() {
 		rows.Scan(&startStatusId)
 	}
-	log.Println("Saindo!")
+	//	log.Println("Saindo!")
 	return startStatusId
 }
 

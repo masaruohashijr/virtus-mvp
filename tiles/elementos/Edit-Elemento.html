@@ -2,27 +2,57 @@
 <!-- Edit Elemento -->
 <div class="w3-container">
     <div id="edit-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Editar elemento</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
             </div>
-
             <form class="w3-container" action="/updateElemento" method="POST">
-                <input type="hidden" name="Id" id="IdElementoForUpdate">
                 <label class="w3-label">Título</label>
-                <input class="w3-input" type="text" name="TituloElementoForUpdate" value="">
+                <input class="w3-input" type="hidden" id="ElementoIdForUpdate" name="ElementoIdForUpdate" value="">
+                <input class="w3-input" type="text" id="ElementoTituloForUpdate" name="ElementoTituloForUpdate" value="">
                 <label class="w3-label">Descrição</label>
-                <input class="w3-input" type="textarea" name="DescricaoElementoForUpdate" value="">
-                <label class="w3-label">Status</label>
-                <input class="w3-input" type="text" name="StatusElementoForUpdate" value="">
+                <textarea class="w3-input" id="ElementoDescricaoForUpdate" name="ElementoDescricaoForUpdate" rows="5" value=""></textarea>
+                <label class="w3-label">Autor</label>
+                <input class="w3-input" type="text" id="ElementoAutorForUpdate" name="ElementoAutorForUpdate" value="" disabled="disabled" readOnly="readOnly">
                 <label class="w3-label">Data de Criação</label>
-                <input class="w3-input" type="date" name="DataCriacaoElementoForUpdate" value="">
-                <label class="w3-label">Criado Por</label>
-                <input class="w3-input" type="text" name="Autor" value="">
-				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
+                <input class="w3-input" type="text" id="ElementoDataCriacaoForUpdate" name="ElementoDataCriacaoForUpdate" value="" disabled="disabled" readOnly="readOnly">
+                <label class="w3-label">Status</label>
+                <input class="w3-input" type="text" id="ElementoStatusForUpdate" name="ElementoStatusForUpdate" value="" disabled="disabled" readOnly="readOnly">
+				<header class="w3-container w3-center w3-teal">
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Itens a Avaliar</h4>
+		                <div style="margin-top: 8px">
+		                    <div class="w3-right">
+		                        <a href="#" onclick="document.getElementById('create-item-form').style.display='block'">
+		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+		                        </a>
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-itens-edit">
+		            <thead>
+		            <tr>
+		                <th>Título</th>
+		                <th>Descrição</th>
+		                <th>Status</th>
+		                <th>Autor</th>
+		                <th>Data Criação</th>
+						<th>Ações</th>
+		            </tr>
+		            </thead>
+		            <tbody>
+		            </tbody>
+		        </table>
+                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
             </form>
         </div>
     </div>

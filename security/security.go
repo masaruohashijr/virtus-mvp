@@ -6,7 +6,7 @@ import (
 )
 
 var CookieName = "virtus"
-var store = sessions.NewCookieStore([]byte("vindixit123581321"))
+var Store = sessions.NewCookieStore([]byte("vindixit123581321"))
 
 func CheckInternalServerError(err error, w http.ResponseWriter) {
 	if err != nil {
@@ -16,7 +16,7 @@ func CheckInternalServerError(err error, w http.ResponseWriter) {
 }
 
 func IsAuthenticated(w http.ResponseWriter, r *http.Request) bool {
-	session, err := store.Get(r, CookieName)
+	session, err := Store.Get(r, CookieName)
 	if err != nil {
 		return false
 	}

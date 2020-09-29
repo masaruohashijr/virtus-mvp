@@ -2,7 +2,7 @@
 var item_tobe_deleted;
 	
 class Item {
-	constructor(order, id, elementoId, titulo, descricao, avaliacao, autorId, autorNome, dataCriacao, status) {
+	constructor(order, id, elementoId, titulo, descricao, avaliacao, autorId, autorNome, dataCriacao, status, cStatus) {
 		this.order = order;
 		this.id = id;
 		this.elementoId = elementoId;
@@ -13,59 +13,57 @@ class Item {
 		this.autorNome = autorNome;
 		this.dataCriacao = dataCriacao;
 		this.status = status;
+		this.cStatus = cStatus;
 	}
 }
 
 function criarItem(){
-	var titulo = document.getElementById('TituloElementoForInsert').value;
-	var descricao = document.getElementById('DescricaoElementoForInsert').value;
-	var avaliacao = document.getElementById('AvaliacaoElementoForInsert').value;
+	var titulo = document.getElementById('TituloItemForInsert').value;
+	var descricao = document.getElementById('DescricaoItemForInsert').value;
+	var avaliacao = document.getElementById('AvaliacaoItemForInsert').value;
 	var erros = '';
 	if(titulo==''){
 		erros += 'Falta preencher o título.\n';
 		alert(erros);
 		return;
 	}
-	item = new Item(0, itens.length, 0, titulo, descricao, avaliacao, '', '', '', '');
+	item = new Item(0, itens.length, 0, titulo, descricao, avaliacao, '', '', '', '', '');
 	itens.push(item);
-	addRow("table-itens-create");
-	limparCamposItemForm('create');
+	addRow("table-itens-"+contexto);
+	limparCamposItemForm(contexto);
 	document.getElementById('create-item-form').style.display='none';
 }
 
 
-function editarItem(){
+function updateItem(){
+	var id = document.getElementById('id-edit').value;
 	var order = document.getElementById('order-edit').value;
 	var elementoId = document.getElementById('elementoId-edit').value;
-	var titulo = document.getElementById('titulo-edit').value;
-	var descricao = document.getElementById('descricao-edit').value;
-	var avaliacao = document.getElementById('avaliacao-edit').value;
-	var autorId = document.getElementById('autorId-edit').value;
-	var autorNome = document.getElementById('autorNome-edit').value;
-	var dataCriacao = document.getElementById('dataCriacao-edit').value;
-	var status = document.getElementById('status-edit').value;
+	var titulo = document.getElementById('TituloItemForUpdate').value;
+	var descricao = document.getElementById('DescricaoItemForUpdate').value;
+	var avaliacao = document.getElementById('AvaliacaoItemForUpdate').value;
 	var erros = '';
 	if(titulo==''){
 		erros += 'Falta preencher o título.\n';
 		alert(erros);
 		return;
 	}
-	item = new Item(order, items.length, elementoId, titulo, descricao, avaliacao, autorId, autorNome, dataCriacao, status);
-	items[order] = item;
-	updateRow("table-items-"+contexto,order);
+	item = new Item(order, id, elementoId, titulo, descricao, avaliacao, '', '', '', '','');
+	itens[order] = item;
+	updateRow("table-itens-edit",order);
 	limparCamposItemForm('edit');
 	document.getElementById('edit-item-form').style.display='none';
 }
 
 function limparCamposItemForm(tipoForm){
 	if(tipoForm == 'create'){
-		document.getElementById('TituloElementoForInsert').value;
-		document.getElementById('DescricaoElementoForInsert').value;
-		document.getElementById('AvaliacaoElementoForInsert').value;
+		document.getElementById('TituloItemForInsert').value = '';
+		document.getElementById('DescricaoItemForInsert').value = '';
+		document.getElementById('AvaliacaoItemForInsert').value = '';
 	} else {
-		document.getElementById('TituloElementoForUpdate').value;
-		document.getElementById('DescricaoElementoForUpdate').value;
-		document.getElementById('AvaliacaoElementoForUpdate').value;
+		document.getElementById('TituloItemForUpdate').value = '';
+		document.getElementById('DescricaoItemForUpdate').value = '';
+		document.getElementById('AvaliacaoItemForUpdate').value = '';
 	}
 }
 
@@ -91,22 +89,24 @@ function deleteItem() {
 }
 
 
-function updateItem(e) {
+function editItem(e) {
 	var editItemForm = document.getElementById('edit-item-form');
 	editItemForm.style.display = 'block';
 	
 	var order = e.parentNode.parentNode.childNodes[0].childNodes[0].value;
 	var id = e.parentNode.parentNode.childNodes[0].childNodes[1].value;
+	var elementoId = e.parentNode.parentNode.childNodes[0].childNodes[2].value;
 	var titulo = e.parentNode.parentNode.childNodes[0].innerText;
 	var descricao = e.parentNode.parentNode.childNodes[1].innerText;
 	var avaliacao = e.parentNode.parentNode.childNodes[1].childNodes[0].value;
 	// Atribuindo os valores de edit-item-form
 	document.getElementById('id-edit').value=id;
 	document.getElementById('order-edit').value=order;
-	document.getElementById('TituloElementoForUpdate').value=titulo;
-	document.getElementById('DescricaoElementoForUpdate').value=descricao;
-	document.getElementById('AvaliacaoElementoForUpdate').value=avaliacao;
-}
+	document.getElementById('elementoId-edit').value=elementoId;
+	document.getElementById('TituloItemForUpdate').value=titulo;
+	document.getElementById('DescricaoItemForUpdate').value=descricao;
+	document.getElementById('AvaliacaoItemForUpdate').value=avaliacao;
+}	
 
 function loadItensByElementoId(elementoId){
 	var xmlhttp;
@@ -116,11 +116,10 @@ function loadItensByElementoId(elementoId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var itensEdit = JSON.parse(xmlhttp.responseText);
-				var itensEdit = xmlhttp.responseText;
 				wipeRows("table-itens-edit")
-				items = [];
+				itens = [];
 				for(order = 0;order<itensEdit.length;order++){
-					items[order]=itemsEdit[order];
+					itens[order]=itensEdit[order];
 					addRow("table-itens-edit");
 				}
 				return itens;

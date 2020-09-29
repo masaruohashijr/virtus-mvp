@@ -2,7 +2,7 @@
 <!-- Create Elemento -->
 <div class="w3-container">
     <div id="create-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 1000px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Criar novo elemento</h2>
@@ -15,17 +15,18 @@
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="DescricaoElementoForInsert" rows="5" value=""></textarea>
 				<header class="w3-container w3-center w3-teal">
-		            <div class="w3-row">
-		                <div class="w3-half" style="text-align: center;z-index:0">
-		                    <h4 class="w3-right">Itens a Avaliar</h4>
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
 		                </div>
-		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
-		                    <div class="w3-right">
-		                        <a href="#" onclick="contexto='insert';document.getElementById('create-item-form').style.display='block'">
-		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
-		                        </a>
-		                    </div>
-		                </div>
+	                	<h4>Itens a Avaliar</h4>
+						<div style="margin-top: 8px">
+						    <a href="#" onclick="contexto='create';document.getElementById('create-item-form').style.display='block'">
+	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+	                        </a>
+						</div>
 		            </div>
 		        </header>
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-itens-create">
@@ -34,6 +35,7 @@
 		                <th>Título</th>
 		                <th>Descrição</th>
 		                <th>Status</th>
+						<th>Autor</th>
 		                <th>Data Criação</th>
 						<th>Ações</th>
 		            </tr>

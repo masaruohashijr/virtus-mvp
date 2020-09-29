@@ -451,7 +451,7 @@ func createSeq() {
 		" CACHE 1")
 	// Sequence FEATURES_ROLES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.features_roles_id_seq " +
-		" START WITH 1" +
+		" START WITH 2" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
@@ -479,7 +479,7 @@ func createSeq() {
 		" CACHE 1")
 	// Sequence ROLES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.roles_id_seq " +
-		" START WITH 1" +
+		" START WITH 2" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
@@ -594,14 +594,6 @@ func createTable() {
 			" id integer DEFAULT nextval('features_activities_id_seq'::regclass)," +
 			" feature_id integer," +
 			" activity_id integer)")
-
-	// Table WORKFLOWS_ENTITIES
-	db.Exec(
-		" CREATE TABLE IF NOT EXISTS public.beers  (" +
-			" id integer DEFAULT nextval('public.beers_id_seq'::regclass) NOT NULL," +
-			" name character varying(255) NOT NULL," +
-			" qtd integer," +
-			" price double precision)")
 
 	// Table WORKFLOWS
 	db.Exec(

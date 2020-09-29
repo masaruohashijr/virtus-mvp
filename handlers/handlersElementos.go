@@ -38,14 +38,14 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				tituloItem := strings.Split(array[3], ":")[1]
 				descricaoItem := strings.Split(array[4], ":")[1]
 				avaliacaoItem := strings.Split(array[5], ":")[1]
-				log.Println("itemId: " + strconv.Itoa(itemId))
+				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				sqlStatement := "INSERT INTO public.itens( " +
 					" elemento_id, titulo, descricao, avaliacao, data_criacao, author_id, status_id ) " +
 					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
-				log.Println("elementoId: " + strconv.Itoa(elementoId))
+				//				log.Println("elementoId: " + strconv.Itoa(elementoId))
 				err = Db.QueryRow(sqlStatement, elementoId, tituloItem, descricaoItem, avaliacaoItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
-				log.Println("itemId: " + strconv.Itoa(itemId))
+				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				if err != nil {
 					panic(err.Error())
 				}
@@ -60,21 +60,103 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Elemento")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		id := r.FormValue("Id")
-		titulo := r.FormValue("Titulo")
-		sqlStatement := "UPDATE elementos SET titulo=$1 WHERE id=$2"
+		currentUser := GetUserInCookie(w, r)
+		elementoId := r.FormValue("ElementoIdForUpdate")
+		titulo := r.FormValue("ElementoTituloForUpdate")
+		descricao := r.FormValue("ElementoDescricaoForUpdate")
+		sqlStatement := "UPDATE elementos SET titulo=$1, descricao=$2 WHERE id=$3"
 		updtForm, err := Db.Prepare(sqlStatement)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(titulo, id)
-		log.Println("UPDATE: Id: " + id + " | Título: " + titulo)
+		updtForm.Exec(titulo, descricao, elementoId)
+		log.Println("UPDATE: Id: " + elementoId + " | Título: " + titulo + " | Descrição: " + descricao)
+
+		// Itens
+		var itensDB = ListItensHandler(elementoId)
+		var itensPage []mdl.Item
+		var itemPage mdl.Item
+		for key, value := range r.Form {
+			if strings.HasPrefix(key, "item") {
+				log.Println(value[0])
+				array := strings.Split(value[0], "#")
+				id := strings.Split(array[1], ":")[1]
+				log.Println("Id -------- " + id)
+				itemPage.Id, _ = strconv.ParseInt(id, 10, 64)
+				elementoId := strings.Split(array[2], ":")[1]
+				log.Println("elementoId -------- " + elementoId)
+				itemPage.ElementoId, _ = strconv.ParseInt(id, 10, 64)
+				titulo := strings.Split(array[3], ":")[1]
+				log.Println("titulo -------- " + titulo)
+				itemPage.Titulo = titulo
+				descricao := strings.Split(array[4], ":")[1]
+				log.Println("descricao -------- " + descricao)
+				itemPage.Descricao = descricao
+				avaliacao := strings.Split(array[5], ":")[1]
+				log.Println("avaliacao -------- " + avaliacao)
+				itemPage.Avaliacao = avaliacao
+				itensPage = append(itensPage, itemPage)
+			}
+		}
+		if len(itensPage) < len(itensDB) {
+			log.Println("Quantidade de Itens da Página: " + strconv.Itoa(len(itensPage)))
+			if len(itensPage) == 0 {
+				DeleteItensByElementoHandler(elementoId) //DONE
+			} else {
+				var diffDB []mdl.Item = itensDB
+				for n := range itensPage {
+					if containsItem(diffDB, itensPage[n]) {
+						diffDB = removeItem(diffDB, itensPage[n])
+					}
+				}
+				DeleteItemsHandler(diffDB) //DONE
+			}
+		} else {
+			var diffPage []mdl.Item = itensPage
+			for n := range itensDB {
+				if containsItem(diffPage, itensDB[n]) {
+					diffPage = removeItem(diffPage, itensDB[n])
+				}
+			}
+			var item mdl.Item
+			itemId := 0
+			statusItemId := GetStartStatus("item")
+			for i := range diffPage {
+				item = diffPage[i]
+				log.Println("Elemento Id: " + strconv.FormatInt(item.ElementoId, 10))
+				sqlStatement := "INSERT INTO " +
+					"itens(elemento_id, titulo, descricao, avaliacao, data_criacao, author_id, status_id) " +
+					"VALUES ($1,$2,$3,$4,TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS'),$6,$7) RETURNING id"
+				log.Println(sqlStatement)
+				Db.QueryRow(sqlStatement, elementoId, item.Titulo, item.Descricao, item.Avaliacao, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+			}
+		}
+		UpdateItensHandler(itensPage, itensDB) // TODO
 		http.Redirect(w, r, route.ElementosRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
+}
+
+func containsItem(itens []mdl.Item, itemCompared mdl.Item) bool {
+	for n := range itens {
+		if itens[n].Id == itemCompared.Id {
+			return true
+		}
+	}
+	return false
+}
+
+func removeItem(itens []mdl.Item, itemToBeRemoved mdl.Item) []mdl.Item {
+	var newItens []mdl.Item
+	for i := range itens {
+		if itens[i].Id != itemToBeRemoved.Id {
+			newItens = append(newItens, itens[i])
+		}
+	}
+	return newItens
 }
 
 func DeleteElementoHandler(w http.ResponseWriter, r *http.Request) {

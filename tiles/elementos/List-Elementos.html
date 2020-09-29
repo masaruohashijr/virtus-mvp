@@ -8,14 +8,18 @@
 						&#9776; {{.AppName}}
 		    		</a>
                 </div>
-                    <h3>{{.Title}}</h3>
-                <div>
-                    <span style="padding-right: 10px;">{{.LoggedUser.User.Name}}</span>
+                <h3>{{.Title}}</h3>
+                <div style="margin-top: 10px;">
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createElemento")}}
 					{{if $allowed}}
-					    <a href="#" onclick="limparCamposItemForm('create'); document.getElementById('create-form').style.display='block'"><span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span></a>&nbsp;
+					    <a style="margin-top: 6px" href="#" onclick="limparCamposItemForm('create'); document.getElementById('create-form').style.display='block'">
+							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
+						</a>&nbsp;
 					{{end}}
-				    <a href="/logout"><span class="icon ion-log-out w3-xxlarge hoverbtn" style="margin-top: 20px;"></span></a>
+				    <a style="margin-top: 6px" href="/logout">
+						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
+					</a>
 				</div>
 		    </div>
 		</header>
@@ -46,7 +50,7 @@
                 <td>{{$elemento.CStatus}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updateElemento(this);">Editar</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editElemento(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteElemento(this)">Apagar</button>
                 </td>
 				{{end}}
