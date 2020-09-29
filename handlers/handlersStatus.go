@@ -71,7 +71,7 @@ func DeleteStatusHandler(w http.ResponseWriter, r *http.Request) {
 func ListStatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Status")
 	sec.IsAuthenticated(w, r)
-	rows, err := Db.Query("SELECT id, name, descricao, stereotype FROM status order by id asc")
+	rows, err := Db.Query("SELECT id, name, coalesce(descricao,'') as desc, stereotype FROM status order by id asc")
 	sec.CheckInternalServerError(err, w)
 	var status_array []mdl.Status
 	var status mdl.Status
