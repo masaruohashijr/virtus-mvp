@@ -23,15 +23,16 @@ func ExecuteActionHandler(w http.ResponseWriter, r *http.Request) {
 	sec.IsAuthenticated(w, r)
 	log.Println("Update Action")
 	var tableName = ""
-	if entityType == "order" {
-		tableName = "orders"
+	if entityType == "elemento" {
+		tableName = "elementos"
 	} else if entityType == "item" {
-		tableName = "items"
+		tableName = "itens"
 	}
 	// verificar brecha de segurança aqui acesso GET com parametros.
 	sqlStatement := "update " + tableName + " set status_id = " +
 		" (select destination_status_id from actions " +
 		" where id = $1) where id = $2"
+	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	sec.CheckInternalServerError(err, w)
 	if err != nil {

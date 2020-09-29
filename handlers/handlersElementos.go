@@ -187,7 +187,8 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 			" coalesce(b.name,'') as author_name, " +
 			" coalesce(to_char(a.data_criacao,'DD/MM/YYYY'),'') as data_criacao, " +
 			" a.peso, " +
-			" coalesce(c.name,'') as cstatus " +
+			" coalesce(c.name,'') as cstatus, " +
+			" a.status_id " +
 			" FROM elementos a " +
 			" LEFT JOIN users b ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
@@ -206,7 +207,8 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 				&elemento.AuthorName,
 				&elemento.CDataCriacao,
 				&elemento.Peso,
-				&elemento.CStatus)
+				&elemento.CStatus,
+				&elemento.StatusId)
 			sec.CheckInternalServerError(err, w)
 			elemento.Order = i
 			i++

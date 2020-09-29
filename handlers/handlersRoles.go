@@ -170,7 +170,7 @@ func ListRolesHandler(w http.ResponseWriter, r *http.Request) {
 	page.Roles = roles
 	page.Features = features
 	page.AppName = mdl.AppName
-	page.Title = "Papéis"
+	page.Title = "Perfis"
 	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 	var tmpl = template.Must(template.ParseGlob("tiles/roles/*"))
 	tmpl.ParseGlob("tiles/*")

@@ -617,6 +617,7 @@ func createTable() {
 		" CREATE TABLE IF NOT EXISTS public.status  (" +
 			" id integer DEFAULT nextval('public.status_id_seq'::regclass) NOT NULL," +
 			" name character varying(255) NOT NULL," +
+			" descricao character varying(255)," +
 			" stereotype character varying(255) NULL)")
 
 	// Table ROLES

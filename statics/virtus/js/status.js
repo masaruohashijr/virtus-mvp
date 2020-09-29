@@ -5,9 +5,11 @@ function updatestatus(e) {
     // get status id to update
     var statusId = e.parentNode.parentNode.childNodes[3].innerText;
     var statusName = e.parentNode.parentNode.childNodes[5].innerText;
+    var statusDescricao = e.parentNode.parentNode.childNodes[5].childNodes[1].value;
     var statusStereotype = e.parentNode.parentNode.childNodes[7].innerText;
 	document.getElementById('statusIdForUpdate').value = statusId;
     document.getElementById('statusNameForUpdate').value = statusName;
+    document.getElementById('statusDescricaoForUpdate').value = statusDescricao;
     document.getElementById('statusStereotypeForUpdate').value = statusStereotype;
 }
 

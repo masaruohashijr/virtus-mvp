@@ -9,7 +9,7 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container" action="/updateElemento" method="POST">
+            <form class="w3-container" id="update-elemento-form" action="/updateElemento" method="POST">
                 <label class="w3-label">Título</label>
                 <input class="w3-input" type="hidden" id="ElementoIdForUpdate" name="ElementoIdForUpdate" value="">
                 <input class="w3-input" type="text" id="ElementoTituloForUpdate" name="ElementoTituloForUpdate" value="">

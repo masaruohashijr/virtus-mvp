@@ -40,7 +40,7 @@
             <tr>
                 <td>#{{$status.Order}}</td>
                 <td>{{$status.Id}}</td>
-                <td>{{$status.Name}}</td>
+                <td>{{$status.Name}}<input type="hidden" value="{{$status.Descricao}}"></td>
                 <td>{{$status.Stereotype}}</td>
 				{{if $allowed}}
                 <td>

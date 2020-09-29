@@ -69,6 +69,7 @@ type Status struct {
 	Order      int
 	Id         int64  `json:"id"`
 	Name       string `json:"name"`
+	Descricao  string `json:"descricao"`
 	Stereotype string `json:"stereotype"`
 }
 

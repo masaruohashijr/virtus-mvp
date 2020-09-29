@@ -47,7 +47,7 @@
                 <td>{{$elemento.Descricao}}</td>
                 <td>{{$elemento.AuthorName}}</td>
                 <td>{{$elemento.CDataCriacao}}</td>
-                <td>{{$elemento.CStatus}}</td>
+                <td>{{$elemento.CStatus}}<input type="hidden" id="ElementoStatusId" value="{{$elemento.StatusId}}"></td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editElemento(this);">Editar</button>
