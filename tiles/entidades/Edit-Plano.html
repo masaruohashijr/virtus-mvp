@@ -1,0 +1,33 @@
+{{define "Edit-Plano"}}
+<!-- Edit Edit Form -->
+<div class="w3-container">
+    <div id="edit-item-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar item</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-item-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container">
+				<input type="hidden" id="id-edit" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="order-edit" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="elementoId-edit" value="" readonly="readonly" disabled="disabled">
+                <label class="w3-label">Título</label>
+				<input class="w3-input" type="text" id="TituloItemForUpdate" name="TituloItemForUpdate" value="">
+                <label class="w3-label">Descrição</label>
+				<textarea rows="4" class="w3-input" type="text" id="DescricaoItemForUpdate" name="DescricaoItemForUpdate" value=""></textarea>
+                <label class="w3-label">Avaliação</label>
+				<textarea rows="4" class="w3-input" type="text" id="AvaliacaoItemForUpdate" name="AvaliacaoItemForUpdate" value=""></textarea>
+				<br>	
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="updateItem();"
+					>Salvar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}
