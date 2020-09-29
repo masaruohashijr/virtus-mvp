@@ -17,7 +17,7 @@ func CreateStatusHandler(w http.ResponseWriter, r *http.Request) {
 		name := r.FormValue("Name")
 		descricao := r.FormValue("Descricao")
 		stereotype := r.FormValue("Stereotype")
-		sqlStatement := "INSERT INTO status(name, descricao, stereotype) VALUES ($1, $2) RETURNING id"
+		sqlStatement := "INSERT INTO status(name, descricao, stereotype) VALUES ($1, $2, $3) RETURNING id"
 		id := 0
 		err := Db.QueryRow(sqlStatement, name, descricao, stereotype).Scan(&id)
 		sec.CheckInternalServerError(err, w)
