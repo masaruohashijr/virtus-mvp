@@ -14,15 +14,15 @@ import (
 func CreateCarteiraHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Create Carteira")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		titulo := r.FormValue("Titulo")
-		sqlStatement := "INSERT INTO carteiras(titulo) VALUES ($1) RETURNING id"
+		nome := r.FormValue("Nome")
+		sqlStatement := "INSERT INTO carteiras(nome) VALUES ($1) RETURNING id"
 		id := 0
-		err := Db.QueryRow(sqlStatement, titulo).Scan(&id)
-		log.Println(sqlStatement + " :: " + titulo)
+		err := Db.QueryRow(sqlStatement, nome).Scan(&id)
+		log.Println(sqlStatement + " :: " + nome)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Título: " + titulo)
+		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Nome: " + nome)
 		http.Redirect(w, r, route.CarteirasRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -33,16 +33,14 @@ func UpdateCarteiraHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Carteira")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		titulo := r.FormValue("Titulo")
+		nome := r.FormValue("Nome")
 		sqlStatement := "UPDATE carteiras SET titulo=$1 WHERE id=$2"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(titulo, id)
-		log.Println("UPDATE: Id: " + id + " | Título: " + titulo)
+		updtForm.Exec(nome, id)
+		log.Println("UPDATE: Id: " + id + " | Nome: " + nome)
 		http.Redirect(w, r, route.CarteirasRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -70,13 +68,13 @@ func DeleteCarteiraHandler(w http.ResponseWriter, r *http.Request) {
 func ListCarteirasHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Carteiras")
 	if sec.IsAuthenticated(w, r) {
-		rows, err := Db.Query("SELECT id, titulo FROM carteiras order by id asc")
+		rows, err := Db.Query("SELECT id, nome FROM carteiras order by id asc")
 		sec.CheckInternalServerError(err, w)
 		var carteiras []mdl.Carteira
 		var carteira mdl.Carteira
 		var i = 1
 		for rows.Next() {
-			err = rows.Scan(&carteira.Id, &carteira.Titulo)
+			err = rows.Scan(&carteira.Id, &carteira.Nome)
 			sec.CheckInternalServerError(err, w)
 			carteira.Order = i
 			i++

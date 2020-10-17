@@ -14,15 +14,15 @@ import (
 func CreateEquipeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Create Equipe")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		titulo := r.FormValue("Titulo")
-		sqlStatement := "INSERT INTO equipes(titulo) VALUES ($1) RETURNING id"
+		nome := r.FormValue("Nome")
+		sqlStatement := "INSERT INTO equipes(nome) VALUES ($1) RETURNING id"
 		id := 0
-		err := Db.QueryRow(sqlStatement, titulo).Scan(&id)
-		log.Println(sqlStatement + " :: " + titulo)
+		err := Db.QueryRow(sqlStatement, nome).Scan(&id)
+		log.Println(sqlStatement + " :: " + nome)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Título: " + titulo)
+		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Nome: " + nome)
 		http.Redirect(w, r, route.EquipesRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -33,16 +33,16 @@ func UpdateEquipeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Equipe")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		titulo := r.FormValue("Titulo")
-		sqlStatement := "UPDATE equipes SET titulo=$1 WHERE id=$2"
+		nome := r.FormValue("Nome")
+		sqlStatement := "UPDATE equipes SET nome=$1 WHERE id=$2"
 		updtForm, err := Db.Prepare(sqlStatement)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(titulo, id)
-		log.Println("UPDATE: Id: " + id + " | Título: " + titulo)
+		updtForm.Exec(nome, id)
+		log.Println("UPDATE: Id: " + id + " | Nome: " + nome)
 		http.Redirect(w, r, route.EquipesRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -70,13 +70,13 @@ func DeleteEquipeHandler(w http.ResponseWriter, r *http.Request) {
 func ListEquipesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Equipes")
 	if sec.IsAuthenticated(w, r) {
-		rows, err := Db.Query("SELECT id, titulo FROM equipes order by id asc")
+		rows, err := Db.Query("SELECT id, nome FROM equipes order by id asc")
 		sec.CheckInternalServerError(err, w)
 		var equipes []mdl.Equipe
 		var equipe mdl.Equipe
 		var i = 1
 		for rows.Next() {
-			err = rows.Scan(&equipe.Id, &equipe.Titulo)
+			err = rows.Scan(&equipe.Id, &equipe.Nome)
 			sec.CheckInternalServerError(err, w)
 			equipe.Order = i
 			i++

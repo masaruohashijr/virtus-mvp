@@ -1,8 +1,13 @@
-var opened = false;
-var item;
-var itens = [];
+var actions_array = [];
 var activity;
 var activities = [];
+var item;
+var itens = [];
 var contexto;
-var actions_array = [];
-	
+var opened = false;
+var plano;
+var planos = [];
+var ciclo;
+var ciclos = [];
+var cicloEntidade;
+var ciclosEntidade = [];

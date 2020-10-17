@@ -10,9 +10,9 @@
                       onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
             </div>
             <form class="w3-container" id="update-elemento-form" action="/updateElemento" method="POST">
-                <label class="w3-label">Título</label>
+                <label class="w3-label">Nome</label>
                 <input class="w3-input" type="hidden" id="ElementoIdForUpdate" name="ElementoIdForUpdate" value="">
-                <input class="w3-input" type="text" id="ElementoTituloForUpdate" name="ElementoTituloForUpdate" value="">
+                <input class="w3-input" type="text" id="ElementoNomeForUpdate" name="ElementoNomeForUpdate" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" id="ElementoDescricaoForUpdate" name="ElementoDescricaoForUpdate" rows="5" value=""></textarea>
                 <label class="w3-label">Autor</label>
@@ -41,7 +41,7 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-itens-edit">
 		            <thead>
 		            <tr>
-		                <th>Título</th>
+		                <th>Nome</th>
 		                <th>Descrição</th>
 		                <th>Status</th>
 		                <th>Autor</th>

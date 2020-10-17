@@ -14,15 +14,15 @@ import (
 func CreateMatrizHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Create Matriz")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		titulo := r.FormValue("Titulo")
-		sqlStatement := "INSERT INTO matrizes(titulo) VALUES ($1) RETURNING id"
+		titulo := r.FormValue("Nome")
+		sqlStatement := "INSERT INTO matrizes(nome) VALUES ($1) RETURNING id"
 		id := 0
 		err := Db.QueryRow(sqlStatement, titulo).Scan(&id)
 		log.Println(sqlStatement + " :: " + titulo)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Título: " + titulo)
+		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Nome: " + titulo)
 		http.Redirect(w, r, route.MatrizesRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -33,8 +33,8 @@ func UpdateMatrizHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Matriz")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		titulo := r.FormValue("Titulo")
-		sqlStatement := "UPDATE matrizes SET titulo=$1 WHERE id=$2"
+		titulo := r.FormValue("Nome")
+		sqlStatement := "UPDATE matrizes SET nome=$1 WHERE id=$2"
 		updtForm, err := Db.Prepare(sqlStatement)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
@@ -42,7 +42,7 @@ func UpdateMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(titulo, id)
-		log.Println("UPDATE: Id: " + id + " | Título: " + titulo)
+		log.Println("UPDATE: Id: " + id + " | Nome: " + titulo)
 		http.Redirect(w, r, route.MatrizesRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -70,12 +70,12 @@ func DeleteMatrizHandler(w http.ResponseWriter, r *http.Request) {
 func ListMatrizesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Matrizes")
 	if sec.IsAuthenticated(w, r) {
-		rows, _ := Db.Query("SELECT id, titulo FROM matrizes order by id asc")
+		rows, _ := Db.Query("SELECT id, nome FROM matrizes order by id asc")
 		var matrizes []mdl.Matriz
 		var componente mdl.Matriz
 		var i = 1
 		for rows.Next() {
-			rows.Scan(&componente.Id, &componente.Titulo)
+			rows.Scan(&componente.Id, &componente.Nome)
 			componente.Order = i
 			i++
 			matrizes = append(matrizes, componente)

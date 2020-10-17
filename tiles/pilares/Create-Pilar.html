@@ -1,0 +1,49 @@
+{{define "Create-Pilar"}}
+<!-- Create Pilar -->
+<div class="w3-container">
+    <div id="create-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Criar novo pilar</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" action="/createPilar" method="POST">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" name="Nome" value="">
+				<br>
+		        <header class="w3-container w3-center w3-teal">
+		            <div class="w3-row">
+		                <div class="w3-half" style="text-align: center;z-index:0">
+		                    <h4 class="w3-right">Componentes</h4>
+		                </div>
+		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
+		                    <div class="w3-right">
+		                        <a href="#" onclick="contexto='insert';document.getElementById('create-pilar-ciclo-form').style.display='block'">
+		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+		                        </a>
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-pilar-ciclo-insert">
+		            <thead>
+		            <tr>
+		                <th>Nome</th>
+		                <th>Peso Padrão</th>
+		                <th>Autor</th>
+		                <th>Criado Em</th>
+		                <th>Sondagem</th>
+						<th>Ações</th>
+		            </tr>
+		            </thead>
+		            <tbody>
+		            </tbody>
+		        </table>
+                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -18,33 +18,33 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		currentUser := GetUserInCookie(w, r)
 		statusElementoId := GetStartStatus("elemento")
-		titulo := r.FormValue("TituloElementoForInsert")
+		nome := r.FormValue("NomeElementoForInsert")
 		descricao := r.FormValue("DescricaoElementoForInsert")
-		sqlStatement := "INSERT INTO elementos(titulo, descricao, author_id, data_criacao, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		sqlStatement := "INSERT INTO elementos(nome, descricao, author_id, data_criacao, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 		elementoId := 0
 		authorId := strconv.FormatInt(GetUserInCookie(w, r).Id, 10)
-		err := Db.QueryRow(sqlStatement, titulo, descricao, authorId, time.Now(), statusElementoId).Scan(&elementoId)
-		log.Println(sqlStatement + " :: " + titulo)
+		err := Db.QueryRow(sqlStatement, nome, descricao, authorId, time.Now(), statusElementoId).Scan(&elementoId)
+		log.Println(sqlStatement + " :: " + nome)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(elementoId) + " | Título: " + titulo)
+		log.Println("INSERT: Id: " + strconv.Itoa(elementoId) + " | Nome: " + nome)
 		statusItemId := GetStartStatus("itemAAvaliar")
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "item") {
 				array := strings.Split(value[0], "#")
 				log.Println(value[0])
 				itemId := 0
-				tituloItem := strings.Split(array[3], ":")[1]
+				nomeItem := strings.Split(array[3], ":")[1]
 				descricaoItem := strings.Split(array[4], ":")[1]
 				avaliacaoItem := strings.Split(array[5], ":")[1]
 				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				sqlStatement := "INSERT INTO public.itens( " +
-					" elemento_id, titulo, descricao, avaliacao, data_criacao, author_id, status_id ) " +
+					" elemento_id, nome, descricao, avaliacao, data_criacao, author_id, status_id ) " +
 					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
 				//				log.Println("elementoId: " + strconv.Itoa(elementoId))
-				err = Db.QueryRow(sqlStatement, elementoId, tituloItem, descricaoItem, avaliacaoItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				err = Db.QueryRow(sqlStatement, elementoId, nomeItem, descricaoItem, avaliacaoItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
 				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				if err != nil {
 					panic(err.Error())
@@ -62,17 +62,15 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		currentUser := GetUserInCookie(w, r)
 		elementoId := r.FormValue("ElementoIdForUpdate")
-		titulo := r.FormValue("ElementoTituloForUpdate")
+		nome := r.FormValue("ElementoNomeForUpdate")
 		descricao := r.FormValue("ElementoDescricaoForUpdate")
-		sqlStatement := "UPDATE elementos SET titulo=$1, descricao=$2 WHERE id=$3"
+		sqlStatement := "UPDATE elementos SET nome=$1, descricao=$2 WHERE id=$3"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(titulo, descricao, elementoId)
-		log.Println("UPDATE: Id: " + elementoId + " | Título: " + titulo + " | Descrição: " + descricao)
+		updtForm.Exec(nome, descricao, elementoId)
+		log.Println("UPDATE: Id: " + elementoId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Itens
 		var itensDB = ListItensHandler(elementoId)
@@ -88,9 +86,9 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				elementoId := strings.Split(array[2], ":")[1]
 				log.Println("elementoId -------- " + elementoId)
 				itemPage.ElementoId, _ = strconv.ParseInt(id, 10, 64)
-				titulo := strings.Split(array[3], ":")[1]
-				log.Println("titulo -------- " + titulo)
-				itemPage.Titulo = titulo
+				nome := strings.Split(array[3], ":")[1]
+				log.Println("nome -------- " + nome)
+				itemPage.Nome = nome
 				descricao := strings.Split(array[4], ":")[1]
 				log.Println("descricao -------- " + descricao)
 				itemPage.Descricao = descricao
@@ -111,7 +109,7 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 						diffDB = removeItem(diffDB, itensPage[n])
 					}
 				}
-				DeleteItemsHandler(diffDB) //DONE
+				DeleteItensHandler(diffDB) //DONE
 			}
 		} else {
 			var diffPage []mdl.Item = itensPage
@@ -127,10 +125,10 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				item = diffPage[i]
 				log.Println("Elemento Id: " + strconv.FormatInt(item.ElementoId, 10))
 				sqlStatement := "INSERT INTO " +
-					"itens(elemento_id, titulo, descricao, avaliacao, data_criacao, author_id, status_id) " +
+					"itens(elemento_id, nome, descricao, avaliacao, data_criacao, author_id, status_id) " +
 					"VALUES ($1,$2,$3,$4,TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS'),$6,$7) RETURNING id"
 				log.Println(sqlStatement)
-				Db.QueryRow(sqlStatement, elementoId, item.Titulo, item.Descricao, item.Avaliacao, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				Db.QueryRow(sqlStatement, elementoId, item.Nome, item.Descricao, item.Avaliacao, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
 			}
 		}
 		UpdateItensHandler(itensPage, itensDB) // TODO
@@ -182,7 +180,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 	if sec.IsAuthenticated(w, r) {
 		query := "SELECT " +
 			" a.id, " +
-			" a.titulo, " +
+			" a.nome, " +
 			" coalesce(a.descricao,''), " +
 			" coalesce(b.name,'') as author_name, " +
 			" coalesce(to_char(a.data_criacao,'DD/MM/YYYY'),'') as data_criacao, " +
@@ -202,7 +200,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 		for rows.Next() {
 			err = rows.Scan(
 				&elemento.Id,
-				&elemento.Titulo,
+				&elemento.Nome,
 				&elemento.Descricao,
 				&elemento.AuthorName,
 				&elemento.CDataCriacao,

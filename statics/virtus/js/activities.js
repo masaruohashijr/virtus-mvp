@@ -60,7 +60,7 @@ function criarActivity() {
 	var roles = getSelectedItems(document.getElementById('roles-create'));
 	var roleNames = getSelectedRoleNames(document.getElementById('roles-create'));
 	var features = getSelectedItems(document.getElementById('features-create'));
-	activity = new Activity(activities.length, activities.length, wId, actionId, actionName, expActionId, expActionName, expTime, startAt, endAt, roles, roleNames, '', features);
+	activity = new Activity(activities.length, 0, wId, actionId, actionName, expActionId, expActionName, expTime, startAt, endAt, roles, roleNames, '', features);
 	activities.push(activity);
 	addActRow("table-activities-" + contexto);
 	limparCamposActivityForm('create');
@@ -68,7 +68,7 @@ function criarActivity() {
 }
 
 
-function updateActivity(e) {
+function editActivity(e) {
 	limparCamposActivityForm('edit');
 	var editActivityForm = document.getElementById('edit-activity-form');
 	editActivityForm.style.display = 'block';
@@ -108,7 +108,7 @@ function updateActivity(e) {
 	document.getElementById('order-edit').value = order;
 }
 
-function editarActivity() {
+function updateActivity() {
 	var wId = document.getElementById('WorkflowIdForUpdate').value;
 	var id = document.getElementById('id-edit').value;
 	var a = document.getElementById('action-edit');
@@ -150,7 +150,7 @@ function showDeleteActivityForm(e) {
 }
 
 
-function deleteactivity() {
+function deleteActivity() {
 	var order = activity_tobe_deleted.parentNode.parentNode.childNodes[0].childNodes[0].value;
 	var newActivities = [];
 	for (i = 0; i < activities.length; i++) {
@@ -218,7 +218,7 @@ function addActRow(tableID) {
 	btnEditar.className = "w3-btn w3-teal";
 	btnEditar.style = "margin-right: 10px";
 	btnEditar.value = "Editar";
-	btnEditar.onclick = function() { updateActivity(btnEditar) };
+	btnEditar.onclick = function() { editActivity(btnEditar) };
 	newCell.appendChild(btnEditar);
 	// Botão Apagar
 	var btnApagar = document.createElement('input');

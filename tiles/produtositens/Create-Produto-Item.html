@@ -1,0 +1,123 @@
+{{define "Create-Produto-Item"}}
+<!-- Create Produto Item -->
+<div class="w3-container">
+    <div id="create-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Criar novo produto do item</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/createProdutoItem" method="POST">
+				<label class="w3-label">Entidade</label>
+				<br>
+	            <select class="w3-input" name="EntidadeForInsert" id="EntidadeForInsert" style="width:100%">
+					{{range $index, $entidade := .Entidades }}
+		                <option value="{{$entidade.Id}}">
+							{{$entidade.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Plano</label>
+				<br>
+	            <select class="w3-input" name="PlanoForInsert" id="PlanoForInsert" style="width:100%">
+					{{range $index, $plano := .Planos }}
+		                <option value="{{$plano.Id}}">
+							{{$plano.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Ciclo</label>
+				<br>
+	            <select class="w3-input" name="CicloForInsert" id="CicloForInsert" style="width:100%">
+					{{range $index, $ciclo := .Ciclos }}
+		                <option value="{{$ciclo.Id}}">
+							{{$ciclo.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Pilar</label>
+				<br>
+	            <select class="w3-input" name="PilarForInsert" id="PilarForInsert" style="width:100%">
+					{{range $index, $pilar := .Pilares }}
+		                <option value="{{$pilar.Id}}">
+							{{$pilar.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Componente</label>
+				<br>
+	            <select class="w3-input" name="ComponentePilarForInsert" id="ComponentePilarForInsert" style="width:100%">
+					{{range $index, $componente := .Componentes }}
+		                <option value="{{$componente.Id}}">
+							{{$componente.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Elemento</label>
+				<br>
+	            <select class="w3-input" name="ElementoForInsert" id="ElementoForInsert" style="width:100%">
+					{{range $index, $elemento := .Elementos }}
+		                <option value="{{$elemento.Id}}">
+							{{$elemento.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Item</label>
+				<br>
+	            <select class="w3-input" name="ItemForInsert" id="ItemForInsert" style="width:100%">
+					{{range $index, $item := .Itens }}
+		                <option value="{{$item.Id}}">
+							{{$item.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Tipo de Nota</label>
+				<br>
+	            <select class="w3-input" name="TipoNotaForInsert" id="TipoNotaForInsert" style="width:100%">
+					{{range $index, $tipo := .TiposNota }}
+		                <option value="{{$tipo.Id}}">
+							{{$tipo.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Supervisor</label>
+				<br>
+	            <select class="w3-input" name="SupervisorForInsert" id="SupervisorForInsert" style="width:100%">
+					{{range $index, $supervisor := .Supervisores }}
+		                <option value="{{$supervisor.Id}}">
+							{{$supervisor.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Auditor</label>
+				<br>
+	            <select class="w3-input" name="AuditorForInsert" id="AuditorForInsert" style="width:100%">
+					{{range $index, $auditor := .Auditores }}
+		                <option value="{{$componente.Id}}">
+							{{$auditor.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <label class="w3-label">Avaliação</label>
+                <textarea class="w3-input" id="AvaliacaoForInsert" name="Avaliacao" rows="5" value=""></textarea>
+                <label class="w3-label">Status</label>
+                <input class="w3-input" type="text" id="StatusForInsert" name="Status" value="">
+                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
@@ -39,9 +40,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("usrname")
 	password := r.FormValue("psw")
 	var user mdl.User
-	bytes, err := bcrypt.GenerateFromPassword([]byte("masaru"), bcrypt.DefaultCost)
-	log.Println("masaru: " + string(bytes))
-	err = Db.QueryRow("SELECT id, name, "+
+	// bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	err := Db.QueryRow("SELECT id, name, "+
 		" username, password, COALESCE(role_id, 0)"+
 		" FROM users WHERE username=$1", &username).Scan(&user.Id, &user.Name, &user.Username, &user.Password, &user.Role)
 	sec.CheckInternalServerError(err, w)
@@ -51,19 +51,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("erro do /login")
 		http.Redirect(w, r, "/login", 301)
 	}
-	query := "SELECT " +
-		"A.feature_id, B.code FROM features_roles A, features B " +
-		"WHERE A.feature_id = B.id AND A.role_id = $1"
-	log.Println("Query: " + query)
-	rows, _ := Db.Query(query, user.Role)
-	var features []mdl.Feature
-	var feature mdl.Feature
-	for rows.Next() {
-		rows.Scan(&feature.Id, &feature.Code)
-		features = append(features, feature)
-		log.Println(feature)
-	}
-	user.Features = features
+
 	AddUserInCookie(w, r, user)
 	// Abrindo o Cookie
 	savedUser := GetUserInCookie(w, r)
@@ -72,33 +60,51 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserInCookie(w http.ResponseWriter, r *http.Request) mdl.User {
-	session, _ := sec.Store.Get(r, sec.CookieName)
 	var savedUser mdl.User
+	session, _ := sec.Store.Get(r, sec.CookieName)
 	sessionUser := session.Values["user"]
 	if sessionUser != nil {
 		strUser := sessionUser.(string)
 		json.Unmarshal([]byte(strUser), &savedUser)
 	}
+	log.Println("Saved User is " + savedUser.Name)
 	return savedUser
 }
 
 func AddUserInCookie(w http.ResponseWriter, r *http.Request, user mdl.User) {
+	sec.Store.Options = &sessions.Options{
+		Path:   "/",
+		MaxAge: 86400,
+	}
 	session, _ := sec.Store.Get(r, sec.CookieName)
 	bytesUser, _ := json.Marshal(&user)
 	session.Values["user"] = string(bytesUser)
+	sec.Store.Save(r, w, session)
 	session.Save(r, w)
 }
 
 func BuildLoggedUser(user mdl.User) mdl.LoggedUser {
 	var loggedUser mdl.LoggedUser
 	loggedUser.User = user
-	loggedUser.HasPermission = func(feature string) bool {
-		for _, value := range user.Features {
-			if value.Code == feature {
+	loggedUser.HasPermission = func(permission string) bool {
+		//log.Println(permission)
+		query := "SELECT " +
+			"A.feature_id, B.code FROM features_roles A, features B " +
+			"WHERE A.feature_id = B.id AND A.role_id = $1"
+		rows, _ := Db.Query(query, user.Role)
+		var features []mdl.Feature
+		var feature mdl.Feature
+		for rows.Next() {
+			rows.Scan(&feature.Id, &feature.Code)
+			features = append(features, feature)
+		}
+		for _, value := range features {
+			//log.Println(value.Code)
+			if value.Code == permission {
+				//log.Println(permission + " encontrada!!!")
 				return true
 			}
 		}
-		// log.Println("NÃO PASSOU: " + feature)
 		return false
 	}
 	return loggedUser

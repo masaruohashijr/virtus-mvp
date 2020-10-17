@@ -1,0 +1,75 @@
+{{define "Edit-Produto-Ciclo"}}
+<!-- Edit Produto Ciclo -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar produto do ciclo</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/updateProdutoCiclo" method="POST">
+                <label class="w3-label">Entidade</label>
+				<br>
+	            <select class="w3-input" name="EntidadeForUpdate" id="EntidadeForUpdate" style="width:100%">
+					{{range $index, $entidade := .Entidades }}
+		                <option value="{{$entidade.Id}}">
+							{{$entidade.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Ciclo</label>
+				<br>
+	            <select class="w3-input" name="CicloForUpdate" id="CicloForUpdate" style="width:100%">
+					{{range $index, $ciclo := .Ciclos }}
+		                <option value="{{$ciclo.Id}}">
+							{{$ciclo.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Tipo de Nota</label>
+				<br>
+	            <select class="w3-input" name="TipoNotaForUpdate" id="TipoNotaForUpdate" style="width:100%">
+					{{range $index, $tipo := .TiposNota }}
+		                <option value="{{$tipo.Id}}">
+							{{$tipo.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <label class="w3-label">Nota</label>
+                <input class="w3-input" type="number" id="NotaForUpdate" name="Nota" value="">
+                <label class="w3-label">Motivação Nota</label>
+                <textarea class="w3-input" id="MotivacaoNotaForUpdate" name="MotivacaoNota" rows="5" value=""></textarea>
+				<label class="w3-label">Auditor</label>
+				<br>
+	            <select class="w3-input" name="AuditorForUpdate" id="AuditorForUpdate" style="width:100%">
+					{{range $index, $auditor := .Auditores }}
+		                <option value="{{$auditor.Id}}">
+							{{$auditor.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+				<label class="w3-label">Supervisor</label>
+				<br>
+	            <select class="w3-input" name="SupervisorForUpdate" id="SupervisorForUpdate" style="width:100%">
+					{{range $index, $supervisor := .Supervisores }}
+		                <option value="{{$supervisor.Id}}">
+							{{$supervisor.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <label class="w3-label">Status</label>
+                <input class="w3-input" type="text" id="StatusForUpdate" name="Status" value="">
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

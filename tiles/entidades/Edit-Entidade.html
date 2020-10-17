@@ -2,18 +2,68 @@
 <!-- Edit Entidade -->
 <div class="w3-container">
     <div id="edit-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Editar entidade</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
             </div>
-
             <form class="w3-container" action="/updateEntidade" method="POST">
-                <input type="hidden" name="Id" id="EntidadeIdToUpdate">
-                <label class="w3-label">Título</label>
-                <input class="w3-input" type="text" id="EntidadeTitulo" name="Titulo" value="">
+                <input type="hidden" name="Id" id="EntidadeIdForUpdate">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" id="EntidadeNomeForUpdate" name="Nome" value="">
+				<header class="w3-container w3-center w3-teal">
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Planos</h4>
+						<div style="margin-top: 8px" id="create-form-plano-btn" >
+						    <a href="#" onclick="document.getElementById('create-plano-form').style.display='block'">
+	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+	                        </a>
+						</div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+						id="table-planos-edit">
+		            <tr>
+		                <th>Nome</th>
+		                <th>Descrição</th>
+						<th>Ações</th>
+		            </tr>
+		        </table>
+				<br>
+				<header class="w3-container w3-center w3-teal">
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Ciclos da Entidade</h4>
+						<div style="margin-top: 8px" id="create-form-ciclo-btn" >
+						    <a href="#" onclick="document.getElementById('create-ciclo-entidade-form').style.display='block'">
+	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+	                        </a>
+						</div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+						id="table-ciclos-entidade-edit">
+		            <tr>
+		                <th>Nome</th>
+		                <th>Tipo de Média</th>
+		                <th>Nota</th>
+		                <th>Início</th>
+		                <th>Término</th>
+		                <th>Autor</th>
+						<th>Ações</th>
+		            </tr>
+		        </table>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
             </form>
         </div>

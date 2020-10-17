@@ -1,0 +1,12 @@
+{{ define "Main-Escritorios" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Escritorio" }}
+{{ template "Edit-Escritorio" }}
+{{ template "Create-Escritorio" }}
+{{ template "List-Escritorios" . }}
+</body>
+</html>
+{{end}}

@@ -184,11 +184,21 @@ func UpdateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		} else {
 			var diffPage []mdl.Activity = actsPage
+			for n := range actsPage {
+				log.Println("Page Action: " + actsPage[n].ActionName)
+			}
 			for n := range actsDB {
 				if containsAct(diffPage, actsDB[n]) {
+					log.Println(n)
+					log.Println("actsDB[n]: " + actsDB[n].ActionName)
 					diffPage = removeAct(diffPage, actsDB[n])
 				}
 			}
+			log.Println("Tamamho: " + strconv.Itoa(len(diffPage)))
+			for n := range diffPage {
+				log.Println("Action Name Incluida agora " + diffPage[n].ActionName)
+			}
+
 			var act mdl.Activity
 			for i := range diffPage {
 				act = diffPage[i]
@@ -345,7 +355,7 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 		features = append(features, feature)
 	}
 
-	var page mdl.PageWorkflow
+	var page mdl.PageWorkflows
 	page.Actions = actions
 	page.Features = features
 	page.Roles = roles

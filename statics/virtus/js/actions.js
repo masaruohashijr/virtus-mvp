@@ -20,7 +20,7 @@ function getActionStatus(type, actionId){
 }
 
 
-function updateaction(e) {
+function editAction(e) {
 	resetActionsEditForm();
     var editForm = document.getElementById('edit-form');
     // display update form
@@ -31,7 +31,7 @@ function updateaction(e) {
     var except = e.parentNode.parentNode.childNodes[7].innerText;
     var originId = e.parentNode.parentNode.childNodes[9].childNodes[0].value;
     var destinationId = e.parentNode.parentNode.childNodes[11].childNodes[0].value;
-	document.getElementById('actionIdToUpdate').value = actionId;
+	document.getElementById('actionIdForUpdate').value = actionId;
     document.getElementById('actionName').value = actionName;
 	if(except=='false'){
 		document.getElementById('ExceptForUpdate').checked = false;
@@ -42,7 +42,7 @@ function updateaction(e) {
     document.getElementById('DestinationStatusForUpdate').value = destinationId;
 }
 
-function deleteaction(e) {
+function deleteAction(e) {
     var deleteForm = document.getElementById('delete-form');
     deleteForm.style.display = 'block';
     var actionId = e.parentNode.parentNode.childNodes[3].innerText;
@@ -50,7 +50,7 @@ function deleteaction(e) {
 }
 
 function resetActionsEditForm(){
-	document.getElementById('actionIdToUpdate').value = '';
+	document.getElementById('actionIdForUpdate').value = '';
 	document.getElementById('actionName').value='';
 	document.getElementById('ExceptForUpdate').checked = false;
     document.getElementById('OriginStatusForUpdate').value = '';

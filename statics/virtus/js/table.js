@@ -1,7 +1,11 @@
 
-function wipeRows(tableID) {
+function wipeRows(tableID, elems) {
+	console.log('wipeRows');
 	let tableRef = document.getElementById(tableID);
-	for(i=0;i<itens.length;i++){
+	console.log('tableID: '+tableID);
+	console.log('tableRef: '+tableRef);
+	console.log('elems.length: '+elems.length);
+	for(i=0;i<elems.length;i++){
 		tableRef.deleteRow(1);
 	}
 }
@@ -22,8 +26,6 @@ function updateRow(tableID, order){
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
 	row.childNodes[1].innerText = itens[order].descricao;
 }
-
-
 
 function addRow(tableID) {
 	console.log(tableID);

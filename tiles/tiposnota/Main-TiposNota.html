@@ -1,0 +1,12 @@
+{{ define "Main-TiposNota" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-TipoNota" }}
+{{ template "Edit-TipoNota" }}
+{{ template "Create-TipoNota" }}
+{{ template "List-TiposNota" . }}
+</body>
+</html>
+{{end}}

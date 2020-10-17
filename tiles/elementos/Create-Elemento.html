@@ -10,8 +10,8 @@
                       onclick="setTimeNow('DataCriacaoElementoForInsert');document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
             <form class="w3-container" action="/createElemento" method="POST">
-                <label class="w3-label">Título</label>
-                <input class="w3-input" type="text" name="TituloElementoForInsert" value="">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" name="NomeElementoForInsert" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="DescricaoElementoForInsert" rows="5" value=""></textarea>
 				<header class="w3-container w3-center w3-teal">
@@ -32,7 +32,7 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-itens-create">
 		            <thead>
 		            <tr>
-		                <th>Título</th>
+		                <th>Nome</th>
 		                <th>Descrição</th>
 		                <th>Status</th>
 						<th>Autor</th>

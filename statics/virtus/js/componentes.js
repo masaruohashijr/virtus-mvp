@@ -1,12 +1,12 @@
-function updateComponente(e) {
+function editComponente(e) {
     var editForm = document.getElementById('edit-form');
     // display update form
     editForm.style.display = 'block';
     // get componente id to update
     var componenteId = e.parentNode.parentNode.childNodes[3].innerText;
-    var componenteTitulo = e.parentNode.parentNode.childNodes[5].innerText;
+    var componenteNome = e.parentNode.parentNode.childNodes[5].innerText;
 	document.getElementById('ComponenteIdToUpdate').value = componenteId;
-    document.getElementById('ComponenteTitulo').value = componenteTitulo;
+    document.getElementById('ComponenteNome').value = componenteNome;
 }
 
 function deleteComponente(e) {

@@ -1,0 +1,15 @@
+{{ define "Main-Pilares" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Pilar" }}
+{{ template "Edit-Pilar" }}
+{{ template "Create-Pilar" }}
+{{ template "Delete-Componente-Pilar" }}
+{{ template "Edit-Componente-Pilar" }}
+{{ template "Create-Componente-Pilar" }}
+{{ template "List-Pilares" . }}
+</body>
+</html>
+{{end}}

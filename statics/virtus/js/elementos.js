@@ -5,8 +5,8 @@ function editElemento(e) {
     // get elemento id to update
     var elementoId = e.parentNode.parentNode.childNodes[3].innerText;
 	//alert(elementoId);
-    var elementoTitulo = e.parentNode.parentNode.childNodes[5].innerText;
-	//alert(elementoTitulo);
+    var elementoNome = e.parentNode.parentNode.childNodes[5].innerText;
+	//alert(elementoNome);
     var elementoDescricao = e.parentNode.parentNode.childNodes[7].innerText;
 	//alert(elementoDescricao);
     var elementoAutor = e.parentNode.parentNode.childNodes[9].innerText;
@@ -16,7 +16,7 @@ function editElemento(e) {
     var elementoStatus = e.parentNode.parentNode.childNodes[13].innerText;
 	//alert(elementoStatus);
 	document.getElementById('ElementoIdForUpdate').value = elementoId;
-    document.getElementById('ElementoTituloForUpdate').value = elementoTitulo;
+    document.getElementById('ElementoNomeForUpdate').value = elementoNome;
     document.getElementById('ElementoDescricaoForUpdate').value = elementoDescricao;
     document.getElementById('ElementoAutorForUpdate').value = elementoAutor;
     document.getElementById('ElementoDataCriacaoForUpdate').value = elementoDataCriacao;
@@ -80,6 +80,7 @@ function loadAllowedActions(statusId){
 				removeActions(formulario);
 				// renderizar
 				var actions = JSON.parse(xmlhttp.responseText);
+				alert(xmlhttp.responseText);
 				for(i = 0;i<actions.length;i++){
 					var elementoId = document.getElementById('ElementoIdForUpdate').value;
 					if(!document.getElementById(actions[i].id+'-'+actions[i].name)){
@@ -94,7 +95,7 @@ function loadAllowedActions(statusId){
 						btnAction.onclick = function() {executeAction(elementoId, this.documentId)};
 						formulario.appendChild(btnAction);
 						loadAvailableFeatures('edit',statusId);
-						// alert("Botão "+btnAction.value+" criado! "+btnAction.isAction);
+						alert("Botão "+btnAction.value+" criado! "+btnAction.isAction);
 					}
 				}
 			}

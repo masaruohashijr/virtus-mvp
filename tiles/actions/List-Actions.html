@@ -15,7 +15,7 @@
 					{{if $allowed}}
 					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
-						</a>&nbsp;
+						</a>
 					{{end}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
@@ -48,8 +48,8 @@
                 <td><input type="hidden" value="{{$action.DestinationId}}">{{$action.Destination}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updateaction(this);">Editar</button>
-                    <button class="w3-btn w3-red" onclick="deleteaction(this)">Apagar</button>
+                    <button class="w3-btn w3-teal" onclick="editAction(this);">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteAction(this)">Apagar</button>
                 </td>
 				{{end}}
             </tr>

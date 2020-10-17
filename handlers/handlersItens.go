@@ -1,17 +1,9 @@
 package handlers
 
 import (
-	mdl "virtus/models"
-	//	sec "virtus/security"
-	//	"reflect"
-	//	pq "github.com/lib/pq"
-	//	"html/template"
-	//	"fmt"
 	"log"
-	//	"net/http"
 	"strconv"
-	//	"strings"
-	//	"time"
+	mdl "virtus/models"
 )
 
 // AJAX
@@ -38,7 +30,7 @@ func ListItensHandler(elementoId string) []mdl.Item {
 	var item mdl.Item
 	var i = 1
 	for rows.Next() {
-		rows.Scan(&item.Id, &item.ElementoId, &item.Titulo, &item.Descricao, &item.Avaliacao, &item.AuthorId, &item.AuthorName, &item.CDataCriacao, &item.StatusId, &item.CStatus)
+		rows.Scan(&item.Id, &item.ElementoId, &item.Nome, &item.Descricao, &item.Avaliacao, &item.AuthorId, &item.AuthorName, &item.CDataCriacao, &item.StatusId, &item.CStatus)
 		item.Order = i
 		i++
 		itens = append(itens, item)
@@ -57,7 +49,7 @@ func DeleteItensByElementoHandler(elementoId string) {
 	log.Println("DELETE Itens in Order Id: " + elementoId)
 }
 
-func DeleteItemsHandler(diffDB []mdl.Item) {
+func DeleteItensHandler(diffDB []mdl.Item) {
 	sqlStatement := "DELETE FROM itens WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
@@ -89,9 +81,9 @@ func UpdateItensHandler(itensPage []mdl.Item, itensDB []mdl.Item) {
 }
 
 func hasSomeFieldChanged(itemPage mdl.Item, itemDB mdl.Item) bool {
-	log.Println("itemPage.Titulo: " + itemPage.Titulo)
-	log.Println("itemDB.Titulo: " + itemDB.Titulo)
-	if itemPage.Titulo != itemDB.Titulo {
+	log.Println("itemPage.Nome: " + itemPage.Nome)
+	log.Println("itemDB.Nome: " + itemDB.Nome)
+	if itemPage.Nome != itemDB.Nome {
 		return true
 	} else if itemPage.Descricao != itemDB.Descricao {
 		return true
@@ -104,14 +96,14 @@ func hasSomeFieldChanged(itemPage mdl.Item, itemDB mdl.Item) bool {
 
 func updateItemHandler(i mdl.Item, itemDB mdl.Item) {
 	sqlStatement := "UPDATE itens SET " +
-		"titulo=$1, descricao=$2, avaliacao=$3 WHERE id=$4"
+		"nome=$1, descricao=$2, avaliacao=$3 WHERE id=$4"
 	log.Println(sqlStatement)
 	updtForm, _ := Db.Prepare(sqlStatement)
-	log.Println(i.Titulo)
+	log.Println(i.Nome)
 	log.Println(i.Descricao)
 	log.Println(i.Avaliacao)
 	log.Println(i.Id)
-	_, err := updtForm.Exec(i.Titulo, i.Descricao, i.Avaliacao, i.Id)
+	_, err := updtForm.Exec(i.Nome, i.Descricao, i.Avaliacao, i.Id)
 	if err != nil {
 
 		panic(err.Error())

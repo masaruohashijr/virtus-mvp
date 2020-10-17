@@ -18,7 +18,7 @@ class Item {
 }
 
 function criarItem(){
-	var titulo = document.getElementById('TituloItemForInsert').value;
+	var titulo = document.getElementById('NomeItemForInsert').value;
 	var descricao = document.getElementById('DescricaoItemForInsert').value;
 	var avaliacao = document.getElementById('AvaliacaoItemForInsert').value;
 	var erros = '';
@@ -39,7 +39,7 @@ function updateItem(){
 	var id = document.getElementById('id-edit').value;
 	var order = document.getElementById('order-edit').value;
 	var elementoId = document.getElementById('elementoId-edit').value;
-	var titulo = document.getElementById('TituloItemForUpdate').value;
+	var titulo = document.getElementById('NomeItemForUpdate').value;
 	var descricao = document.getElementById('DescricaoItemForUpdate').value;
 	var avaliacao = document.getElementById('AvaliacaoItemForUpdate').value;
 	var erros = '';
@@ -57,11 +57,11 @@ function updateItem(){
 
 function limparCamposItemForm(tipoForm){
 	if(tipoForm == 'create'){
-		document.getElementById('TituloItemForInsert').value = '';
+		document.getElementById('NomeItemForInsert').value = '';
 		document.getElementById('DescricaoItemForInsert').value = '';
 		document.getElementById('AvaliacaoItemForInsert').value = '';
 	} else {
-		document.getElementById('TituloItemForUpdate').value = '';
+		document.getElementById('NomeItemForUpdate').value = '';
 		document.getElementById('DescricaoItemForUpdate').value = '';
 		document.getElementById('AvaliacaoItemForUpdate').value = '';
 	}
@@ -103,7 +103,7 @@ function editItem(e) {
 	document.getElementById('id-edit').value=id;
 	document.getElementById('order-edit').value=order;
 	document.getElementById('elementoId-edit').value=elementoId;
-	document.getElementById('TituloItemForUpdate').value=titulo;
+	document.getElementById('NomeItemForUpdate').value=titulo;
 	document.getElementById('DescricaoItemForUpdate').value=descricao;
 	document.getElementById('AvaliacaoItemForUpdate').value=avaliacao;
 }	
@@ -116,7 +116,7 @@ function loadItensByElementoId(elementoId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var itensEdit = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-itens-edit")
+				wipeRows("table-itens-edit", itens)
 				itens = [];
 				for(order = 0;order<itensEdit.length;order++){
 					itens[order]=itensEdit[order];

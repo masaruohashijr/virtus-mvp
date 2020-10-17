@@ -1,0 +1,36 @@
+{{define "Create-Componente-Pìlar"}}
+<!-- Create Componente-Pìlar Form -->
+<div class="w3-container">
+    <div id="create-pilar-componente-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Adicionar novo componente ao pilar</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-pilar-componente-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container">
+				<label class="w3-label">Componente</label>
+				<br>
+	            <select class="w3-input" name="ComponentePilarForInsert" id="ComponentePilarForInsert" style="width:100%">
+					{{range $index, $componente := .Componentes }}
+		                <option value="{{$componente.Id}}">
+							{{$componente.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <label class="w3-label">Peso Padrão</label>
+				<input class="w3-input" type="number" id="PesoPadraoForInsert" name="PesoPadraoForInsert" value="">
+				<br>	
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="criarComponentePìlar();"
+					>Criar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

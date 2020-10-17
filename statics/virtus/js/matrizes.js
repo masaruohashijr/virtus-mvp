@@ -4,9 +4,9 @@ function updateMatriz(e) {
     editForm.style.display = 'block';
     // get matriz id to update
     var matrizId = e.parentNode.parentNode.childNodes[3].innerText;
-    var matrizTitulo = e.parentNode.parentNode.childNodes[5].innerText;
+    var matrizNome = e.parentNode.parentNode.childNodes[5].innerText;
 	document.getElementById('MatrizIdToUpdate').value = matrizId;
-    document.getElementById('MatrizTitulo').value = matrizTitulo;
+    document.getElementById('MatrizNome').value = matrizNome;
 }
 
 function deleteMatriz(e) {

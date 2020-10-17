@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
@@ -10,6 +12,7 @@ import (
 	dpk "virtus/db"
 	hd "virtus/handlers"
 	route "virtus/routes"
+	sec "virtus/security"
 )
 
 func determineListenAddress() (string, error) {
@@ -30,95 +33,96 @@ func dbConn() *sql.DB {
 }
 
 func main() {
-
+	sec.Store = sessions.NewCookieStore([]byte("vindixit123581321"))
 	hd.Db = dbConn()
 	// injetando a variável Authenticated
 	dpk.Initialize()
-	http.HandleFunc("/", hd.IndexHandler)
-	http.HandleFunc("/login", hd.LoginHandler)
-	http.HandleFunc("/logout", hd.LogoutHandler)
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", hd.IndexHandler).Methods("GET")
+	r.HandleFunc("/login", hd.LoginHandler).Methods("POST")
+	r.HandleFunc("/logout", hd.LogoutHandler).Methods("GET")
 	// ----------------- WORKFLOWS
-	http.HandleFunc(route.WorkflowsRoute, hd.ListWorkflowsHandler)
-	http.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler)
-	http.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler)
-	http.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler)
+	r.HandleFunc(route.WorkflowsRoute, hd.ListWorkflowsHandler).Methods("GET")
+	r.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler).Methods("POST")
+	r.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler).Methods("POST")
+	r.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler).Methods("POST")
 	// ----------------- ACTIONS
-	http.HandleFunc(route.ActionsRoute, hd.ListActionsHandler)
-	http.HandleFunc("/createAction", hd.CreateActionHandler)
-	http.HandleFunc("/updateAction", hd.UpdateActionHandler)
-	http.HandleFunc("/deleteAction", hd.DeleteActionHandler)
+	r.HandleFunc(route.ActionsRoute, hd.ListActionsHandler).Methods("GET")
+	r.HandleFunc("/createAction", hd.CreateActionHandler).Methods("POST")
+	r.HandleFunc("/updateAction", hd.UpdateActionHandler).Methods("POST")
+	r.HandleFunc("/deleteAction", hd.DeleteActionHandler).Methods("POST")
 	// ----------------- STATUS
-	http.HandleFunc(route.StatusRoute, hd.ListStatusHandler)
-	http.HandleFunc("/createStatus", hd.CreateStatusHandler)
-	http.HandleFunc("/updateStatus", hd.UpdateStatusHandler)
-	http.HandleFunc("/deleteStatus", hd.DeleteStatusHandler)
+	r.HandleFunc(route.StatusRoute, hd.ListStatusHandler).Methods("GET")
+	r.HandleFunc("/createStatus", hd.CreateStatusHandler).Methods("POST")
+	r.HandleFunc("/updateStatus", hd.UpdateStatusHandler).Methods("POST")
+	r.HandleFunc("/deleteStatus", hd.DeleteStatusHandler).Methods("POST")
 	// ----------------- FEATURES
-	http.HandleFunc(route.FeaturesRoute, hd.ListFeaturesHandler)
-	http.HandleFunc("/createFeature", hd.CreateFeatureHandler)
-	http.HandleFunc("/updateFeature", hd.UpdateFeatureHandler)
-	http.HandleFunc("/deleteFeature", hd.DeleteFeatureHandler)
+	r.HandleFunc(route.FeaturesRoute, hd.ListFeaturesHandler).Methods("GET")
+	r.HandleFunc("/createFeature", hd.CreateFeatureHandler).Methods("POST")
+	r.HandleFunc("/updateFeature", hd.UpdateFeatureHandler).Methods("POST")
+	r.HandleFunc("/deleteFeature", hd.DeleteFeatureHandler).Methods("POST")
 	// ----------------- ROLES
-	http.HandleFunc(route.RolesRoute, hd.ListRolesHandler)
-	http.HandleFunc("/createRole", hd.CreateRoleHandler)
-	http.HandleFunc("/updateRole", hd.UpdateRoleHandler)
-	http.HandleFunc("/deleteRole", hd.DeleteRoleHandler)
+	r.HandleFunc(route.RolesRoute, hd.ListRolesHandler).Methods("GET")
+	r.HandleFunc("/createRole", hd.CreateRoleHandler).Methods("POST")
+	r.HandleFunc("/updateRole", hd.UpdateRoleHandler).Methods("POST")
+	r.HandleFunc("/deleteRole", hd.DeleteRoleHandler).Methods("POST")
 	// ----------------- USERS
-	http.HandleFunc(route.UsersRoute, hd.ListUsersHandler)
-	http.HandleFunc("/createUser", hd.CreateUserHandler)
-	http.HandleFunc("/updateUser", hd.UpdateUserHandler)
-	http.HandleFunc("/deleteUser", hd.DeleteUserHandler)
+	r.HandleFunc(route.UsersRoute, hd.ListUsersHandler).Methods("GET")
+	r.HandleFunc("/createUser", hd.CreateUserHandler).Methods("POST")
+	r.HandleFunc("/updateUser", hd.UpdateUserHandler).Methods("POST")
+	r.HandleFunc("/deleteUser", hd.DeleteUserHandler).Methods("POST")
 	// ----------------- CARTEIRAS
-	http.HandleFunc(route.CarteirasRoute, hd.ListCarteirasHandler)
-	http.HandleFunc("/createCarteira", hd.CreateCarteiraHandler)
-	http.HandleFunc("/updateCarteira", hd.UpdateCarteiraHandler)
-	http.HandleFunc("/deleteCarteira", hd.DeleteCarteiraHandler)
+	r.HandleFunc(route.CarteirasRoute, hd.ListCarteirasHandler).Methods("GET")
+	r.HandleFunc("/createCarteira", hd.CreateCarteiraHandler).Methods("POST")
+	r.HandleFunc("/updateCarteira", hd.UpdateCarteiraHandler).Methods("POST")
+	r.HandleFunc("/deleteCarteira", hd.DeleteCarteiraHandler).Methods("POST")
 	// ----------------- EQUIPES
-	http.HandleFunc(route.EquipesRoute, hd.ListEquipesHandler)
-	http.HandleFunc("/createEquipe", hd.CreateEquipeHandler)
-	http.HandleFunc("/updateEquipe", hd.UpdateEquipeHandler)
-	http.HandleFunc("/deleteEquipe", hd.DeleteEquipeHandler)
+	r.HandleFunc(route.EquipesRoute, hd.ListEquipesHandler).Methods("GET")
+	r.HandleFunc("/createEquipe", hd.CreateEquipeHandler).Methods("POST")
+	r.HandleFunc("/updateEquipe", hd.UpdateEquipeHandler).Methods("POST")
+	r.HandleFunc("/deleteEquipe", hd.DeleteEquipeHandler).Methods("POST")
 	// ----------------- ENTIDADES
-	http.HandleFunc(route.EntidadesRoute, hd.ListEntidadesHandler)
-	http.HandleFunc("/createEntidade", hd.CreateEntidadeHandler)
-	http.HandleFunc("/updateEntidade", hd.UpdateEntidadeHandler)
-	http.HandleFunc("/deleteEntidade", hd.DeleteEntidadeHandler)
-	// ----------------- PLANOS
-	http.HandleFunc(route.PlanosRoute, hd.ListPlanosHandler)
-	http.HandleFunc("/createPlano", hd.CreatePlanoHandler)
-	http.HandleFunc("/updatePlano", hd.UpdatePlanoHandler)
-	http.HandleFunc("/deletePlano", hd.DeletePlanoHandler)
+	r.HandleFunc(route.EntidadesRoute, hd.ListEntidadesHandler).Methods("GET")
+	r.HandleFunc("/createEntidade", hd.CreateEntidadeHandler).Methods("POST")
+	r.HandleFunc("/updateEntidade", hd.UpdateEntidadeHandler).Methods("POST")
+	r.HandleFunc("/deleteEntidade", hd.DeleteEntidadeHandler).Methods("POST")
 	// ----------------- CICLOS
-	http.HandleFunc(route.CiclosRoute, hd.ListCiclosHandler)
-	http.HandleFunc("/createCiclo", hd.CreateCicloHandler)
-	http.HandleFunc("/updateCiclo", hd.UpdateCicloHandler)
-	http.HandleFunc("/deleteCiclo", hd.DeleteCicloHandler)
+	r.HandleFunc(route.CiclosRoute, hd.ListCiclosHandler).Methods("GET")
+	r.HandleFunc("/createCiclo", hd.CreateCicloHandler).Methods("POST")
+	r.HandleFunc("/updateCiclo", hd.UpdateCicloHandler).Methods("POST")
+	r.HandleFunc("/deleteCiclo", hd.DeleteCicloHandler).Methods("POST")
 	// ----------------- MATRIZES
-	http.HandleFunc(route.MatrizesRoute, hd.ListMatrizesHandler)
-	http.HandleFunc("/createMatriz", hd.CreateMatrizHandler)
-	http.HandleFunc("/updateMatriz", hd.UpdateMatrizHandler)
-	http.HandleFunc("/deleteMatriz", hd.DeleteMatrizHandler)
+	r.HandleFunc(route.MatrizesRoute, hd.ListMatrizesHandler).Methods("GET")
+	r.HandleFunc("/createMatriz", hd.CreateMatrizHandler).Methods("POST")
+	r.HandleFunc("/updateMatriz", hd.UpdateMatrizHandler).Methods("POST")
+	r.HandleFunc("/deleteMatriz", hd.DeleteMatrizHandler).Methods("POST")
 	// ----------------- COMPONENTES
-	http.HandleFunc(route.ComponentesRoute, hd.ListComponentesHandler)
-	http.HandleFunc("/createComponente", hd.CreateComponenteHandler)
-	http.HandleFunc("/updateComponente", hd.UpdateComponenteHandler)
-	http.HandleFunc("/deleteComponente", hd.DeleteComponenteHandler)
+	r.HandleFunc(route.ComponentesRoute, hd.ListComponentesHandler).Methods("GET")
+	r.HandleFunc("/createComponente", hd.CreateComponenteHandler).Methods("POST")
+	r.HandleFunc("/updateComponente", hd.UpdateComponenteHandler).Methods("POST")
+	r.HandleFunc("/deleteComponente", hd.DeleteComponenteHandler).Methods("POST")
 	// ----------------- ELEMENTOS
-	http.HandleFunc(route.ElementosRoute, hd.ListElementosHandler)
-	http.HandleFunc("/createElemento", hd.CreateElementoHandler)
-	http.HandleFunc("/updateElemento", hd.UpdateElementoHandler)
-	http.HandleFunc("/deleteElemento", hd.DeleteElementoHandler)
-	// ----------------- ITEMS
-	http.HandleFunc("/loadItensByElementoId", hd.LoadItensByElementoId)
-	http.HandleFunc("/loadFeaturesByRoleId", hd.LoadFeaturesByRoleId)
-	http.HandleFunc("/loadRolesByActionId", hd.LoadRolesByActionId)
-	http.HandleFunc("/loadActivitiesByWorkflowId", hd.LoadActivitiesByWorkflowId)
-	http.HandleFunc("/loadAllowedActions", hd.LoadAllowedActions)
-	http.HandleFunc("/loadAvailableFeatures", hd.LoadAvailableFeatures)
-	http.HandleFunc("/executeAction", hd.ExecuteActionHandler)
+	r.HandleFunc(route.ElementosRoute, hd.ListElementosHandler).Methods("GET")
+	r.HandleFunc("/createElemento", hd.CreateElementoHandler).Methods("POST")
+	r.HandleFunc("/updateElemento", hd.UpdateElementoHandler).Methods("POST")
+	r.HandleFunc("/deleteElemento", hd.DeleteElementoHandler).Methods("POST")
+	// ----------------- Load Entidades
+	r.HandleFunc("/loadPlanosByEntidadeId", hd.LoadPlanosByEntidadeId).Methods("GET")
+	r.HandleFunc("/loadCiclosByEntidadeId", hd.LoadCiclosByEntidadeId).Methods("GET")
+	// -----------------
+	r.HandleFunc("/loadItensByElementoId", hd.LoadItensByElementoId).Methods("GET")
+	r.HandleFunc("/loadFeaturesByRoleId", hd.LoadFeaturesByRoleId).Methods("GET")
+	r.HandleFunc("/loadRolesByActionId", hd.LoadRolesByActionId).Methods("GET")
+	r.HandleFunc("/loadActivitiesByWorkflowId", hd.LoadActivitiesByWorkflowId).Methods("GET")
+	r.HandleFunc("/loadAllowedActions", hd.LoadAllowedActions).Methods("GET")
+	r.HandleFunc("/loadAvailableFeatures", hd.LoadAvailableFeatures).Methods("GET")
+	r.HandleFunc("/executeAction", hd.ExecuteActionHandler).Methods("GET")
 	// ----------------- STATICS
 	http.Handle("/statics/",
 		http.StripPrefix("/statics/", http.FileServer(http.Dir("./statics"))),
 	)
+	http.Handle("/", r)
 	addr, err := determineListenAddress()
 	if err != nil {
 		log.Fatal(err)

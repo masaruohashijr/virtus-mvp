@@ -3,9 +3,15 @@
 	{{ template "Header" .Title }}
 <body>
 {{ template "Menu" . }}
-{{ template "Delete-Entidade" }}
-{{ template "Edit-Entidade" }}
-{{ template "Create-Entidade" }}
+{{ template "Delete-Entidade" . }}
+{{ template "Edit-Entidade" . }}
+{{ template "Create-Entidade" . }}
+{{ template "Delete-Plano" . }}
+{{ template "Edit-Plano" . }}
+{{ template "Create-Plano" . }}
+{{ template "Delete-Ciclo-Entidade" . }}
+{{ template "Edit-Ciclo-Entidade" . }}
+{{ template "Create-Ciclo-Entidade" . }}
 {{ template "List-Entidades" . }}
 </body>
 </html>

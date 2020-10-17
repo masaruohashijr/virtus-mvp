@@ -28,7 +28,10 @@
             <tr>
                 <th>Ord</th>
                 <th>Id</th>
-                <th>Título</th>
+                <th>Nome</th>
+                <th>Tipo de Média</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -39,10 +42,13 @@
             <tr>
                 <td>#{{$componente.Order}}</td>
                 <td>{{$componente.Id}}</td>
-                <td>{{$componente.Titulo}}</td>
+                <td>{{$componente.Nome}}<input type="hidden" value="{{$componente.Descricao}}"></td>
+                <td>{{$componente.TipoMedia}}</td>
+                <td>{{$componente.Autor}}</td>
+                <td>{{$componente.CriadoEm}}<input type="hidden" value="{{$componente.IdVersaoOrigem}}"></td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updateComponente(this);">Editar</button>
+                    <button class="w3-btn w3-teal" onclick="editComponente(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteComponente(this)">Apagar</button>
                 </td>
 				{{end}}

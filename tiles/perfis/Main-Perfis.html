@@ -1,0 +1,12 @@
+{{ define "Main-Perfis" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Perfil" }}
+{{ template "Edit-Perfil" . }}
+{{ template "Create-Perfil" . }}
+{{ template "List-Perfis" . }}
+</body>
+</html>
+{{end}}

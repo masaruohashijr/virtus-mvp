@@ -4,9 +4,9 @@ function updateEquipe(e) {
     editForm.style.display = 'block';
     // get equipe id to update
     var equipeId = e.parentNode.parentNode.childNodes[3].innerText;
-    var equipeTitulo = e.parentNode.parentNode.childNodes[5].innerText;
+    var equipeNome = e.parentNode.parentNode.childNodes[5].innerText;
 	document.getElementById('EquipeIdToUpdate').value = equipeId;
-    document.getElementById('EquipeTitulo').value = equipeTitulo;
+    document.getElementById('EquipeNome').value = equipeNome;
 }
 
 function deleteEquipe(e) {

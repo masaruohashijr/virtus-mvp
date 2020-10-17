@@ -102,14 +102,14 @@ func createFKey() {
 		" ON DELETE RESTRICT" +
 		" NOT VALID")
 
-	// MATRIZES
-	db.Exec("ALTER TABLE ONLY public.matrizes" +
+	// PILARES
+	db.Exec("ALTER TABLE ONLY public.pilares" +
 		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
 		" REFERENCES public.users (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
 		" NOT VALID")
 
-	db.Exec("ALTER TABLE ONLY public.matrizes" +
+	db.Exec("ALTER TABLE ONLY public.pilares" +
 		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
 		" REFERENCES public.status (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
@@ -146,6 +146,13 @@ func createFKey() {
 
 	// PLANOS
 	db.Exec("ALTER TABLE ONLY public.planos" +
+		" ADD CONSTRAINT entidades_fkey FOREIGN KEY (entidade_id)" +
+		" REFERENCES public.entidades (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.planos" +
 		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
 		" REFERENCES public.users (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
@@ -154,6 +161,14 @@ func createFKey() {
 	db.Exec("ALTER TABLE ONLY public.planos" +
 		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
 		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// CICLOS ENTIDADES
+	db.Exec("ALTER TABLE ONLY public.ciclos_entidades" +
+		" ADD CONSTRAINT entidades_fkey FOREIGN KEY (entidade_id)" +
+		" REFERENCES public.entidades (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
 		" ON DELETE RESTRICT" +
 		" NOT VALID")
@@ -287,7 +302,7 @@ func createPKey() {
 	db.Exec("ALTER TABLE ONLY public.entidades ADD CONSTRAINT entidades_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.planos ADD CONSTRAINT planos_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.ciclos ADD CONSTRAINT ciclos_pkey PRIMARY KEY (id)")
-	db.Exec("ALTER TABLE ONLY public.matrizes ADD CONSTRAINT matrizes_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY public.pilares ADD CONSTRAINT pilares_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.componentes ADD CONSTRAINT componentes_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.elementos ADD CONSTRAINT elementos_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY public.features ADD CONSTRAINT features_pkey PRIMARY KEY (id)")
@@ -520,7 +535,7 @@ func createSeq() {
 		" NO MAXVALUE" +
 		" CACHE 1")
 	// Sequence MATRIZES_ID_SEQ
-	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.matrizes_id_seq " +
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.pilares_id_seq " +
 		" START WITH 1" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
@@ -528,6 +543,13 @@ func createSeq() {
 		" CACHE 1")
 	// Sequence CICLOS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.ciclos_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence CICLOS_ENTIDADES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.ciclos_entidades_id_seq " +
 		" START WITH 1" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
@@ -641,7 +663,6 @@ func createTable() {
 			" mobile character varying(255) NOT NULL," +
 			" role_id integer NOT NULL," +
 			" name character varying(255))")
-
 	// Table NOTAS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.notas (" +
@@ -650,17 +671,16 @@ func createTable() {
 			" tipo_nota_id integer," +
 			" nota double precision," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone )")
-
+			" criado_em timestamp without time zone )")
 	// Table ITENS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.itens (" +
 			" id integer DEFAULT nextval('public.itens_id_seq'::regclass) NOT NULL," +
 			" elemento_id integer," +
-			" titulo character varying(255) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" avaliacao character varying(4000)," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" author_id integer," +
 			" status_id integer)")
 
@@ -676,87 +696,102 @@ func createTable() {
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.elementos (" +
 			" id integer DEFAULT nextval('public.elementos_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" peso integer DEFAULT 1 NOT NULL," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" status_id integer)")
 
 	// Table COMPONENTES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.componentes (" +
 			" id integer DEFAULT nextval('public.componentes_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
 			" tipo_media character varying(20)," +
 			" peso integer," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" status_id integer)")
 
-	// Table MATRIZES
+	// Table PILARES
 	db.Exec(
-		" CREATE TABLE IF NOT EXISTS public.matrizes (" +
-			" id integer DEFAULT nextval('public.matrizes_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
+		" CREATE TABLE IF NOT EXISTS public.pilares (" +
+			" id integer DEFAULT nextval('public.pilares_id_seq'::regclass) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
 			" tipo_media character varying(20)," +
 			" peso integer," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" status_id integer)")
 
 	// Table CICLOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.ciclos (" +
 			" id integer DEFAULT nextval('public.ciclos_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
-			" tipo_media character varying(20)," +
-			" peso integer," +
+			" nome character varying(255) NOT NULL," +
+			" descricao character varying(4000) NOT NULL," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table CICLOS_ENTIDADES
+	db.Exec(
+		" CREATE TABLE public.ciclos_entidades (" +
+			" id integer DEFAULT nextval('ciclos_entidades_id_seq'::regclass)," +
+			" ciclo_id integer," +
+			" entidade_id integer," +
+			" tipo_media integer," +
+			" nota double precision," +
+			" inicia_em timestamp without time zone," +
+			" termina_em timestamp without time zone," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
 			" status_id integer)")
 
 	// Table ENTIDADES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.entidades (" +
 			" id integer DEFAULT nextval('public.entidades_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
 			" tipo_media character varying(20)," +
 			" peso integer," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" status_id integer)")
 
 	// Table PLANOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.planos (" +
 			" id integer DEFAULT nextval('public.planos_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
-			" tipo_media character varying(20)," +
-			" peso integer," +
+			" entidade_id integer," +
+			" nome character varying(255) NOT NULL," +
+			" descricao character varying(4000) NOT NULL," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" status_id integer)")
 
 	// Table EQUIPES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.equipes (" +
 			" id integer DEFAULT nextval('public.equipes_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
 			" tipo_media character varying(20)," +
 			" peso integer," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" status_id integer)")
 
 	// Table CARTEIRAS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.carteiras (" +
 			" id integer DEFAULT nextval('public.carteiras_id_seq'::regclass) NOT NULL," +
-			" titulo character varying(255) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
 			" tipo_media character varying(20)," +
 			" peso integer," +
 			" author_id integer," +
-			" data_criacao timestamp without time zone," +
+			" criado_em timestamp without time zone," +
 			" status_id integer)")
 }

@@ -13,7 +13,7 @@
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createCiclo")}}
 					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
+					    <a style="margin-top: 6px" href="#" onclick="resetCicloForms();document.getElementById('create-form').style.display='block'">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
 					{{end}}
@@ -28,7 +28,9 @@
             <tr>
                 <th>Ord</th>
                 <th>Id</th>
-                <th>Título</th>
+                <th>Nome</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -39,10 +41,12 @@
             <tr>
                 <td>#{{$ciclo.Order}}</td>
                 <td>{{$ciclo.Id}}</td>
-                <td>{{$ciclo.Titulo}}</td>
+                <td>{{$ciclo.Nome}}<input type="hidden" value="{{$ciclo.Descricao}}"></td>
+                <td>{{$ciclo.AuthorName}}</td>
+                <td>{{$ciclo.C_CriadoEm}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updateCiclo(this);">Editar</button>
+                    <button class="w3-btn w3-teal" onclick="editCiclo(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteCiclo(this)">Apagar</button>
                 </td>
 				{{end}}

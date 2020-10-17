@@ -28,7 +28,7 @@
             <tr>
                 <th>Ord</th>
                 <th>Id</th>
-                <th>Título</th>
+                <th>Nome</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -39,10 +39,10 @@
             <tr>
                 <td>#{{$entidade.Order}}</td>
                 <td>{{$entidade.Id}}</td>
-                <td>{{$entidade.Titulo}}</td>
+                <td>{{$entidade.Nome}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updateEntidade(this);">Editar</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEntidade(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteEntidade(this)">Apagar</button>
                 </td>
 				{{end}}
