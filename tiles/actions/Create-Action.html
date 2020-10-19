@@ -2,21 +2,18 @@
 <!-- Create Action -->
 <div class="w3-container">
     <div id="create-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Criar nova ação</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container" action="/createAction" method="post">
+            <form class="w3-container" action="/createAction" method="post" id="formulario-action-create">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Name" value="">
-				<br>	
 				<label class="w3-label">Status Origem</label>
-				<br>
 				<label class="w3-label">Exceto</label>&nbsp;<input type="checkbox" name="Except" value="Except">
-				<br>	
 	            <select class="w3-input" name="OriginStatusForInsert" id="OriginStatusForInsert" style="width:100%">
 		            <option value=""></option>
 					{{range $index, $status := .Statuss }}
@@ -25,9 +22,7 @@
 						</option>
 		            {{end}}
 	            </select>
-				<br>
 				<label class="w3-label">Status Destino</label>
-				<br>	
 	            <select class="w3-input" name="DestinationStatusForInsert" id="DestinationStatusForInsert" style="width:100%">
 					<option value=""></option>
 					{{range $index, $status := .Statuss }}
@@ -36,7 +31,8 @@
 						</option>
 		            {{end}}
 	            </select>
-				<br>
+                <label class="w3-label">Descrição</label>
+                <textarea class="w3-input" name="Description" id="ActionDescriptionForInsert" rows="5" value=""></textarea>
                 <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
             </form>
         </div>

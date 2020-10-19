@@ -1,4 +1,4 @@
-function updaterole(e) {
+function editRole(e) {
 	// resetando
 	resetRolesEditForm();
     var editForm = document.getElementById('edit-form');
@@ -7,13 +7,15 @@ function updaterole(e) {
     // get role id to update
     var roleId = e.parentNode.parentNode.childNodes[3].innerText;
     var roleName = e.parentNode.parentNode.childNodes[5].innerText;
-	document.getElementById('roleIdToUpdate').value = roleId;
-    document.getElementById('roleName').value = roleName;
+    var roleDescription = e.parentNode.parentNode.childNodes[7].innerText;
+	document.getElementById('RoleIdForUpdate').value = roleId;
+    document.getElementById('RoleNameForUpdate').value = roleName;
+    document.getElementById('RoleDescriptionForUpdate').value = roleDescription;
 	// carregar as features do papel
 	loadFeaturesByRoleId(roleId);
 }
 
-function deleterole(e) {
+function deleteRole(e) {
     var deleteForm = document.getElementById('delete-form');
     deleteForm.style.display = 'block';
     var roleId = e.parentNode.parentNode.childNodes[3].innerText;
@@ -21,8 +23,7 @@ function deleterole(e) {
 }
 
 function resetRolesEditForm(){
-	document.getElementById('roleName').value = '';
-	document.getElementById('FeaturesForUpdate').value='';
+	document.getElementById('formulario-perfil-edit').reset();
 }
 
 function loadRolesByActivityId(activityId){

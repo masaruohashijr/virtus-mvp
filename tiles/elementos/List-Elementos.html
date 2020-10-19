@@ -31,7 +31,7 @@
                 <th>Nome</th>
                 <th>Descrição</th>
                 <th>Autor</th>
-                <th>Data de Criação</th>
+                <th>Criado Em</th>
                 <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
@@ -46,7 +46,7 @@
                 <td>{{$elemento.Nome}}</td>
                 <td>{{$elemento.Descricao}}</td>
                 <td>{{$elemento.AuthorName}}</td>
-                <td>{{$elemento.CDataCriacao}}</td>
+                <td>{{$elemento.C_CriadoEm}}</td>
                 <td>{{$elemento.CStatus}}<input type="hidden" id="ElementoStatusId" value="{{$elemento.StatusId}}"></td>
 				{{if $allowed}}
                 <td>

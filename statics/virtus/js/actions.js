@@ -28,11 +28,13 @@ function editAction(e) {
     // get action id to update
     var actionId = e.parentNode.parentNode.childNodes[3].innerText;
     var actionName = e.parentNode.parentNode.childNodes[5].innerText;
+    var actionDescription = e.parentNode.parentNode.childNodes[5].childNodes[0].value;
     var except = e.parentNode.parentNode.childNodes[7].innerText;
     var originId = e.parentNode.parentNode.childNodes[9].childNodes[0].value;
     var destinationId = e.parentNode.parentNode.childNodes[11].childNodes[0].value;
-	document.getElementById('actionIdForUpdate').value = actionId;
-    document.getElementById('actionName').value = actionName;
+	document.getElementById('ActionIdForUpdate').value = actionId;
+    document.getElementById('ActionNameForUpdate').value = actionName;
+    document.getElementById('ActionDescriptionForUpdate').value = actionDescription;
 	if(except=='false'){
 		document.getElementById('ExceptForUpdate').checked = false;
 	} else {
@@ -50,9 +52,6 @@ function deleteAction(e) {
 }
 
 function resetActionsEditForm(){
-	document.getElementById('actionIdForUpdate').value = '';
-	document.getElementById('actionName').value='';
-	document.getElementById('ExceptForUpdate').checked = false;
-    document.getElementById('OriginStatusForUpdate').value = '';
-    document.getElementById('DestinationStatusForUpdate').value = '';
+	document.getElementById('formulario-action-create').reset();
+	document.getElementById('formulario-action-edit').reset();
 }

@@ -33,7 +33,11 @@
                 <th>Username</th>
                 <th>E-mail</th>
                 <th>Celular</th>
-                <th>Papel</th>
+                <th>Escritório</th>
+                <th>Perfil</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -49,9 +53,16 @@
                 <td>{{$user.Email}}</td>
                 <td>{{$user.Mobile}}</td>
                 <td>
+					<input type="hidden" value="{{$user.Escritorio}}">
+					{{$user.EscritorioNome}}
+				</td>
+                <td>
 					<input type="hidden" value="{{$user.Role}}">
 					{{$user.RoleName}}
 				</td>
+				<td>{{$user.AuthorName}}</td>
+				<td>{{$user.C_CriadoEm}}</td>
+				<td>{{$user.CStatus}}</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="updateUser(this);">Editar</button>

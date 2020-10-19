@@ -20,7 +20,7 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 		statusElementoId := GetStartStatus("elemento")
 		nome := r.FormValue("NomeElementoForInsert")
 		descricao := r.FormValue("DescricaoElementoForInsert")
-		sqlStatement := "INSERT INTO elementos(nome, descricao, author_id, data_criacao, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		sqlStatement := "INSERT INTO elementos(nome, descricao, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 		elementoId := 0
 		authorId := strconv.FormatInt(GetUserInCookie(w, r).Id, 10)
 		err := Db.QueryRow(sqlStatement, nome, descricao, authorId, time.Now(), statusElementoId).Scan(&elementoId)
@@ -40,7 +40,7 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				avaliacaoItem := strings.Split(array[5], ":")[1]
 				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				sqlStatement := "INSERT INTO public.itens( " +
-					" elemento_id, nome, descricao, avaliacao, data_criacao, author_id, status_id ) " +
+					" elemento_id, nome, descricao, avaliacao, criado_em, author_id, status_id ) " +
 					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
 				//				log.Println("elementoId: " + strconv.Itoa(elementoId))
@@ -125,7 +125,7 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				item = diffPage[i]
 				log.Println("Elemento Id: " + strconv.FormatInt(item.ElementoId, 10))
 				sqlStatement := "INSERT INTO " +
-					"itens(elemento_id, nome, descricao, avaliacao, data_criacao, author_id, status_id) " +
+					"itens(elemento_id, nome, descricao, avaliacao, criado_em, author_id, status_id) " +
 					"VALUES ($1,$2,$3,$4,TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS'),$6,$7) RETURNING id"
 				log.Println(sqlStatement)
 				Db.QueryRow(sqlStatement, elementoId, item.Nome, item.Descricao, item.Avaliacao, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
@@ -183,7 +183,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 			" a.nome, " +
 			" coalesce(a.descricao,''), " +
 			" coalesce(b.name,'') as author_name, " +
-			" coalesce(to_char(a.data_criacao,'DD/MM/YYYY'),'') as data_criacao, " +
+			" coalesce(to_char(a.criado_em,'DD/MM/YYYY'),'') as criado_em, " +
 			" a.peso, " +
 			" coalesce(c.name,'') as cstatus, " +
 			" a.status_id " +
@@ -203,7 +203,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 				&elemento.Nome,
 				&elemento.Descricao,
 				&elemento.AuthorName,
-				&elemento.CDataCriacao,
+				&elemento.C_CriadoEm,
 				&elemento.Peso,
 				&elemento.CStatus,
 				&elemento.StatusId)

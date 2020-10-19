@@ -63,7 +63,7 @@ func main() {
 	r.HandleFunc("/updateFeature", hd.UpdateFeatureHandler).Methods("POST")
 	r.HandleFunc("/deleteFeature", hd.DeleteFeatureHandler).Methods("POST")
 	// ----------------- ROLES
-	r.HandleFunc(route.RolesRoute, hd.ListRolesHandler).Methods("GET")
+	r.HandleFunc(route.RolesRoute, hd.ListPerfisHandler).Methods("GET")
 	r.HandleFunc("/createRole", hd.CreateRoleHandler).Methods("POST")
 	r.HandleFunc("/updateRole", hd.UpdateRoleHandler).Methods("POST")
 	r.HandleFunc("/deleteRole", hd.DeleteRoleHandler).Methods("POST")
@@ -72,16 +72,6 @@ func main() {
 	r.HandleFunc("/createUser", hd.CreateUserHandler).Methods("POST")
 	r.HandleFunc("/updateUser", hd.UpdateUserHandler).Methods("POST")
 	r.HandleFunc("/deleteUser", hd.DeleteUserHandler).Methods("POST")
-	// ----------------- CARTEIRAS
-	r.HandleFunc(route.CarteirasRoute, hd.ListCarteirasHandler).Methods("GET")
-	r.HandleFunc("/createCarteira", hd.CreateCarteiraHandler).Methods("POST")
-	r.HandleFunc("/updateCarteira", hd.UpdateCarteiraHandler).Methods("POST")
-	r.HandleFunc("/deleteCarteira", hd.DeleteCarteiraHandler).Methods("POST")
-	// ----------------- EQUIPES
-	r.HandleFunc(route.EquipesRoute, hd.ListEquipesHandler).Methods("GET")
-	r.HandleFunc("/createEquipe", hd.CreateEquipeHandler).Methods("POST")
-	r.HandleFunc("/updateEquipe", hd.UpdateEquipeHandler).Methods("POST")
-	r.HandleFunc("/deleteEquipe", hd.DeleteEquipeHandler).Methods("POST")
 	// ----------------- ENTIDADES
 	r.HandleFunc(route.EntidadesRoute, hd.ListEntidadesHandler).Methods("GET")
 	r.HandleFunc("/createEntidade", hd.CreateEntidadeHandler).Methods("POST")
@@ -92,11 +82,16 @@ func main() {
 	r.HandleFunc("/createCiclo", hd.CreateCicloHandler).Methods("POST")
 	r.HandleFunc("/updateCiclo", hd.UpdateCicloHandler).Methods("POST")
 	r.HandleFunc("/deleteCiclo", hd.DeleteCicloHandler).Methods("POST")
-	// ----------------- MATRIZES
-	r.HandleFunc(route.MatrizesRoute, hd.ListMatrizesHandler).Methods("GET")
-	r.HandleFunc("/createMatriz", hd.CreateMatrizHandler).Methods("POST")
-	r.HandleFunc("/updateMatriz", hd.UpdateMatrizHandler).Methods("POST")
-	r.HandleFunc("/deleteMatriz", hd.DeleteMatrizHandler).Methods("POST")
+	// ----------------- PILARES
+	r.HandleFunc(route.PilaresRoute, hd.ListPilaresHandler).Methods("GET")
+	r.HandleFunc("/createPilar", hd.CreatePilarHandler).Methods("POST")
+	r.HandleFunc("/updatePilar", hd.UpdatePilarHandler).Methods("POST")
+	r.HandleFunc("/deletePilar", hd.DeletePilarHandler).Methods("POST")
+	// ----------------- ESCRITORIOS
+	r.HandleFunc(route.EscritoriosRoute, hd.ListEscritoriosHandler).Methods("GET")
+	r.HandleFunc("/createEscritorio", hd.CreateEscritorioHandler).Methods("POST")
+	r.HandleFunc("/updateEscritorio", hd.UpdateEscritorioHandler).Methods("POST")
+	r.HandleFunc("/deleteEscritorio", hd.DeleteEscritorioHandler).Methods("POST")
 	// ----------------- COMPONENTES
 	r.HandleFunc(route.ComponentesRoute, hd.ListComponentesHandler).Methods("GET")
 	r.HandleFunc("/createComponente", hd.CreateComponenteHandler).Methods("POST")

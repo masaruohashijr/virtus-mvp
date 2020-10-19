@@ -2,7 +2,7 @@
 <!-- Create User -->
 <div class="w3-container">
     <div id="create-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Criar novo usuário</h2>
@@ -21,9 +21,16 @@
                 <input class="w3-input" type="text" name="Email" value="">
                 <label class="w3-label">Celular</label>
                 <input class="w3-input" type="text" name="Mobile" value="">
-				<label class="w3-label">Papel</label>
-				<br>	
-				<br>
+				<label class="w3-label">Escritório</label>
+	            <select class="w3-input" name="EscritorioForInsert" id="EscritorioForInsert">
+					<option value=""></option>
+					{{range $index, $escritorio := .Escritorios }}
+		                <option value="{{$escritorio.Id}}" {{if eq true $escritorio.Selected}} selected="selected"{{end}}>
+							{{$escritorio.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<label class="w3-label">Perfil</label>
 	            <select class="w3-input" name="RoleForInsert" id="RoleForInsert">
 					<option value=""></option>
 					{{range $index, $role := .Roles }}

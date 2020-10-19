@@ -2,7 +2,7 @@
 <!-- Create Perfil -->
 <div class="w3-container">
     <div id="create-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Criar novo perfil</h2>
@@ -10,12 +10,10 @@
                       onclick="document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/createPerfil" method="post">
+            <form class="w3-container" action="/createRole" method="post">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Name" value="">
                 <label class="w3-label">Funcionalidades</label>
-				<br>	
-				<br>	
 	            <select class="w3-input" name="FeaturesForInsert" id="FeaturesForInsert" multiple style="width:100%">
 					{{range $index, $feature := .Features }}
 		                <option value="{{$feature.Id}}">
@@ -23,7 +21,8 @@
 						</option>
 		            {{end}}
 	            </select>
-				<br>
+                <label class="w3-label">Descrição</label>
+                <textarea class="w3-input" name="Description" id="RoleDescriptionForInsert" rows="5" value=""></textarea>
                 <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
             </form>
         </div>

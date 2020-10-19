@@ -30,7 +30,7 @@ func ListItensHandler(elementoId string) []mdl.Item {
 	var item mdl.Item
 	var i = 1
 	for rows.Next() {
-		rows.Scan(&item.Id, &item.ElementoId, &item.Nome, &item.Descricao, &item.Avaliacao, &item.AuthorId, &item.AuthorName, &item.CDataCriacao, &item.StatusId, &item.CStatus)
+		rows.Scan(&item.Id, &item.ElementoId, &item.Nome, &item.Descricao, &item.Avaliacao, &item.AuthorId, &item.AuthorName, &item.C_CriadoEm, &item.StatusId, &item.CStatus)
 		item.Order = i
 		i++
 		itens = append(itens, item)

@@ -30,6 +30,9 @@
                 <th>Id</th>
                 <th>Nome</th>
                 <th>Código</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -40,12 +43,15 @@
             <tr>
                 <td>#{{$feature.Order}}</td>
                 <td>{{$feature.Id}}</td>
-                <td>{{$feature.Name}}</td>
+                <td>{{$feature.Name}}<input type="hidden" value="{{$feature.Description}}"></td>
                 <td>{{$feature.Code}}</td>
+                <td>{{$feature.AuthorName}}</td>
+                <td>{{$feature.C_CreatedAt}}</td>
+                <td>{{$feature.CStatus}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updatefeature(this);">Editar</button>
-                    <button class="w3-btn w3-red" onclick="deletefeature(this)">Apagar</button>
+                    <button class="w3-btn w3-teal" onclick="editFeature(this);">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteFeature(this)">Apagar</button>
                 </td>
 				{{end}}
             </tr>

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
 	sec "virtus/security"
@@ -34,11 +35,9 @@ func ExecuteActionHandler(w http.ResponseWriter, r *http.Request) {
 		" where id = $1) where id = $2"
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
-	sec.CheckInternalServerError(err, w)
 	if err != nil {
 		panic(err.Error())
 	}
-	sec.CheckInternalServerError(err, w)
 	updtForm.Exec(actionId, id)
 	log.Println("UPDATE: Id: " + actionId)
 
@@ -48,7 +47,6 @@ func ExecuteActionHandler(w http.ResponseWriter, r *http.Request) {
 	var status mdl.Status
 	for rows.Next() {
 		err = rows.Scan(&status.Id, &status.Name)
-		sec.CheckInternalServerError(err, w)
 	}
 	log.Println("Retornando o Status: " + strconv.FormatInt(status.Id, 10) + " - " + status.Name)
 	jsonStatus, _ := json.Marshal(status)
@@ -59,6 +57,7 @@ func ExecuteActionHandler(w http.ResponseWriter, r *http.Request) {
 func CreateActionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Create Action")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		currentUser := GetUserInCookie(w, r)
 		name := r.FormValue("Name")
 		except := r.FormValue("Except")
 		otherThan := false
@@ -70,21 +69,26 @@ func CreateActionHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(originStatus)
 		destinationStatus := r.Form["DestinationStatusForInsert"]
 		log.Println(destinationStatus)
-		sqlStatement := "INSERT INTO actions(name, origin_status_id, destination_status_id, other_than) VALUES ($1, $2, $3, $4) RETURNING id"
+		description := r.FormValue("DescriptionForInsert")
+		sqlStatement := "INSERT INTO actions(name, origin_status_id, destination_status_id, other_than, description, author_id, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 		actionId := 0
-		err := Db.QueryRow(sqlStatement, name, originStatus[0], destinationStatus[0], otherThan).Scan(&actionId)
-		sec.CheckInternalServerError(err, w)
+		err := Db.QueryRow(
+			sqlStatement,
+			name,
+			originStatus[0],
+			destinationStatus[0],
+			otherThan,
+			description,
+			currentUser.Id,
+			time.Now()).Scan(&actionId)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		sqlStatement = "INSERT INTO actions_status(action_id,origin_status_id,destination_status_id) VALUES ($1,$2,$3)"
 		Db.QueryRow(sqlStatement, actionId, originStatus[0], destinationStatus[0])
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		log.Println("INSERT: Id: " + strconv.Itoa(actionId) + " | Name: " + name)
 		http.Redirect(w, r, route.ActionsRoute, 301)
 	} else {
@@ -97,6 +101,7 @@ func UpdateActionHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		actionId := r.FormValue("Id")
 		name := r.FormValue("Name")
+		description := r.FormValue("Description")
 		except := r.FormValue("ExceptForUpdate")
 		otherThan := false
 		if except != "" {
@@ -109,8 +114,7 @@ func UpdateActionHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(destinationStatus)
 		query := "SELECT origin_status_id, destination_status_id FROM actions_status WHERE action_id = $1 "
 		log.Println("List Action -> Query: " + query)
-		rows, err := Db.Query(query, actionId)
-		sec.CheckInternalServerError(err, w)
+		rows, _ := Db.Query(query, actionId)
 		originStatusDB := ""
 		destinationStatusDB := ""
 		for rows.Next() {
@@ -124,25 +128,20 @@ func UpdateActionHandler(w http.ResponseWriter, r *http.Request) {
 				panic(err.Error())
 			}
 			deleteForm.Exec(actionId)
-			sec.CheckInternalServerError(err, w)
 			log.Println("DELETE Action_Status: Id: " + actionId)
 		}
-		sqlStatement := "UPDATE actions SET name=$1, origin_status_id=$2, destination_status_id=$3, other_than=$4 WHERE id=$5"
+		sqlStatement := "UPDATE actions SET name=$1, origin_status_id=$2, destination_status_id=$3, other_than=$4, description=$5 WHERE id=$6"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(name, originStatus[0], destinationStatus[0], otherThan, actionId)
+		updtForm.Exec(name, originStatus[0], destinationStatus[0], otherThan, description, actionId)
 		log.Println("UPDATE: Id: " + actionId + " | Name: " + name)
 		sqlStatement = "INSERT INTO actions_status(action_id,origin_status_id,destination_status_id) VALUES ($1,$2,$3)"
 		Db.QueryRow(sqlStatement, actionId, originStatus[0], destinationStatus[0])
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		http.Redirect(w, r, route.ActionsRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -195,31 +194,60 @@ func DeleteActionHandler(w http.ResponseWriter, r *http.Request) {
 func ListActionsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Actions")
 	if sec.IsAuthenticated(w, r) {
-		query := "SELECT a.id, a.name, a.origin_status_id, b.name as origin_name, a.destination_status_id, c.name as destination_name, a.other_than " +
-			"FROM actions a, status b, status c where a.origin_status_id = b.id and a.destination_status_id = c.id order by id asc"
-		log.Println("List Action -> Query: " + query)
-		rows, err := Db.Query(query)
-		sec.CheckInternalServerError(err, w)
+		sql := " SELECT " +
+			" a.id, " +
+			" a.name, " +
+			" a.description, " +
+			" a.origin_status_id, " +
+			" b.name as origin_name, " +
+			" a.destination_status_id, " +
+			" c.name as destination_name, " +
+			" a.other_than, " +
+			" a.author_id, " +
+			" d.name, " +
+			" to_char(a.created_at,'DD/MM/YYYY HH24:MI:SS') as created_at, " +
+			" coalesce(e.name,'') as cstatus, " +
+			" a.status_id, " +
+			" a.id_versao_origem " +
+			" FROM actions a " +
+			" LEFT JOIN status b ON a.origin_status_id = b.id " +
+			" LEFT JOIN status c ON a.destination_status_id = c.id " +
+			" LEFT JOIN users d ON a.author_id = d.id " +
+			" LEFT JOIN status e ON a.status_id = c.id " +
+			" ORDER BY a.id asc "
+		log.Println("List Action -> SQL: " + sql)
+		rows, _ := Db.Query(sql)
 		var actions []mdl.Action
 		var action mdl.Action
 		var i = 1
 		for rows.Next() {
-			err = rows.Scan(&action.Id, &action.Name, &action.OriginId, &action.Origin, &action.DestinationId, &action.Destination, &action.OtherThan)
-			sec.CheckInternalServerError(err, w)
+			rows.Scan(
+				&action.Id,
+				&action.Name,
+				&action.Description,
+				&action.OriginId,
+				&action.Origin,
+				&action.DestinationId,
+				&action.Destination,
+				&action.OtherThan,
+				&action.AuthorId,
+				&action.AuthorName,
+				&action.C_CreatedAt,
+				&action.CStatus,
+				&action.StatusId,
+				&action.IdVersaoOrigem)
 			action.Order = i
 			i++
 			actions = append(actions, action)
 		}
-		query = "SELECT id, name, stereotype FROM status order by name asc"
-		log.Println("List Action -> Query: " + query)
-		rows, err = Db.Query(query)
-		sec.CheckInternalServerError(err, w)
+		sql = "SELECT id, name, stereotype FROM status ORDER BY name asc"
+		log.Println("List Action -> Query: " + sql)
+		rows, _ = Db.Query(sql)
 		var statuss []mdl.Status
 		var status mdl.Status
 		i = 1
 		for rows.Next() {
-			err = rows.Scan(&status.Id, &status.Name, &status.Stereotype)
-			sec.CheckInternalServerError(err, w)
+			rows.Scan(&status.Id, &status.Name, &status.Stereotype)
 			status.Order = i
 			i++
 			statuss = append(statuss, status)
@@ -243,7 +271,7 @@ func LoadRolesByActionId(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	var actionId = r.FormValue("actionId")
 	log.Println("actionId: " + actionId)
-	roles := ListRolesByActionIdHandler(actionId)
+	roles := ListPerfisByActionIdHandler(actionId)
 	jsonRoles, _ := json.Marshal(roles)
 	w.Write([]byte(jsonRoles))
 	log.Println("JSON")

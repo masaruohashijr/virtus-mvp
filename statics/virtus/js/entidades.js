@@ -5,8 +5,10 @@ function editEntidade(e) {
     // get entidade id to update
     var entidadeId = e.parentNode.parentNode.childNodes[3].innerText;
     var entidadeNome = e.parentNode.parentNode.childNodes[5].innerText;
+    var entidadeDescricao = e.parentNode.parentNode.childNodes[7].innerText;
 	document.getElementById('EntidadeIdForUpdate').value = entidadeId;
     document.getElementById('EntidadeNomeForUpdate').value = entidadeNome;
+    document.getElementById('EntidadeDescricaoForUpdate').value = entidadeDescricao;
 	loadPlanosByEntidadeId(entidadeId);
 	loadCiclosByEntidadeId(entidadeId);
 }

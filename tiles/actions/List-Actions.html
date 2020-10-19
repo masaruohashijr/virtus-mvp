@@ -32,6 +32,9 @@
                 <th>Exceto</th>
                 <th>Status Origem</th>
                 <th>Status Destino</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -42,10 +45,13 @@
             <tr>
                 <td>#{{$action.Order}}</td>
                 <td>{{$action.Id}}</td>
-                <td>{{$action.Name}}</td>
+                <td><input type="hidden" value="{{$action.Description}}">{{$action.Name}}</td>
                 <td>{{$action.OtherThan}}</td>
                 <td><input type="hidden" value="{{$action.OriginId}}">{{$action.Origin}}</td>
                 <td><input type="hidden" value="{{$action.DestinationId}}">{{$action.Destination}}</td>
+                <td>{{$action.AuthorName}}</td>
+                <td>{{$action.C_CreatedAt}}</td>
+                <td>{{$action.CStatus}}</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="editAction(this);">Editar</button>

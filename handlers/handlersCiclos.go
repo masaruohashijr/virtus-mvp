@@ -76,17 +76,29 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			" a.author_id, " +
 			" b.name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
+			" coalesce(c.name,'') as cstatus, " +
+			" a.status_id, " +
 			" a.id_versao_origem " +
 			" FROM ciclos a LEFT JOIN users b " +
 			" ON a.author_id = b.id " +
-			" order by id asc"
+			" LEFT JOIN status c ON a.status_id = c.id " +
+			" order by a.id asc"
 		log.Println(query)
 		rows, _ := Db.Query(query)
 		var ciclos []mdl.Ciclo
 		var ciclo mdl.Ciclo
 		var i = 1
 		for rows.Next() {
-			rows.Scan(&ciclo.Id, &ciclo.Nome, &ciclo.Descricao, &ciclo.AuthorId, &ciclo.AuthorName, &ciclo.C_CriadoEm, &ciclo.IdVersaoOrigem)
+			rows.Scan(
+				&ciclo.Id,
+				&ciclo.Nome,
+				&ciclo.Descricao,
+				&ciclo.AuthorId,
+				&ciclo.AuthorName,
+				&ciclo.C_CriadoEm,
+				&ciclo.CStatus,
+				&ciclo.StatusId,
+				&ciclo.IdVersaoOrigem)
 			ciclo.Order = i
 			i++
 			ciclos = append(ciclos, ciclo)

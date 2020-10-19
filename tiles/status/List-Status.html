@@ -30,22 +30,28 @@
                 <th>Id</th>
                 <th>Nome</th>
                 <th>Estereótipo</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
-            {{range $index, $status := .Status}}
+            {{range $index, $status := .Statuss}}
             <tr>
                 <td>#{{$status.Order}}</td>
                 <td>{{$status.Id}}</td>
-                <td>{{$status.Name}}<input type="hidden" value="{{$status.Descricao}}"></td>
+                <td>{{$status.Name}}<input type="hidden" value="{{$status.Description}}"></td>
                 <td>{{$status.Stereotype}}</td>
+                <td>{{$status.AuthorName}}</td>
+                <td>{{$status.C_CreatedAt}}</td>
+                <td>{{$status.CStatus}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updatestatus(this);">Editar</button>
-                    <button class="w3-btn w3-red" onclick="deletestatus(this)">Apagar</button>
+                    <button class="w3-btn w3-teal" onclick="editStatus(this);">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteStatus(this)">Apagar</button>
                 </td>
 				{{end}}
             </tr>

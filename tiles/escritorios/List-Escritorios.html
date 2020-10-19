@@ -29,6 +29,11 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Nome</th>
+				<th>Descrição</th>
+                <th>Chefe</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -40,6 +45,11 @@
                 <td>#{{$escritorio.Order}}</td>
                 <td>{{$escritorio.Id}}</td>
                 <td>{{$escritorio.Nome}}</td>
+				<td>{{$escritorio.Descricao}}</td>
+                <td>{{$escritorio.ChefeNome}}<input type="hidden" value="{{$escritorio.ChefeId}}"></td>
+                <td>{{$escritorio.AuthorName}}</td>
+                <td>{{$escritorio.C_CriadoEm}}</td>
+                <td>{{$escritorio.CStatus}}</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="editEscritorio(this)">Editar</button>

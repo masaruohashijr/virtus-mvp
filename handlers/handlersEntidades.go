@@ -18,14 +18,14 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		currentUser := GetUserInCookie(w, r)
 		nome := r.FormValue("Nome")
-		sqlStatement := "INSERT INTO entidades(nome) VALUES ($1) RETURNING id"
+		descricao := r.FormValue("Descricao")
+		sqlStatement := "INSERT INTO entidades(nome, descricao, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
 		idEntidade := 0
-		err := Db.QueryRow(sqlStatement, nome).Scan(&idEntidade)
-		log.Println(sqlStatement + " :: " + nome)
+		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&idEntidade)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(idEntidade) + " | Nome: " + nome)
+		log.Println("INSERT: Id: " + strconv.Itoa(idEntidade) + " | Nome: " + nome + " | Descrição: " + descricao)
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "plano") {
 				array := strings.Split(value[0], "#")
@@ -94,14 +94,15 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		entidadeId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
-		sqlStatement := "UPDATE entidades SET nome=$1 WHERE id=$2"
+		descricao := r.FormValue("Descricao")
+		sqlStatement := "UPDATE entidades SET nome=$1, descricao=$2 WHERE id=$3"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(nome, entidadeId)
-		log.Println("UPDATE: Id: " + entidadeId + " | Nome: " + nome)
+		updtForm.Exec(nome, descricao, entidadeId)
+		log.Println("UPDATE: Id: " + entidadeId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Planos
 		var planosDB = ListPlanosByEntidadeId(entidadeId)
@@ -306,13 +307,35 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Entidades")
 	if sec.IsAuthenticated(w, r) {
 		var page mdl.PageEntidades
-		sql := "SELECT id, nome FROM entidades ORDER BY id asc"
+		sql := "SELECT " +
+			" a.id, " +
+			" a.nome, " +
+			" a.descricao, " +
+			" a.author_id, " +
+			" b.name, " +
+			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
+			" coalesce(c.name,'') as cstatus, " +
+			" a.status_id, " +
+			" a.id_versao_origem " +
+			" FROM entidades a LEFT JOIN users b " +
+			" ON a.author_id = b.id " +
+			" LEFT JOIN status c ON a.status_id = c.id " +
+			" order by a.id asc"
 		rows, _ := Db.Query(sql)
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		var i = 1
 		for rows.Next() {
-			rows.Scan(&entidade.Id, &entidade.Nome)
+			rows.Scan(
+				&entidade.Id,
+				&entidade.Nome,
+				&entidade.Descricao,
+				&entidade.AuthorId,
+				&entidade.AuthorName,
+				&entidade.C_CriadoEm,
+				&entidade.CStatus,
+				&entidade.StatusId,
+				&entidade.IdVersaoOrigem)
 			entidade.Order = i
 			i++
 			entidades = append(entidades, entidade)

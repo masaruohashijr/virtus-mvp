@@ -6,21 +6,23 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
 	sec "virtus/security"
 )
 
 func CreateRoleHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
 	log.Println("Create Role")
-	if r.Method == "POST" {
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		currentUser := GetUserInCookie(w, r)
 		r.ParseForm()
 		name := r.FormValue("Name")
+		description := r.FormValue("Description")
 		features := r.Form["FeaturesForInsert"]
-		sqlStatement := "INSERT INTO roles(name) VALUES ($1) RETURNING id"
+		sqlStatement := "INSERT INTO roles(name, description, author_id, created_at) VALUES ($1, $2, $3, $4) RETURNING id"
 		roleId := 0
-		err := Db.QueryRow(sqlStatement, name).Scan(&roleId)
+		err := Db.QueryRow(sqlStatement, name, description, currentUser.Id, time.Now()).Scan(&roleId)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
@@ -42,20 +44,18 @@ func CreateRoleHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateRoleHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
 	log.Println("Update Role")
-	if r.Method == "POST" {
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		roleId := r.FormValue("Id")
 		name := r.FormValue("Name")
-		sqlStatement := "UPDATE roles SET name=$1 WHERE id=$2"
+		description := r.FormValue("Description")
+		sqlStatement := "UPDATE roles SET name=$1, description=$2 WHERE id=$3"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(name, roleId)
-		log.Println("UPDATE: Id: " + roleId + " | Name: " + name)
+		updtForm.Exec(name, description, roleId)
+		log.Println("UPDATE: Id: " + roleId + " | Name: " + name + " | Description: " + description)
 
 		var featuresDB = ListFeaturesByRoleIdHandler(roleId)
 		var featuresPage []mdl.Feature
@@ -118,7 +118,7 @@ func removeFeature(features []mdl.Feature, featureToBeRemoved mdl.Feature) []mdl
 
 func DeleteRoleHandler(w http.ResponseWriter, r *http.Request) {
 	sec.IsAuthenticated(w, r)
-	log.Println("Delete Role")
+	log.Println("Delete Perfil")
 	if r.Method == "POST" {
 		id := r.FormValue("Id")
 		sqlStatement := "DELETE FROM features_roles WHERE role_id=$1"
@@ -139,43 +139,65 @@ func DeleteRoleHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, route.RolesRoute, 301)
 }
 
-func ListRolesHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("List Roles")
-	sec.IsAuthenticated(w, r)
-	rows, err := Db.Query("SELECT id, name FROM roles order by id asc")
-	sec.CheckInternalServerError(err, w)
-	var roles []mdl.Role
-	var role mdl.Role
-	var i = 1
-	for rows.Next() {
-		err = rows.Scan(&role.Id, &role.Name)
-		sec.CheckInternalServerError(err, w)
-		role.Order = i
-		i++
-		roles = append(roles, role)
+func ListPerfisHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("List Perfis")
+	if sec.IsAuthenticated(w, r) {
+		sql := "SELECT " +
+			" a.id, " +
+			" a.name, " +
+			" a.description, " +
+			" a.author_id, " +
+			" b.name, " +
+			" to_char(a.created_at,'DD/MM/YYYY HH24:MI:SS'), " +
+			" coalesce(c.name,'') as cstatus, " +
+			" a.status_id, " +
+			" a.id_versao_origem " +
+			" FROM roles a LEFT JOIN users b " +
+			" ON a.author_id = b.id " +
+			" LEFT JOIN status c ON a.status_id = c.id " +
+			" order by id asc"
+		log.Println("sql: " + sql)
+		rows, _ := Db.Query(sql)
+		var roles []mdl.Role
+		var role mdl.Role
+		var i = 1
+		for rows.Next() {
+			rows.Scan(
+				&role.Id,
+				&role.Name,
+				&role.Description,
+				&role.AuthorId,
+				&role.AuthorName,
+				&role.C_CreatedAt,
+				&role.CStatus,
+				&role.StatusId,
+				&role.IdVersaoOrigem)
+			role.Order = i
+			i++
+			roles = append(roles, role)
+		}
+		rows, _ = Db.Query("SELECT id, name FROM features order by name asc")
+		var features []mdl.Feature
+		var feature mdl.Feature
+		i = 1
+		for rows.Next() {
+			rows.Scan(&feature.Id, &feature.Name)
+			feature.Order = i
+			i++
+			features = append(features, feature)
+		}
+		var page mdl.PageRoles
+		page.Roles = roles
+		page.Features = features
+		page.AppName = mdl.AppName
+		page.Title = "Perfis"
+		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
+		var tmpl = template.Must(template.ParseGlob("tiles/perfis/*"))
+		tmpl.ParseGlob("tiles/*")
+		tmpl.ExecuteTemplate(w, "Main-Perfis", page)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
 	}
-	rows, err = Db.Query("SELECT id, name FROM features order by name asc")
-	sec.CheckInternalServerError(err, w)
-	var features []mdl.Feature
-	var feature mdl.Feature
-	i = 1
-	for rows.Next() {
-		err = rows.Scan(&feature.Id, &feature.Name)
-		sec.CheckInternalServerError(err, w)
-		feature.Order = i
-		i++
-		features = append(features, feature)
-	}
-	var page mdl.PageRoles
-	page.Roles = roles
-	page.Features = features
-	page.AppName = mdl.AppName
-	page.Title = "Perfis"
-	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
-	var tmpl = template.Must(template.ParseGlob("tiles/roles/*"))
-	tmpl.ParseGlob("tiles/*")
-	tmpl.ExecuteTemplate(w, "Main-Roles", page)
-	sec.CheckInternalServerError(err, w)
 }
 
 func LoadFeaturesByRoleId(w http.ResponseWriter, r *http.Request) {
@@ -190,8 +212,8 @@ func LoadFeaturesByRoleId(w http.ResponseWriter, r *http.Request) {
 }
 
 // AJAX
-func ListRolesByActionIdHandler(actionId string) []mdl.Role {
-	log.Println("List Roles By Action Id")
+func ListPerfisByActionIdHandler(actionId string) []mdl.Role {
+	log.Println("List Perfis By Action Id")
 	sql := "SELECT role_id" +
 		" FROM actions_roles WHERE action_id= $1"
 	log.Println(sql)
@@ -205,7 +227,7 @@ func ListRolesByActionIdHandler(actionId string) []mdl.Role {
 	return roles
 }
 
-func DeleteRolesByActionHandler(actionId string) {
+func DeletePerfisByActionHandler(actionId string) {
 	sqlStatement := "DELETE FROM actions_roles WHERE action_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
@@ -215,7 +237,7 @@ func DeleteRolesByActionHandler(actionId string) {
 	log.Println("DELETE actions_roles in Action Id: " + actionId)
 }
 
-func DeleteRolesHandler(diffDB []mdl.Role) {
+func DeletePerfisHandler(diffDB []mdl.Role) {
 	sqlStatement := "DELETE FROM actions_roles WHERE role_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {

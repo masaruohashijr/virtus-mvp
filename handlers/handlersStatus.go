@@ -15,17 +15,17 @@ func CreateStatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Create Status")
 	if r.Method == "POST" {
 		name := r.FormValue("Name")
-		descricao := r.FormValue("Descricao")
+		description := r.FormValue("Description")
 		stereotype := r.FormValue("Stereotype")
-		sqlStatement := "INSERT INTO status(name, descricao, stereotype) VALUES ($1, $2, $3) RETURNING id"
+		sqlStatement := "INSERT INTO status(name, description, stereotype) VALUES ($1, $2, $3) RETURNING id"
 		id := 0
-		err := Db.QueryRow(sqlStatement, name, descricao, stereotype).Scan(&id)
+		err := Db.QueryRow(sqlStatement, name, description, stereotype).Scan(&id)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Name: " + name + " | Descricao: " + descricao + " | Stereotype: " + stereotype)
+		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Name: " + name + " | Descricao: " + description + " | Stereotype: " + stereotype)
 	}
 	http.Redirect(w, r, route.StatusRoute, 301)
 }
@@ -36,17 +36,17 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		id := r.FormValue("Id")
 		name := r.FormValue("Name")
-		descricao := r.FormValue("Descricao")
+		description := r.FormValue("Description")
 		stereotype := r.FormValue("Stereotype")
-		sqlStatement := "UPDATE status SET name=$1, descricao=$2, stereotype=$3 WHERE id=$4"
+		sqlStatement := "UPDATE status SET name=$1, description=$2, stereotype=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(name, descricao, stereotype, id)
-		log.Println("UPDATE: Id: " + id + " | Name: " + name + " | Descricao: " + descricao + " | Stereotype: " + stereotype)
+		updtForm.Exec(name, description, stereotype, id)
+		log.Println("UPDATE: Id: " + id + " | Name: " + name + " | Descricao: " + description + " | Stereotype: " + stereotype)
 	}
 	http.Redirect(w, r, route.StatusRoute, 301)
 }
@@ -70,26 +70,53 @@ func DeleteStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListStatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Status")
-	sec.IsAuthenticated(w, r)
-	rows, err := Db.Query("SELECT id, name, coalesce(descricao,'') as desc, stereotype FROM status order by id asc")
-	sec.CheckInternalServerError(err, w)
-	var status_array []mdl.Status
-	var status mdl.Status
-	var i = 1
-	for rows.Next() {
-		err = rows.Scan(&status.Id, &status.Name, &status.Descricao, &status.Stereotype)
-		sec.CheckInternalServerError(err, w)
-		status.Order = i
-		i++
-		status_array = append(status_array, status)
+	if sec.IsAuthenticated(w, r) {
+		sql := "SELECT " +
+			" a.id, " +
+			" a.name, " +
+			" coalesce(a.description,'') as desc, " +
+			" coalesce(a.stereotype,'') as stereo_type, " +
+			" a.author_id, " +
+			" b.name, " +
+			" to_char(a.created_at,'DD/MM/YYYY HH24:MI:SS'), " +
+			" coalesce(c.name,'') as cstatus, " +
+			" a.status_id, " +
+			" a.id_versao_origem " +
+			" FROM status a LEFT JOIN users b " +
+			" ON a.author_id = b.id " +
+			" LEFT JOIN status c ON a.status_id = c.id " +
+			" order by id asc"
+		log.Println("sql: " + sql)
+		rows, _ := Db.Query(sql)
+		var statuss []mdl.Status
+		var status mdl.Status
+		var i = 1
+		for rows.Next() {
+			rows.Scan(
+				&status.Id,
+				&status.Name,
+				&status.Description,
+				&status.Stereotype,
+				&status.AuthorId,
+				&status.AuthorName,
+				&status.C_CreatedAt,
+				&status.CStatus,
+				&status.StatusId,
+				&status.IdVersaoOrigem)
+			status.Order = i
+			i++
+			statuss = append(statuss, status)
+		}
+		var page mdl.PageStatus
+		page.Statuss = statuss
+		page.AppName = mdl.AppName
+		page.Title = "Status"
+		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
+		var tmpl = template.Must(template.ParseGlob("tiles/status/*"))
+		tmpl.ParseGlob("tiles/*")
+		tmpl.ExecuteTemplate(w, "Main-Status", page)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
 	}
-	var page mdl.PageStatus
-	page.Status = status_array
-	page.AppName = mdl.AppName
-	page.Title = "Status"
-	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
-	var tmpl = template.Must(template.ParseGlob("tiles/status/*"))
-	tmpl.ParseGlob("tiles/*")
-	tmpl.ExecuteTemplate(w, "Main-Status", page)
-	sec.CheckInternalServerError(err, w)
+
 }

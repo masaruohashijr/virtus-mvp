@@ -5,8 +5,10 @@ function editComponente(e) {
     // get componente id to update
     var componenteId = e.parentNode.parentNode.childNodes[3].innerText;
     var componenteNome = e.parentNode.parentNode.childNodes[5].innerText;
-	document.getElementById('ComponenteIdToUpdate').value = componenteId;
-    document.getElementById('ComponenteNome').value = componenteNome;
+    var componenteDescricao = e.parentNode.parentNode.childNodes[7].innerText;
+	document.getElementById('ComponenteIdForUpdate').value = componenteId;
+    document.getElementById('ComponenteNomeForUpdate').value = componenteNome;
+    document.getElementById('ComponenteDescricaoForUpdate').value = componenteDescricao;
 }
 
 function deleteComponente(e) {

@@ -29,8 +29,10 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Nome</th>
+				<th>Descrição</th>
                 <th>Autor</th>
                 <th>Criado Em</th>
+				<th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -41,9 +43,11 @@
             <tr>
                 <td>#{{$ciclo.Order}}</td>
                 <td>{{$ciclo.Id}}</td>
-                <td>{{$ciclo.Nome}}<input type="hidden" value="{{$ciclo.Descricao}}"></td>
+                <td>{{$ciclo.Nome}}</td>
+				<td>{{$ciclo.Descricao}}</td>
                 <td>{{$ciclo.AuthorName}}</td>
                 <td>{{$ciclo.C_CriadoEm}}</td>
+				<td>{{$entidade.CStatus}}</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="editCiclo(this);">Editar</button>

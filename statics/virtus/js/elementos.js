@@ -11,15 +11,15 @@ function editElemento(e) {
 	//alert(elementoDescricao);
     var elementoAutor = e.parentNode.parentNode.childNodes[9].innerText;
 	//alert(elementoAutor);
-    var elementoDataCriacao = e.parentNode.parentNode.childNodes[11].innerText;
-	//alert(elementoDataCriacao);
+    var elementoCriadoEm = e.parentNode.parentNode.childNodes[11].innerText;
+	//alert(elementoCriadoEm);
     var elementoStatus = e.parentNode.parentNode.childNodes[13].innerText;
 	//alert(elementoStatus);
 	document.getElementById('ElementoIdForUpdate').value = elementoId;
     document.getElementById('ElementoNomeForUpdate').value = elementoNome;
     document.getElementById('ElementoDescricaoForUpdate').value = elementoDescricao;
     document.getElementById('ElementoAutorForUpdate').value = elementoAutor;
-    document.getElementById('ElementoDataCriacaoForUpdate').value = elementoDataCriacao;
+    document.getElementById('ElementoCriadoEmForUpdate').value = elementoCriadoEm;
     document.getElementById('ElementoStatusForUpdate').value = elementoStatus;
 	// AJAX 
 	var statusId = document.getElementById('ElementoStatusId').value;

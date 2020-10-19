@@ -1,21 +1,21 @@
-function updatestatus(e) {
+function editStatus(e) {
     var editForm = document.getElementById('edit-form');
     // display update form
     editForm.style.display = 'block';
     // get status id to update
     var statusId = e.parentNode.parentNode.childNodes[3].innerText;
     var statusName = e.parentNode.parentNode.childNodes[5].innerText;
-    var statusDescricao = e.parentNode.parentNode.childNodes[5].childNodes[1].value;
+    var statusDescription = e.parentNode.parentNode.childNodes[5].childNodes[1].value;
     var statusStereotype = e.parentNode.parentNode.childNodes[7].innerText;
-	document.getElementById('statusIdForUpdate').value = statusId;
-    document.getElementById('statusNameForUpdate').value = statusName;
-    document.getElementById('statusDescricaoForUpdate').value = statusDescricao;
-    document.getElementById('statusStereotypeForUpdate').value = statusStereotype;
+	document.getElementById('StatusIdForUpdate').value = statusId;
+    document.getElementById('StatusNameForUpdate').value = statusName;
+    document.getElementById('StatusDescriptionForUpdate').value = statusDescription;
+    document.getElementById('StatusStereotypeForUpdate').value = statusStereotype;
 }
 
-function deletestatus(e) {
+function deleteStatus(e) {
     var deleteForm = document.getElementById('delete-form');
     deleteForm.style.display = 'block';
     var statusId = e.parentNode.parentNode.childNodes[3].innerText;
-    document.getElementById('statusIdToDelete').value = statusId;
+    document.getElementById('StatusIdToDelete').value = statusId;
 }

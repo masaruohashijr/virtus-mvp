@@ -2,7 +2,7 @@
 <!-- Edit Feature -->
 <div class="w3-container">
     <div id="edit-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Editar funcionalidade</h2>
@@ -11,11 +11,13 @@
             </div>
 
             <form class="w3-container" action="/updateFeature" method="post">
-                <input type="hidden" name="Id" id="featureIdToUpdate">
+                <input type="hidden" name="Id" id="FeatureIdForUpdate">
                 <label class="w3-label">Nome</label>
-                <input class="w3-input" type="text" id="featureName" name="Name" value="">
+                <input class="w3-input" type="text" id="FeatureNameForUpdate" name="Name" value="">
                 <label class="w3-label">Código</label>
-                <input class="w3-input" type="text" id="featureCode" name="Code" value="">
+                <input class="w3-input" type="text" id="FeatureCodeForUpdate" name="Code" value="">
+                <label class="w3-label">Descrição</label>
+                <textarea class="w3-input" name="Description" id="FeatureDescriptionForUpdate" rows="5" value=""></textarea>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
             </form>
         </div>

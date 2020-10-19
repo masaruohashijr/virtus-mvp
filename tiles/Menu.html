@@ -13,14 +13,11 @@
   <!-- <a href="/entidades">Entidades</a> -->
   <a href="/entidades">Entidades</a>
   {{end}}
-  {{if (call .LoggedUser.HasPermission "listPlanos")}}
-  <a href="/planos">Planos</a>
-  {{end}}
   {{if (call .LoggedUser.HasPermission "listCiclos")}}
   <a href="/ciclos">Ciclos</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listPilares")}}
-  <a href="/matrizes">Pilares</a>
+  <a href="/pilares">Pilares</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listComponentes")}}
   <a href="/componentes">Componentes</a>
@@ -31,14 +28,11 @@
   {{if (call .LoggedUser.HasPermission "listUsers")}}
   <a href="/users">Usuários</a>
   {{end}}
-  {{if (call .LoggedUser.HasPermission "listEquipes")}}
-  <a href="/equipes">Equipes</a>
-  {{end}}
-  {{if (call .LoggedUser.HasPermission "listCarteiras")}}
-  <a href="/carteiras">Carteiras</a>
+  {{if (call .LoggedUser.HasPermission "listEscritorios")}}
+  <a href="/escritorios">Escritórios</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listRoles")}}
-  <a href="/roles">Perfis</a>
+  <a href="/perfis">Perfis</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listFeatures")}}
   <a href="/features">Funcionalidades</a>

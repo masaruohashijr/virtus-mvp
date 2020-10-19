@@ -29,6 +29,10 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Nome</th>
+                <th>Descrição</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -40,6 +44,10 @@
                 <td>#{{$entidade.Order}}</td>
                 <td>{{$entidade.Id}}</td>
                 <td>{{$entidade.Nome}}</td>
+                <td>{{$entidade.Descricao}}</td>
+                <td>{{$entidade.AuthorName}}</td>
+                <td>{{$entidade.C_CriadoEm}}</td>
+                <td>{{$entidade.CStatus}}</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editEntidade(this);">Editar</button>

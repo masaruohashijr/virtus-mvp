@@ -58,8 +58,16 @@ function addPlanoRow(tableID) {
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(plano.descricao);
 	newCell.appendChild(newText);
-	// Botões
+	// autor
 	newCell = newRow.insertCell(2);
+	newText = document.createTextNode(plano.autorNome);
+	newCell.appendChild(newText);
+	// criado em
+	newCell = newRow.insertCell(3);
+	newText = document.createTextNode(plano.criadoEm);
+	newCell.appendChild(newText);
+	// Botões
+	newCell = newRow.insertCell(4);
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";
@@ -107,7 +115,7 @@ function updatePlano() {
 		alert(erros);
 		return;
 	}
-	plano = new Plano(order, id, entidadeId, nome, descricao, '', '', '', '','');
+	plano = new Plano(order, id, entidadeId, nome, descricao, plano[order].autorNome, plano[order].criadoEm, '', '','');
 	planos[order] = plano;
 	console.log("table-planos-"+contexto);
 	console.log('order: '+order);

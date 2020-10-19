@@ -11,7 +11,7 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
-					{{$allowed := (call .LoggedUser.HasPermission "createPerfil")}}
+					{{$allowed := (call .LoggedUser.HasPermission "createRole")}}
 					{{if $allowed}}
 					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
@@ -29,21 +29,29 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Nome</th>
+                <th>Descrição</th>
+                <th>Autor</th>
+                <th>Criado Em</th>
+                <th>Status</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
-            {{range $index, $perfil := .Perfis}}
+            {{range $index, $role := .Roles}}
             <tr>
-                <td>#{{$perfil.Order}}</td>
-                <td>{{$perfil.Id}}</td>
-                <td>{{$perfil.Name}}</td>
+                <td>#{{$role.Order}}</td>
+                <td>{{$role.Id}}</td>
+                <td>{{$role.Name}}</td>
+                <td>{{$role.Description}}</td>
+                <td>{{$role.AuthorName}}</td>
+                <td>{{$role.C_CreatedAt}}</td>
+                <td>{{$role.CStatus}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="editPerfil(this)">Editar</button>
-                    <button class="w3-btn w3-red" onclick="deletePerfil(this)">Apagar</button>
+                    <button class="w3-btn w3-teal" onclick="editRole(this)">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteRole(this)">Apagar</button>
                 </td>
 				{{end}}
             </tr>

@@ -32,27 +32,33 @@ func GetStartStatus(entityType string) int {
 }
 
 func CreateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
 	log.Println("Create Workflow")
-	if r.Method == "POST" {
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		currentUser := GetUserInCookie(w, r)
 		name := r.FormValue("Name")
+		description := r.FormValue("Description")
 		entityType := r.FormValue("EntityTypeForInsert")
 		sqlStatement := "UPDATE workflows SET end_at = $1 WHERE entity_type = $2"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
 		updtForm.Exec(time.Now(), entityType)
-		sec.CheckInternalServerError(err, w)
-		sqlStatement = "INSERT INTO workflows(name, entity_type, start_at) VALUES ($1,$2,$3) RETURNING id"
+		sqlStatement = "INSERT INTO " +
+			" workflows(name, entity_type, start_at, description, author_id, created_at) " +
+			" VALUES ($1,$2,$3,$4,$5,$6) RETURNING id "
 		wId := 0
-		err = Db.QueryRow(sqlStatement, name, entityType, time.Now()).Scan(&wId)
-		sec.CheckInternalServerError(err, w)
+		err = Db.QueryRow(
+			sqlStatement,
+			name,
+			entityType,
+			time.Now(),
+			description,
+			currentUser.Id,
+			time.Now()).Scan(&wId)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		log.Println("INSERT: Id: " + strconv.Itoa(wId) + " | Name: " + name + " | Entitity: " + entityType)
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "activity") {
@@ -70,56 +76,50 @@ func CreateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 				strRoles := strings.Split(array[10], ":")[1]
 				log.Println("actionId: " + actionId)
 				sqlStatement := "INSERT INTO " +
-					"activities(workflow_id, action_id, start_at, end_at, expiration_time_days, expiration_action_id) " +
-					"VALUES ($1,$2,$3,$4,$5,$6) RETURNING id"
+					" activities(workflow_id, action_id, start_at, end_at, expiration_time_days, expiration_action_id) " +
+					" VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id"
 				log.Println(sqlStatement)
 				log.Println("wId: " + strconv.Itoa(wId) + " | Action: " + actionId + " | ExpDays: " + expTime + " | ExpAction: " + expActionId)
 				if expActionId == "" {
-					err := Db.QueryRow(sqlStatement, wId, actionId, startAt, endAt, expTime, nil).Scan(&activityId)
-					sec.CheckInternalServerError(err, w)
+					Db.QueryRow(sqlStatement, wId, actionId, startAt, endAt, expTime, nil).Scan(&activityId)
 				} else {
-					err := Db.QueryRow(sqlStatement, wId, actionId, startAt, endAt, expTime, expActionId).Scan(&activityId)
-					sec.CheckInternalServerError(err, w)
-				}
-				if err != nil {
-					panic(err.Error())
+					Db.QueryRow(sqlStatement, wId, actionId, startAt, endAt, expTime, expActionId).Scan(&activityId)
 				}
 				if len(strRoles) > 0 {
 					log.Println("Roles: " + strRoles)
 					roles := strings.Split(strRoles, ".")
 					for _, roleId := range roles {
 						sqlStatement := "INSERT INTO " +
-							"activities_roles(activity_id, role_id) " +
-							"VALUES ($1,$2)"
+							" activities_roles(activity_id, role_id) " +
+							" VALUES ($1,$2)"
 						log.Println(sqlStatement + " - " + strconv.Itoa(activityId) + " - " + roleId)
 						Db.QueryRow(sqlStatement, activityId, roleId)
 					}
 				}
-				sec.CheckInternalServerError(err, w)
 			}
 		}
+		http.Redirect(w, r, route.WorkflowsRoute, 301)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
 	}
-	http.Redirect(w, r, route.WorkflowsRoute, 301)
 }
 
 func UpdateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
 	log.Println("Update Workflow")
-	if r.Method == "POST" {
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		// Workflow
 		wId := r.FormValue("Id")
 		log.Println("Workflow Id: " + wId)
 		name := r.FormValue("NameForUpdate")
+		description := r.FormValue("DescriptionForUpdate")
 		entity := r.FormValue("EntityTypeForUpdate")
-		sqlStatement := "UPDATE workflows SET name=$1, entity_type=$2 WHERE id=$3"
+		sqlStatement := "UPDATE workflows SET name=$1, entity_type=$2, description=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(name, entity, wId)
-		log.Println("UPDATE: Id: " + wId + " | Name: " + name + " | Entity: " + entity)
+		updtForm.Exec(name, entity, description, wId)
+		log.Println("UPDATE: Id: " + wId + " | Name: " + name + " | Entity: " + entity + " | Description: " + description)
 		// Atividades
 		var actsDB = ListActivitiesHandler(wId)
 		var actsPage []mdl.Activity
@@ -212,14 +212,12 @@ func UpdateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 				if act.ExpirationActionId == 0 {
 					log.Println("entrei aqui")
 					err := Db.QueryRow(sqlStatement, wId, act.ActionId, act.CStartAt, act.CEndAt, act.ExpirationTimeDays, nil).Scan(&activityId)
-					sec.CheckInternalServerError(err, w)
 					if err != nil {
 						panic(err.Error())
 					}
 				} else {
 					log.Println("entrei acolá")
 					err := Db.QueryRow(sqlStatement, wId, act.ActionId, act.CStartAt, act.CEndAt, act.ExpirationTimeDays, act.ExpirationActionId).Scan(&activityId)
-					sec.CheckInternalServerError(err, w)
 					if err != nil {
 						panic(err.Error())
 					}
@@ -237,6 +235,8 @@ func UpdateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		UpdateActivitiesHandler(actsPage, actsDB) // TODO
 		http.Redirect(w, r, route.WorkflowsRoute, 301)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
 	}
 }
 
@@ -260,9 +260,8 @@ func removeAct(acts []mdl.Activity, actToBeRemoved mdl.Activity) []mdl.Activity 
 }
 
 func DeleteWorkflowHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
 	log.Println("Delete Workflow")
-	if r.Method == "POST" {
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
 		sqlStatement := "DELETE FROM activities_roles " +
 			" WHERE activity_id IN (" +
@@ -286,87 +285,126 @@ func DeleteWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
+		http.Redirect(w, r, route.WorkflowsRoute, 301)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
 	}
-	http.Redirect(w, r, route.WorkflowsRoute, 301)
 }
 
 func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Workflows")
-	sec.IsAuthenticated(w, r)
-	query := "SELECT id, name, entity_type," +
-		" coalesce(to_char(start_at,'DD/MM/YYYY'),'') as c_start_at," +
-		" coalesce(to_char(end_at,'DD/MM/YYYY'),'') as c_end_at" +
-		" FROM workflows order by id asc"
-	log.Println("List WF -> Query: " + query)
-	rows, err := Db.Query(query)
-	sec.CheckInternalServerError(err, w)
-	var workflows []mdl.Workflow
-	var workflow mdl.Workflow
-	var i = 1
-	for rows.Next() {
-		err = rows.Scan(&workflow.Id, &workflow.Name, &workflow.EntityType, &workflow.StartAt, &workflow.EndAt)
-		sec.CheckInternalServerError(err, w)
-		workflow.Order = i
-		i++
-		workflows = append(workflows, workflow)
-	}
-	query = "SELECT a.id, a.name, a.origin_status_id, b.name as origin_status, " +
-		"a.destination_status_id, c.name as destination_status, a.other_than " +
-		"FROM actions a, status b, status c " +
-		"WHERE a.origin_status_id = b.id " +
-		"AND a.destination_status_id = c.id " +
-		"order by a.id asc"
-	log.Println("List WF -> Query: " + query)
-	rows, err = Db.Query(query)
-	sec.CheckInternalServerError(err, w)
-	var actions []mdl.Action
-	var action mdl.Action
-	i = 1
-	for rows.Next() {
-		err = rows.Scan(&action.Id, &action.Name, &action.OriginId, &action.Origin, &action.DestinationId, &action.Destination, &action.OtherThan)
-		sec.CheckInternalServerError(err, w)
-		action.Order = i
-		i++
-		actions = append(actions, action)
-	}
-	query = "SELECT id, name FROM roles order by name asc"
-	log.Println("List WF -> Query: " + query)
-	rows, err = Db.Query(query)
-	sec.CheckInternalServerError(err, w)
-	var roles []mdl.Role
-	var role mdl.Role
-	i = 1
-	for rows.Next() {
-		err = rows.Scan(&role.Id, &role.Name)
-		sec.CheckInternalServerError(err, w)
-		role.Order = i
-		i++
-		roles = append(roles, role)
-	}
+	if sec.IsAuthenticated(w, r) {
+		sql := "SELECT " +
+			" a.id, " +
+			" a.name, " +
+			" a.entity_type, " +
+			" coalesce(to_char(a.start_at,'DD/MM/YYYY'),'') as c_start_at, " +
+			" coalesce(to_char(a.end_at,'DD/MM/YYYY'),'') as c_end_at, " +
+			" coalesce(a.description,'') as dsc, " +
+			" a.author_id, " +
+			" b.name, " +
+			" to_char(a.created_at,'DD/MM/YYYY HH24:MI:SS'), " +
+			" coalesce(c.name,'') as cstatus, " +
+			" a.status_id, " +
+			" a.id_versao_origem " +
+			" FROM " +
+			" workflows a " +
+			" LEFT JOIN users b ON a.author_id = b.id " +
+			" LEFT JOIN status c ON a.status_id = c.id " +
+			" ORDER BY a.id ASC"
 
-	sql := "SELECT id, name " +
-		" FROM features order by id desc"
-	log.Println(sql)
-	rows, _ = Db.Query(sql)
-	var features []mdl.Feature
-	var feature mdl.Feature
-	for rows.Next() {
-		rows.Scan(&feature.Id, &feature.Name)
-		features = append(features, feature)
-	}
+		log.Println("List WF -> SQL: " + sql)
+		rows, _ := Db.Query(sql)
+		var workflows []mdl.Workflow
+		var workflow mdl.Workflow
+		var i = 1
+		for rows.Next() {
+			rows.Scan(
+				&workflow.Id,
+				&workflow.Name,
+				&workflow.EntityType,
+				&workflow.StartAt,
+				&workflow.EndAt,
+				&workflow.Description,
+				&workflow.AuthorId,
+				&workflow.AuthorName,
+				&workflow.C_CreatedAt,
+				&workflow.CStatus,
+				&workflow.StatusId,
+				&workflow.IdVersaoOrigem)
+			workflow.Order = i
+			i++
+			workflows = append(workflows, workflow)
+		}
+		sql = " SELECT " +
+			" a.id, " +
+			" a.name, " +
+			" a.origin_status_id, " +
+			" b.name as origin_status, " +
+			" a.destination_status_id, " +
+			" c.name as destination_status, " +
+			" a.other_than " +
+			" FROM " +
+			" actions a " +
+			" LEFT JOIN status b ON a.origin_status_id = b.id " +
+			" LEFT JOIN status c ON a.destination_status_id = c.id " +
+			" ORDER BY a.id asc"
+		log.Println("List WF -> sql: " + sql)
+		rows, _ = Db.Query(sql)
+		var actions []mdl.Action
+		var action mdl.Action
+		i = 1
+		for rows.Next() {
+			rows.Scan(
+				&action.Id,
+				&action.Name,
+				&action.OriginId,
+				&action.Origin,
+				&action.DestinationId,
+				&action.Destination,
+				&action.OtherThan)
+			action.Order = i
+			i++
+			actions = append(actions, action)
+		}
+		sql = "SELECT id, name FROM roles order by name asc"
+		log.Println("List WF -> Query: " + sql)
+		rows, _ = Db.Query(sql)
+		var roles []mdl.Role
+		var role mdl.Role
+		i = 1
+		for rows.Next() {
+			rows.Scan(&role.Id, &role.Name)
+			role.Order = i
+			i++
+			roles = append(roles, role)
+		}
 
-	var page mdl.PageWorkflows
-	page.Actions = actions
-	page.Features = features
-	page.Roles = roles
-	page.Workflows = workflows
-	page.AppName = mdl.AppName
-	page.Title = "Workflows"
-	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
-	var tmpl = template.Must(template.ParseGlob("tiles/workflows/*"))
-	tmpl.ParseGlob("tiles/*")
-	tmpl.ExecuteTemplate(w, "Main-Workflows", page)
-	sec.CheckInternalServerError(err, w)
+		sql = "SELECT id, name " +
+			" FROM features order by id desc"
+		log.Println(sql)
+		rows, _ = Db.Query(sql)
+		var features []mdl.Feature
+		var feature mdl.Feature
+		for rows.Next() {
+			rows.Scan(&feature.Id, &feature.Name)
+			features = append(features, feature)
+		}
+
+		var page mdl.PageWorkflows
+		page.Actions = actions
+		page.Features = features
+		page.Roles = roles
+		page.Workflows = workflows
+		page.AppName = mdl.AppName
+		page.Title = "Workflows"
+		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
+		var tmpl = template.Must(template.ParseGlob("tiles/workflows/*"))
+		tmpl.ParseGlob("tiles/*")
+		tmpl.ExecuteTemplate(w, "Main-Workflows", page)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
+	}
 }
 
 func LoadActivitiesByWorkflowId(w http.ResponseWriter, r *http.Request) {

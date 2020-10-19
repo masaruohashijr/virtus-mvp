@@ -1,17 +1,19 @@
-function updatefeature(e) {
+function editFeature(e) {
     var editForm = document.getElementById('edit-form');
     // display update form
     editForm.style.display = 'block';
     // get feature id to update
     var featureId = e.parentNode.parentNode.childNodes[3].innerText;
     var featureName = e.parentNode.parentNode.childNodes[5].innerText;
+    var featureDescription = e.parentNode.parentNode.childNodes[5].childNodes[1].value;
     var featureCode = e.parentNode.parentNode.childNodes[7].innerText;
-	document.getElementById('featureIdToUpdate').value = featureId;
-    document.getElementById('featureName').value = featureName;
-    document.getElementById('featureCode').value = featureCode;
+	document.getElementById('FeatureIdForUpdate').value = featureId;
+    document.getElementById('FeatureNameForUpdate').value = featureName;
+    document.getElementById('FeatureDescriptionForUpdate').value = featureDescription;
+    document.getElementById('FeatureCodeForUpdate').value = featureCode;
 }
 
-function deletefeature(e) {
+function deleteFeature(e) {
     var deleteForm = document.getElementById('delete-form');
     deleteForm.style.display = 'block';
     var featureId = e.parentNode.parentNode.childNodes[3].innerText;

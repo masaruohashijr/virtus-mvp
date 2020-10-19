@@ -2,16 +2,15 @@ package routes
 
 import ()
 
-var EquipesRoute = "/equipes"
-var CarteirasRoute = "/carteiras"
+var EscritoriosRoute = "/escritorios"
 var EntidadesRoute = "/entidades"
 var PlanosRoute = "/planos"
 var CiclosRoute = "/ciclos"
-var MatrizesRoute = "/matrizes"
+var PilaresRoute = "/pilares"
 var ComponentesRoute = "/componentes"
 var ElementosRoute = "/elementos"
 var UsersRoute = "/users"
-var RolesRoute = "/roles"
+var RolesRoute = "/perfis"
 var FeaturesRoute = "/features"
 var StatusRoute = "/status"
 var ActionsRoute = "/actions"
