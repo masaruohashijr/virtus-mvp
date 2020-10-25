@@ -19,30 +19,22 @@ function deleteComponente(e) {
     document.getElementById('ComponenteIdToDelete').value = componenteId;
 }
 
-function loadFeaturesByRoleId(roleId){
+function loadElementosByComponenteId(componenteId){
 	var xmlhttp;
 	xmlhttp=new XMLHttpRequest();
 	xmlhttp.onreadystatechange=function()
 	{
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
-				var componentesEdit = JSON.parse(xmlhttp.responseText);
-				selectOptionsFeaturesForUpdate(componentesEdit);
+				var elementosComponenteJson = JSON.parse(xmlhttp.responseText);
+				wipeRows("table-elemento-componente-edit", elementosComponente)
+				elementosComponente = [];
+				for(order = 0;elementosComponenteJson != null && order<elementosComponenteJson.length;order++){
+					elementosComponente[order]=elementosComponenteJson[order];
+					addElementoComponenteRow("table-elementos-componente-edit");
+				}
 			}
 	}
-	xmlhttp.open("GET","/loadFeaturesByRoleId?roleId="+roleId,true);
-	xmlhttp.send();
+	xmlhttp.open("GET","/loadElementosByComponenteId?componenteId="+componenteId,true);
+	xmlhttp.send(); 
 }
-
-function selectOptionsFeaturesForUpdate(componentesEdit){
-	let s = document.getElementById("FeaturesForUpdate");
-	for(n=0;n<componentesEdit.length;n++){
-		for(m=0;m<s.options.length;m++){
-			if(s.options[m].value == componentesEdit[n].id){
-				s.options[m].selected = 'selected';
-				break;
-			}
-		}
-	}
-}
-

@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	//	"encoding/json"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
@@ -19,12 +20,48 @@ func CreatePilarHandler(w http.ResponseWriter, r *http.Request) {
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
 		sqlStatement := "INSERT INTO pilares(nome, descricao, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
-		id := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&id)
+		idPilar := 0
+		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&idPilar)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Nome: " + nome + " | Descrição: " + descricao)
+
+		log.Println("INSERT: Id: " + strconv.Itoa(idPilar) + " | Nome: " + nome + " | Descrição: " + descricao)
+		for key, value := range r.Form {
+			if strings.HasPrefix(key, "componentePilar") {
+				array := strings.Split(value[0], "#")
+				log.Println(value[0])
+				componentePilarId := 0
+				componenteId := strings.Split(array[3], ":")[1]
+				tipoMediaId := strings.Split(array[5], ":")[1]
+				sonda := strings.Split(array[7], ":")[1]
+				pesoPadrao := strings.Split(array[8], ":")[1]
+				sqlStatement := " INSERT INTO " +
+					" public.componentes_pilares( " +
+					" pilar_id, " +
+					" componente_id, " +
+					" tipo_media, " +
+					" peso_padrao, " +
+					" sonda, " +
+					" author_id, " +
+					" criado_em ) " +
+					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
+				log.Println(sqlStatement)
+				err = Db.QueryRow(
+					sqlStatement,
+					idPilar,
+					componenteId,
+					tipoMediaId,
+					pesoPadrao,
+					sonda,
+					currentUser.Id,
+					time.Now()).Scan(&componentePilarId)
+				if err != nil {
+					panic(err.Error())
+				}
+			}
+		}
+
 		http.Redirect(w, r, route.PilaresRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -34,7 +71,8 @@ func CreatePilarHandler(w http.ResponseWriter, r *http.Request) {
 func UpdatePilarHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Pilar")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		id := r.FormValue("Id")
+		currentUser := GetUserInCookie(w, r)
+		pilarId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
 		sqlStatement := "UPDATE pilares SET nome=$1, descricao=$2 WHERE id=$3"
@@ -42,8 +80,108 @@ func UpdatePilarHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-		updtForm.Exec(nome, descricao, id)
-		log.Println("UPDATE: Id: " + id + " | Nome: " + nome + " | Descrição: " + descricao)
+		updtForm.Exec(nome, descricao, pilarId)
+		log.Println("UPDATE: Id: " + pilarId + " | Nome: " + nome + " | Descrição: " + descricao)
+
+		// Componentes Pilares
+		var componentesPilarDB = ListComponentesByPilarId(pilarId)
+		var componentesPilarPage []mdl.ComponentePilar
+		var componentePilarPage mdl.ComponentePilar
+		for key, value := range r.Form {
+			if strings.HasPrefix(key, "componentePilar") {
+				log.Println(value[0])
+				array := strings.Split(value[0], "#")
+				id := strings.Split(array[1], ":")[1]
+				log.Println("Id -------- " + id)
+				componentePilarPage.Id, _ = strconv.ParseInt(id, 10, 64)
+				componentePilarPage.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
+				componenteId := strings.Split(array[3], ":")[1]
+				log.Println("componenteId -------- " + componenteId)
+				componentePilarPage.ComponenteId, _ = strconv.ParseInt(componenteId, 10, 64)
+				componenteNome := strings.Split(array[4], ":")[1]
+				log.Println("componenteNome -------- " + componenteNome)
+				componentePilarPage.ComponenteNome = componenteNome
+				tipoMediaId := strings.Split(array[5], ":")[1]
+				log.Println("tipoMediaId -------- " + tipoMediaId)
+				componentePilarPage.TipoMediaId, _ = strconv.Atoi(tipoMediaId)
+				tipoMedia := strings.Split(array[6], ":")[1]
+				log.Println("tipoMedia -------- " + tipoMedia)
+				componentePilarPage.TipoMedia = tipoMedia
+				sonda := strings.Split(array[7], ":")[1]
+				log.Println("sonda -------- " + sonda)
+				componentePilarPage.Sonda = sonda
+				pesoPadrao := strings.Split(array[8], ":")[1]
+				log.Println("pesoPadrao -------- " + pesoPadrao)
+				componentePilarPage.PesoPadrao, _ = strconv.Atoi(pesoPadrao)
+				authorId := strings.Split(array[9], ":")[1]
+				log.Println("authorId -------- " + authorId)
+				componentePilarPage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)
+				authorName := strings.Split(array[10], ":")[1]
+				log.Println("authorName -------- " + authorName)
+				componentePilarPage.AuthorName = authorName
+				criadoEm := strings.Split(array[11], ":")[1]
+				log.Println("criadoEm -------- " + criadoEm)
+				componentePilarPage.CriadoEm = criadoEm
+				idVersaoOrigem := strings.Split(array[12], ":")[1]
+				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
+				componentePilarPage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
+				statusId := strings.Split(array[13], ":")[1]
+				log.Println("StatusId -------- " + statusId)
+				componentePilarPage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
+				cStatus := strings.Split(array[14], ":")[1]
+				log.Println("cStatus -------- " + cStatus)
+				componentePilarPage.CStatus = cStatus
+				componentesPilarPage = append(componentesPilarPage, componentePilarPage)
+			}
+		}
+		if len(componentesPilarPage) < len(componentesPilarDB) {
+			log.Println("Quantidade de Componentes do Pilar da Página: " + strconv.Itoa(len(componentesPilarPage)))
+			if len(componentesPilarPage) == 0 {
+				DeleteComponentesPilarByPilarId(pilarId) //DONE
+			} else {
+				var diffDB []mdl.ComponentePilar = componentesPilarDB
+				for n := range componentesPilarPage {
+					if containsComponentePilar(diffDB, componentesPilarPage[n]) {
+						diffDB = removeComponentePilar(diffDB, componentesPilarPage[n])
+					}
+				}
+				DeleteComponentesPilarHandler(diffDB) //DONE
+			}
+		} else {
+			var diffPage []mdl.ComponentePilar = componentesPilarPage
+			for n := range componentesPilarDB {
+				if containsComponentePilar(diffPage, componentesPilarDB[n]) {
+					diffPage = removeComponentePilar(diffPage, componentesPilarDB[n])
+				}
+			}
+			var componentePilar mdl.ComponentePilar
+			componentePilarId := 0
+			statusComponenteId := GetStartStatus("plano")
+			for i := range diffPage {
+				componentePilar = diffPage[i]
+				log.Println("Pilar Id: " + pilarId)
+				sqlStatement := "INSERT INTO public.componentes_pilares ( " +
+					" pilar_id, " +
+					" componente_id, " +
+					" peso_padrao, " +
+					" author_id, " +
+					" criado_em, " +
+					" status_id " +
+					" ) " +
+					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+				log.Println(sqlStatement)
+				Db.QueryRow(
+					sqlStatement,
+					pilarId,
+					componentePilar.ComponenteId,
+					componentePilar.PesoPadrao,
+					currentUser.Id,
+					time.Now(),
+					statusComponenteId).Scan(&componentePilarId)
+			}
+		}
+		UpdateComponentesPilarHandler(componentesPilarPage, componentesPilarDB)
+
 		http.Redirect(w, r, route.PilaresRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -54,8 +192,15 @@ func DeletePilarHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Pilar")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM pilares WHERE id=$1"
+		sqlStatement := "DELETE FROM componentes_pilares WHERE pilar_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
+		if err != nil {
+			panic(err.Error())
+		}
+		deleteForm.Exec(id)
+
+		sqlStatement = "DELETE FROM pilares WHERE id=$1"
+		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -128,4 +273,15 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
+}
+
+func LoadComponentesByPilarId(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Componentes By Pilar Id")
+	r.ParseForm()
+	var pilarId = r.FormValue("pilarId")
+	log.Println("pilarId: " + pilarId)
+	componentesPilar := ListComponentesByPilarId(pilarId)
+	jsonComponenesPilar, _ := json.Marshal(componentesPilar)
+	w.Write([]byte(jsonComponenesPilar))
+	log.Println("JSON Componentes de Pilar")
 }

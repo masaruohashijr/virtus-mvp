@@ -16,6 +16,7 @@
 				<label class="w3-label">Elementos</label>
 				<br>
 	            <select class="w3-input" name="ElementoComponenteForUpdate" id="ElementoComponenteForUpdate">
+					<option value=""></option>
 					{{range $index, $elemento := .Elementos }}
 		                <option value="{{$elemento.Id}}">
 							{{$elemento.Nome}}

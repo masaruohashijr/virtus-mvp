@@ -77,6 +77,13 @@ func createUniqueKey() {
 
 func createFKey() {
 
+	// ITENS
+	db.Exec("ALTER TABLE ONLY public.itens" +
+		" ADD CONSTRAINT elementos_fkey FOREIGN KEY (elemento_id)" +
+		" REFERENCES public.elementos (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
 	// ELEMENTOS
 	db.Exec("ALTER TABLE ONLY public.elementos" +
 		" ADD CONSTRAINT users_fkey FOREIGN KEY (author_id)" +
@@ -105,6 +112,62 @@ func createFKey() {
 		" ON DELETE RESTRICT" +
 		" NOT VALID")
 
+	// ELEMENTOS_COMPONENTES
+	db.Exec("ALTER TABLE ONLY public.elementos_componentes" +
+		" ADD CONSTRAINT elementos_fkey FOREIGN KEY (elemento_id)" +
+		" REFERENCES public.elementos (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.elementos_componentes" +
+		" ADD CONSTRAINT componentes_fkey FOREIGN KEY (componente_id)" +
+		" REFERENCES public.componentes (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.elementos_componentes" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.elementos_componentes" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// COMPONENTES PILARES
+	db.Exec("ALTER TABLE ONLY public.componentes_pilares" +
+		" ADD CONSTRAINT componentes_fkey FOREIGN KEY (componente_id)" +
+		" REFERENCES public.componentes (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.componentes_pilares" +
+		" ADD CONSTRAINT pilares_fkey FOREIGN KEY (pilar_id)" +
+		" REFERENCES public.pilares (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.componentes_pilares" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.componentes_pilares" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
 	// PILARES
 	db.Exec("ALTER TABLE ONLY public.pilares" +
 		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
@@ -113,6 +176,34 @@ func createFKey() {
 		" NOT VALID")
 
 	db.Exec("ALTER TABLE ONLY public.pilares" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	// PILARES_CICLOS
+	db.Exec("ALTER TABLE ONLY public.pilares_ciclos" +
+		" ADD CONSTRAINT pilares_fkey FOREIGN KEY (pilar_id)" +
+		" REFERENCES public.pilares (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.pilares_ciclos" +
+		" ADD CONSTRAINT ciclos_fkey FOREIGN KEY (ciclo_id)" +
+		" REFERENCES public.ciclos (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.pilares_ciclos" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.pilares_ciclos" +
 		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
 		" REFERENCES public.status (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
@@ -172,6 +263,26 @@ func createFKey() {
 	db.Exec("ALTER TABLE ONLY public.ciclos_entidades" +
 		" ADD CONSTRAINT entidades_fkey FOREIGN KEY (entidade_id)" +
 		" REFERENCES public.entidades (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.ciclos_entidades" +
+		" ADD CONSTRAINT ciclos_fkey FOREIGN KEY (ciclo_id)" +
+		" REFERENCES public.ciclos (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.ciclos_entidades" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES public.users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY public.ciclos_entidades" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES public.status (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
 		" ON DELETE RESTRICT" +
 		" NOT VALID")
@@ -991,6 +1102,20 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
+	// Sequence COMPONENTES_PILARES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.componentes_pilares_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence ELEMENTOS_COMPONENTES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.elementos_componentes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
 	// Sequence PILARES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.pilares_id_seq " +
 		" START WITH 1" +
@@ -1125,6 +1250,20 @@ func createTable() {
 			" id_versao_origem integer," +
 			" status_id integer)")
 
+	// Table COMPONENTES_PILARES
+	db.Exec(
+		" CREATE TABLE public.componentes_pilares (" +
+			" id integer DEFAULT nextval('componentes_pilares_id_seq'::regclass)," +
+			" componente_id integer," +
+			" pilar_id integer," +
+			" tipo_media integer," +
+			" peso_padrao integer," +
+			" sonda character varying (255)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table ELEMENTOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.elementos (" +
@@ -1134,6 +1273,18 @@ func createTable() {
 			" peso integer DEFAULT 1 NOT NULL," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
+			" status_id integer)")
+
+	// Table ELEMENTOS_COMPONENTES
+	db.Exec(
+		" CREATE TABLE public.elementos_componentes (" +
+			" id integer DEFAULT nextval('elementos_componentes_id_seq'::regclass)," +
+			" componente_id integer," +
+			" elemento_id integer," +
+			" peso_padrao integer," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
 			" status_id integer)")
 
 	// Table ENTIDADES

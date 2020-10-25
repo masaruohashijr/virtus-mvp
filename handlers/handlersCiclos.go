@@ -184,13 +184,19 @@ func DeleteCicloHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Ciclo")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM ciclos WHERE id=$1"
+		sqlStatement := "DELETE FROM pilares_ciclos WHERE ciclo_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
+
+		sqlStatement = "DELETE FROM ciclos WHERE id=$1"
+		deleteForm, err = Db.Prepare(sqlStatement)
+		if err != nil {
+			panic(err.Error())
+		}
+		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
 		http.Redirect(w, r, route.CiclosRoute, 301)
 	} else {

@@ -103,7 +103,9 @@ func main() {
 	r.HandleFunc("/updateElemento", hd.UpdateElementoHandler).Methods("POST")
 	r.HandleFunc("/deleteElemento", hd.DeleteElementoHandler).Methods("POST")
 	// ----------------- Loads
+	r.HandleFunc("/loadElementosByComponenteId", hd.LoadElementosByComponenteId).Methods("GET")
 	r.HandleFunc("/loadPlanosByEntidadeId", hd.LoadPlanosByEntidadeId).Methods("GET")
+	r.HandleFunc("/loadComponentesByPilarId", hd.LoadComponentesByPilarId).Methods("GET")
 	r.HandleFunc("/loadCiclosByEntidadeId", hd.LoadCiclosByEntidadeId).Methods("GET")
 	r.HandleFunc("/loadPilaresByCicloId", hd.LoadPilaresByCicloId).Methods("GET")
 	r.HandleFunc("/loadItensByElementoId", hd.LoadItensByElementoId).Methods("GET")

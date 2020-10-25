@@ -77,7 +77,7 @@ func CreateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 				log.Println("actionId: " + actionId)
 				sqlStatement := "INSERT INTO " +
 					" activities(workflow_id, action_id, start_at, end_at, expiration_time_days, expiration_action_id) " +
-					" VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id"
+					" VALUES ($1,$2,$3,$4,$5,$6) RETURNING id"
 				log.Println(sqlStatement)
 				log.Println("wId: " + strconv.Itoa(wId) + " | Action: " + actionId + " | ExpDays: " + expTime + " | ExpAction: " + expActionId)
 				if expActionId == "" {

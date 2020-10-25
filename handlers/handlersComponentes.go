@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	//	"encoding/json"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
@@ -18,13 +19,46 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		sqlStatement := "INSERT INTO componentes(nome, descricao, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
-		id := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&id)
+		statusComponenteId := GetStartStatus("componente")
+		sqlStatement := "INSERT INTO componentes(nome, descricao, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		idComponente := 0
+		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now(), statusComponenteId).Scan(&idComponente)
 		if err != nil {
 			panic(err.Error())
 		}
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Nome: " + nome + " | Descrição: " + descricao)
+		log.Println("INSERT: Id: " + strconv.Itoa(idComponente) + " | Nome: " + nome + " | Descrição: " + descricao)
+		for key, value := range r.Form {
+			if strings.HasPrefix(key, "elementoComponente") {
+				array := strings.Split(value[0], "#")
+				log.Println(value[0])
+				elementoComponenteId := 0
+				statusElementoId := GetStartStatus("elemento")
+				elementoId := strings.Split(array[3], ":")[1]
+				pesoPadrao := strings.Split(array[5], ":")[1]
+				sqlStatement := " INSERT INTO " +
+					" public.elementos_componentes( " +
+					" componente_id, " +
+					" elemento_id, " +
+					" peso_padrao, " +
+					" author_id, " +
+					" criado_em, " +
+					" status_id) " +
+					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+				log.Println(sqlStatement)
+				err := Db.QueryRow(
+					sqlStatement,
+					idComponente,
+					elementoId,
+					pesoPadrao,
+					currentUser.Id,
+					time.Now(),
+					statusElementoId).Scan(&elementoComponenteId)
+				if err != nil {
+					panic(err.Error())
+				}
+			}
+		}
+
 		http.Redirect(w, r, route.ComponentesRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -34,7 +68,8 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Componente")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		id := r.FormValue("Id")
+		currentUser := GetUserInCookie(w, r)
+		componenteId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
 		sqlStatement := "UPDATE componentes SET nome=$1, descricao=$2 WHERE id=$3"
@@ -42,8 +77,99 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-		updtForm.Exec(nome, descricao, id)
-		log.Println("UPDATE: Id: " + id + " | Nome: " + nome + " | Descrição: " + descricao)
+		updtForm.Exec(nome, descricao, componenteId)
+		log.Println("UPDATE: Id: " + componenteId + " | Nome: " + nome + " | Descrição: " + descricao)
+
+		// Elementos Componentes
+		var elementosComponenteDB = ListElementosByComponenteId(componenteId)
+		var elementosComponentePage []mdl.ElementoComponente
+		var elementoComponentePage mdl.ElementoComponente
+		for key, value := range r.Form {
+			if strings.HasPrefix(key, "elementoComponente") {
+				log.Println(value[0])
+				array := strings.Split(value[0], "#")
+				id := strings.Split(array[1], ":")[1]
+				log.Println("Id -------- " + id)
+				elementoComponentePage.Id, _ = strconv.ParseInt(id, 10, 64)
+				elementoComponentePage.ComponenteId, _ = strconv.ParseInt(componenteId, 10, 64)
+				elementoId := strings.Split(array[3], ":")[1]
+				log.Println("elementoId -------- " + elementoId)
+				elementoComponentePage.ElementoId, _ = strconv.ParseInt(elementoId, 10, 64)
+				elementoNome := strings.Split(array[4], ":")[1]
+				log.Println("elementoNome -------- " + elementoNome)
+				elementoComponentePage.ElementoNome = elementoNome
+				pesoPadrao := strings.Split(array[5], ":")[1]
+				log.Println("pesoPadrao -------- " + pesoPadrao)
+				elementoComponentePage.PesoPadrao, _ = strconv.Atoi(pesoPadrao)
+				authorId := strings.Split(array[6], ":")[1]
+				log.Println("authorId -------- " + authorId)
+				elementoComponentePage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)
+				authorName := strings.Split(array[7], ":")[1]
+				log.Println("authorName -------- " + authorName)
+				elementoComponentePage.AuthorName = authorName
+				criadoEm := strings.Split(array[8], ":")[1]
+				log.Println("criadoEm -------- " + criadoEm)
+				elementoComponentePage.CriadoEm = criadoEm
+				idVersaoOrigem := strings.Split(array[9], ":")[1]
+				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
+				elementoComponentePage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
+				statusId := strings.Split(array[10], ":")[1]
+				log.Println("StatusId -------- " + statusId)
+				elementoComponentePage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
+				cStatus := strings.Split(array[11], ":")[1]
+				log.Println("cStatus -------- " + cStatus)
+				elementoComponentePage.CStatus = cStatus
+				elementosComponentePage = append(elementosComponentePage, elementoComponentePage)
+			}
+		}
+		if len(elementosComponentePage) < len(elementosComponenteDB) {
+			log.Println("Quantidade de Elementos do Componente da Página: " + strconv.Itoa(len(elementosComponentePage)))
+			if len(elementosComponentePage) == 0 {
+				DeleteElementosComponenteByComponenteId(componenteId) //DONE
+			} else {
+				var diffDB []mdl.ElementoComponente = elementosComponenteDB
+				for n := range elementosComponentePage {
+					if containsElementoComponente(diffDB, elementosComponentePage[n]) {
+						diffDB = removeElementoComponente(diffDB, elementosComponentePage[n])
+					}
+				}
+				DeleteElementosComponenteHandler(diffDB) //DONE
+			}
+		} else {
+			var diffPage []mdl.ElementoComponente = elementosComponentePage
+			for n := range elementosComponenteDB {
+				if containsElementoComponente(diffPage, elementosComponenteDB[n]) {
+					diffPage = removeElementoComponente(diffPage, elementosComponenteDB[n])
+				}
+			}
+			var elementoComponente mdl.ElementoComponente
+			elementoComponenteId := 0
+			statusElementoId := GetStartStatus("elemento")
+			for i := range diffPage {
+				elementoComponente = diffPage[i]
+				log.Println("Componente Id: " + componenteId)
+				sqlStatement := "INSERT INTO public.elementos_componentes ( " +
+					" componente_id, " +
+					" elemento_id, " +
+					" peso_padrao, " +
+					" author_id, " +
+					" criado_em, " +
+					" status_id " +
+					" ) " +
+					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+				log.Println(sqlStatement)
+				Db.QueryRow(
+					sqlStatement,
+					componenteId,
+					elementoComponente.ElementoId,
+					elementoComponente.PesoPadrao,
+					currentUser.Id,
+					time.Now(),
+					statusElementoId).Scan(&elementoComponenteId)
+			}
+		}
+		UpdateElementosComponenteHandler(elementosComponentePage, elementosComponenteDB)
+
 	}
 	http.Redirect(w, r, route.ComponentesRoute, 301)
 }
@@ -52,8 +178,15 @@ func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Componente")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM componentes WHERE id=$1"
+		sqlStatement := "DELETE FROM elementos_componentes WHERE componente_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
+		if err != nil {
+			panic(err.Error())
+		}
+		deleteForm.Exec(id)
+
+		sqlStatement = "DELETE FROM componentes WHERE id=$1"
+		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -124,4 +257,15 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
+}
+
+func LoadElementosByComponenteId(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Elementos By Componente Id")
+	r.ParseForm()
+	var componenteId = r.FormValue("componenteId")
+	log.Println("componenteId: " + componenteId)
+	elementosComponente := ListElementosByComponenteId(componenteId)
+	jsonElementosComponente, _ := json.Marshal(elementosComponente)
+	w.Write([]byte(jsonElementosComponente))
+	log.Println("JSON Elementos de Componente")
 }

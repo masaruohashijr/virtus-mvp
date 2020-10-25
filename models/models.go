@@ -153,6 +153,8 @@ type ElementoComponente struct {
 	ComponenteId   int64  `json:"componenteId"`
 	ElementoId     int64  `json:"elementoId"`
 	ElementoNome   string `json:"elementoNome"`
+	TipoMediaId    int    `json:"tipoMediaId"`
+	TipoMedia      string `json:"tipoMedia"`
 	PesoPadrao     int    `json:"pesoPadrao"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
@@ -171,6 +173,24 @@ type Componente struct {
 	AuthorName     string `json:"authorName"`
 	CriadoEm       string `json:"criadoEm"`
 	C_CriadoEm     string `json:"c_criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type ComponentePilar struct {
+	Order          int
+	Id             int64  `json:"id"`
+	PilarId        int64  `json:"pilarId"`
+	ComponenteId   int64  `json:"componenteId"`
+	ComponenteNome string `json:"componenteNome"`
+	TipoMediaId    int    `json:"tipoMediaId"`
+	TipoMedia      string `json:"tipoMedia"`
+	PesoPadrao     int    `json:"pesoPadrao"`
+	Sonda          string `json:"sonda"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
 	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
 	StatusId       int64  `json:"statusId"`
 	CStatus        string `json:"cStatus"`

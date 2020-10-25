@@ -9,6 +9,7 @@ function editPilar(e) {
 	document.getElementById('PilarIdForUpdate').value = pilarId;
     document.getElementById('PilarNomeForUpdate').value = pilarNome;
     document.getElementById('PilarDescricaoForUpdate').value = pilarDescricao;
+	loadComponentesByPilarId(pilarId);
 }
 
 function deletePilar(e) {
@@ -16,4 +17,24 @@ function deletePilar(e) {
     deleteForm.style.display = 'block';
     var pilarId = e.parentNode.parentNode.childNodes[3].innerText;
     document.getElementById('PilarIdToDelete').value = pilarId;
+}
+
+function loadComponentesByPilarId(pilarId){
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				var componentesJson = JSON.parse(xmlhttp.responseText);
+				wipeRows("table-componentes-pilar-edit", componentesPilar)
+				componentesPilar = [];
+				for(order = 0;componentesJson != null && order<componentesJson.length;order++){
+					componentesPilar[order]=componentesJson[order];
+					addComponentePilarRow("table-componentes-pilar-edit");
+				}
+			}
+	}
+	xmlhttp.open("GET","/loadComponentesByPilarId?pilarId="+pilarId,true);
+	xmlhttp.send(); 
 }
