@@ -67,7 +67,7 @@ func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
 func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Componentes")
 	if sec.IsAuthenticated(w, r) {
-		query := "SELECT " +
+		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
 			" a.descricao, " +
@@ -81,8 +81,8 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 			" ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
 			" order by id asc"
-		log.Println(query)
-		rows, _ := Db.Query(query)
+		log.Println(sql)
+		rows, _ := Db.Query(sql)
 		var componentes []mdl.Componente
 		var componente mdl.Componente
 		var i = 1
@@ -101,8 +101,20 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 			i++
 			componentes = append(componentes, componente)
 		}
+		sql = "SELECT id, nome FROM elementos ORDER BY id asc"
+		rows, _ = Db.Query(sql)
+		var elementos []mdl.Elemento
+		var elemento mdl.Elemento
+		i = 1
+		for rows.Next() {
+			rows.Scan(&elemento.Id, &elemento.Nome)
+			elemento.Order = i
+			i++
+			elementos = append(elementos, elemento)
+		}
 		var page mdl.PageComponentes
 		page.Componentes = componentes
+		page.Elementos = elementos
 		page.AppName = mdl.AppName
 		page.Title = "Componentes"
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))

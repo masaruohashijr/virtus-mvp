@@ -42,9 +42,8 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
 	log.Println("Update User")
-	if r.Method == "POST" {
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
 		name := r.FormValue("Name")
 		username := r.FormValue("Username")
@@ -52,16 +51,18 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		mobile := r.FormValue("Mobile")
 		role := r.FormValue("RoleForUpdate")
 		escritorio := r.FormValue("EscritorioForUpdate")
+		if escritorio == "" {
+			escritorio = "0"
+		}
 		log.Println("Role: " + role)
-		sqlStatement := "UPDATE Users SET name=$1, " +
-			"username=$2, email=$3, mobile=$4, role_id=$5 , escritorio_id=$6 " +
-			"WHERE id=$7"
+		sqlStatement := " UPDATE Users SET name=$1, " +
+			" username=$2, email=$3, mobile=$4, role_id=$5 , escritorio_id=$6 " +
+			" WHERE id=$7 "
+		log.Println(sqlStatement)
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(name, username, email, mobile, role, escritorio, id)
 		log.Println("UPDATE: Id: " +
 			id + " | Name: " +
@@ -71,8 +72,10 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 			mobile + " | Role: " +
 			role + " | Escritorio: " +
 			escritorio)
+		http.Redirect(w, r, route.UsersRoute, 301)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
 	}
-	http.Redirect(w, r, route.UsersRoute, 301)
 }
 
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -108,7 +111,8 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 			" FROM users a LEFT JOIN roles b ON a.role_id = b.id " +
 			" LEFT JOIN escritorios c ON a.escritorio_id = c.id " +
 			" LEFT JOIN status d ON a.status_id = c.id " +
-			" LEFT JOIN users e ON a.author_id = e.id "
+			" LEFT JOIN users e ON a.author_id = e.id " +
+			" ORDER BY a.name ASC "
 		log.Println("SQL: " + sql)
 		rows, _ := Db.Query(sql)
 		var users []mdl.User

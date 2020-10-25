@@ -22,10 +22,10 @@ function editElemento(e) {
     document.getElementById('ElementoCriadoEmForUpdate').value = elementoCriadoEm;
     document.getElementById('ElementoStatusForUpdate').value = elementoStatus;
 	// AJAX 
-	var statusId = document.getElementById('ElementoStatusId').value;
+	//var statusId = document.getElementById('ElementoStatusId').value;
 	loadItensByElementoId(elementoId);
-	loadAllowedActions(statusId);
-	loadAvailableFeatures('edit',statusId);
+	//loadAllowedActions(statusId);
+	//loadAvailableFeatures('edit',statusId);
 }
 
 function deleteElemento(e) {

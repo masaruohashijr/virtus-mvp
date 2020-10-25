@@ -6,7 +6,7 @@ function editEscritorio(e) {
     var escritorioId = e.parentNode.parentNode.childNodes[3].innerText;
     var escritorioNome = e.parentNode.parentNode.childNodes[5].innerText;
     var escritorioDescricao = e.parentNode.parentNode.childNodes[7].innerText;
-    var escritorioChefeId = e.parentNode.parentNode.childNodes[9].childNodes[1].value;
+    var escritorioChefeId = e.parentNode.parentNode.childNodes[9].childNodes[0].value;
 	document.getElementById('EscritorioIdForUpdate').value = escritorioId;
     document.getElementById('EscritorioNomeForUpdate').value = escritorioNome;
     document.getElementById('EscritorioDescricaoForUpdate').value = escritorioDescricao;

@@ -9,6 +9,7 @@ function editComponente(e) {
 	document.getElementById('ComponenteIdForUpdate').value = componenteId;
     document.getElementById('ComponenteNomeForUpdate').value = componenteNome;
     document.getElementById('ComponenteDescricaoForUpdate').value = componenteDescricao;
+	loadElementosByComponenteId(componenteId);
 }
 
 function deleteComponente(e) {

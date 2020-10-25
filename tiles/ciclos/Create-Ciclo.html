@@ -9,7 +9,6 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
-
             <form class="w3-container" id="formulario-create" action="/createCiclo" method="POST">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Nome" value="">
@@ -23,20 +22,20 @@
 		                </div>
 		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
 		                    <div class="w3-right">
-		                        <a href="#" onclick="contexto='insert';document.getElementById('create-pilar-ciclo-form').style.display='block'">
+		                        <a href="#" onclick="contexto='create';document.getElementById('create-pilar-ciclo-form').style.display='block'">
 		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
 		                        </a>
 		                    </div>
 		                </div>
 		            </div>
 		        </header>
-		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-pilar-ciclo-insert">
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-pilar-ciclo-create">
 		            <thead>
 		            <tr>
 		                <th>Nome</th>
+		                <th>Tipo de Média</th>
 		                <th>Peso Padrão</th>
-		                <th>Autor</th>
-		                <th>Criado Em</th>
 						<th>Ações</th>
 		            </tr>
 		            </thead>

@@ -147,6 +147,21 @@ type Elemento struct {
 	CStatus        string `json:"cStatus"`
 }
 
+type ElementoComponente struct {
+	Order          int
+	Id             int64  `json:"id"`
+	ComponenteId   int64  `json:"componenteId"`
+	ElementoId     int64  `json:"elementoId"`
+	ElementoNome   string `json:"elementoNome"`
+	PesoPadrao     int    `json:"pesoPadrao"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
 type Componente struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -197,9 +212,25 @@ type CicloEntidade struct {
 	Nome           string `json:"nome"`
 	TipoMediaId    int    `json:"tipoMediaId"`
 	TipoMedia      string `json:"tipoMedia"`
-	Nota           string `json:"nota"`
 	IniciaEm       string `json:"iniciaEm"`
 	TerminaEm      string `json:"terminaEm"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type PilarCiclo struct {
+	Order          int
+	Id             int64  `json:"id"`
+	CicloId        int64  `json:"cicloId"`
+	PilarId        int64  `json:"pilarId"`
+	PilarNome      string `json:"pilarNome"`
+	TipoMediaId    int    `json:"tipoMediaId"`
+	TipoMedia      string `json:"tipoMedia"`
+	PesoPadrao     int    `json:"pesoPadrao"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
 	CriadoEm       string `json:"criadoEm"`
@@ -310,22 +341,25 @@ type PageComponentes struct {
 	AppName     string
 	Title       string
 	Componentes []Componente
+	Elementos   []Elemento
 	Users       []User
 	LoggedUser  LoggedUser
 }
 
 type PagePilares struct {
-	AppName    string
-	Title      string
-	Pilares    []Pilar
-	Users      []User
-	LoggedUser LoggedUser
+	AppName     string
+	Title       string
+	Pilares     []Pilar
+	Componentes []Componente
+	Users       []User
+	LoggedUser  LoggedUser
 }
 
 type PageCiclos struct {
 	AppName    string
 	Title      string
 	Ciclos     []Ciclo
+	Pilares    []Pilar
 	Users      []User
 	LoggedUser LoggedUser
 }

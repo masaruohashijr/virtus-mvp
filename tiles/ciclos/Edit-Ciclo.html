@@ -16,7 +16,6 @@
                 <input class="w3-input" type="text" name="Nome" id="NomeCicloForUpdate" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="Descricao" id="DescricaoCicloForUpdate" rows="5" value=""></textarea>
-				<br>
 				<label class="w3-label">Autor</label>
                 <input class="w3-input" type="text" name="AuthorNameForUpdate" id="AuthorNameForUpdate" readonly="readonly" disabled="disabled" value="">
 				<label class="w3-label">Criado Em</label>
@@ -28,25 +27,21 @@
 		                </div>
 		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
 		                    <div class="w3-right">
-		                        <a href="#" onclick="contexto='insert';document.getElementById('create-pilar-ciclo-form').style.display='block'">
+		                        <a href="#" onclick="document.getElementById('create-pilar-ciclo-form').style.display='block'">
 		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
 		                        </a>
 		                    </div>
 		                </div>
 		            </div>
 		        </header>
-		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-pilar-ciclo-insert">
-		            <thead>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-pilar-ciclo-edit">
 		            <tr>
 		                <th>Nome</th>
+		                <th>Tipo de Média</th>
 		                <th>Peso Padrão</th>
-		                <th>Autor</th>
-		                <th>Criado Em</th>
 						<th>Ações</th>
 		            </tr>
-		            </thead>
-		            <tbody>
-		            </tbody>
 		        </table>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
             </form>

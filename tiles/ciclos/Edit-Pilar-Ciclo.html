@@ -9,23 +9,27 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-pilar-ciclo-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container">
-				<label class="w3-label">Pilares</label>
-				<br>
-	            <select class="w3-input" name="PilarForUpdate" id="PilarForUpdate" multiple style="width:100%">
+            <form class="w3-container" id="formulario-pilar-ciclo-edit">
+				<input type="hidden" id="Id-PCForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="Order-PCForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="CicloId-PCForUpdate" value="" readonly="readonly" disabled="disabled">
+				<label class="w3-label">Pilar</label>
+	            <select class="w3-input" name="PilarCicloForUpdate" id="PilarCicloForUpdate">
+					<option value=""></option>
 					{{range $index, $pilar := .Pilares }}
 		                <option value="{{$pilar.Id}}">
 							{{$pilar.Nome}}
 						</option>
 		            {{end}}
 	            </select>
+				<label class="w3-label">Tipo de Média</label>
+	            <select class="w3-input" name="TipoMediaForUpdate" id="TipoMediaForUpdate">
+	                <option value="1">Aritmética</option>
+	                <option value="2">Geométrica</option>
+	                <option value="3">Harmônica</option>
+	            </select>
                 <label class="w3-label">Peso Padrão</label>
 				<input class="w3-input" type="number" id="PesoPadraoForUpdate" name="PesoPadraoForUpdate" value="">
-                <label class="w3-label">Autor</label>
-				<input class="w3-input" type="text" id="AutorForUpdate" name="AutorForUpdate" value="">
-                <label class="w3-label">Criado Em</label>
-				<input class="w3-input" type="text" id="CriadoEmForUpdate" name="CriadoEmForUpdate" value="">
-				<br>	
                 <button 
 					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					type="button"

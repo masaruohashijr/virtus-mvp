@@ -1,5 +1,5 @@
 {{define "Create-Elemento-Componente"}}
-<!-- Create ElementoComponente Form -->
+<!-- Create Elemento Componente Form -->
 <div class="w3-container">
     <div id="create-elemento-componente-form" class="w3-modal">
         <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
@@ -9,10 +9,10 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('create-elemento-componente-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container">
-				<label class="w3-label">Elementos</label>
-				<br>
-	            <select class="w3-input" name="ElementoComponenteForInsert" id="ElementoComponenteForInsert" multiple style="width:100%">
+            <form class="w3-container" id="formulario-elemento-componente-create">
+                <label class="w3-label">Elemento</label>
+	            <select class="w3-input" name="ElementoComponenteForInsert" id="ElementoComponenteForInsert">
+					<option value=""></option>
 					{{range $index, $elemento := .Elementos }}
 		                <option value="{{$elemento.Id}}">
 							{{$elemento.Nome}}
@@ -24,7 +24,7 @@
                 <button 
 					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					type="button"
-					onclick="criarElementoComponente();"
+					onclick="criarElementoComponente()"
 					>Criar
 				</button>
             </form>

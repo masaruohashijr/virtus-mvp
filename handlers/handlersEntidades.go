@@ -48,10 +48,10 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				array := strings.Split(value[0], "#")
 				log.Println(value[0])
 				cicloEntidadeId := 0
-				cicloId := strings.Split(array[3], ":")[1]
-				tipoMediaId := strings.Split(array[5], ":")[1]
-				iniciaEm := strings.Split(array[8], ":")[1]
-				terminaEm := strings.Split(array[9], ":")[1]
+				cicloId := strings.Split(array[1], ":")[1]
+				tipoMediaId := strings.Split(array[3], ":")[1]
+				iniciaEm := strings.Split(array[5], ":")[1]
+				terminaEm := strings.Split(array[6], ":")[1]
 				snippet1 := ""
 				snippet2 := ""
 				if iniciaEm != "" {
@@ -184,31 +184,28 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				tipoMedia := strings.Split(array[6], ":")[1]
 				log.Println("tipoMedia -------- " + tipoMedia)
 				cicloEntidadePage.TipoMedia = tipoMedia
-				nota := strings.Split(array[7], ":")[1]
-				log.Println("nota -------- " + nota)
-				cicloEntidadePage.Nota = nota
-				iniciaEm := strings.Split(array[8], ":")[1]
+				iniciaEm := strings.Split(array[7], ":")[1]
 				log.Println("iniciaEm -------- " + iniciaEm)
 				cicloEntidadePage.IniciaEm = iniciaEm
-				terminaEm := strings.Split(array[9], ":")[1]
+				terminaEm := strings.Split(array[8], ":")[1]
 				log.Println("terminaEm -------- " + terminaEm)
 				cicloEntidadePage.TerminaEm = terminaEm
-				authorId := strings.Split(array[10], ":")[1]
+				authorId := strings.Split(array[9], ":")[1]
 				log.Println("authorId -------- " + authorId)
 				cicloEntidadePage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)
-				authorName := strings.Split(array[11], ":")[1]
+				authorName := strings.Split(array[10], ":")[1]
 				log.Println("authorName -------- " + authorName)
 				cicloEntidadePage.AuthorName = authorName
-				criadoEm := strings.Split(array[12], ":")[1]
+				criadoEm := strings.Split(array[11], ":")[1]
 				log.Println("criadoEm -------- " + criadoEm)
 				cicloEntidadePage.CriadoEm = criadoEm
-				idVersaoOrigem := strings.Split(array[13], ":")[1]
+				idVersaoOrigem := strings.Split(array[12], ":")[1]
 				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
 				cicloEntidadePage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
-				statusId := strings.Split(array[14], ":")[1]
+				statusId := strings.Split(array[13], ":")[1]
 				log.Println("idVersaoOrigem -------- " + statusId)
 				cicloEntidadePage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
-				cStatus := strings.Split(array[15], ":")[1]
+				cStatus := strings.Split(array[14], ":")[1]
 				log.Println("cStatus -------- " + cStatus)
 				cicloEntidadePage.CStatus = cStatus
 				ciclosEntidadePage = append(ciclosEntidadePage, cicloEntidadePage)

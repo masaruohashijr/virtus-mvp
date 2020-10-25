@@ -15,7 +15,7 @@
 				<input type="hidden" id="EntidadeId-CEForUpdate" value="" readonly="readonly" disabled="disabled">
 				<label class="w3-label">Ciclos</label>
 				<br>
-	            <select class="w3-input" name="CicloEntidadeForUpdate" id="CicloEntidadeForUpdate" style="width:100%">
+	            <select class="w3-input" name="CicloEntidadeForUpdate" id="CicloEntidadeForUpdate">
 	                <option value=""></option>
 					{{range $index, $ciclo := .Ciclos }}
 		                <option value="{{$ciclo.Id}}">
@@ -31,17 +31,10 @@
 	                <option value="3">Harmônica</option>
 	            </select>
 				<br>
-                <label class="w3-label">Nota</label>
-				<input class="w3-input" type="number" id="NotaForUpdate" name="NotaForUpdate" value="">
                 <label class="w3-label">Inicia Em</label>
-				<input class="w3-input" type="date" id="IniciaEmForUpdate" name="IniciaEmUpdate" value="">
+				<input class="w3-input" type="date" id="IniciaEmForUpdate" name="IniciaEmForUpdate" value="">
                 <label class="w3-label">Termina Em</label>
 				<input class="w3-input" type="date" id="TerminaEmForUpdate" name="TerminaEmForUpdate" value="">
-                <label class="w3-label">Autor</label>
-				<input class="w3-input" type="text" id="AutorForUpdate" name="AutorForUpdate" value="" readonly="readonly" disabled="disabled">
-                <label class="w3-label">Criado Em</label>
-				<input class="w3-input" type="text" id="CriadoEmForUpdate" name="CriadoEmForUpdate" value="" readonly="readonly" disabled="disabled">
-				<br>
                 <button 
 					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					type="button"

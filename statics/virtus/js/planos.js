@@ -25,7 +25,8 @@ function criarPlano(){
 		alert(erros);
 		return;
 	}
-	plano = new Plano(0, itens.length, 0, nome, descricao, '', '', '', '', '');
+	planoId = getMaxId(planos);
+	plano = new Plano(0, planoId, 0, nome, descricao, '', '', '', '', '');
 	console.log(plano)
 	planos.push(plano);
 	console.log(planos);
@@ -58,16 +59,8 @@ function addPlanoRow(tableID) {
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(plano.descricao);
 	newCell.appendChild(newText);
-	// autor
-	newCell = newRow.insertCell(2);
-	newText = document.createTextNode(plano.autorNome);
-	newCell.appendChild(newText);
-	// criado em
-	newCell = newRow.insertCell(3);
-	newText = document.createTextNode(plano.criadoEm);
-	newCell.appendChild(newText);
 	// Botões
-	newCell = newRow.insertCell(4);
+	newCell = newRow.insertCell(2);
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";
@@ -115,7 +108,7 @@ function updatePlano() {
 		alert(erros);
 		return;
 	}
-	plano = new Plano(order, id, entidadeId, nome, descricao, plano[order].autorNome, plano[order].criadoEm, '', '','');
+	plano = new Plano(order, id, entidadeId, nome, descricao, '', '', '', '','');
 	planos[order] = plano;
 	console.log("table-planos-"+contexto);
 	console.log('order: '+order);

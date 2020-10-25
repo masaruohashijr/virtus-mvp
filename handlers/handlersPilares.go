@@ -70,7 +70,7 @@ func DeletePilarHandler(w http.ResponseWriter, r *http.Request) {
 func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Pilares")
 	if sec.IsAuthenticated(w, r) {
-		query := "SELECT " +
+		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
 			" a.descricao, " +
@@ -84,8 +84,8 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 			" ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
 			" order by a.id asc"
-		log.Println(query)
-		rows, _ := Db.Query(query)
+		log.Println(sql)
+		rows, _ := Db.Query(sql)
 		var pilares []mdl.Pilar
 		var pilar mdl.Pilar
 		var i = 1
@@ -104,8 +104,21 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 			i++
 			pilares = append(pilares, pilar)
 		}
+		sql = "SELECT id, nome FROM componentes ORDER BY id asc"
+		log.Println(sql)
+		rows, _ = Db.Query(sql)
+		var componentes []mdl.Componente
+		var componente mdl.Componente
+		i = 1
+		for rows.Next() {
+			rows.Scan(&componente.Id, &componente.Nome)
+			componente.Order = i
+			i++
+			componentes = append(componentes, componente)
+		}
 		var page mdl.PagePilares
 		page.Pilares = pilares
+		page.Componentes = componentes
 		page.AppName = mdl.AppName
 		page.Title = "Pilares"
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))

@@ -11,7 +11,6 @@
             </div>
             <form class="w3-container" id="formulario-ciclo-entidade-create">
 				<label class="w3-label">Ciclos</label>
-				<br>
 	            <select class="w3-input" name="CicloEntidadeForInsert" id="CicloEntidadeForInsert" style="width:100%">
 		            <option value=""></option>
 					{{range $index, $ciclo := .Ciclos }}
@@ -21,24 +20,19 @@
 		            {{end}}
 	            </select>
 				<label class="w3-label">Tipo de Média</label>
-				<br>
 	            <select class="w3-input" name="TipoMediaForInsert" id="TipoMediaForInsert" style="width:100%">
 	                <option value="1">Aritmética</option>
 	                <option value="2">Geométrica</option>
 	                <option value="3">Harmônica</option>
 	            </select>
-				<br>
-                <label class="w3-label">Nota</label>
-				<input class="w3-input" type="number" id="NotaForInsert" name="NotaForInsert" value="">
                 <label class="w3-label">Inicia Em</label>
 				<input class="w3-input" type="date" id="IniciaEmForInsert" name="IniciaEmForInsert" value="">
                 <label class="w3-label">Termina Em</label>
 				<input class="w3-input" type="date" id="TerminaEmForInsert" name="TerminaEmForInsert" value="">
-				<br>	
                 <button 
 					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					type="button"
-					onclick="criarCicloEntidade();"
+					onclick="criarCicloEntidade()"
 					>Criar
 				</button>
             </form>

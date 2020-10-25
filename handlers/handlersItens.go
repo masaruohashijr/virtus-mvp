@@ -12,18 +12,18 @@ func ListItensHandler(elementoId string) []mdl.Item {
 	sql := "SELECT " +
 		" a.id, " +
 		" a.elemento_id, " +
-		" a.titulo," +
+		" a.nome," +
 		" coalesce(a.descricao,''), " +
 		" coalesce(a.avaliacao,''), " +
 		" a.author_id, " +
 		" coalesce(b.name,'') as author_name, " +
-		" coalesce(to_char(a.data_criacao,'DD/MM/YYYY')) as data_criacao," +
+		" coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as data_criacao," +
 		" a.status_id, " +
 		" coalesce(c.name,'') as status_name " +
 		" FROM itens a LEFT JOIN users b ON a.author_id = b.id " +
 		" LEFT JOIN status c ON a.status_id = c.id " +
 		" WHERE a.elemento_id = $1 " +
-		" ORDER BY a.titulo ASC"
+		" ORDER BY a.nome ASC"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, elementoId)
 	var itens []mdl.Item

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	//	"encoding/json"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -20,10 +20,41 @@ func CreateCicloHandler(w http.ResponseWriter, r *http.Request) {
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
 		sqlStatement := "INSERT INTO ciclos(nome, descricao, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
-		id := 0
-		Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&id)
+		idCiclo := 0
+		Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&idCiclo)
 		log.Println(sqlStatement + " - " + nome)
-		log.Println("INSERT: Id: " + strconv.Itoa(id) + " - Nome: " + nome)
+		log.Println("INSERT: Id: " + strconv.Itoa(idCiclo) + " - Nome: " + nome)
+		for key, value := range r.Form {
+			if strings.HasPrefix(key, "pilarCiclo") {
+				array := strings.Split(value[0], "#")
+				log.Println(value[0])
+				pilarCicloId := 0
+				pilarId := strings.Split(array[3], ":")[1]
+				tipoMediaId := strings.Split(array[5], ":")[1]
+				pesoPadrao := strings.Split(array[7], ":")[1]
+				sqlStatement := " INSERT INTO " +
+					" public.pilares_ciclos( " +
+					" ciclo_id, " +
+					" pilar_id, " +
+					" tipo_media, " +
+					" peso_padrao, " +
+					" author_id, " +
+					" criado_em ) " +
+					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+				log.Println(sqlStatement)
+				err := Db.QueryRow(
+					sqlStatement,
+					idCiclo,
+					pilarId,
+					tipoMediaId,
+					pesoPadrao,
+					currentUser.Id,
+					time.Now()).Scan(&pilarCicloId)
+				if err != nil {
+					panic(err.Error())
+				}
+			}
+		}
 		http.Redirect(w, r, route.CiclosRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -33,15 +64,116 @@ func CreateCicloHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateCicloHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Ciclo")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		id := r.FormValue("Id")
+		currentUser := GetUserInCookie(w, r)
+		cicloId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
 		sqlStatement := "UPDATE ciclos SET nome = $1, " +
 			" descricao = $2 " +
 			" WHERE id = $3 "
 		updtForm, _ := Db.Prepare(sqlStatement)
-		updtForm.Exec(nome, descricao, id)
-		log.Println("UPDATE: Id: " + id + " | Nome: " + nome + " | Descrição: " + descricao)
+		updtForm.Exec(nome, descricao, cicloId)
+		log.Println("UPDATE: Id: " + cicloId + " | Nome: " + nome + " | Descrição: " + descricao)
+
+		// Pilares Ciclos
+		var pilaresCicloDB = ListPilaresByCicloId(cicloId)
+		var pilaresCicloPage []mdl.PilarCiclo
+		var pilarCicloPage mdl.PilarCiclo
+		for key, value := range r.Form {
+			if strings.HasPrefix(key, "pilarCiclo") {
+				log.Println(value[0])
+				array := strings.Split(value[0], "#")
+				id := strings.Split(array[1], ":")[1]
+				log.Println("Id -------- " + id)
+				pilarCicloPage.Id, _ = strconv.ParseInt(id, 10, 64)
+				pilarCicloPage.CicloId, _ = strconv.ParseInt(cicloId, 10, 64)
+				pilarId := strings.Split(array[3], ":")[1]
+				log.Println("pilarId -------- " + pilarId)
+				pilarCicloPage.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
+				pilarNome := strings.Split(array[4], ":")[1]
+				log.Println("pilarNome -------- " + pilarNome)
+				pilarCicloPage.PilarNome = pilarNome
+				tipoMediaId := strings.Split(array[5], ":")[1]
+				log.Println("tipoMediaId -------- " + tipoMediaId)
+				pilarCicloPage.TipoMediaId, _ = strconv.Atoi(tipoMediaId)
+
+				tipoMedia := strings.Split(array[6], ":")[1]
+				log.Println("tipoMedia -------- " + tipoMedia)
+				pilarCicloPage.TipoMedia = tipoMedia
+
+				pesoPadrao := strings.Split(array[7], ":")[1]
+				log.Println("pesoPadrao -------- " + pesoPadrao)
+				pilarCicloPage.PesoPadrao, _ = strconv.Atoi(pesoPadrao)
+
+				authorId := strings.Split(array[8], ":")[1]
+				log.Println("authorId -------- " + authorId)
+				pilarCicloPage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)
+				authorName := strings.Split(array[9], ":")[1]
+				log.Println("authorName -------- " + authorName)
+				pilarCicloPage.AuthorName = authorName
+				criadoEm := strings.Split(array[10], ":")[1]
+				log.Println("criadoEm -------- " + criadoEm)
+				pilarCicloPage.CriadoEm = criadoEm
+				idVersaoOrigem := strings.Split(array[11], ":")[1]
+				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
+				pilarCicloPage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
+				statusId := strings.Split(array[12], ":")[1]
+				log.Println("StatusId -------- " + statusId)
+				pilarCicloPage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
+				cStatus := strings.Split(array[13], ":")[1]
+				log.Println("cStatus -------- " + cStatus)
+				pilarCicloPage.CStatus = cStatus
+				pilaresCicloPage = append(pilaresCicloPage, pilarCicloPage)
+			}
+		}
+		if len(pilaresCicloPage) < len(pilaresCicloDB) {
+			log.Println("Quantidade de Pilares do Ciclo da Página: " + strconv.Itoa(len(pilaresCicloPage)))
+			if len(pilaresCicloPage) == 0 {
+				DeletePilaresCicloByCicloId(cicloId) //DONE
+			} else {
+				var diffDB []mdl.PilarCiclo = pilaresCicloDB
+				for n := range pilaresCicloPage {
+					if containsPilarCiclo(diffDB, pilaresCicloPage[n]) {
+						diffDB = removePilarCiclo(diffDB, pilaresCicloPage[n])
+					}
+				}
+				DeletePilaresCicloHandler(diffDB) //DONE
+			}
+		} else {
+			var diffPage []mdl.PilarCiclo = pilaresCicloPage
+			for n := range pilaresCicloDB {
+				if containsPilarCiclo(diffPage, pilaresCicloDB[n]) {
+					diffPage = removePilarCiclo(diffPage, pilaresCicloDB[n])
+				}
+			}
+			var pilarCiclo mdl.PilarCiclo
+			pilarCicloId := 0
+			// statusItemId := GetStartStatus("plano")
+			for i := range diffPage {
+				pilarCiclo = diffPage[i]
+				log.Println("Ciclo Id: " + cicloId)
+				sqlStatement := "INSERT INTO public.pilares_ciclos ( " +
+					" ciclo_id, " +
+					" pilar_id, " +
+					" tipo_media, " +
+					" peso_padrao, " +
+					" author_id, " +
+					" criado_em " +
+					" ) " +
+					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+				log.Println(sqlStatement)
+				Db.QueryRow(
+					sqlStatement,
+					cicloId,
+					pilarCiclo.PilarId,
+					pilarCiclo.TipoMediaId,
+					pilarCiclo.PesoPadrao,
+					currentUser.Id,
+					time.Now()).Scan(&pilarCicloId)
+			}
+		}
+		UpdatePilaresCicloHandler(pilaresCicloPage, pilaresCicloDB)
+
 		http.Redirect(w, r, route.CiclosRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -69,7 +201,7 @@ func DeleteCicloHandler(w http.ResponseWriter, r *http.Request) {
 func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Ciclos")
 	if sec.IsAuthenticated(w, r) {
-		query := "SELECT " +
+		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
 			" a.descricao, " +
@@ -83,8 +215,8 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			" ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
 			" order by a.id asc"
-		log.Println(query)
-		rows, _ := Db.Query(query)
+		log.Println(sql)
+		rows, _ := Db.Query(sql)
 		var ciclos []mdl.Ciclo
 		var ciclo mdl.Ciclo
 		var i = 1
@@ -103,7 +235,27 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			i++
 			ciclos = append(ciclos, ciclo)
 		}
+		sql = "SELECT " +
+			" a.id, " +
+			" a.nome " +
+			" FROM pilares a " +
+			" order by a.id asc"
+		log.Println(sql)
+		rows, _ = Db.Query(sql)
+		var pilares []mdl.Pilar
+		var pilar mdl.Pilar
+		i = 1
+		for rows.Next() {
+			rows.Scan(
+				&pilar.Id,
+				&pilar.Nome)
+			pilar.Order = i
+			i++
+			pilares = append(pilares, pilar)
+		}
+		log.Println(len(pilares))
 		var page mdl.PageCiclos
+		page.Pilares = pilares
 		page.Ciclos = ciclos
 		page.AppName = mdl.AppName
 		page.Title = "Ciclos"
@@ -134,4 +286,15 @@ func GetNow() time.Time {
 		minuto,
 		segundo, 0, time.UTC)
 	return t
+}
+
+func LoadPilaresByCicloId(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Pilares Ciclos By Ciclo Id")
+	r.ParseForm()
+	var cicloId = r.FormValue("cicloId")
+	log.Println("cicloId: " + cicloId)
+	pilaresCiclo := ListPilaresByCicloId(cicloId)
+	jsonPilaresCiclo, _ := json.Marshal(pilaresCiclo)
+	w.Write([]byte(jsonPilaresCiclo))
+	log.Println("JSON Pilares de Ciclos")
 }

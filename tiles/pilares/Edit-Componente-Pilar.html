@@ -9,13 +9,14 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-componente-pilar-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container">
+            <form class="w3-container" id="formulario-componente-pilar-edit">
 				<input type="hidden" id="id-edit" value="" readonly="readonly" disabled="disabled">
 				<input type="hidden" id="order-edit" value="" readonly="readonly" disabled="disabled">
-				<input type="hidden" id="elementoId-edit" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="pilarId-edit" value="" readonly="readonly" disabled="disabled">
 				<label class="w3-label">Componente</label>
 				<br>
-	            <select class="w3-input" name="ComponentePilarForInsert" id="ComponentePilarForInsert" style="width:100%">
+	            <select class="w3-input" name="ComponentePilarForUpdate" id="ComponentePilarForUpdate">
+	                <option value=""></option>
 					{{range $index, $componente := .Componentes }}
 		                <option value="{{$componente.Id}}">
 							{{$componente.Nome}}
@@ -24,8 +25,15 @@
 	            </select>
 				<br>
                 <label class="w3-label">Peso Padrão</label>
-				<input class="w3-input" type="number" id="PesoPadraoForInsert" name="PesoPadraoForInsert" value="">
-				<br>		
+				<input class="w3-input" type="number" id="PesoPadraoForUpdate" name="PesoPadraoForUpdate" value="">
+				<label class="w3-label">Tipo de Média</label>
+	            <select class="w3-input" name="TipoMediaForUpdate" id="TipoMediaForUpdate">
+	                <option value="1">Aritmética</option>
+	                <option value="2">Geométrica</option>
+	                <option value="3">Harmônica</option>
+	            </select>
+                <label class="w3-label">Arquivo de Sonda</label>
+				<input class="w3-input" type="text" id="SondaForUpdate" name="SondaForUpdate" value="">				
                 <button 
 					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					type="button"

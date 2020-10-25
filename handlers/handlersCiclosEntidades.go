@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"strconv"
+	//	"time"
 	mdl "virtus/models"
 )
 
@@ -18,9 +19,9 @@ func ListCiclosEntidadeByEntidadeId(entidadeId string) []mdl.CicloEntidade {
 		"a.tipo_media, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
-		"coalesce(to_char(a.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
-		"coalesce(to_char(a.termina_em,'DD/MM/YYYY')) as termina_em, " +
-		"coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em, " +
+		"coalesce(to_char(a.inicia_em,'YYYY-MM-DD')) as inicia_em, " +
+		"coalesce(to_char(a.termina_em,'YYYY-MM-DD')) as termina_em, " +
+		"coalesce(to_char(a.criado_em,'YYYY-MM-DD')) as criado_em, " +
 		"a.status_id, " +
 		"coalesce(c.name,'') as status_name " +
 		"FROM ciclos_entidades a " +
@@ -99,7 +100,9 @@ func updateCicloEntidadeHandler(ce mdl.CicloEntidade, cicloEntidadeDB mdl.CicloE
 		"tipo_media=$1, inicia_em=$2, termina_em=$3 WHERE id=$4"
 	log.Println(sqlStatement)
 	updtForm, _ := Db.Prepare(sqlStatement)
-	_, err := updtForm.Exec(ce.TipoMediaId, ce.IniciaEm, ce.TerminaEm)
+	log.Println("ce.IniciaEm: " + ce.IniciaEm)
+	log.Println("ce.TerminaEm: " + ce.TerminaEm)
+	_, err := updtForm.Exec(ce.TipoMediaId, ce.IniciaEm, ce.TerminaEm, ce.Id)
 	if err != nil {
 		panic(err.Error())
 	}

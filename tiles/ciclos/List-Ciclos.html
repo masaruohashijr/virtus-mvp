@@ -47,10 +47,10 @@
 				<td>{{$ciclo.Descricao}}</td>
                 <td>{{$ciclo.AuthorName}}</td>
                 <td>{{$ciclo.C_CriadoEm}}</td>
-				<td>{{$entidade.CStatus}}</td>
+				<td>{{$ciclo.CStatus}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="editCiclo(this);">Editar</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editCiclo(this)">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteCiclo(this)">Apagar</button>
                 </td>
 				{{end}}

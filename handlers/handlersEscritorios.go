@@ -76,10 +76,10 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 			" a.id, " +
 			" a.nome, " +
 			" a.descricao, " +
-			" a.chefe_id, " +
-			" d.name, " +
+			" coalesce(a.chefe_id,0), " +
+			" coalesce(d.name,'') as chefe_name, " +
 			" a.author_id, " +
-			" b.name, " +
+			" coalesce(b.name,'') as author_name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
 			" coalesce(c.name,'') as cstatus, " +
 			" a.status_id, " +

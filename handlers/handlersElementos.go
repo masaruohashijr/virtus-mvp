@@ -76,8 +76,11 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 		var itensDB = ListItensHandler(elementoId)
 		var itensPage []mdl.Item
 		var itemPage mdl.Item
+		qtdItensPage := 0
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "item") {
+				log.Println("key: " + key)
+				qtdItensPage++
 				log.Println(value[0])
 				array := strings.Split(value[0], "#")
 				id := strings.Split(array[1], ":")[1]
@@ -98,6 +101,11 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				itensPage = append(itensPage, itemPage)
 			}
 		}
+		log.Println("-----------------------")
+		log.Println("Qtd Itens Page: " + strconv.Itoa(qtdItensPage))
+		log.Println("Quantidade de itens da página é: " + strconv.Itoa(len(itensPage)))
+		log.Println("Quantidade de itens do banco de dados é: " + strconv.Itoa(len(itensDB)))
+		log.Println("-----------------------")
 		if len(itensPage) < len(itensDB) {
 			log.Println("Quantidade de Itens da Página: " + strconv.Itoa(len(itensPage)))
 			if len(itensPage) == 0 {
@@ -118,6 +126,7 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 					diffPage = removeItem(diffPage, itensDB[n])
 				}
 			}
+			log.Println("Quantidade de itens a mais: " + strconv.Itoa(len(diffPage)))
 			var item mdl.Item
 			itemId := 0
 			statusItemId := GetStartStatus("item")

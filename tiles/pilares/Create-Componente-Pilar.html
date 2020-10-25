@@ -1,18 +1,19 @@
-{{define "Create-Componente-Pìlar"}}
+{{define "Create-Componente-Pilar"}}
 <!-- Create Componente-Pìlar Form -->
 <div class="w3-container">
-    <div id="create-pilar-componente-form" class="w3-modal">
+    <div id="create-componente-pilar-form" class="w3-modal">
         <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Adicionar novo componente ao pilar</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
-                      onclick="document.getElementById('create-pilar-componente-form').style.display='none'">&times;</span>
+                      onclick="document.getElementById('create-componente-pilar-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container">
+            <form class="w3-container" id="formulario-componente-pilar-create">
 				<label class="w3-label">Componente</label>
 				<br>
-	            <select class="w3-input" name="ComponentePilarForInsert" id="ComponentePilarForInsert" style="width:100%">
+	            <select class="w3-input" name="ComponentePilarForInsert" id="ComponentePilarForInsert">
+					<option value=""></option>
 					{{range $index, $componente := .Componentes }}
 		                <option value="{{$componente.Id}}">
 							{{$componente.Nome}}
@@ -22,11 +23,18 @@
 				<br>
                 <label class="w3-label">Peso Padrão</label>
 				<input class="w3-input" type="number" id="PesoPadraoForInsert" name="PesoPadraoForInsert" value="">
-				<br>	
+				<label class="w3-label">Tipo de Média</label>
+	            <select class="w3-input" name="TipoMediaForInsert" id="TipoMediaForInsert">
+	                <option value="1">Aritmética</option>
+	                <option value="2">Geométrica</option>
+	                <option value="3">Harmônica</option>
+	            </select>
+                <label class="w3-label">Arquivo de Sonda</label>
+				<input class="w3-input" type="text" id="SondaForInsert" name="SondaForInsert" value="">				
                 <button 
 					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					type="button"
-					onclick="criarComponentePìlar();"
+					onclick="criarComponentePilar()"
 					>Criar
 				</button>
             </form>

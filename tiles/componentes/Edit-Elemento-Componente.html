@@ -9,10 +9,13 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-elemento-componente-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container">
+            <form class="w3-container" id="formulario-elemento-componente-edit">
+				<input type="hidden" id="Id-ECForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="Order-ECForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="ComponenteId-ECForUpdate" value="" readonly="readonly" disabled="disabled">
 				<label class="w3-label">Elementos</label>
 				<br>
-	            <select class="w3-input" name="ElementoComponenteForUpdate" id="ElementoComponenteForUpdate" multiple style="width:100%">
+	            <select class="w3-input" name="ElementoComponenteForUpdate" id="ElementoComponenteForUpdate">
 					{{range $index, $elemento := .Elementos }}
 		                <option value="{{$elemento.Id}}">
 							{{$elemento.Nome}}

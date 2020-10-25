@@ -9,8 +9,18 @@
   
   <a href="#">Sobre</a>
   {{if (call .LoggedUser.HasPermission "listEntidades")}}
-
-  <!-- <a href="/entidades">Entidades</a> -->
+  <a href="/entidades">Relacionar Ciclo</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listEntidades")}}
+  <a href="/entidades">Distribuir Papéis</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listEntidades")}}
+  <a href="/entidades">Designar Papéis</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listEntidades")}}
+  <a href="/entidades">Avaliar Papéis</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listEntidades")}}
   <a href="/entidades">Entidades</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listCiclos")}}
