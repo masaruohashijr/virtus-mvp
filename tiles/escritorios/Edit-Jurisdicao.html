@@ -1,0 +1,41 @@
+{{define "Edit-Jurisdicao"}}
+<!-- Create Jurisdicao Form -->
+<div class="w3-container">
+    <div id="create-componente-pilar-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar jurisdição</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-jurisdicao-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-jurisdicao-edit" id="formulario-jurisdicao-edit">
+				<input type="hidden" id="Id-JUForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="Order-JUForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="EscritorioId-JUForUpdate" value="" readonly="readonly" disabled="disabled">
+				<label class="w3-label">Jurisdição</label>
+				<br>
+	            <select class="w3-input" name="EntidadeForUpdate" id="EntidadeForUpdate">
+					<option value=""></option>
+					{{range $index, $entidade := .Entidades }}
+		                <option value="{{$entidade.Id}}">
+							{{$entidade.Nome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <label class="w3-label">Inicia Em</label>
+				<input class="w3-input" type="date" id="IniciaEmForUpdate" name="IniciaEmForUpdate" value="">
+				<label class="w3-label">Termina Em</label>
+				<input class="w3-input" type="date" id="TerminaEmForUpdate" name="TerminaEmForUpdate" value="">
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="updateJurisdicao()"
+					>Salvar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

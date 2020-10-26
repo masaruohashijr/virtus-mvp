@@ -127,6 +127,20 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		page.Users = users
 
+		sql = "SELECT id, nome FROM entidades ORDER BY nome asc"
+		log.Println(sql)
+		rows, _ = Db.Query(sql)
+		var entidades []mdl.Entidade
+		var entidade mdl.Entidade
+		i = 1
+		for rows.Next() {
+			rows.Scan(&entidade.Id, &entidade.Nome)
+			entidade.Order = i
+			i++
+			entidades = append(entidades, entidade)
+		}
+		page.Entidades = entidades
+
 		page.AppName = mdl.AppName
 		page.Title = "Escritórios"
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))

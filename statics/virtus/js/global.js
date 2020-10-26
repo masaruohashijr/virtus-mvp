@@ -17,3 +17,7 @@ var elementoComponente;
 var elementosComponente = [];
 var componentePilar;
 var componentesPilar = [];
+var jurisdicao;
+var jurisdicoes = [];
+var membro;
+var membros = [];

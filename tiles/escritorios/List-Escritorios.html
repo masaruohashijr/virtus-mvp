@@ -52,9 +52,9 @@
                 <td>{{$escritorio.CStatus}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="editEscritorio(this)">Editar</button>
-                    <button class="w3-btn w3-teal" onclick="editJurisdicao(this)">Jurisdição</button>
-                    <button class="w3-btn w3-teal" onclick="editEquipe(this)">Equipe</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEscritorio(this)">Editar</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editJurisdicao(this)">Jurisdição</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEquipe(this)">Equipe</button>
                     <button class="w3-btn w3-red" onclick="deleteEscritorio(this)">Apagar</button>
                 </td>
 				{{end}}

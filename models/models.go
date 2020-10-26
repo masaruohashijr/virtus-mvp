@@ -317,6 +317,38 @@ type Escritorio struct {
 	Selected       bool   `json:"selected"`
 }
 
+type Jurisdicao struct {
+	Order          int
+	Id             int64  `json:"id"`
+	EscritorioId   int64  `json:"escritorioId"`
+	EntidadeId     int64  `json:"entidadeId"`
+	EntidadeNome   string `json:"entidadeNome"`
+	IniciaEm       string `json:"iniciaEm"`
+	TerminaEm      string `json:"terminaEm"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type Membro struct {
+	Order          int
+	Id             int64  `json:"id"`
+	EscritorioId   int64  `json:"escritorioId"`
+	UsuarioId      int64  `json:"usuarioId"`
+	UsuarioNome    string `json:"usuarioNome"`
+	IniciaEm       string `json:"iniciaEm"`
+	TerminaEm      string `json:"terminaEm"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
 type NullTime struct {
 	pq.NullTime
 }
@@ -406,6 +438,7 @@ type PageEscritorios struct {
 	AppName     string
 	Title       string
 	Escritorios []Escritorio
+	Entidades   []Entidade
 	Users       []User
 	LoggedUser  LoggedUser
 }

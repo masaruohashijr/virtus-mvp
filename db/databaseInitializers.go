@@ -1088,6 +1088,20 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
+	// Sequence JURISDICOES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.jurisdicoes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence MEMBROS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.membros_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
 	// Sequence ELEMENTOS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.elementos_id_seq " +
 		" START WITH 1" +
@@ -1346,6 +1360,32 @@ func createTable() {
 			" avaliacao character varying(4000)," +
 			" criado_em timestamp without time zone," +
 			" author_id integer," +
+			" status_id integer)")
+
+	// Table JURISDICOES
+	db.Exec(
+		" CREATE TABLE public.jurisdicoes (" +
+			" id integer DEFAULT nextval('jurisdicoes_id_seq'::regclass)," +
+			" escritorio_id integer," +
+			" entidade_id integer," +
+			" inicia_em timestamp without time zone," +
+			" termina_em timestamp without time zone," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table MEMBROS
+	db.Exec(
+		" CREATE TABLE public.membros (" +
+			" id integer DEFAULT nextval('membros_id_seq'::regclass)," +
+			" escritorio_id integer," +
+			" usuario_id integer," +
+			" inicia_em timestamp without time zone," +
+			" termina_em timestamp without time zone," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
 			" status_id integer)")
 
 	// Table NOTAS
