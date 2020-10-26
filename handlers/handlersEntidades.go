@@ -50,8 +50,8 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				cicloEntidadeId := 0
 				cicloId := strings.Split(array[1], ":")[1]
 				tipoMediaId := strings.Split(array[3], ":")[1]
-				iniciaEm := strings.Split(array[5], ":")[1]
-				terminaEm := strings.Split(array[6], ":")[1]
+				iniciaEm := strings.Split(array[7], ":")[1]
+				terminaEm := strings.Split(array[8], ":")[1]
 				snippet1 := ""
 				snippet2 := ""
 				if iniciaEm != "" {
@@ -72,6 +72,12 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 					" ) " +
 					" VALUES ($1, $2, $3, $4, $5" + snippet2 + ") RETURNING id"
 				log.Println(sqlStatement)
+				log.Println("idEntidade: " + strconv.Itoa(idEntidade))
+				log.Println("cicloId: " + cicloId)
+				log.Println("tipoMediaId: " + tipoMediaId)
+				log.Println("currentUser.Id: " + strconv.FormatInt(currentUser.Id, 10))
+				log.Println("iniciaEm: " + iniciaEm)
+				log.Println("terminaEm: " + terminaEm)
 				if iniciaEm != "" && terminaEm != "" {
 					err = Db.QueryRow(sqlStatement, idEntidade, cicloId, tipoMediaId, currentUser.Id, time.Now(), iniciaEm, terminaEm).Scan(&cicloEntidadeId)
 				} else {
