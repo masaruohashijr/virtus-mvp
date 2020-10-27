@@ -84,6 +84,8 @@ func UpdateComponentesPilarHandler(componentesPilarPage []mdl.ComponentePilar, c
 }
 
 func hasSomeFieldChangedPilar(componentePilarPage mdl.ComponentePilar, componentePilarDB mdl.ComponentePilar) bool {
+	log.Println("Id componente pilar: " + strconv.FormatInt(componentePilarPage.Id, 10))
+	log.Println(componentePilarPage)
 	if componentePilarPage.TipoMediaId != componentePilarDB.TipoMediaId {
 		return true
 	} else if componentePilarPage.PesoPadrao != componentePilarDB.PesoPadrao {

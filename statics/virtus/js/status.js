@@ -1,8 +1,6 @@
 function editStatus(e) {
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get status id to update
     var statusId = e.parentNode.parentNode.childNodes[3].innerText;
     var statusName = e.parentNode.parentNode.childNodes[5].innerText;
     var statusDescription = e.parentNode.parentNode.childNodes[5].childNodes[1].value;

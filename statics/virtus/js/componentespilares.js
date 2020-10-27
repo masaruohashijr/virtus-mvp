@@ -184,8 +184,10 @@ function updateComponentePilar() {
 			break;
 		}
 	}
-	let sonda = document.getElementById('SondaForUpdate').value;
 	let pesoPadrao = document.getElementById('PesoPadraoForUpdate').value;
+	let sonda = document.getElementById('SondaForUpdate').value;
+	console.log('*** Logando Componente Pilar ***');
+	console.log(order + ', ' + id + ', ' + pilarId + ', ' + componenteId + ', ' + componenteNome + ', ' + tipoMediaId + ', ' + tipoMedia + ', ' + sonda + ', ' + pesoPadrao);
 	componentePilar = new ComponentePilar(order, id, pilarId, componenteId, componenteNome, tipoMediaId, tipoMedia, sonda, pesoPadrao, '', '', '', '', '', '');
 	componentesPilar[order] = componentePilar;
 	updateComponentePilarRow("table-componentes-pilar-"+contexto,order);

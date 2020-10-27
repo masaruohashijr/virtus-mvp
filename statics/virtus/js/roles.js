@@ -2,9 +2,7 @@ function editRole(e) {
 	// resetando
 	resetRolesEditForm();
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get role id to update
     var roleId = e.parentNode.parentNode.childNodes[3].innerText;
     var roleName = e.parentNode.parentNode.childNodes[5].innerText;
     var roleDescription = e.parentNode.parentNode.childNodes[7].innerText;

@@ -72,11 +72,11 @@ function addElementoComponenteRow(tableID) {
 	newCell.appendChild(newText);
 	// Criado Em
 	newCell = newRow.insertCell(2);
-	newText = document.createTextNode(elementoComponente.criadoEm);
+	newText = document.createTextNode(elementoComponente.autorNome);
 	newCell.appendChild(newText);
 	// Autor
 	newCell = newRow.insertCell(3);
-	newText = document.createTextNode(elementoComponente.autorNome);
+	newText = document.createTextNode(elementoComponente.criadoEm);
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+elementoComponente.autorId+'"/>'+newCell.innerHTML;
 	// Botões

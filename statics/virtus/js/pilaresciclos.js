@@ -88,8 +88,16 @@ function addPilarCicloRow(tableID) {
 	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(pilarCiclo.pesoPadrao);
 	newCell.appendChild(newText);
-	// Botões
+	// Autor
 	newCell = newRow.insertCell(3);
+	newText = document.createTextNode(pilarCiclo.autorNome);
+	newCell.appendChild(newText);
+	// Criado Em
+	newCell = newRow.insertCell(4);
+	newText = document.createTextNode(pilarCiclo.criadoEm);
+	newCell.appendChild(newText);
+	// Botões
+	newCell = newRow.insertCell(5);
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";

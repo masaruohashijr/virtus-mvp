@@ -23,9 +23,7 @@ function getActionStatus(type, actionId){
 function editAction(e) {
 	resetActionsEditForm();
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get action id to update
     var actionId = e.parentNode.parentNode.childNodes[3].innerText;
     var actionName = e.parentNode.parentNode.childNodes[5].innerText;
     var actionDescription = e.parentNode.parentNode.childNodes[5].childNodes[0].value;

@@ -192,7 +192,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 			" a.nome, " +
 			" coalesce(a.descricao,''), " +
 			" coalesce(b.name,'') as author_name, " +
-			" coalesce(to_char(a.criado_em,'DD/MM/YYYY'),'') as criado_em, " +
+			" coalesce(to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'),'') as criado_em, " +
 			" a.peso, " +
 			" coalesce(c.name,'') as cstatus, " +
 			" a.status_id " +

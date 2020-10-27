@@ -1,8 +1,6 @@
 function editEntidade(e) {
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get entidade id to update
     var entidadeId = e.parentNode.parentNode.childNodes[3].innerText;
     var entidadeNome = e.parentNode.parentNode.childNodes[5].innerText;
     var entidadeDescricao = e.parentNode.parentNode.childNodes[7].innerText;

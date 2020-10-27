@@ -20,21 +20,13 @@ class Activity {
 }
 
 function limparCamposActivityForm(form) {
-	// alert(1);
 	document.getElementById('action-' + form).value = "";
-	// alert(2);
 	document.getElementById('start-at-' + form).value = "";
-	// alert(3);
 	document.getElementById('end-at-' + form).value = "";
-	// alert(4);
 	document.getElementById('exp-time-' + form).value = "";
-	// alert(5);
 	document.getElementById('exp-action-' + form).value = "";
-	// alert(6);
 	document.getElementById('roles-' + form).value = "";
-	// alert(7);
 	document.getElementById('features-' + form).value = "";
-	// alert(8);
 }
 
 function criarActivity() {

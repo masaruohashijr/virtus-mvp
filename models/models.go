@@ -11,74 +11,6 @@ type Error struct {
 	Message string `json:"message"`
 }
 
-type Role struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Name           string `json:"name"`
-	Description    string `json:"description"`
-	AuthorId       int64  `json:"autorId"`
-	AuthorName     string `json:"autorNome"`
-	CreatedAt      string `json:"createdAt"`
-	C_CreatedAt    string `json:"c_createdAt"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-	Selected       bool
-	Features       []Feature
-}
-
-type Feature struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Name           string `json:"name"`
-	Code           string `json:"code"`
-	Description    string `json:"description"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CreatedAt      string `json:"createdAt"`
-	C_CreatedAt    string `json:"c_createdAt"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-	Selected       bool
-}
-
-type Workflow struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Name           string `json:"name"`
-	EntityType     string `json:"entity"`
-	StartAt        string `json:"startAt`
-	EndAt          string `json:"endAt"`
-	Description    string `json:"description"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CreatedAt      string `json:"createdAt"`
-	C_CreatedAt    string `json:"c_createdAt"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-	Selected       bool
-}
-
-type Activity struct {
-	Order                int    `json:"order"`
-	Id                   int64  `json:"id"`
-	WorkflowId           int64  `json:"wid"`
-	ActionId             int64  `json:"actionId"`
-	ActionName           string `json:"actionName"`
-	ExpirationActionId   int64  `json:"expActionId"`
-	ExpirationActionName string `json:"expActionName"`
-	ExpirationTimeDays   int    `json:"expTime"`
-	CStartAt             string `json:"startAt"`
-	CEndAt               string `json:"endAt"`
-	CRoles               string `json:"roles"`
-	CRoleNames           string `json:"roleNames"`
-	Roles                []Role `json:"roles_array"`
-	CFeatures            string `json:"features"`
-	CFeatureNames        string `json:"featureNames"`
-}
-
 type Action struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -100,35 +32,85 @@ type Action struct {
 	Roles          []Role
 }
 
-type Status struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Name           string `json:"name"`
-	Description    string `json:"description"`
-	Stereotype     string `json:"stereotype"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CreatedAt      string `json:"createdAt"`
-	C_CreatedAt    string `json:"c_createdAt"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-	Selected       bool
+type Activity struct {
+	Order                int    `json:"order"`
+	Id                   int64  `json:"id"`
+	WorkflowId           int64  `json:"wid"`
+	ActionId             int64  `json:"actionId"`
+	ActionName           string `json:"actionName"`
+	ExpirationActionId   int64  `json:"expActionId"`
+	ExpirationActionName string `json:"expActionName"`
+	ExpirationTimeDays   int    `json:"expTime"`
+	CStartAt             string `json:"startAt"`
+	CEndAt               string `json:"endAt"`
+	CRoles               string `json:"roles"`
+	CRoleNames           string `json:"roleNames"`
+	Roles                []Role `json:"roles_array"`
+	CFeatures            string `json:"features"`
+	CFeatureNames        string `json:"featureNames"`
 }
 
-type Item struct {
-	Order          int    `json:"order"`
+type Ciclo struct {
+	Order          int
 	Id             int64  `json:"id"`
-	ElementoId     int64  `json:"elementoId"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
-	Avaliacao      string `json:"avaliacao"`
-	AuthorId       int64  `json:"autorId"`
-	AuthorName     string `json:"autorNome"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
 	CriadoEm       string `json:"criadoEm"`
 	C_CriadoEm     string `json:"c_criadoEm"`
 	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"status"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type CicloEntidade struct {
+	Order          int
+	Id             int64  `json:"id"`
+	EntidadeId     int64  `json:"entidadeId"`
+	CicloId        int64  `json:"cicloId"`
+	Nome           string `json:"nome"`
+	TipoMediaId    int    `json:"tipoMediaId"`
+	TipoMedia      string `json:"tipoMedia"`
+	IniciaEm       string `json:"iniciaEm"`
+	TerminaEm      string `json:"terminaEm"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type Componente struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Nome           string `json:"nome"`
+	Descricao      string `json:"descricao"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CriadoEm       string `json:"criadoEm"`
+	C_CriadoEm     string `json:"c_criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type ComponentePilar struct {
+	Order          int
+	Id             int64  `json:"id"`
+	PilarId        int64  `json:"pilarId"`
+	ComponenteId   int64  `json:"componenteId"`
+	ComponenteNome string `json:"componenteNome"`
+	TipoMediaId    int    `json:"tipoMediaId"`
+	TipoMedia      string `json:"tipoMedia"`
+	Sonda          string `json:"sonda"`
+	PesoPadrao     int    `json:"pesoPadrao"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
 	CStatus        string `json:"cStatus"`
 }
 
@@ -164,101 +146,6 @@ type ElementoComponente struct {
 	CStatus        string `json:"cStatus"`
 }
 
-type Componente struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Nome           string `json:"nome"`
-	Descricao      string `json:"descricao"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CriadoEm       string `json:"criadoEm"`
-	C_CriadoEm     string `json:"c_criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-}
-
-type ComponentePilar struct {
-	Order          int
-	Id             int64  `json:"id"`
-	PilarId        int64  `json:"pilarId"`
-	ComponenteId   int64  `json:"componenteId"`
-	ComponenteNome string `json:"componenteNome"`
-	TipoMediaId    int    `json:"tipoMediaId"`
-	TipoMedia      string `json:"tipoMedia"`
-	PesoPadrao     int    `json:"pesoPadrao"`
-	Sonda          string `json:"sonda"`
-	AuthorId       int64  `json:"autorId"`
-	AuthorName     string `json:"autorNome"`
-	CriadoEm       string `json:"criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-}
-
-type Pilar struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Nome           string `json:"nome"`
-	Descricao      string `json:"descricao"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CriadoEm       string `json:"criadoEm"`
-	C_CriadoEm     string `json:"c_criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-}
-
-type Ciclo struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Nome           string `json:"nome"`
-	Descricao      string `json:"descricao"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CriadoEm       string `json:"criadoEm"`
-	C_CriadoEm     string `json:"c_criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-}
-
-type CicloEntidade struct {
-	Order          int
-	Id             int64  `json:"id"`
-	EntidadeId     int64  `json:"entidadeId"`
-	CicloId        int64  `json:"cicloId"`
-	Nome           string `json:"nome"`
-	TipoMediaId    int    `json:"tipoMediaId"`
-	TipoMedia      string `json:"tipoMedia"`
-	IniciaEm       string `json:"iniciaEm"`
-	TerminaEm      string `json:"terminaEm"`
-	AuthorId       int64  `json:"autorId"`
-	AuthorName     string `json:"autorNome"`
-	CriadoEm       string `json:"criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-}
-
-type PilarCiclo struct {
-	Order          int
-	Id             int64  `json:"id"`
-	CicloId        int64  `json:"cicloId"`
-	PilarId        int64  `json:"pilarId"`
-	PilarNome      string `json:"pilarNome"`
-	TipoMediaId    int    `json:"tipoMediaId"`
-	TipoMedia      string `json:"tipoMedia"`
-	PesoPadrao     int    `json:"pesoPadrao"`
-	AuthorId       int64  `json:"autorId"`
-	AuthorName     string `json:"autorNome"`
-	CriadoEm       string `json:"criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-}
-
 type Entidade struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -273,31 +160,6 @@ type Entidade struct {
 	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
 	StatusId       int64  `json:"statusId"`
 	CStatus        string `json:"cStatus"`
-}
-
-type Plano struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Nome           string `json:"nome"`
-	Descricao      string `json:"descricao"`
-	EntidadeId     int64  `json:"entidadeId"`
-	EntidadeNome   string `json:"entidadeNome"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CriadoEm       string `json:"criadoEm"`
-	C_CriadoEm     string `json:"c_criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-}
-
-type Carteira struct {
-	Order    int
-	Id       int64  `json:"id"`
-	Nome     string `json:"nome"`
-	AuthorId int64  `json:"authorId"`
-	StatusId int64  `json:"statusId"`
-	CStatus  string `json:"cStatus"`
 }
 
 type Escritorio struct {
@@ -317,6 +179,38 @@ type Escritorio struct {
 	Selected       bool   `json:"selected"`
 }
 
+type Feature struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Name           string `json:"name"`
+	Code           string `json:"code"`
+	Description    string `json:"description"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CreatedAt      string `json:"createdAt"`
+	C_CreatedAt    string `json:"c_createdAt"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+	Selected       bool
+}
+
+type Item struct {
+	Order          int    `json:"order"`
+	Id             int64  `json:"id"`
+	ElementoId     int64  `json:"elementoId"`
+	Nome           string `json:"nome"`
+	Descricao      string `json:"descricao"`
+	Avaliacao      string `json:"avaliacao"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	C_CriadoEm     string `json:"c_criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"status"`
+	CStatus        string `json:"cStatus"`
+}
+
 type Jurisdicao struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -331,6 +225,11 @@ type Jurisdicao struct {
 	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
 	StatusId       int64  `json:"statusId"`
 	CStatus        string `json:"cStatus"`
+}
+
+type LoggedUser struct {
+	User          User
+	HasPermission func(string) bool
 }
 
 type Membro struct {
@@ -353,9 +252,99 @@ type NullTime struct {
 	pq.NullTime
 }
 
-type LoggedUser struct {
-	User          User
-	HasPermission func(string) bool
+type Plano struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Nome           string `json:"nome"`
+	Descricao      string `json:"descricao"`
+	EntidadeId     int64  `json:"entidadeId"`
+	EntidadeNome   string `json:"entidadeNome"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CriadoEm       string `json:"criadoEm"`
+	C_CriadoEm     string `json:"c_criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type Pilar struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Nome           string `json:"nome"`
+	Descricao      string `json:"descricao"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CriadoEm       string `json:"criadoEm"`
+	C_CriadoEm     string `json:"c_criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type PilarCiclo struct {
+	Order          int
+	Id             int64  `json:"id"`
+	CicloId        int64  `json:"cicloId"`
+	PilarId        int64  `json:"pilarId"`
+	PilarNome      string `json:"pilarNome"`
+	TipoMediaId    int    `json:"tipoMediaId"`
+	TipoMedia      string `json:"tipoMedia"`
+	PesoPadrao     int    `json:"pesoPadrao"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+type Role struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Name           string `json:"name"`
+	Description    string `json:"description"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CreatedAt      string `json:"createdAt"`
+	C_CreatedAt    string `json:"c_createdAt"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+	Selected       bool
+	Features       []Feature
+}
+
+type Status struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Name           string `json:"name"`
+	Description    string `json:"description"`
+	Stereotype     string `json:"stereotype"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CreatedAt      string `json:"createdAt"`
+	C_CreatedAt    string `json:"c_createdAt"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+	Selected       bool
+}
+
+type TipoNota struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Nome           string `json:"nome"`
+	Descricao      string `json:"descricao"`
+	Letra          string `json:"letra"`
+	CorLetra       string `json:"corLetra"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CreatedAt      string `json:"createdAt"`
+	C_CreatedAt    string `json:"c_createdAt"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+	Selected       bool
 }
 
 type User struct {
@@ -381,10 +370,38 @@ type User struct {
 	Selected       bool      `json:"selected"`
 }
 
-type PageElementos struct {
+type Workflow struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Name           string `json:"name"`
+	EntityType     string `json:"entity"`
+	StartAt        string `json:"startAt`
+	EndAt          string `json:"endAt"`
+	Description    string `json:"description"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CreatedAt      string `json:"createdAt"`
+	C_CreatedAt    string `json:"c_createdAt"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+	Selected       bool
+}
+
+// PÁGINAS
+type PageActions struct {
 	AppName    string
 	Title      string
-	Elementos  []Elemento
+	Statuss    []Status
+	Actions    []Action
+	LoggedUser LoggedUser
+}
+
+type PageCiclos struct {
+	AppName    string
+	Title      string
+	Ciclos     []Ciclo
+	Pilares    []Pilar
 	Users      []User
 	LoggedUser LoggedUser
 }
@@ -398,20 +415,10 @@ type PageComponentes struct {
 	LoggedUser  LoggedUser
 }
 
-type PagePilares struct {
-	AppName     string
-	Title       string
-	Pilares     []Pilar
-	Componentes []Componente
-	Users       []User
-	LoggedUser  LoggedUser
-}
-
-type PageCiclos struct {
+type PageElementos struct {
 	AppName    string
 	Title      string
-	Ciclos     []Ciclo
-	Pilares    []Pilar
+	Elementos  []Elemento
 	Users      []User
 	LoggedUser LoggedUser
 }
@@ -426,11 +433,10 @@ type PageEntidades struct {
 	LoggedUser LoggedUser
 }
 
-type PagePlanos struct {
+type PageFeatures struct {
 	AppName    string
 	Title      string
-	Planos     []Plano
-	Users      []User
+	Features   []Feature
 	LoggedUser LoggedUser
 }
 
@@ -442,34 +448,28 @@ type PageEscritorios struct {
 	Users       []User
 	LoggedUser  LoggedUser
 }
-type PageCarteiras struct {
-	AppName    string
-	Title      string
-	Carteiras  []Carteira
-	Users      []User
-	LoggedUser LoggedUser
-}
 
-type PageUsers struct {
+type PagePilares struct {
 	AppName     string
 	Title       string
+	Pilares     []Pilar
+	Componentes []Componente
 	Users       []User
-	Escritorios []Escritorio
-	Roles       []Role
 	LoggedUser  LoggedUser
+}
+
+type PagePlanos struct {
+	AppName    string
+	Title      string
+	Planos     []Plano
+	Users      []User
+	LoggedUser LoggedUser
 }
 
 type PageRoles struct {
 	AppName    string
 	Title      string
 	Roles      []Role
-	Features   []Feature
-	LoggedUser LoggedUser
-}
-
-type PageFeatures struct {
-	AppName    string
-	Title      string
 	Features   []Feature
 	LoggedUser LoggedUser
 }
@@ -481,12 +481,21 @@ type PageStatus struct {
 	LoggedUser LoggedUser
 }
 
-type PageActions struct {
+type PageTiposNotas struct {
 	AppName    string
 	Title      string
-	Statuss    []Status
-	Actions    []Action
+	TiposNotas []TipoNota
+	Users      []User
 	LoggedUser LoggedUser
+}
+
+type PageUsers struct {
+	AppName     string
+	Title       string
+	Users       []User
+	Escritorios []Escritorio
+	Roles       []Role
+	LoggedUser  LoggedUser
 }
 
 type PageWorkflows struct {

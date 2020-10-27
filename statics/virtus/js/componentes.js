@@ -1,8 +1,6 @@
 function editComponente(e) {
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get componente id to update
     var componenteId = e.parentNode.parentNode.childNodes[3].innerText;
     var componenteNome = e.parentNode.parentNode.childNodes[5].innerText;
     var componenteDescricao = e.parentNode.parentNode.childNodes[7].innerText;

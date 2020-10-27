@@ -7,8 +7,6 @@ function editCiclo(e) {
 	resetCicloForms();
     var editForm = document.getElementById('edit-form');
     editForm.style.display = 'block';
-    // display update form
-    // get ciclo id to update
     var cicloId = e.parentNode.parentNode.childNodes[3].innerText;
     var cicloNome = e.parentNode.parentNode.childNodes[5].innerText;
     var cicloDescricao = e.parentNode.parentNode.childNodes[7].innerText;

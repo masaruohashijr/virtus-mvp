@@ -9,9 +9,6 @@
   
   <a href="#">Sobre</a>
   {{if (call .LoggedUser.HasPermission "listEntidades")}}
-  <a href="/entidades">Relacionar Ciclo</a>
-  {{end}}
-  {{if (call .LoggedUser.HasPermission "listEntidades")}}
   <a href="/entidades">Distribuir Papéis</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listEntidades")}}
@@ -31,6 +28,9 @@
   {{end}}
   {{if (call .LoggedUser.HasPermission "listComponentes")}}
   <a href="/componentes">Componentes</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listTiposNotas")}}
+  <a href="/tiposnotas">Tipos de Nota</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listElementos")}}
   <a href="/elementos">Elementos</a>

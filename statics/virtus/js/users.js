@@ -1,8 +1,6 @@
 function updateUser(e) {
 	var editForm = document.getElementById('edit-form');
-	// display update form
 	editForm.style.display = 'block';
-	// get user id to update
 	var userId = e.parentNode.parentNode.childNodes[3].innerText;
 	var userName = e.parentNode.parentNode.childNodes[5].innerText;
 	var userUsername = e.parentNode.parentNode.childNodes[7].innerText;

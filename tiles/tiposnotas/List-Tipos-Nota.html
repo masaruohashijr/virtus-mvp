@@ -29,20 +29,24 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Nome</th>
+                <th>Letra</th>
+                <th>Cor da Letra</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
-            {{range $index, $tipo := .TiposNota}}
+            {{range $index, $tipo := .TiposNotas}}
             <tr>
                 <td>#{{$tipo.Order}}</td>
                 <td>{{$tipo.Id}}</td>
                 <td>{{$tipo.Nome}}</td>
+                <td>{{$tipo.Letra}}</td>
+                <td>{{$tipo.CorLetra}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="updateTipoNota(this)">Editar</button>
+                    <button class="w3-btn w3-teal" onclick="editTipoNota(this)">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteTipoNota(this)">Apagar</button>
                 </td>
 				{{end}}

@@ -1,8 +1,6 @@
 function editPilar(e) {
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get pilar id to update
     var pilarId = e.parentNode.parentNode.childNodes[3].innerText;
     var pilarNome = e.parentNode.parentNode.childNodes[5].innerText;
     var pilarDescricao = e.parentNode.parentNode.childNodes[7].innerText;

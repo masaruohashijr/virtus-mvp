@@ -20,14 +20,14 @@ func ListPilaresByCicloId(cicloId string) []mdl.PilarCiclo {
 		"a.tipo_media, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
-		"coalesce(to_char(a.criado_em,'YYYY-MM-DD')) as criado_em, " +
+		"coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em, " +
 		"a.status_id, " +
 		"coalesce(c.name,'') as status_name " +
 		"FROM pilares_ciclos a " +
 		"LEFT JOIN pilares d ON a.pilar_id = d.id " +
 		"LEFT JOIN users b ON a.author_id = b.id " +
 		"LEFT JOIN status c ON a.status_id = c.id " +
-		"WHERE a.ciclo_id = $1 "
+		"WHERE a.ciclo_id = $1 ORDER BY d.nome ASC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, cicloId)
 	var pilaresCiclo []mdl.PilarCiclo

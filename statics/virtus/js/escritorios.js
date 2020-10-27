@@ -1,9 +1,7 @@
 function editEscritorio(e) {
 	resetDetalhesEscritorio();
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get escritorio id to edit
     var escritorioId = e.parentNode.parentNode.childNodes[3].innerText;
     var escritorioNome = e.parentNode.parentNode.childNodes[5].innerText;
     var escritorioDescricao = e.parentNode.parentNode.childNodes[7].innerText;

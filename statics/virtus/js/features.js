@@ -1,8 +1,6 @@
 function editFeature(e) {
     var editForm = document.getElementById('edit-form');
-    // display update form
     editForm.style.display = 'block';
-    // get feature id to update
     var featureId = e.parentNode.parentNode.childNodes[3].innerText;
     var featureName = e.parentNode.parentNode.childNodes[5].innerText;
     var featureDescription = e.parentNode.parentNode.childNodes[5].childNodes[1].value;

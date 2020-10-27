@@ -11,9 +11,13 @@
             </div>
 
             <form class="w3-container" action="/updateTipoNota" method="POST">
-                <input type="hidden" name="Id" id="TipoNotaIdToUpdate">
+                <input type="hidden" name="Id" id="TipoNotaIdForUpdate">
                 <label class="w3-label">Nome</label>
-                <input class="w3-input" type="text" id="TipoNotaNome" name="Nome" value="">
+                <input class="w3-input" type="text" id="NomeForUpdate" name="Nome" value="">
+                <label class="w3-label">Letra na Matriz</label>
+                <input class="w3-input" type="text" id="LetraForUpdate" name="Simbolo" value="">
+                <label class="w3-label">Cor da Letra na Matriz</label>
+                <input class="w3-input" type="text" id="CorLetraForUpdate" name="CorLetra" value="">
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
             </form>
         </div>

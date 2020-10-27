@@ -160,15 +160,15 @@ function addItemRow(tableID) {
 	newCell.appendChild(newText);
 	// status
 	newCell = newRow.insertCell(2);
-	newText = document.createTextNode(item.cStatus);
+	newText = document.createTextNode(item.autorNome);
 	newCell.appendChild(newText);
 	// autor
 	newCell = newRow.insertCell(3);
-	newText = document.createTextNode(item.autorNome);
-	newCell.appendChild(newText);
-	// data de criação
-	newCell = newRow.insertCell(4);
 	newText = document.createTextNode(item.c_criadoEm);
+	newCell.appendChild(newText);
+	// criado em
+	newCell = newRow.insertCell(4);
+	newText = document.createTextNode(item.cStatus);
 	newCell.appendChild(newText);
 	// Botões
 	newCell = newRow.insertCell(5);
