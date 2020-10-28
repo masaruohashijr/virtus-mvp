@@ -20,12 +20,17 @@ func createEscritorios() {
 	db.Exec(sql)
 	sql = "INSERT INTO public.escritorios( " +
 		" id, nome, descricao, author_id, criado_em) " +
-		" SELECT 4, 'Escritório de Representação - Paraná', 'Escritório de Representação - Paraná', 1, now()::timestamp " +
+		" SELECT 4, 'Escritório de Representação - Rio Grande do Sul', 'Escritório de Representação - Rio Grande do Sul', 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM escritorios WHERE id = 4)"
 	db.Exec(sql)
 	sql = "INSERT INTO public.escritorios( " +
 		" id, nome, descricao, author_id, criado_em) " +
-		" SELECT 5, 'Escritório de Representação - Alagoas', 'Escritório de Representação - Alagoas', 1, now()::timestamp " +
+		" SELECT 5, 'Escritório de Representação - Rio de Janeiro', 'Escritório de Representação - Rio de Janeiro', 1, now()::timestamp " +
+		" WHERE NOT EXISTS (SELECT id FROM escritorios WHERE id = 5)"
+	db.Exec(sql)
+	sql = "INSERT INTO public.escritorios( " +
+		" id, nome, descricao, author_id, criado_em) " +
+		" SELECT 6, 'Escritório de Representação - Distrito Federal', 'Escritório de Representação - Distrito Federal', 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM escritorios WHERE id = 5)"
 	db.Exec(sql)
 }
