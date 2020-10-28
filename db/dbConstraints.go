@@ -17,6 +17,24 @@ func createUniqueKey() {
 
 	db.Exec(" ALTER TABLE ONLY public.features_activities" +
 		" ADD CONSTRAINT features_activities_unique_key UNIQUE (activity_id, feature_id)")
+
+	db.Exec(" ALTER TABLE ONLY public.jurisdicoes" +
+		" ADD CONSTRAINT jurisdicoes_unique_key UNIQUE (escritorio_id, entidade_id)")
+
+	db.Exec(" ALTER TABLE ONLY public.membros" +
+		" ADD CONSTRAINT membros_unique_key UNIQUE (escritorio_id, usuario_id)")
+
+	db.Exec(" ALTER TABLE ONLY public.ciclos_entidades" +
+		" ADD CONSTRAINT membros_unique_key UNIQUE (entidade_id, ciclo_id)")
+
+	db.Exec(" ALTER TABLE ONLY public.pilares_ciclos" +
+		" ADD CONSTRAINT membros_unique_key UNIQUE (ciclo_id, pilar_id)")
+
+	db.Exec(" ALTER TABLE ONLY public.componentes_pilares" +
+		" ADD CONSTRAINT membros_unique_key UNIQUE (pilar_id, componente_id)")
+
+	db.Exec(" ALTER TABLE ONLY public.elementos_componentes" +
+		" ADD CONSTRAINT membros_unique_key UNIQUE (componente_id, elemento_id)")
 }
 
 func createFKey() {

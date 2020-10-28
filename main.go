@@ -75,6 +75,8 @@ func main() {
 	r.HandleFunc(route.EscritoriosRoute, hd.ListEscritoriosHandler).Methods("GET")
 	r.HandleFunc("/createEscritorio", hd.CreateEscritorioHandler).Methods("POST")
 	r.HandleFunc("/updateEscritorio", hd.UpdateEscritorioHandler).Methods("POST")
+	r.HandleFunc("/updateJurisdicaoEscritorio", hd.UpdateJurisdicaoEscritorioHandler).Methods("POST")
+	r.HandleFunc("/updateEquipeEscritorio", hd.UpdateEquipeHandler).Methods("POST")
 	r.HandleFunc("/deleteEscritorio", hd.DeleteEscritorioHandler).Methods("POST")
 	// ----------------- FEATURES
 	r.HandleFunc(route.FeaturesRoute, hd.ListFeaturesHandler).Methods("GET")
@@ -112,6 +114,7 @@ func main() {
 	r.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler).Methods("POST")
 	r.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler).Methods("POST")
 	// ----------------- LOADS
+	r.HandleFunc("/loadJurisdicoesByEscritorioId", hd.LoadJurisdicoesByEscritorioId).Methods("GET")
 	r.HandleFunc("/loadElementosByComponenteId", hd.LoadElementosByComponenteId).Methods("GET")
 	r.HandleFunc("/loadPlanosByEntidadeId", hd.LoadPlanosByEntidadeId).Methods("GET")
 	r.HandleFunc("/loadComponentesByPilarId", hd.LoadComponentesByPilarId).Methods("GET")

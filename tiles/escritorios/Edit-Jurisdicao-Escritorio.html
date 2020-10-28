@@ -1,21 +1,21 @@
 {{define "Edit-Jurisdicao-Escritorio"}}
 <!-- Edit Escritorio -->
 <div class="w3-container">
-    <div id="edit-jurisdicao-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
+    <div id="edit-jurisdicao-escritorio-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Editar jurisdição do escritório</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
-                      onclick="document.getElementById('edit-jurisdicao-form').style.display='none'">&times;</span>
+                      onclick="document.getElementById('edit-jurisdicao-escritorio-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/updateEscritorio" method="POST">
+            <form class="w3-container" action="/updateJurisdicaoEscritorio" method="POST">
                 <input type="hidden" name="Id" id="EscritorioIdJUForUpdate">
                 <label class="w3-label">Nome</label>
-                <input class="w3-input" type="text" id="EscritorioNomeJUForUpdate" name="Nome" value="">
+                <input class="w3-input" type="text" name="Nome" id="EscritorioNomeJUForUpdate" value="">
                 <label class="w3-label">Descrição</label>
-                <textarea class="w3-input" id="EscritorioDescricaoJUForUpdate" name="Descricao" rows="5" value=""></textarea>
+                <textarea class="w3-input" name="Descricao" id="EscritorioDescricaoJUForUpdate" rows="5" value=""></textarea>
 				<label class="w3-label">Chefe do Escritório</label>
 				<br>
 	            <select class="w3-input" name="Chefe" id="EscritorioChefeJUForUpdate">

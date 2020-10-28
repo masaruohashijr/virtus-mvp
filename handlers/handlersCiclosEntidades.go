@@ -19,9 +19,9 @@ func ListCiclosEntidadeByEntidadeId(entidadeId string) []mdl.CicloEntidade {
 		"a.tipo_media, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
-		"coalesce(to_char(a.inicia_em,'YYYY-MM-DD')) as inicia_em, " +
-		"coalesce(to_char(a.termina_em,'YYYY-MM-DD')) as termina_em, " +
-		"coalesce(to_char(a.criado_em,'YYYY-MM-DD')) as criado_em, " +
+		"coalesce(to_char(a.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
+		"coalesce(to_char(a.termina_em,'DD/MM/YYYY')) as termina_em, " +
+		"coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em, " +
 		"a.status_id, " +
 		"coalesce(c.name,'') as status_name " +
 		"FROM ciclos_entidades a " +

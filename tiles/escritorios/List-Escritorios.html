@@ -12,7 +12,7 @@
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createEscritorio")}}
-					{{if $allowed}} .Componente
+					{{if $allowed}} 
 					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
@@ -53,8 +53,8 @@
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editEscritorio(this)">Editar</button>
-                    <button class="w3-btn w3-teal" onclick="contexto='edit';editJurisdicao(this)">Jurisdição</button>
-                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEquipe(this)">Equipe</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editJurisdicaoEscritorio(this)">Jurisdição</button>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEquipeEscritorio(this)">Equipe</button>
                     <button class="w3-btn w3-red" onclick="deleteEscritorio(this)">Apagar</button>
                 </td>
 				{{end}}

@@ -65,7 +65,7 @@ function addJurisdicaoRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="entidadeId" value="'+jurisdicao.entidadeId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+jurisdicao.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
-	// Inicio Em
+	// Inicia Em
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(jurisdicao.iniciaEm);
 	newCell.appendChild(newText);
@@ -102,10 +102,11 @@ function limparCamposJurisdicaoForm(){
 
 function updateJurisdicao() {
 	console.log('updateJurisdicao');
-	var id = document.getElementById('Id-CEForUpdate').value;
-	var order = document.getElementById('Order-CEForUpdate').value;
-	var entidadeId = document.getElementById('EscritorioId-CEForUpdate').value;
+	var id = document.getElementById('Id-JUForUpdate').value;
+	var order = document.getElementById('Order-JUForUpdate').value;
+	var escritorioId = document.getElementById('EscritorioId-JUForUpdate').value;
 	let campoSelect = document.getElementById('EntidadeForUpdate');
+	let entidadeId = 0;
 	let entidadeNome = '';
 	console.log(campoSelect.options.length);
 	console.log(campoSelect.options.selectedIndex);
@@ -160,8 +161,8 @@ function updateJurisdicaoRow(tableID, order){
 		}
 	}
 	let celula = row.childNodes[0];
-	console.log(jurisdicoes[order].nome);
-	celula.innerText = jurisdicoes[order].nome;
+	console.log(jurisdicoes[order].entidadeNome);
+	celula.innerText = jurisdicoes[order].entidadeNome;
 	let json = JSON.stringify(jurisdicoes[order]);
 	json = json.split(',').join('#');
 	json = json.split('"').join('');
@@ -178,11 +179,13 @@ function updateJurisdicaoRow(tableID, order){
 	console.log('order: '+order);
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
 	celula = row.childNodes[1];
-	console.log('jurisdicoes[order].iniciaEm: '+jurisdicoes[order].iniciaEm);
-	celula.innerText = jurisdicoes[order].iniciaEm;
+	let strIniciaEm = formatarData(jurisdicoes[order].iniciaEm);
+	let strTerminaEm = formatarData(jurisdicoes[order].terminaEm);
+	console.log('jurisdicoes[order].iniciaEm: '+strIniciaEm);
+	celula.innerText = strIniciaEm;
 	celula = row.childNodes[2];
-	console.log('jurisdicoes[order].terminaEm: '+jurisdicoes[order].terminaEm);
-	celula.innerText = jurisdicoes[order].terminaEm;
+	console.log('jurisdicoes[order].terminaEm: '+strTerminaEm);
+	celula.innerText = strTerminaEm;
 }
 
 function showDeleteJurisdicaoForm(e){
@@ -221,5 +224,27 @@ function deleteJurisdicao() {
 	jurisdicoes = newJurisdicoes;
 	var deleteJurisdicaoForm = document.getElementById('delete-jurisdicao-form');
 	deleteJurisdicaoForm.style.display = 'none';
+}
+
+function editJurisdicao(e) {
+	console.log('editJurisdicao');
+	var editJurisdicaoForm = document.getElementById('edit-jurisdicao-form');
+	editJurisdicaoForm.style.display = 'block';
+	var linha = e.parentNode.parentNode;
+	var order = linha.childNodes[0].childNodes[0].value;
+	var id = linha.childNodes[0].childNodes[1].value;
+	var entidadeId = linha.childNodes[0].childNodes[2].value;
+	var escritorioId = linha.childNodes[0].childNodes[3].value;
+	var iniciaEm = formatarData(linha.childNodes[1].innerText);
+	console.log(iniciaEm);
+	var terminaEm = formatarData(linha.childNodes[2].innerText);
+	console.log(terminaEm);
+	// Atribuindo os valores de edit-item-form
+	document.getElementById('Id-JUForUpdate').value=id;
+	document.getElementById('Order-JUForUpdate').value=order;
+	document.getElementById('EscritorioId-JUForUpdate').value=escritorioId;
+	document.getElementById('EntidadeForUpdate').value=entidadeId;
+	document.getElementById('IniciaEmForUpdate').value=iniciaEm;
+	document.getElementById('TerminaEmForUpdate').value=terminaEm;
 }
 

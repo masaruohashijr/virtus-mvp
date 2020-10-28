@@ -57,7 +57,6 @@ func ListPilaresByCicloId(cicloId string) []mdl.PilarCiclo {
 			pilarCiclo.TipoMedia = "Harmônica"
 		}
 		pilaresCiclo = append(pilaresCiclo, pilarCiclo)
-		log.Print("log linha 60: ")
 		log.Println(pilarCiclo)
 	}
 	return pilaresCiclo
