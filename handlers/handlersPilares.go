@@ -112,7 +112,7 @@ func UpdatePilarHandler(w http.ResponseWriter, r *http.Request) {
 				componentePilarPage.Sonda = sonda
 				pesoPadrao := strings.Split(array[8], ":")[1]
 				log.Println("pesoPadrao -------- " + pesoPadrao)
-				componentePilarPage.PesoPadrao, _ = strconv.Atoi(pesoPadrao)
+				componentePilarPage.PesoPadrao = pesoPadrao
 				authorId := strings.Split(array[9], ":")[1]
 				log.Println("authorId -------- " + authorId)
 				componentePilarPage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)

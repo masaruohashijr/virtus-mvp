@@ -105,7 +105,7 @@ type ComponentePilar struct {
 	TipoMediaId    int    `json:"tipoMediaId"`
 	TipoMedia      string `json:"tipoMedia"`
 	Sonda          string `json:"sonda"`
-	PesoPadrao     int    `json:"pesoPadrao"`
+	PesoPadrao     string `json:"pesoPadrao"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
 	CriadoEm       string `json:"criadoEm"`
