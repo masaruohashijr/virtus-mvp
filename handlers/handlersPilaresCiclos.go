@@ -16,7 +16,7 @@ func ListPilaresByCicloId(cicloId string) []mdl.PilarCiclo {
 		"a.ciclo_id, " +
 		"coalesce(d.nome,'') as pilar_nome, " +
 		"a.pilar_id, " +
-		"a.peso_padrao, " +
+		"a.peso_padrao || ' %', " +
 		"a.tipo_media, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +

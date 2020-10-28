@@ -38,9 +38,9 @@ func UpdateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		tipoNotaId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
+		descricao := r.FormValue("Descricao")
 		letra := r.FormValue("Letra")
 		corLetra := r.FormValue("CorLetra")
-		descricao := r.FormValue("Descricao")
 		sqlStatement := "UPDATE tipos_notas SET nome=$1, descricao=$2 , letra=$3 , cor_letra=$4 WHERE id=$5"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
@@ -48,7 +48,7 @@ func UpdateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		updtForm.Exec(nome, descricao, letra, corLetra, tipoNotaId)
 		log.Println("UPDATE: Id: " + tipoNotaId + " | Nome: " + nome + " | Descrição: " + descricao)
-		http.Redirect(w, r, route.RolesRoute, 301)
+		http.Redirect(w, r, route.TiposNotasRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

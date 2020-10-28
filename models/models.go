@@ -135,8 +135,6 @@ type ElementoComponente struct {
 	ComponenteId   int64  `json:"componenteId"`
 	ElementoId     int64  `json:"elementoId"`
 	ElementoNome   string `json:"elementoNome"`
-	TipoMediaId    int    `json:"tipoMediaId"`
-	TipoMedia      string `json:"tipoMedia"`
 	PesoPadrao     int    `json:"pesoPadrao"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
@@ -290,7 +288,7 @@ type PilarCiclo struct {
 	PilarNome      string `json:"pilarNome"`
 	TipoMediaId    int    `json:"tipoMediaId"`
 	TipoMedia      string `json:"tipoMedia"`
-	PesoPadrao     int    `json:"pesoPadrao"`
+	PesoPadrao     string `json:"pesoPadrao"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
 	CriadoEm       string `json:"criadoEm"`

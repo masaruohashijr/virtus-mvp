@@ -103,7 +103,7 @@ func UpdateCicloHandler(w http.ResponseWriter, r *http.Request) {
 
 				pesoPadrao := strings.Split(array[7], ":")[1]
 				log.Println("pesoPadrao -------- " + pesoPadrao)
-				pilarCicloPage.PesoPadrao, _ = strconv.Atoi(pesoPadrao)
+				pilarCicloPage.PesoPadrao = pesoPadrao
 
 				authorId := strings.Split(array[8], ":")[1]
 				log.Println("authorId -------- " + authorId)

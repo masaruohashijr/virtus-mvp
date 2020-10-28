@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -12,11 +13,15 @@ import (
 func createTiposNotas() {
 	stmtTiposNotas := " INSERT INTO public.tipos_notas( " +
 		" nome, descricao, letra, cor_letra, author_id, criado_em, status_id) " +
-		" VALUES ('Nota de Risco', 'Descrição da Nota de Risco', 'R', 'C90000', 1, now::timestamp, 0) "
+		" SELECT 'Nota de Risco', 'Descrição da Nota de Risco', 'R', 'C90000', 1, now()::timestamp, 0 " +
+		" WHERE NOT EXISTS (SELECT id FROM tipos_notas WHERE letra = 'R')"
+	log.Println(stmtTiposNotas)
 	db.Exec(stmtTiposNotas)
 	stmtTiposNotas = " INSERT INTO public.tipos_notas( " +
 		" nome, descricao, letra, cor_letra, author_id, criado_em, status_id) " +
-		" VALUES ('Nota de Controle', 'Descrição da Nota de Controle', 'C', '0000C9', 1, now::timestamp, 0) "
+		" SELECT 'Nota de Controle', 'Descrição da Nota de Controle', 'C', '0000C9', 1, now()::timestamp, 0 " +
+		" WHERE NOT EXISTS (SELECT id FROM tipos_notas WHERE letra = 'C')"
+	log.Println(stmtTiposNotas)
 	db.Exec(stmtTiposNotas)
 }
 
@@ -71,8 +76,10 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 		stmt := " INSERT INTO ciclos(nome, descricao, author_id, criado_em, status_id) " +
 			" SELECT $1, $2, $3, $4, $5 WHERE NOT EXISTS (SELECT id FROM ciclos WHERE nome = '" + nome + "' ) RETURNING id"
 		db.QueryRow(stmt, nome, descricao, autor, criadoEm, statusZero).Scan(&idCiclo)
-		log.Println("idCiclo: " + strconv.Itoa(idCiclo))
+		// log.Println("idCiclo: " + strconv.Itoa(idCiclo))
 		// Pilares - código: 11
+		pesoPadrao = 100
+		max := 100
 		for j := 1; j <= qtdPilares; j++ {
 			nome = "Pilar " + strconv.Itoa(i) + strconv.Itoa(j)
 			stmt := " INSERT INTO pilares(nome, descricao, author_id, criado_em, status_id) " +
@@ -80,8 +87,13 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 			//log.Println(nome)
 			descricao = "Descricao do " + nome
 			db.QueryRow(stmt, nome, descricao, autor, criadoEm, statusZero).Scan(&idPilar)
-			pesoPadrao = int(math.Pow(2, float64(j-1)))
 			//log.Println(pesoPadrao)
+			pesoPadrao = rand.Intn(max)
+			if j < qtdPilares {
+				max = max - pesoPadrao
+			} else {
+				pesoPadrao = max
+			}
 			stmt = " SELECT " + strconv.Itoa(idCiclo) + ", " +
 				strconv.Itoa(idPilar) + ", " +
 				strconv.Itoa(tipoMedia) + ", " +
