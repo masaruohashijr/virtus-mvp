@@ -23,7 +23,7 @@ func Initialize() {
 	createPKey()
 	createFKey()
 	createUniqueKey()
-	createCicloCompleto(3, 3, 5, 6, 3)
+	createCicloCompleto(1, 3, 3, 3, 3)
 }
 
 func createStatusZERO() {
