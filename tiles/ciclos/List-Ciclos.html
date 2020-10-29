@@ -50,6 +50,7 @@
 				<td>{{$ciclo.CStatus}}</td>
 				{{if $allowed}}
                 <td>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';iniciarCiclo(this)">Iniciar</button>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editCiclo(this)">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteCiclo(this)">Apagar</button>
                 </td>

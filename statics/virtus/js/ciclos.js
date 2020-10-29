@@ -3,6 +3,23 @@ function resetCicloForms(){
 	document.getElementById('formulario-edit').reset();
 }
 
+function iniciarCiclo(e) {
+	resetCicloForms();
+    var editForm = document.getElementById('edit-iniciar-form');
+    editForm.style.display = 'block';
+    var cicloId = e.parentNode.parentNode.childNodes[3].innerText;
+    var cicloNome = e.parentNode.parentNode.childNodes[5].innerText;
+    var cicloDescricao = e.parentNode.parentNode.childNodes[7].innerText;
+    var cicloAutor = e.parentNode.parentNode.childNodes[9].innerText;
+    var cicloCriadoEm = e.parentNode.parentNode.childNodes[11].innerText;
+	document.getElementById('CicloIdIniciarForUpdate').value = cicloId;
+    document.getElementById('NomeCicloIniciarForUpdate').value = cicloNome;
+    document.getElementById('DescricaoIniciarCicloForUpdate').value = cicloDescricao;
+	document.getElementById('AuthorNameIniciarForUpdate').value = cicloAutor;
+    document.getElementById('CriadoEmIniciarForUpdate').value = cicloCriadoEm;
+	loadPilaresByCicloId(cicloId);
+}
+
 function editCiclo(e) {
 	resetCicloForms();
     var editForm = document.getElementById('edit-form');
