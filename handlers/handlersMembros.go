@@ -99,20 +99,23 @@ func UpdateEquipeHandler(w http.ResponseWriter, r *http.Request) {
 			for i := range diffPage {
 				membro = diffPage[i]
 				log.Println("Escritorio Id: " + escritorioId)
-				sqlStatement := "INSERT INTO public.escritorios ( " +
-					" pilar_id, " +
-					" componente_id, " +
-					" peso_padrao, " +
+				sqlStatement := "INSERT INTO membros ( " +
+					" escritorio_id, " +
+					" usuario_id, " +
+					" inicia_em, " +
+					" termina_em, " +
 					" author_id, " +
 					" criado_em, " +
 					" status_id " +
 					" ) " +
-					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
 				Db.QueryRow(
 					sqlStatement,
 					escritorioId,
 					membro.UsuarioId,
+					membro.IniciaEm,
+					membro.TerminaEm,
 					currentUser.Id,
 					time.Now(),
 					statusComponenteId).Scan(&membroId)

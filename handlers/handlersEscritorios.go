@@ -82,8 +82,7 @@ func UpdateJurisdicaoEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 				jurisdicaoPage.Id, _ = strconv.ParseInt(id, 10, 64)
 				jurisdicaoPage.EscritorioId, _ = strconv.ParseInt(escritorioId, 10, 64)
 				entidadeId := strings.Split(array[3], ":")[1]
-				log.Println("entidadeId -------- " + entidadeId)
-				jurisdicaoPage.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
+				log.Println("entidadeId -------- " + membroPage		jurisdicaoPage.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
 				entidadeNome := strings.Split(array[4], ":")[1]
 				log.Println("entidadeNome -------- " + entidadeNome)
 				jurisdicaoPage.EntidadeNome = entidadeNome

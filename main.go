@@ -77,7 +77,7 @@ func main() {
 	r.HandleFunc("/createEscritorio", hd.CreateEscritorioHandler).Methods("POST")
 	r.HandleFunc("/updateEscritorio", hd.UpdateEscritorioHandler).Methods("POST")
 	r.HandleFunc("/updateJurisdicaoEscritorio", hd.UpdateJurisdicaoEscritorioHandler).Methods("POST")
-	r.HandleFunc("/updateEquipeEscritorio", hd.UpdateEquipeHandler).Methods("POST")
+	r.HandleFunc("/updateEquipe", hd.UpdateEquipeHandler).Methods("POST")
 	r.HandleFunc("/deleteEscritorio", hd.DeleteEscritorioHandler).Methods("POST")
 	// ----------------- FEATURES
 	r.HandleFunc(route.FeaturesRoute, hd.ListFeaturesHandler).Methods("GET")
