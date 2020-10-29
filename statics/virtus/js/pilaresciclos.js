@@ -139,7 +139,7 @@ function editPilarCiclo(e) {
 	document.getElementById('CicloId-PCForUpdate').value=cicloId;
 	document.getElementById('PilarCicloForUpdate').value=pilarId;
 	document.getElementById('TipoMediaForUpdate').value=tipoMediaId;
-	document.getElementById('PesoPadraoForUpdate').value=pesoPadrao;
+	document.getElementById('PesoPadraoForUpdate').value=pesoPadrao.split(" ")[0];
 }
 
 function updatePilarCiclo() {

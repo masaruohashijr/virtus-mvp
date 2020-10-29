@@ -31,6 +31,6 @@ func createEscritorios() {
 	sql = "INSERT INTO public.escritorios( " +
 		" id, nome, descricao, author_id, criado_em) " +
 		" SELECT 6, 'Escritório de Representação - Distrito Federal', 'Escritório de Representação - Distrito Federal', 1, now()::timestamp " +
-		" WHERE NOT EXISTS (SELECT id FROM escritorios WHERE id = 5)"
+		" WHERE NOT EXISTS (SELECT id FROM escritorios WHERE id = 6)"
 	db.Exec(sql)
 }
