@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastro de novo usuário</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/statics/virtus/css/virtus.css">
+    <link rel="stylesheet" href="/statics/ionicons/css/w3.css">
+    <link rel="stylesheet" href="/statics/ionicons/css/ionicons.min.css">
+    <script type="text/javascript">
+        function cancelar() {
+            document.getElementById('formulario-register').action = '/logout';
+            document.getElementById('formulario-register').submit();
+        }
+    </script>
+</head>
+<body>
+    <div id="register-new-user-form" class="w3-modal" style="display: block;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Recuperação de senha</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('register-new-user-form').style.display='none';cancelar();">&times;</span>
+            </div>
+            <br />
+            <br />
+            <br />
+            <form id="formulario-register" class="w3-container" action="/RegisterNewUser" method="get">
+                <label class="w3-label">Informe seu E-mail</label>
+                <input class="w3-input" type="text" name="Email" value="">
+                <br>
+                <div style="width: 100%; text-align: right;">
+                    <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Enviar</button>
+                    <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" onclick="cancelar();" type="button">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

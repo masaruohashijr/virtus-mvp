@@ -3,9 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
-	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +11,10 @@ import (
 	hd "virtus/handlers"
 	route "virtus/routes"
 	sec "virtus/security"
+
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	_ "github.com/lib/pq"
 )
 
 func determineListenAddress() (string, error) {
@@ -108,6 +109,9 @@ func main() {
 	r.HandleFunc("/createUser", hd.CreateUserHandler).Methods("POST")
 	r.HandleFunc("/updateUser", hd.UpdateUserHandler).Methods("POST")
 	r.HandleFunc("/deleteUser", hd.DeleteUserHandler).Methods("POST")
+	r.HandleFunc("/registerUser", hd.RegisterUserHandler).Methods("GET")
+	r.HandleFunc("/recoverPassword", hd.RecoverUserPasswordHandler).Methods("GET")
+
 	// ----------------- WORKFLOWS
 	r.HandleFunc(route.WorkflowsRoute, hd.ListWorkflowsHandler).Methods("GET")
 	r.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler).Methods("POST")

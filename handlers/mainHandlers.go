@@ -3,13 +3,14 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	mdl "virtus/models"
 	route "virtus/routes"
 	sec "virtus/security"
+
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var Db *sql.DB
@@ -30,6 +31,24 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	session.Options.MaxAge = -1
 	_ = session.Save(r, w)
 	http.ServeFile(w, r, "tiles/login.html")
+}
+
+func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Register User Handler")
+	session, _ := sec.Store.Get(r, sec.CookieName)
+	delete(session.Values, "user")
+	session.Options.MaxAge = -1
+	_ = session.Save(r, w)
+	http.ServeFile(w, r, "tiles/users/Register-User.html")
+}
+
+func RecoverUserPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Recover User Password Handler")
+	session, _ := sec.Store.Get(r, sec.CookieName)
+	delete(session.Values, "user")
+	session.Options.MaxAge = -1
+	_ = session.Save(r, w)
+	http.ServeFile(w, r, "tiles/users/Recover-Passwd.html")
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
