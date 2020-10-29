@@ -135,20 +135,20 @@ func ListMembrosByEscritorioId(escritorioId string) []mdl.Membro {
 	sql := "SELECT " +
 		"a.id, " +
 		"a.escritorio_id, " +
-		"coalesce(d.nome,'') as escritorio_nome, " +
-		"a.pilar_id, " +
-		"a.peso_padrao || ' %', " +
-		"a.tipo_media, " +
+		"a.usuario_id, " +
+		"coalesce(d.name,'') as usuario_nome, " +
+		"coalesce(to_char(a.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
+		"coalesce(to_char(a.termina_em,'DD/MM/YYYY')) as termina_em, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
 		"coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em, " +
 		"a.status_id, " +
 		"coalesce(c.name,'') as status_name " +
-		"FROM jurisdicoes a " +
-		"LEFT JOIN pilares d ON a.pilar_id = d.id " +
+		"FROM membros a " +
+		"LEFT JOIN users d ON a.usuario_id = d.id " +
 		"LEFT JOIN users b ON a.author_id = b.id " +
 		"LEFT JOIN status c ON a.status_id = c.id " +
-		"WHERE a.escritorio_id = $1 ORDER BY d.nome ASC "
+		"WHERE a.escritorio_id = $1 ORDER BY d.name ASC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, escritorioId)
 	var membros []mdl.Membro
