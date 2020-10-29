@@ -5,7 +5,7 @@ function resetCicloForms(){
 
 function iniciarCiclo(e) {
 	resetCicloForms();
-    var editForm = document.getElementById('edit-iniciar-form');
+    var editForm = document.getElementById('edit-iniciar-ciclo-form');
     editForm.style.display = 'block';
     var cicloId = e.parentNode.parentNode.childNodes[3].innerText;
     var cicloNome = e.parentNode.parentNode.childNodes[5].innerText;
