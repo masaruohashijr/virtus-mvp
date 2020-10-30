@@ -169,3 +169,14 @@ func LoadJurisdicoesByEscritorioId(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(jsonJurisdicoes))
 	log.Println("JSON Jurisdições")
 }
+
+func LoadMembrosByEscritorioId(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Membros By Escritório Id")
+	r.ParseForm()
+	var escritorioId = r.FormValue("escritorioId")
+	log.Println("escritorioId: " + escritorioId)
+	membros := ListMembrosByEscritorioId(escritorioId)
+	jsonMembros, _ := json.Marshal(membros)
+	w.Write([]byte(jsonMembros))
+	log.Println("JSON Membros")
+}

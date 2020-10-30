@@ -102,20 +102,16 @@ func UpdateEquipeHandler(w http.ResponseWriter, r *http.Request) {
 				sqlStatement := "INSERT INTO membros ( " +
 					" escritorio_id, " +
 					" usuario_id, " +
-					" inicia_em, " +
-					" termina_em, " +
 					" author_id, " +
 					" criado_em, " +
 					" status_id " +
 					" ) " +
-					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
+					" VALUES ($1, $2, $3, $4, $5) RETURNING id"
 				log.Println(sqlStatement)
 				Db.QueryRow(
 					sqlStatement,
 					escritorioId,
 					membro.UsuarioId,
-					membro.IniciaEm,
-					membro.TerminaEm,
 					currentUser.Id,
 					time.Now(),
 					statusComponenteId).Scan(&membroId)

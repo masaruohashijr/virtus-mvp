@@ -51,7 +51,8 @@ function editEquipeEscritorio(e) {
 	document.getElementById('EscritorioIdESForUpdate').value = escritorioId;
     document.getElementById('EscritorioNomeESForUpdate').value = escritorioNome;
     document.getElementById('EscritorioDescricaoESForUpdate').value = escritorioDescricao;
-    document.getElementById('EscritorioAbreviaturaESForUpdate').value = escritorioDescricao;
+    document.getElementById('EscritorioAbreviaturaESForUpdate').value = escritorioAbreviatura;
+	loadMembrosByEscritorioId(escritorioId);
 }
 
 function deleteEscritorio(e) {
@@ -85,5 +86,25 @@ function loadJurisdicoesByEscritorioId(escritorioId){
 			}
 	}
 	xmlhttp.open("GET","/loadJurisdicoesByEscritorioId?escritorioId="+escritorioId,true);
+	xmlhttp.send();
+}
+
+function loadMembrosByEscritorioId(escritorioId){
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				var membrosJson = JSON.parse(xmlhttp.responseText);
+				wipeRows("table-membros-edit", membros)
+				membros = [];
+				for(order = 0;membrosJson != null && order<membrosJson.length;order++){
+					membros[order]=membrosJson[order];
+					addMembroRow("table-membros-edit");
+				}
+			}
+	}
+	xmlhttp.open("GET","/loadMembrosByEscritorioId?escritorioId="+escritorioId,true);
 	xmlhttp.send();
 }
