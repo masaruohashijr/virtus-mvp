@@ -131,6 +131,7 @@ func createTable() {
 		" CREATE TABLE IF NOT EXISTS public.escritorios (" +
 			" id integer DEFAULT nextval('public.escritorios_id_seq'::regclass) NOT NULL," +
 			" nome character varying(255) NOT NULL," +
+			" abreviatura character (4)," +
 			" descricao character varying(4000)," +
 			" chefe_id integer," +
 			" author_id integer," +

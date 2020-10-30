@@ -63,3 +63,27 @@ function loadPilaresByCicloId(cicloId){
 	xmlhttp.open("GET","/loadPilaresByCicloId?cicloId="+cicloId,true);
 	xmlhttp.send();
 }
+
+function validarPercentuais(){
+	let tbl = document.getElementById("table-pilar-ciclo-edit");
+	let linhas = tbl.childNodes[1].childNodes;
+	let row = tbl.childNodes[0];
+	let total = 0;
+	for(y=0;y<linhas.length;y++){
+		if(linhas[y].childNodes[0]){
+			let inputOrder = linhas[y].childNodes[0].childNodes[0];
+			console.log(linhas[y].childNodes[0]);
+			if(inputOrder && inputOrder.tagName=='INPUT'){ 
+				row = linhas[y];
+				total = parseInt(row.childNodes[2].innerText.split(" ")[0]) + parseInt(total);
+				//console.log(total);
+			}
+		}
+	}
+	if(total != 100){
+		alert('Total diferente de 100%');
+		return;
+	}
+	document.getElementById('formulario-edit').submit();
+	return;
+}

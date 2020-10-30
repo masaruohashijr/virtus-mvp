@@ -16,6 +16,8 @@ func ListElementosByComponenteId(componenteId string) []mdl.ElementoComponente {
 		"a.componente_id, " +
 		"coalesce(d.nome,'') as elemento_nome, " +
 		"a.elemento_id, " +
+		"a.tipo_nota_id, " +
+		"e.nome as tipo_nota_nome, " +
 		"a.peso_padrao, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
@@ -26,6 +28,7 @@ func ListElementosByComponenteId(componenteId string) []mdl.ElementoComponente {
 		"LEFT JOIN elementos d ON a.elemento_id = d.id " +
 		"LEFT JOIN users b ON a.author_id = b.id " +
 		"LEFT JOIN status c ON a.status_id = c.id " +
+		"LEFT JOIN tipos_notas e ON a.tipo_nota_id = e.id " +
 		"WHERE a.componente_id = $1 ORDER BY elemento_nome"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, componenteId)
@@ -38,6 +41,8 @@ func ListElementosByComponenteId(componenteId string) []mdl.ElementoComponente {
 			&elementoComponente.ComponenteId,
 			&elementoComponente.ElementoNome,
 			&elementoComponente.ElementoId,
+			&elementoComponente.TipoNotaId,
+			&elementoComponente.TipoNotaNome,
 			&elementoComponente.PesoPadrao,
 			&elementoComponente.AuthorId,
 			&elementoComponente.AuthorName,

@@ -1,12 +1,14 @@
 var elemento_componente_tobe_deleted;
 	
 class ElementoComponente {
-	constructor(order, id, componenteId, elementoId, elementoNome, pesoPadrao, autorId, autorNome, criadoEm, idVersaoOrigem, statusId, cStatus) {
+	constructor(order, id, componenteId, elementoId, elementoNome, tipoNotaId, tipoNotaNome, pesoPadrao, autorId, autorNome, criadoEm, idVersaoOrigem, statusId, cStatus) {
 		this.order = order;
 		this.id = id;
 		this.componenteId = componenteId;
 		this.elementoId = elementoId;
 		this.elementoNome = elementoNome;
+		this.tipoNotaId = tipoNotaId;
+		this.tipoNotaNome = tipoNotaNome;
 		this.pesoPadrao = pesoPadrao;
 		this.autorId = autorId;
 		this.autorNome = autorNome;
@@ -30,17 +32,35 @@ function criarElementoComponente(){
 			break;
 		}
 	}
-	/* FIM */
-	/* Validação do preenchimento do campo obrigatório SELECT de Elemento */
 	let erros = '';
 	if(campoSelect.selectedIndex==0){
 		erros += 'Falta vincular o elemento.\n';
 		alert(erros);
 		return;
 	}
+	let tipoNotaId = 0;
+	campoSelect = document.getElementById('TipoNotaForInsert');
+	console.log(campoSelect.options.length);
+	console.log(campoSelect.options.selectedIndex);
+	for(n=0;n<campoSelect.options.length;n++){
+		console.log("n: "+n);
+		console.log(campoSelect.options[n].selected);
+		console.log(campoSelect.selectedIndex);
+		if(campoSelect.options[n].selected){
+			tipoNotaId = campoSelect.options[n].value;
+			tipoNotaNome = campoSelect.options[n].text;
+			break;
+		}
+	}
+	erros = '';
+	if(campoSelect.selectedIndex==0){
+		erros += 'Falta informar o tipo de nota.\n';
+		alert(erros);
+		return;
+	}
 	let pesoPadrao = document.getElementById('PesoPadraoForInsert').value;
 	elementoComponenteId = getMaxId(elementosComponente);
-	elementoComponente = new ElementoComponente(0, elementoComponenteId, 0, elementoId, elementoNome, pesoPadrao, '', '', '', '', '', '', '');
+	elementoComponente = new ElementoComponente(0, elementoComponenteId, 0, elementoId, elementoNome, tipoNotaId, tipoNotaNome, pesoPadrao, '', '', '', '', '', '', '');
 	elementosComponente.push(elementoComponente);
 	addElementoComponenteRow("table-elementos-componente-"+contexto);
 	limparCamposElementoComponenteForm();
@@ -66,21 +86,26 @@ function addElementoComponenteRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="elementoId" value="'+elementoComponente.elementoId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+elementoComponente.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
-	// Peso Padrão
+	// Tipo de Nota
 	newCell = newRow.insertCell(1);
+	newText = document.createTextNode(elementoComponente.tipoNotaNome);
+	newCell.appendChild(newText);
+	newCell.innerHTML = '<input type="hidden" value="'+elementoComponente.tipoNotaId+'"/>'+newCell.innerHTML;
+	// Peso Padrão
+	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(elementoComponente.pesoPadrao);
 	newCell.appendChild(newText);
 	// Criado Em
-	newCell = newRow.insertCell(2);
+	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(elementoComponente.autorNome);
 	newCell.appendChild(newText);
 	// Autor
-	newCell = newRow.insertCell(3);
+	newCell = newRow.insertCell(4);
 	newText = document.createTextNode(elementoComponente.criadoEm);
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+elementoComponente.autorId+'"/>'+newCell.innerHTML;
 	// Botões
-	newCell = newRow.insertCell(4);
+	newCell = newRow.insertCell(5);
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";
@@ -113,12 +138,14 @@ function editElementoComponente(e) {
 	var elementoId = e.parentNode.parentNode.childNodes[0].childNodes[2].value;
 	var componenteId = e.parentNode.parentNode.childNodes[0].childNodes[3].value;
 //	var elementoNome = e.parentNode.parentNode.childNodes[0].innerText;
-	var pesoPadrao = e.parentNode.parentNode.childNodes[1].innerText;
+	var tipoNotaId = e.parentNode.parentNode.childNodes[1].childNodes[0].value;
+	var pesoPadrao = e.parentNode.parentNode.childNodes[2].innerText;
 //	var criadoEm = e.parentNode.parentNode.childNodes[2].innerText;
 //	var autorId = e.parentNode.parentNode.childNodes[3].childNodes[0].value;
 //	var autorNome = e.parentNode.parentNode.childNodes[3].innerText;
 	// Atribuindo os valores de edit-item-form
 	document.getElementById('ElementoComponenteForUpdate').value=elementoId;
+	document.getElementById('TipoNotaForUpdate').value=tipoNotaId;
 	document.getElementById('PesoPadraoForUpdate').value=pesoPadrao;
 	document.getElementById('Id-ECForUpdate').value=id;
 	document.getElementById('Order-ECForUpdate').value=order;
@@ -152,7 +179,27 @@ function updateElementoComponente() {
 		alert(erros);
 		return;
 	}
-	elementoComponente = new ElementoComponente(order, id, componenteId, elementoId, elementoNome, pesoPadrao, '', '', '', '', '', '');
+	let tipoNotaId = 0;
+	campoSelect = document.getElementById('TipoNotaForUpdate');
+	console.log(campoSelect.options.length);
+	console.log(campoSelect.options.selectedIndex);
+	for(n=0;n<campoSelect.options.length;n++){
+		console.log("n: "+n);
+		console.log(campoSelect.options[n].selected);
+		console.log(campoSelect.selectedIndex);
+		if(campoSelect.options[n].selected){
+			tipoNotaId = campoSelect.options[n].value;
+			tipoNotaNome = campoSelect.options[n].text;
+			break;
+		}
+	}
+	erros = '';
+	if(campoSelect.selectedIndex==0){
+		erros += 'Falta informar o tipo de nota.\n';
+		alert(erros);
+		return;
+	}
+	elementoComponente = new ElementoComponente(order, id, componenteId, elementoId, elementoNome, tipoNotaId, tipoNotaNome,  pesoPadrao, '', '', '', '', '', '');
 	elementosComponente[order] = elementoComponente;
 	updateElementoComponenteRow("table-elementos-componente-"+contexto,order);
 	limparCamposElementoComponenteForm();
@@ -203,6 +250,9 @@ function updateElementoComponenteRow(tableID, order){
 	console.log('order: '+order);
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
 	celula = row.childNodes[1];
+	celula.innerText = elementosComponente[order].tipoNotaNome;
+	celula.innerHTML = '<input type="hidden" value="'+elementosComponente[order].tipoNotaId+'"/>'+celula.innerHTML;
+	celula = row.childNodes[2];
 	celula.innerText = elementosComponente[order].pesoPadrao;
 }
 

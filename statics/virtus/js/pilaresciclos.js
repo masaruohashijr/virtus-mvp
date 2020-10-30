@@ -236,7 +236,7 @@ function updatePilarCicloRow(tableID, order){
 	celula.innerHTML = '<input type="hidden" value="'+pilaresCiclo[order].tipoMediaId+'"/>'+celula.innerHTML;
 	celula = row.childNodes[2];
 	// console.log('pilaresCiclo[order].iniciaEm: '+pilaresCiclo[order].iniciaEm);
-	celula.innerText = pilaresCiclo[order].pesoPadrao;
+	celula.innerText = pilaresCiclo[order].pesoPadrao+" %";
 }
 
 function showDeletePilarCicloForm(e){

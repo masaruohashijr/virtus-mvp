@@ -18,6 +18,9 @@
   <a href="/entidades">Avaliar Papéis</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listEntidades")}}
+  <a href="/entidades">Matrizes</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listEntidades")}}
   <a href="/entidades">Entidades</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "listCiclos")}}

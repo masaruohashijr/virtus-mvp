@@ -27,7 +27,7 @@ func ListComponentesByPilarId(pilarId string) []mdl.ComponentePilar {
 		" LEFT JOIN componentes c ON a.componente_id = c.id " +
 		" LEFT JOIN users u ON a.author_id = u.id " +
 		" LEFT JOIN status s ON a.status_id = s.id " +
-		" LEFT JOIN (select componente_id, round(avg(peso_padrao),1) as peso_padrao from elementos_componentes group by componente_id) b ON a.componente_id = b.componente_id " +
+		" LEFT JOIN (select componente_id, round(avg(peso_padrao),2) as peso_padrao from elementos_componentes group by componente_id) b ON a.componente_id = b.componente_id " +
 		" WHERE a.pilar_id = $1 " +
 		" ORDER BY c.nome ASC"
 	log.Println(sql)

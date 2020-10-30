@@ -25,10 +25,13 @@ function loadElementosByComponenteId(componenteId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var elementosComponenteJson = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-elemento-componente-edit", elementosComponente)
+				wipeRows("table-elementos-componente-edit", elementosComponente)
 				elementosComponente = [];
 				for(order = 0;elementosComponenteJson != null && order<elementosComponenteJson.length;order++){
 					elementosComponente[order]=elementosComponenteJson[order];
+					console.log(elementosComponente[order].tipoNotaId);
+					console.log(elementosComponente[order].tipoNotaNome);
+					console.log(elementosComponente[order].pesoPadrao);
 					addElementoComponenteRow("table-elementos-componente-edit");
 				}
 			}

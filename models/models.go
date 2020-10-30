@@ -135,6 +135,8 @@ type ElementoComponente struct {
 	ComponenteId   int64  `json:"componenteId"`
 	ElementoId     int64  `json:"elementoId"`
 	ElementoNome   string `json:"elementoNome"`
+	TipoNotaId     int64  `json:"tipoNotaId"`
+	TipoNotaNome   string `json:"tipoNotaNome"`
 	PesoPadrao     int    `json:"pesoPadrao"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
@@ -165,6 +167,7 @@ type Escritorio struct {
 	Id             int64  `json:"id"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Abreviatura    string `json:"abreviatura"`
 	ChefeId        int64  `json:"chefeId"`
 	ChefeNome      string `json:"chefeNome"`
 	AuthorId       int64  `json:"authorId"`
@@ -407,6 +410,7 @@ type PageCiclos struct {
 type PageComponentes struct {
 	AppName     string
 	Title       string
+	TiposNota   []TipoNota
 	Componentes []Componente
 	Elementos   []Elemento
 	Users       []User

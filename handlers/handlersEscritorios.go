@@ -18,10 +18,11 @@ func CreateEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
+		abreviatura := r.FormValue("Abreviatura")
 		chefe := r.FormValue("Chefe")
-		sqlStatement := "INSERT INTO escritorios(nome, descricao, chefe_id, author_id, criado_em) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		sqlStatement := "INSERT INTO escritorios(nome, descricao, abreviatura, chefe_id, author_id, criado_em) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
 		id := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, chefe, currentUser.Id, time.Now()).Scan(&id)
+		err := Db.QueryRow(sqlStatement, nome, descricao, abreviatura, chefe, currentUser.Id, time.Now()).Scan(&id)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -38,14 +39,18 @@ func UpdateEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 		id := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
+		abreviatura := r.FormValue("Abreviatura")
 		chefe := r.FormValue("Chefe")
-		sqlStatement := "UPDATE escritorios SET nome=$1, descricao=$2, chefe_id=$3 WHERE id=$4"
-		updtForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			panic(err.Error())
+		if chefe != "" {
+			sqlStatement := "UPDATE escritorios SET nome=$1, descricao=$2, abreviatura=$3, chefe_id=$4 WHERE id=$5"
+			updtForm, _ := Db.Prepare(sqlStatement)
+			updtForm.Exec(nome, descricao, abreviatura, chefe, id)
+		} else {
+			sqlStatement := "UPDATE escritorios SET nome=$1, descricao=$2, abreviatura=$3 WHERE id=$4"
+			updtForm, _ := Db.Prepare(sqlStatement)
+			updtForm.Exec(nome, descricao, abreviatura, id)
 		}
-		updtForm.Exec(nome, descricao, chefe, id)
-		log.Println("UPDATE: Id: " + id + " | Nome: " + nome + " | Descrição: " + descricao + " | Chefe: " + chefe)
+		log.Println("UPDATE: Id: " + id + " | Nome: " + nome + " | Abreviatura: " + abreviatura + " | Descrição: " + descricao + " | Chefe: " + chefe)
 		http.Redirect(w, r, route.EscritoriosRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -76,6 +81,7 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 			" a.id, " +
 			" a.nome, " +
 			" a.descricao, " +
+			" a.abreviatura, " +
 			" coalesce(a.chefe_id,0), " +
 			" coalesce(d.name,'') as chefe_name, " +
 			" a.author_id, " +
@@ -99,6 +105,7 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 				&escritorio.Id,
 				&escritorio.Nome,
 				&escritorio.Descricao,
+				&escritorio.Abreviatura,
 				&escritorio.ChefeId,
 				&escritorio.ChefeNome,
 				&escritorio.AuthorId,

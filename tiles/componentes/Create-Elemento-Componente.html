@@ -19,6 +19,15 @@
 						</option>
 		            {{end}}
 	            </select>
+                <label class="w3-label">Tipo de Nota</label>
+	            <select class="w3-input" name="TipoNotaForInsert" id="TipoNotaForInsert">
+					<option value=""></option>
+					{{range $index, $tipoNota := .TiposNota }}
+		                <option value="{{$tipoNota.Id}}">
+							{{$tipoNota.Nome}}
+						</option>
+		            {{end}}
+	            </select>
                 <label class="w3-label">Peso Padrão</label>
 				<input class="w3-input" type="number" id="PesoPadraoForInsert" name="PesoPadraoForInsert" value="">
                 <button 

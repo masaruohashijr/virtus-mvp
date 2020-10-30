@@ -34,21 +34,24 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 				elementoComponenteId := 0
 				statusElementoId := GetStartStatus("elemento")
 				elementoId := strings.Split(array[3], ":")[1]
+				tipoNotaId := strings.Split(array[3], ":")[1]
 				pesoPadrao := strings.Split(array[5], ":")[1]
 				sqlStatement := " INSERT INTO " +
 					" public.elementos_componentes( " +
 					" componente_id, " +
 					" elemento_id, " +
+					" tipo_nota_id, " +
 					" peso_padrao, " +
 					" author_id, " +
 					" criado_em, " +
 					" status_id) " +
-					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
 				err := Db.QueryRow(
 					sqlStatement,
 					idComponente,
 					elementoId,
+					tipoNotaId,
 					pesoPadrao,
 					currentUser.Id,
 					time.Now(),
@@ -245,7 +248,22 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 			i++
 			elementos = append(elementos, elemento)
 		}
+
+		sql = "SELECT id, nome FROM tipos_notas ORDER BY nome desc"
+		log.Println(sql)
+		rows, _ = Db.Query(sql)
+		var tiposNota []mdl.TipoNota
+		var tipoNota mdl.TipoNota
+		i = 1
+		for rows.Next() {
+			rows.Scan(&tipoNota.Id, &tipoNota.Nome)
+			tipoNota.Order = i
+			i++
+			tiposNota = append(tiposNota, tipoNota)
+		}
+
 		var page mdl.PageComponentes
+		page.TiposNota = tiposNota
 		page.Componentes = componentes
 		page.Elementos = elementos
 		page.AppName = mdl.AppName
