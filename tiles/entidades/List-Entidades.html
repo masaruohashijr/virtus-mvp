@@ -28,13 +28,12 @@
             <tr>
                 <th>Ord</th>
                 <th>Id</th>
-                <th>Nome</th>
-                <th>Descrição</th>
+                <th style="text-align:left">Nome</th>
                 <th>Autor</th>
                 <th>Criado Em</th>
                 <th>Status</th>
 				{{if $allowed}}
-				<th>Ações</th>
+				<th style="width:250px">Ações</th>
 				{{end}}
             </tr>
             </thead>
@@ -43,11 +42,20 @@
             <tr>
                 <td>#{{$entidade.Order}}</td>
                 <td>{{$entidade.Id}}</td>
-                <td>{{$entidade.Nome}}</td>
-                <td>{{$entidade.Descricao}}</td>
+                <td style="text-align:left">
+					{{$entidade.Nome}}
+					<input type="hidden" value="{{$entidade.Descricao}}">
+				</td>
                 <td>{{$entidade.AuthorName}}</td>
                 <td>{{$entidade.C_CriadoEm}}</td>
-                <td>{{$entidade.CStatus}}</td>
+                <td>{{$entidade.CStatus}}
+					<input type="hidden" value="{{$entidade.Sigla}}">
+					<input type="hidden" value="{{$entidade.Codigo}}">
+					<input type="hidden" value="{{$entidade.Situacao}}">
+					<input type="hidden" value="{{$entidade.ESI}}">
+					<input type="hidden" value="{{$entidade.Municipio}}">
+					<input type="hidden" value="{{$entidade.SiglaUF}}">
+				</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editEntidade(this);">Editar</button>

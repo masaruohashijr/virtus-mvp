@@ -20,30 +20,45 @@
                 <input class="w3-input" type="text" name="AuthorNameForUpdate" id="AuthorNameIniciarForUpdate" readonly="readonly" disabled="disabled" value="">
 				<label class="w3-label">Criado Em</label>
                 <input class="w3-input" type="text" name="CriadoEmForUpdate" id="CriadoEmIniciarForUpdate" readonly="readonly" disabled="disabled" value="">
+				<table width="100%">
+					<tr>
+						<td>
+			                <label class="w3-label">Inicia Em</label>
+							<input class="w3-input" type="date" id="IniciaEmForInsert" name="IniciaEmForInsert" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Termina Em</label>
+							<input class="w3-input" type="date" id="TerminaEmForInsert" name="TerminaEmForInsert" value="">
+						</td>
+					</tr>
+				</table>
 		        <header class="w3-container w3-center w3-teal">
 		            <div class="w3-row">
 		                <div class="w3-half" style="text-align: center;z-index:0">
 		                    <h4 class="w3-right">Entidades</h4>
-		                </div>
-		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
-		                    <div class="w3-right">
-		                        <a href="#" onclick="document.getElementById('create-entidade-iniciar-ciclo-form').style.display='block'">
-		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
-		                        </a>
-		                    </div>
 		                </div>
 		            </div>
 		        </header>
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					id="table-iniciar-ciclo-edit">
 		            <tr>
-		                <td>Entidade</td>
-		                <td>Inicia Em</td>
-		                <td>Termina Em</td>
-						<td>Ações</td>
+		                <td>&nbsp;</td>
+		                <td style="width:100px">Código</td>
+		                <td style="width:150px">Sigla</td>
+		                <td style="text-align:left;width:200px">Entidade</td>
 		            </tr>
+					{{range $index, $entidade := .Entidades}}
+		            <tr>
+		                <td><input class="w3-check" name="Entidades" type="checkbox" value="{{$entidade.Id}}"/></td>
+		                <td>{{$entidade.Codigo}}</td>
+		                <td>{{$entidade.Sigla}}</td>
+		                <td style="text-align:left">
+							{{$entidade.Nome}}
+						</td>
+		            </tr>
+		            {{end}}
 		        </table>
-				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="button" onclick="salvarIniciarCiclo()">Salvar</button>
             </form>
         </div>
     </div>

@@ -9,12 +9,24 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container" action="/updateEntidade" method="POST">
+            <form class="w3-container" action="/updateEntidade" method="POST" id="formulario-edit">
                 <input type="hidden" name="Id" id="EntidadeIdForUpdate">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" id="EntidadeNomeForUpdate" name="Nome" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" id="EntidadeDescricaoForUpdate" name="Descricao" rows="5" value=""></textarea>
+                <label class="w3-label">Sigla</label>
+                <input class="w3-input" type="text" id="EntidadeSiglaForUpdate" name="Sigla" value="">
+                <label class="w3-label">Código</label>
+                <input class="w3-input" type="text" id="EntidadeCodigoForUpdate" name="Codigo" value="">
+                <label class="w3-label">Situação</label>
+                <input class="w3-input" type="text" id="EntidadeSituacaoForUpdate" name="Situacao" value="">
+                <label class="w3-label">ESI</label>
+                <input class="w3-input" type="text" id="EntidadeESIForUpdate" name="ESI" value="">
+                <label class="w3-label">Município</label>
+                <input class="w3-input" type="text" id="EntidadeMunicipioForUpdate" name="Municipio" value="">
+                <label class="w3-label">SiglaUF</label>
+                <input class="w3-input" type="text" id="EntidadeSiglaUFForUpdate" name="SiglaUF" value="">
 				<header class="w3-container w3-center w3-teal">
 		            <div class="aria">
 						<div style="margin-top: 6px;text-align: left;z-index:1">

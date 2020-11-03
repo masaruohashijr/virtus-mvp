@@ -9,11 +9,23 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container" action="/createEntidade" method="POST">
+            <form class="w3-container" action="/createEntidade" method="POST" id="formulario-create">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Nome" value="">
                 <label class="w3-label">Descrição</label>
-                <textarea class="w3-input" name="Descricao" rows="5" value=""></textarea>
+                <textarea class="w3-input" id="EntidadeDescricaoForInsert" name="Descricao" rows="5" value=""></textarea>
+                <label class="w3-label">Sigla</label>
+                <input class="w3-input" type="text" id="EntidadeSiglaForInsert" name="Sigla" value="">
+                <label class="w3-label">Código</label>
+                <input class="w3-input" type="text" id="EntidadeCodigoForInsert" name="Codigo" value="">
+                <label class="w3-label">Situação</label>
+                <input class="w3-input" type="text" id="EntidadeSituacaoForInsert" name="Situacao" value="">
+                <label class="w3-label">ESI</label>
+                <input class="w3-input" type="text" id="EntidadeESIForInsert" name="ESI" value="">
+                <label class="w3-label">Município</label>
+                <input class="w3-input" type="text" id="EntidadeMunicipioForInsert" name="Municipio" value="">
+                <label class="w3-label">SiglaUF</label>
+                <input class="w3-input" type="text" id="EntidadeSiglaUFForInsert" name="SiglaUF" value="">
 				<br>
 				<header class="w3-container w3-center w3-teal">
 		            <div class="aria">

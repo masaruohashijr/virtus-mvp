@@ -119,7 +119,7 @@ function loadItensByElementoId(elementoId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var itensEdit = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-itens-edit", itens)
+				wipeRows("table-itens-edit")
 				itens = [];
 				for(order = 0;order<itensEdit.length;order++){
 					itens[order]=itensEdit[order];

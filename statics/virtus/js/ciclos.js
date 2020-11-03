@@ -1,6 +1,7 @@
 function resetCicloForms(){
 	document.getElementById('formulario-create').reset();
 	document.getElementById('formulario-edit').reset();
+	document.getElementById('formulario-iniciar').reset();
 }
 
 function iniciarCiclo(e) {
@@ -17,7 +18,6 @@ function iniciarCiclo(e) {
     document.getElementById('DescricaoIniciarCicloForUpdate').value = cicloDescricao;
 	document.getElementById('AuthorNameIniciarForUpdate').value = cicloAutor;
     document.getElementById('CriadoEmIniciarForUpdate').value = cicloCriadoEm;
-	loadPilaresByCicloId(cicloId);
 }
 
 function editCiclo(e) {
@@ -44,6 +44,21 @@ function deleteCiclo(e) {
     document.getElementById('CicloIdForDelete').value = cicloId;
 }
 
+function salvarIniciarCiclo(){
+	let preenchidoIniciaEm = document.getElementById('IniciaEmForInsert').value != '';
+	let preenchidoTerminaEm = document.getElementById('TerminaEmForInsert').value != '';
+	if(!preenchidoTerminaEm || !preenchidoIniciaEm){
+		alert('Falta preencher o período.');
+		if(!preenchidoIniciaEm){
+			document.getElementById('IniciaEmForInsert').focus();
+		} else {
+			document.getElementById('TerminaEmForInsert').focus();
+		}
+	} else {
+		document.getElementById('formulario-iniciar').submit();
+	}
+}
+
 function loadPilaresByCicloId(cicloId){
 	var xmlhttp;
 	xmlhttp=new XMLHttpRequest();
@@ -52,7 +67,7 @@ function loadPilaresByCicloId(cicloId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var pilaresJson = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-pilar-ciclo-edit", pilaresCiclo)
+				wipeRows("table-pilar-ciclo-edit")
 				pilaresCiclo = [];
 				for(order = 0;pilaresJson != null && order<pilaresJson.length;order++){
 					pilaresCiclo[order]=pilaresJson[order];

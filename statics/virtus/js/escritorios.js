@@ -77,7 +77,7 @@ function loadJurisdicoesByEscritorioId(escritorioId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var jurisdicoesJson = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-jurisdicoes-edit", jurisdicoes)
+				wipeRows("table-jurisdicoes-edit")
 				jurisdicoes = [];
 				for(order = 0;jurisdicoesJson != null && order<jurisdicoesJson.length;order++){
 					jurisdicoes[order]=jurisdicoesJson[order];
@@ -97,7 +97,7 @@ function loadMembrosByEscritorioId(escritorioId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var membrosJson = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-membros-edit", membros)
+				wipeRows("table-membros-edit")
 				membros = [];
 				for(order = 0;membrosJson != null && order<membrosJson.length;order++){
 					membros[order]=membrosJson[order];

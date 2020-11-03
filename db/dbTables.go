@@ -121,6 +121,12 @@ func createTable() {
 			" id integer DEFAULT nextval('public.entidades_id_seq'::regclass) NOT NULL," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
+			" sigla character varying(25)," +
+			" codigo character varying(4000)," +
+			" situacao character varying(30)," +
+			" ESI bool," +
+			" municipio character varying(255)," +
+			" sigla_uf character(2)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +

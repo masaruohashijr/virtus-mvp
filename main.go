@@ -54,6 +54,7 @@ func main() {
 	r.HandleFunc("/deleteAction", hd.DeleteActionHandler).Methods("POST")
 	// ----------------- CICLOS
 	r.HandleFunc(route.CiclosRoute, hd.ListCiclosHandler).Methods("GET")
+	r.HandleFunc("/iniciarCiclo", hd.IniciarCicloHandler).Methods("POST")
 	r.HandleFunc("/createCiclo", hd.CreateCicloHandler).Methods("POST")
 	r.HandleFunc("/updateCiclo", hd.UpdateCicloHandler).Methods("POST")
 	r.HandleFunc("/deleteCiclo", hd.DeleteCicloHandler).Methods("POST")

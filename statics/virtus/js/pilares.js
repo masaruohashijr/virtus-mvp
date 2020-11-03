@@ -25,7 +25,7 @@ function loadComponentesByPilarId(pilarId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var componentesJson = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-componentes-pilar-edit", componentesPilar)
+				wipeRows("table-componentes-pilar-edit")
 				componentesPilar = [];
 				for(order = 0;componentesJson != null && order<componentesJson.length;order++){
 					componentesPilar[order]=componentesJson[order];

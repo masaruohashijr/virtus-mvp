@@ -25,7 +25,7 @@ function loadElementosByComponenteId(componenteId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var elementosComponenteJson = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-elementos-componente-edit", elementosComponente)
+				wipeRows("table-elementos-componente-edit")
 				elementosComponente = [];
 				for(order = 0;elementosComponenteJson != null && order<elementosComponenteJson.length;order++){
 					elementosComponente[order]=elementosComponenteJson[order];

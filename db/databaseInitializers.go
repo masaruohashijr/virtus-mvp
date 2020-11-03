@@ -18,6 +18,7 @@ func Initialize() {
 	createUsers()
 	createEscritorios()
 	createStatusZERO()
+	createEntidades()
 	updateRoles()
 	updateFeatures()
 	createPKey()

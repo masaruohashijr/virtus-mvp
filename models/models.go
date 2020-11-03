@@ -151,6 +151,12 @@ type Entidade struct {
 	Id             int64  `json:"id"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Sigla          string `json:"sigla"`
+	Codigo         string `json:"codigo"`
+	Situacao       string `json:"situacao"`
+	ESI            bool   `json:"esi"`
+	Municipio      string `json:"municipio"`
+	SiglaUF        string `json:"siglaUF"`
 	ChefeId        int64  `json:"chefeId"`
 	ChefeName      string `json:"chefeName"`
 	AuthorId       int64  `json:"authorId"`
@@ -402,6 +408,7 @@ type PageCiclos struct {
 	AppName    string
 	Title      string
 	Ciclos     []Ciclo
+	Entidades  []Entidade
 	Pilares    []Pilar
 	Users      []User
 	LoggedUser LoggedUser

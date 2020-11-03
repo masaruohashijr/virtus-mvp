@@ -19,9 +19,15 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		sqlStatement := "INSERT INTO entidades(nome, descricao, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
+		sigla := r.FormValue("Sigla")
+		codigo := r.FormValue("Codigo")
+		situacao := r.FormValue("Situacao")
+		esi := r.FormValue("ESI")
+		municipio := r.FormValue("Municipio")
+		siglaUF := r.FormValue("SigaUF")
+		sqlStatement := "INSERT INTO entidades(nome, descricao, sigla, codigo, situacao, esi, municipio, sigla_uf, author_id, criado_em) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id"
 		idEntidade := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&idEntidade)
+		err := Db.QueryRow(sqlStatement, nome, descricao, sigla, codigo, situacao, esi, municipio, siglaUF, currentUser.Id, time.Now()).Scan(&idEntidade)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -101,13 +107,19 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		entidadeId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		sqlStatement := "UPDATE entidades SET nome=$1, descricao=$2 WHERE id=$3"
+		sigla := r.FormValue("Sigla")
+		codigo := r.FormValue("Codigo")
+		situacao := r.FormValue("Situacao")
+		esi := r.FormValue("ESI")
+		municipio := r.FormValue("Municipio")
+		siglaUF := r.FormValue("SigaUF")
+		sqlStatement := "UPDATE entidades SET nome=$1, descricao=$2, sigla=$3, codigo=$4, situacao=$5, esi=$6, municipio=$7, sigla_uf=$8 WHERE id=$9"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
-		updtForm.Exec(nome, descricao, entidadeId)
+		updtForm.Exec(nome, descricao, sigla, codigo, situacao, esi, municipio, siglaUF, entidadeId)
 		log.Println("UPDATE: Id: " + entidadeId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Planos
@@ -311,33 +323,46 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 	if sec.IsAuthenticated(w, r) {
 		var page mdl.PageEntidades
 		sql := "SELECT " +
+			" b.name, " +
+			" coalesce(c.name,'') as cstatus, " +
+			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
 			" a.id, " +
 			" a.nome, " +
-			" a.descricao, " +
+			" a.sigla, " +
+			" a.codigo, " +
+			" a.situacao, " +
+			" a.esi, " +
+			" a.municipio, " +
+			" a.sigla_uf, " +
 			" a.author_id, " +
-			" b.name, " +
-			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
-			" coalesce(c.name,'') as cstatus, " +
 			" a.status_id, " +
+			" a.descricao, " +
 			" a.id_versao_origem " +
 			" FROM entidades a LEFT JOIN users b " +
 			" ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
-			" order by a.id asc"
+			" order by a.nome asc"
+		log.Println(sql)
 		rows, _ := Db.Query(sql)
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		var i = 1
 		for rows.Next() {
 			rows.Scan(
+				&entidade.AuthorName,
+				&entidade.CStatus,
+				&entidade.C_CriadoEm,
 				&entidade.Id,
 				&entidade.Nome,
-				&entidade.Descricao,
+				&entidade.Sigla,
+				&entidade.Codigo,
+				&entidade.Situacao,
+				&entidade.ESI,
+				&entidade.Municipio,
+				&entidade.SiglaUF,
 				&entidade.AuthorId,
-				&entidade.AuthorName,
-				&entidade.C_CriadoEm,
-				&entidade.CStatus,
 				&entidade.StatusId,
+				&entidade.Descricao,
 				&entidade.IdVersaoOrigem)
 			entidade.Order = i
 			i++

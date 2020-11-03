@@ -61,6 +61,67 @@ func CreateCicloHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Iniciar Ciclo")
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		currentUser := GetUserInCookie(w, r)
+		r.ParseForm()
+		entidades := r.Form["Entidades"]
+		cicloId := r.FormValue("Id")
+		nome := r.FormValue("Nome")
+		descricao := r.FormValue("Descricao")
+		iniciaEm := r.FormValue("IniciaEm")
+		terminaEm := r.FormValue("TerminaEm")
+		sqlStatement := "UPDATE ciclos SET nome = $1, " +
+			" descricao = $2 " +
+			" WHERE id = $3 "
+		updtForm, _ := Db.Prepare(sqlStatement)
+		updtForm.Exec(nome, descricao, cicloId)
+		log.Println("UPDATE: Id: " + cicloId + " | Nome: " + nome + " | Descrição: " + descricao)
+		log.Println(len(entidades))
+		for _, idEntidade := range entidades {
+			cicloEntidadeId := 0
+			snippet1 := ""
+			snippet2 := ""
+			if iniciaEm != "" {
+				snippet1 = ", inicia_em "
+				snippet2 = ", $5"
+			}
+			if terminaEm != "" {
+				snippet1 = snippet1 + ", termina_em "
+				snippet2 = snippet2 + ", $6"
+			}
+			sqlStatement := "INSERT INTO public.ciclos_entidades ( " +
+				" entidade_id, " +
+				" ciclo_id, " +
+				" tipo_media, " +
+				" author_id, " +
+				" criado_em " +
+				snippet1 +
+				" ) " +
+				" VALUES ($1, $2, 1, $3, $4 " + snippet2 + ") RETURNING id"
+			log.Println(sqlStatement)
+			log.Println("idEntidade: " + idEntidade)
+			log.Println("cicloId: " + cicloId)
+			log.Println("currentUser.Id: " + strconv.FormatInt(currentUser.Id, 10))
+			log.Println("iniciaEm: " + iniciaEm)
+			log.Println("terminaEm: " + terminaEm)
+			var err error
+			if iniciaEm != "" && terminaEm != "" {
+				err = Db.QueryRow(sqlStatement, idEntidade, cicloId, currentUser.Id, time.Now(), iniciaEm, terminaEm).Scan(&cicloEntidadeId)
+			} else {
+				err = Db.QueryRow(sqlStatement, idEntidade, cicloId, currentUser.Id, time.Now()).Scan(&cicloEntidadeId)
+			}
+			if err != nil {
+				panic(err.Error())
+			}
+		}
+		http.Redirect(w, r, route.CiclosRoute, 301)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
+	}
+}
+
 func UpdateCicloHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Ciclo")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
@@ -259,9 +320,30 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			i++
 			pilares = append(pilares, pilar)
 		}
-		log.Println(len(pilares))
+		sql = "SELECT a.id, a.sigla, a.codigo, a.nome " +
+			"FROM entidades a " +
+			"WHERE NOT EXISTS " +
+			"(SELECT 1 FROM ciclos_entidades b " +
+			" WHERE b.entidade_id = a.id) " +
+			"ORDER BY a.sigla"
+		log.Println(sql)
+		rows, _ = Db.Query(sql)
+		var entidades []mdl.Entidade
+		var entidade mdl.Entidade
+		i = 1
+		for rows.Next() {
+			rows.Scan(
+				&entidade.Id,
+				&entidade.Sigla,
+				&entidade.Codigo,
+				&entidade.Nome)
+			entidade.Order = i
+			i++
+			entidades = append(entidades, entidade)
+		}
 		var page mdl.PageCiclos
 		page.Pilares = pilares
+		page.Entidades = entidades
 		page.Ciclos = ciclos
 		page.AppName = mdl.AppName
 		page.Title = "Ciclos"
