@@ -119,18 +119,18 @@ function limparCamposCicloEntidadeForm(){
 
 function editCicloEntidade(e) {
 	console.log('editCicloEntidade');
-	var editCicloEntidadeForm = document.getElementById('edit-ciclo-entidade-form');
+	let editCicloEntidadeForm = document.getElementById('edit-ciclo-entidade-form');
 	editCicloEntidadeForm.style.display = 'block';
-	var linha = e.parentNode.parentNode;
-	var order = linha.childNodes[0].childNodes[0].value;
-	var id = linha.childNodes[0].childNodes[1].value;
-	var entidadeId = linha.childNodes[0].childNodes[2].value;
-	var cicloId = linha.childNodes[0].childNodes[3].value;
-	var tipoMediaId = linha.childNodes[1].childNodes[0].value;
-	// var tipoMedia = linha.childNodes[1].innerText;
-	var iniciaEm = linha.childNodes[2].innerText;
+	let linha = e.parentNode.parentNode;
+	let order = linha.childNodes[0].childNodes[0].value;
+	let id = linha.childNodes[0].childNodes[1].value;
+	let entidadeId = linha.childNodes[0].childNodes[2].value;
+	let cicloId = linha.childNodes[0].childNodes[3].value;
+	let tipoMediaId = linha.childNodes[1].childNodes[0].value;
+	// let tipoMedia = linha.childNodes[1].innerText;
+	let iniciaEm = formatarData(linha.childNodes[2].innerText);
 	console.log(iniciaEm);
-	var terminaEm = linha.childNodes[3].innerText;
+	let terminaEm = formatarData(linha.childNodes[3].innerText);
 	console.log(terminaEm);
 	// Atribuindo os valores de edit-item-form
 	document.getElementById('Id-CEForUpdate').value=id;
@@ -144,9 +144,9 @@ function editCicloEntidade(e) {
 
 function updateCicloEntidade() {
 	console.log('updateCicloEntidade');
-	var id = document.getElementById('Id-CEForUpdate').value;
-	var order = document.getElementById('Order-CEForUpdate').value;
-	var entidadeId = document.getElementById('EntidadeId-CEForUpdate').value;
+	let id = document.getElementById('Id-CEForUpdate').value;
+	let order = document.getElementById('Order-CEForUpdate').value;
+	let entidadeId = document.getElementById('EntidadeId-CEForUpdate').value;
 	let campoSelect = document.getElementById('CicloEntidadeForUpdate');
 	let cicloId = 0;
 	let nome = '';
@@ -244,15 +244,15 @@ function updateCicloEntidadeRow(tableID, order){
 
 function showDeleteCicloEntidadeForm(e){
 	console.log('showDeleteCicloEntidadeForm');
-	var deleteCicloEntidadeForm = document.getElementById('delete-ciclo-entidade-form');
+	let deleteCicloEntidadeForm = document.getElementById('delete-ciclo-entidade-form');
 	deleteCicloEntidadeForm.style.display = 'block';
 	ciclo_entidade_tobe_deleted = e;
 }
 
 function deleteCicloEntidade() {
 	console.log('deleteCicloEntidade');
-	var order = ciclo_entidade_tobe_deleted.parentNode.parentNode.childNodes[0].childNodes[0].value;
-	var newCicloEntidades = [];
+	let order = ciclo_entidade_tobe_deleted.parentNode.parentNode.childNodes[0].childNodes[0].value;
+	let newCicloEntidades = [];
 	let tbl = ciclo_entidade_tobe_deleted.parentNode.parentNode.parentNode;
 	let linhas = tbl.childNodes;
 	contadorLinha = 1;
@@ -276,7 +276,7 @@ function deleteCicloEntidade() {
 		}
 	}
 	ciclosEntidade = newCicloEntidades;
-	var deleteCicloEntidadeForm = document.getElementById('delete-ciclo-entidade-form');
+	let deleteCicloEntidadeForm = document.getElementById('delete-ciclo-entidade-form');
 	deleteCicloEntidadeForm.style.display = 'none';
 }
 

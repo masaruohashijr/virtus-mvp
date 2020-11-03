@@ -120,7 +120,7 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(nome, descricao, sigla, codigo, situacao, esi, municipio, siglaUF, entidadeId)
-		log.Println("UPDATE: Id: " + entidadeId + " | Nome: " + nome + " | Descrição: " + descricao)
+		log.Println("UPDATE: Id: " + entidadeId + " | Nome: " + nome + " | Descrição: " + descricao + " | SiglaUF: " + siglaUF)
 
 		// Planos
 		var planosDB = ListPlanosByEntidadeId(entidadeId)
