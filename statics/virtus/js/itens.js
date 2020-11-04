@@ -2,13 +2,12 @@
 var item_tobe_deleted;
 	
 class Item {
-	constructor(order, id, elementoId, nome, descricao, avaliacao, autorId, autorNome, c_criadoEm, status, cStatus) {
+	constructor(order, id, elementoId, nome, descricao, autorId, autorNome, c_criadoEm, status, cStatus) {
 		this.order = order;
 		this.id = id;
 		this.elementoId = elementoId;
 		this.nome = nome;
 		this.descricao = descricao;
-		this.avaliacao = avaliacao;
 		this.autorId = autorId;
 		this.autorNome = autorNome;
 		this.c_criadoEm = c_criadoEm;
@@ -20,7 +19,6 @@ class Item {
 function criarItem(){
 	var nome = document.getElementById('NomeItemForInsert').value;
 	var descricao = document.getElementById('DescricaoItemForInsert').value;
-	var avaliacao = document.getElementById('AvaliacaoItemForInsert').value;
 	var erros = '';
 	if(nome==''){
 		erros += 'Falta preencher o nome.\n';
@@ -28,7 +26,7 @@ function criarItem(){
 		return;
 	}
 	itemId = getMaxId(itens);
-	item = new Item(0, itemId, 0, nome, descricao, avaliacao, '', '', '', '', '');
+	item = new Item(0, itemId, 0, nome, descricao, '', '', '', '', '');
 	itens.push(item);
 	addItemRow("table-itens-"+contexto);
 	limparCamposItemForm();
@@ -51,14 +49,13 @@ function updateItem(){
 	var elementoId = document.getElementById('elementoId-edit').value;
 	var titulo = document.getElementById('NomeItemForUpdate').value;
 	var descricao = document.getElementById('DescricaoItemForUpdate').value;
-	var avaliacao = document.getElementById('AvaliacaoItemForUpdate').value;
 	var erros = '';
 	if(titulo==''){
 		erros += 'Falta preencher o título.\n';
 		alert(erros);
 		return;
 	}
-	item = new Item(order, id, elementoId, titulo, descricao, avaliacao, '', '', '', '','');
+	item = new Item(order, id, elementoId, titulo, descricao, '', '', '', '','');
 	itens[order] = item;
 	updateItemRow("table-itens-"+contexto,order);
 	limparCamposItemForm();
@@ -101,14 +98,12 @@ function editItem(e) {
 	var elementoId = e.parentNode.parentNode.childNodes[0].childNodes[2].value;
 	var nome = e.parentNode.parentNode.childNodes[0].innerText;
 	var descricao = e.parentNode.parentNode.childNodes[1].innerText;
-	var avaliacao = e.parentNode.parentNode.childNodes[1].childNodes[0].value;
 	// Atribuindo os valores de edit-item-form
 	document.getElementById('id-edit').value=id;
 	document.getElementById('order-edit').value=order;
 	document.getElementById('elementoId-edit').value=elementoId;
 	document.getElementById('NomeItemForUpdate').value=nome;
 	document.getElementById('DescricaoItemForUpdate').value=descricao;
-	document.getElementById('AvaliacaoItemForUpdate').value=avaliacao;
 }	
 
 function loadItensByElementoId(elementoId){
@@ -156,7 +151,6 @@ function addItemRow(tableID) {
 	// descricao
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(item.descricao);
-	newCell.innerHTML = '<input type="hidden" name="avaliacao" value="'+item.avaliacao+'"/>'+newCell.innerHTML;
 	newCell.appendChild(newText);
 	// status
 	newCell = newRow.insertCell(2);

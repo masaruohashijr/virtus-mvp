@@ -14,7 +14,6 @@ func ListItensHandler(elementoId string) []mdl.Item {
 		" a.elemento_id, " +
 		" a.nome," +
 		" coalesce(a.descricao,''), " +
-		" coalesce(a.avaliacao,''), " +
 		" a.author_id, " +
 		" coalesce(b.name,'') as author_name, " +
 		" coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as data_criacao," +
@@ -30,7 +29,7 @@ func ListItensHandler(elementoId string) []mdl.Item {
 	var item mdl.Item
 	var i = 1
 	for rows.Next() {
-		rows.Scan(&item.Id, &item.ElementoId, &item.Nome, &item.Descricao, &item.Avaliacao, &item.AuthorId, &item.AuthorName, &item.C_CriadoEm, &item.StatusId, &item.CStatus)
+		rows.Scan(&item.Id, &item.ElementoId, &item.Nome, &item.Descricao, &item.AuthorId, &item.AuthorName, &item.C_CriadoEm, &item.StatusId, &item.CStatus)
 		item.Order = i
 		i++
 		itens = append(itens, item)
@@ -87,8 +86,6 @@ func hasSomeFieldChanged(itemPage mdl.Item, itemDB mdl.Item) bool {
 		return true
 	} else if itemPage.Descricao != itemDB.Descricao {
 		return true
-	} else if itemPage.Avaliacao != itemDB.Avaliacao {
-		return true
 	} else {
 		return false
 	}
@@ -96,14 +93,13 @@ func hasSomeFieldChanged(itemPage mdl.Item, itemDB mdl.Item) bool {
 
 func updateItemHandler(i mdl.Item, itemDB mdl.Item) {
 	sqlStatement := "UPDATE itens SET " +
-		"nome=$1, descricao=$2, avaliacao=$3 WHERE id=$4"
+		"nome=$1, descricao=$2, WHERE id=$3"
 	log.Println(sqlStatement)
 	updtForm, _ := Db.Prepare(sqlStatement)
 	log.Println(i.Nome)
 	log.Println(i.Descricao)
-	log.Println(i.Avaliacao)
 	log.Println(i.Id)
-	_, err := updtForm.Exec(i.Nome, i.Descricao, i.Avaliacao, i.Id)
+	_, err := updtForm.Exec(i.Nome, i.Descricao, i.Id)
 	if err != nil {
 
 		panic(err.Error())

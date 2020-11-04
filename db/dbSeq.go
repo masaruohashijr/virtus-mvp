@@ -150,6 +150,41 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
+	// Sequence PRODUTOS_CICLOS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.produtos_ciclos_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence PRODUTOS_PILARES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.produtos_pilares_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence PRODUTOS_COMPONENTES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.produtos_componentes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence PRODUTOS_ELEMENTOS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.produtos_elementos_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
+	// Sequence PRODUTOS_ITENS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.produtos_itens_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
 	// Sequence ROLES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.roles_id_seq " +
 		" START WITH 2" +

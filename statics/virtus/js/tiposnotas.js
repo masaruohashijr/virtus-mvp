@@ -6,11 +6,13 @@ function editTipoNota(e) {
     var tipoNotaDescricao = e.parentNode.parentNode.childNodes[7].innerText;
     var tipoNotaLetra = e.parentNode.parentNode.childNodes[9].innerText;
     var tipoNotaCorLetra = e.parentNode.parentNode.childNodes[11].innerText;
+    var tipoNotaDominioComponente = e.parentNode.parentNode.childNodes[13].innerText;
 	document.getElementById('TipoNotaIdForUpdate').value = tipoNotaId;
     document.getElementById('NomeForUpdate').value = tipoNotaNome;
     document.getElementById('DescricaoForUpdate').value = tipoNotaDescricao;
     document.getElementById('LetraForUpdate').value = tipoNotaLetra;
     document.getElementById('CorLetraForUpdate').value = tipoNotaCorLetra;
+    document.getElementById('DominioComponenteForUpdate').value = tipoNotaDominioComponente;
 }
 
 function deleteTipoNota(e) {

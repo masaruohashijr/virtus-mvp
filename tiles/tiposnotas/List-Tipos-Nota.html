@@ -32,6 +32,7 @@
                 <th>Descrição</th>
                 <th>Letra</th>
                 <th>Cor da Letra</th>
+                <th>Domínio de Componente</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
@@ -46,6 +47,7 @@
                 <td>{{$tipo.Descricao}}</td>
                 <td>{{$tipo.Letra}}</td>
                 <td>{{$tipo.CorLetra}}</td>
+                <td>{{$tipo.DominioComponente}}</td>
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal" onclick="editTipoNota(this)">Editar</button>

@@ -79,7 +79,7 @@ func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
 		updtForm.Exec(nome, descricao, cicloId)
 		log.Println("UPDATE: Id: " + cicloId + " | Nome: " + nome + " | Descrição: " + descricao)
 		log.Println(len(entidades))
-		for _, idEntidade := range entidades {
+		for _, entidadeId := range entidades {
 			cicloEntidadeId := 0
 			snippet1 := ""
 			snippet2 := ""
@@ -101,20 +101,21 @@ func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
 				" ) " +
 				" VALUES ($1, $2, 1, $3, $4 " + snippet2 + ") RETURNING id"
 			log.Println(sqlStatement)
-			log.Println("idEntidade: " + idEntidade)
+			log.Println("entidadeId: " + entidadeId)
 			log.Println("cicloId: " + cicloId)
 			log.Println("currentUser.Id: " + strconv.FormatInt(currentUser.Id, 10))
 			log.Println("iniciaEm: " + iniciaEm)
 			log.Println("terminaEm: " + terminaEm)
 			var err error
 			if iniciaEm != "" && terminaEm != "" {
-				err = Db.QueryRow(sqlStatement, idEntidade, cicloId, currentUser.Id, time.Now(), iniciaEm, terminaEm).Scan(&cicloEntidadeId)
+				err = Db.QueryRow(sqlStatement, entidadeId, cicloId, currentUser.Id, time.Now(), iniciaEm, terminaEm).Scan(&cicloEntidadeId)
 			} else {
-				err = Db.QueryRow(sqlStatement, idEntidade, cicloId, currentUser.Id, time.Now()).Scan(&cicloEntidadeId)
+				err = Db.QueryRow(sqlStatement, entidadeId, cicloId, currentUser.Id, time.Now()).Scan(&cicloEntidadeId)
 			}
 			if err != nil {
 				panic(err.Error())
 			}
+			registrarProdutosCiclos(currentUser, entidadeId, cicloId)
 		}
 		http.Redirect(w, r, route.CiclosRoute, 301)
 	} else {

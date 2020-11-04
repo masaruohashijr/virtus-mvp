@@ -15,7 +15,6 @@ func createTable() {
 		" created_at timestamp without time zone," +
 		" id_versao_origem integer," +
 		" status_id integer)")
-
 	// Table ACTIONS_STATUS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.actions_status (" +
@@ -178,7 +177,6 @@ func createTable() {
 			" elemento_id integer," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
-			" avaliacao character varying(4000)," +
 			" criado_em timestamp without time zone," +
 			" author_id integer," +
 			" status_id integer)")
@@ -244,7 +242,101 @@ func createTable() {
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
 			" status_id integer)")
+	// Table PRODUTOS_CICLOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.produtos_ciclos (" +
+			" id integer DEFAULT nextval('public.produtos_ciclos_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" tipo_pontuacao_id integer," +
+			" nota double precision," +
+			" motivacao character varying(4000)," +
+			" supervisor_id integer," +
+			" auditor_id integer," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
 
+	// Table PRODUTOS_PILARES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.produtos_pilares (" +
+			" id integer DEFAULT nextval('public.produtos_pilares_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" tipo_pontuacao_id integer," +
+			" peso double precision," +
+			" nota double precision," +
+			" motivacao_peso character varying(4000)," +
+			" motivacao_nota character varying(4000)," +
+			" supervisor_id integer," +
+			" auditor_id integer," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table PRODUTOS_COMPONENTES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.produtos_componentes (" +
+			" id integer DEFAULT nextval('public.produtos_componentes_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" componente_id integer," +
+			" tipo_pontuacao_id integer," +
+			" peso double precision," +
+			" nota double precision," +
+			" motivacao_peso character varying(4000)," +
+			" motivacao_nota character varying(4000)," +
+			" justificativa character varying(4000)," +
+			" supervisor_id integer," +
+			" auditor_id integer," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table PRODUTOS_ELEMENTOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.produtos_elementos (" +
+			" id integer DEFAULT nextval('public.produtos_elementos_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" componente_id integer," +
+			" elemento_id integer," +
+			" tipo_pontuacao_id integer," +
+			" tipo_nota_id integer," +
+			" peso double precision," +
+			" nota double precision," +
+			" motivacao_peso character varying(4000)," +
+			" motivacao_nota character varying(4000)," +
+			" justificativa character varying(4000)," +
+			" supervisor_id integer," +
+			" auditor_id integer," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table PRODUTOS_ITENS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS public.produtos_itens (" +
+			" id integer DEFAULT nextval('public.produtos_itens_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" componente_id integer," +
+			" elemento_id integer," +
+			" item_id integer," +
+			" avaliacao character varying(4000)," +
+			" anexo character varying(4000)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
 	// Table ROLES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.roles  (" +
@@ -267,7 +359,6 @@ func createTable() {
 			" id_versao_origem integer," +
 			" status_id integer," +
 			" stereotype character varying(255))")
-
 	// Table TIPOS DE NOTAS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.tipos_notas (" +
@@ -276,11 +367,11 @@ func createTable() {
 			" descricao character varying(255)," +
 			" letra character(1) NOT NULL," +
 			" cor_letra character(6)," +
+			" dominio_componente bool," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
 			" status_id integer)")
-
 	// Table USERS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.users (" +

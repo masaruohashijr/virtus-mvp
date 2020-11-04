@@ -20,9 +20,10 @@ func CreateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 		descricao := r.FormValue("Descricao")
 		letra := r.FormValue("Letra")
 		corLetra := r.FormValue("CorLetra")
-		sqlStatement := "INSERT INTO tipos_notas(nome, descricao, letra, cor_letra, author_id, criado_em) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+		dominioComponente := r.FormValue("DominioComponente")
+		sqlStatement := "INSERT INTO tipos_notas(nome, descricao, letra, cor_letra, dominio_componente, author_id, criado_em) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
 		tipoNotaId := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, letra, corLetra, currentUser.Id, time.Now()).Scan(&tipoNotaId)
+		err := Db.QueryRow(sqlStatement, nome, descricao, letra, corLetra, dominioComponente, currentUser.Id, time.Now()).Scan(&tipoNotaId)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -41,12 +42,13 @@ func UpdateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 		descricao := r.FormValue("Descricao")
 		letra := r.FormValue("Letra")
 		corLetra := r.FormValue("CorLetra")
-		sqlStatement := "UPDATE tipos_notas SET nome=$1, descricao=$2 , letra=$3 , cor_letra=$4 WHERE id=$5"
+		dominioComponente := r.FormValue("DominioComponente")
+		sqlStatement := "UPDATE tipos_notas SET nome=$1, descricao=$2 , letra=$3 , cor_letra=$4, dominio_componente=$5 WHERE id=$6"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
-		updtForm.Exec(nome, descricao, letra, corLetra, tipoNotaId)
+		updtForm.Exec(nome, descricao, letra, corLetra, dominioComponente, tipoNotaId)
 		log.Println("UPDATE: Id: " + tipoNotaId + " | Nome: " + nome + " | Descrição: " + descricao)
 		http.Redirect(w, r, route.TiposNotasRoute, 301)
 	} else {
@@ -80,6 +82,7 @@ func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 			" a.descricao, " +
 			" a.letra, " +
 			" a.cor_letra, " +
+			" a.dominio_componente, " +
 			" a.author_id, " +
 			" b.name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
@@ -102,6 +105,7 @@ func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 				&tipoNota.Descricao,
 				&tipoNota.Letra,
 				&tipoNota.CorLetra,
+				&tipoNota.DominioComponente,
 				&tipoNota.AuthorId,
 				&tipoNota.AuthorName,
 				&tipoNota.C_CreatedAt,

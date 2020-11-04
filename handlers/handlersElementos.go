@@ -37,14 +37,13 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				itemId := 0
 				nomeItem := strings.Split(array[3], ":")[1]
 				descricaoItem := strings.Split(array[4], ":")[1]
-				avaliacaoItem := strings.Split(array[5], ":")[1]
 				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				sqlStatement := "INSERT INTO public.itens( " +
-					" elemento_id, nome, descricao, avaliacao, criado_em, author_id, status_id ) " +
+					" elemento_id, nome, descricao, criado_em, author_id, status_id ) " +
 					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
 				//				log.Println("elementoId: " + strconv.Itoa(elementoId))
-				err = Db.QueryRow(sqlStatement, elementoId, nomeItem, descricaoItem, avaliacaoItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				err = Db.QueryRow(sqlStatement, elementoId, nomeItem, descricaoItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
 				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				if err != nil {
 					panic(err.Error())
@@ -95,9 +94,6 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				descricao := strings.Split(array[4], ":")[1]
 				log.Println("descricao -------- " + descricao)
 				itemPage.Descricao = descricao
-				avaliacao := strings.Split(array[5], ":")[1]
-				log.Println("avaliacao -------- " + avaliacao)
-				itemPage.Avaliacao = avaliacao
 				itensPage = append(itensPage, itemPage)
 			}
 		}
@@ -134,10 +130,10 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				item = diffPage[i]
 				log.Println("Elemento Id: " + strconv.FormatInt(item.ElementoId, 10))
 				sqlStatement := "INSERT INTO " +
-					"itens(elemento_id, nome, descricao, avaliacao, criado_em, author_id, status_id) " +
+					"itens(elemento_id, nome, descricao, criado_em, author_id, status_id) " +
 					"VALUES ($1,$2,$3,$4,TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS'),$6,$7) RETURNING id"
 				log.Println(sqlStatement)
-				Db.QueryRow(sqlStatement, elementoId, item.Nome, item.Descricao, item.Avaliacao, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				Db.QueryRow(sqlStatement, elementoId, item.Nome, item.Descricao, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
 			}
 		}
 		UpdateItensHandler(itensPage, itensDB) // TODO

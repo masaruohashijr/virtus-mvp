@@ -6,6 +6,15 @@ import (
 
 var AppName = "Virtus"
 
+type TipoPontuacao int
+
+const (
+	Manual TipoPontuacao = iota
+	Calculada
+	Ajustada
+	Definitiva
+)
+
 type Error struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
@@ -208,7 +217,6 @@ type Item struct {
 	ElementoId     int64  `json:"elementoId"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
-	Avaliacao      string `json:"avaliacao"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
 	CriadoEm       string `json:"criadoEm"`
@@ -338,20 +346,21 @@ type Status struct {
 }
 
 type TipoNota struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Nome           string `json:"nome"`
-	Descricao      string `json:"descricao"`
-	Letra          string `json:"letra"`
-	CorLetra       string `json:"corLetra"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CreatedAt      string `json:"createdAt"`
-	C_CreatedAt    string `json:"c_createdAt"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
-	Selected       bool
+	Order             int
+	Id                int64  `json:"id"`
+	Nome              string `json:"nome"`
+	Descricao         string `json:"descricao"`
+	Letra             string `json:"letra"`
+	CorLetra          string `json:"corLetra"`
+	DominioComponente bool   `json:"dominioComponente"`
+	AuthorId          int64  `json:"authorId"`
+	AuthorName        string `json:"authorName"`
+	CreatedAt         string `json:"createdAt"`
+	C_CreatedAt       string `json:"c_createdAt"`
+	IdVersaoOrigem    int64  `json:"idVersaoOrigem"`
+	StatusId          int64  `json:"statusId"`
+	CStatus           string `json:"cStatus"`
+	Selected          bool
 }
 
 type User struct {
