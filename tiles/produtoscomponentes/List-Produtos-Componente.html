@@ -1,5 +1,5 @@
-{{define "List-Produtos-Ciclo"}}
-<!-- List Produtos Ciclo -->
+{{define "List-Produtos-Elemento"}}
+<!-- List Produtos Elemento -->
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
 		    <div class="aria">
@@ -11,7 +11,7 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
-					{{$allowed := (call .LoggedUser.HasPermission "createProdutoCiclo")}}
+					{{$allowed := (call .LoggedUser.HasPermission "createProdutoElemento")}}
 					{{if $allowed}}
 					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
@@ -27,41 +27,31 @@
             <thead>
             <tr>
                 <th>Ord</th>
-                <th>Id</th>
-                <th>Entidade</th>
-                <th>Ciclo</th>
-                <th>Tipo de Nota</th>
-                <th>Peso</th>
-                <th>Nota</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-                <th>Auditor</th>
+                <th>Sumário</th>
+                <th>Componente</th>
                 <th>Supervisor</th>
-                <th>Status</th>
+                <th>Auditor</th>
 				{{if $allowed}}
 				<th>Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
-            {{range $index, $produto := .ProdutosCiclo}}
+            {{range $index, $produto := .ProdutosCiclos}}
             <tr>
                 <td>#{{$produto.Order}}</td>
                 <td>{{$produto.Id}}</td>
                 <td>{{$produto.Entidade}}</td>
+                <td>{{$produto.Plano}}</td>
                 <td>{{$produto.Ciclo}}</td>
-                <td>{{$produto.TipoNota}}</td>
-                <td>{{$produto.Peso}}</td>
-                <td>{{$produto.Nota}}</td>
-                <td>{{$produto.Autor}}</td>
-                <td>{{$produto.CriadoEm}}</td>
-                <td>{{$produto.Auditor}}</td>
+                <td>{{$produto.Pilar}}</td>
+                <td>{{$produto.Componente}}</td>
                 <td>{{$produto.Supervisor}}</td>
-                <td>{{$produto.Status}}</td>
+                <td>{{$produto.Auditor}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="editProdutoCiclo(this)">Editar</button>
-                    <button class="w3-btn w3-red" onclick="deleteProdutoCiclo(this)">Apagar</button>
+                    <button class="w3-btn w3-teal" onclick="editProdutoElemento(this)">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteProdutoElemento(this)">Apagar</button>
                 </td>
 				{{end}}
             </tr>

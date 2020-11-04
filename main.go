@@ -47,6 +47,8 @@ func main() {
 	r.HandleFunc("/", hd.IndexHandler).Methods("GET")
 	r.HandleFunc("/login", hd.LoginHandler).Methods("POST")
 	r.HandleFunc("/logout", hd.LogoutHandler).Methods("GET")
+	// ----------------- AVALIAÇÕES
+	r.HandleFunc("/designarPapeis", hd.DesignarPapeisHandler).Methods("GET")
 	// ----------------- ACTIONS
 	r.HandleFunc(route.ActionsRoute, hd.ListActionsHandler).Methods("GET")
 	r.HandleFunc("/createAction", hd.CreateActionHandler).Methods("POST")

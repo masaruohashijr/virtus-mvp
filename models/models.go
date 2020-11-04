@@ -157,24 +157,25 @@ type ElementoComponente struct {
 
 type Entidade struct {
 	Order          int
-	Id             int64  `json:"id"`
-	Nome           string `json:"nome"`
-	Descricao      string `json:"descricao"`
-	Sigla          string `json:"sigla"`
-	Codigo         string `json:"codigo"`
-	Situacao       string `json:"situacao"`
-	ESI            bool   `json:"esi"`
-	Municipio      string `json:"municipio"`
-	SiglaUF        string `json:"siglaUF"`
-	ChefeId        int64  `json:"chefeId"`
-	ChefeName      string `json:"chefeName"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CriadoEm       string `json:"criadoEm"`
-	C_CriadoEm     string `json:"c_criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
+	Id             int64           `json:"id"`
+	Nome           string          `json:"nome"`
+	Descricao      string          `json:"descricao"`
+	Sigla          string          `json:"sigla"`
+	Codigo         string          `json:"codigo"`
+	Situacao       string          `json:"situacao"`
+	ESI            bool            `json:"esi"`
+	Municipio      string          `json:"municipio"`
+	SiglaUF        string          `json:"siglaUF"`
+	ChefeId        int64           `json:"chefeId"`
+	ChefeName      string          `json:"chefeName"`
+	AuthorId       int64           `json:"authorId"`
+	AuthorName     string          `json:"authorName"`
+	CriadoEm       string          `json:"criadoEm"`
+	C_CriadoEm     string          `json:"c_criadoEm"`
+	IdVersaoOrigem int64           `json:"idVersaoOrigem"`
+	StatusId       int64           `json:"statusId"`
+	CStatus        string          `json:"cStatus"`
+	CiclosEntidade []CicloEntidade `json:"ciclos"`
 }
 
 type Escritorio struct {
@@ -313,6 +314,81 @@ type PilarCiclo struct {
 	StatusId       int64  `json:"statusId"`
 	CStatus        string `json:"cStatus"`
 }
+
+type ProdutoCiclo struct {
+	Order           int
+	Id              int64   `json:"id"`
+	EntidadeId      int64   `json:"entidadeId"`
+	EntidadeNome    int64   `json:"entidadeNome"`
+	CicloId         int64   `json:"cicloId"`
+	CicloNome       string  `json:"cicloNome"`
+	TipoPontuacaoId int     `json:"tipoPontuacaoId"`
+	TipoPontuacao   string  `json:"tipoPontuacao"`
+	Nota            float64 `json:"nota"`
+	Motivacao       string  `json:"motivacao"`
+	AuditorId       int64   `json:"auditorId"`
+	AuditorName     string  `json:"auditorName"`
+	SupervisorId    int64   `json:"supervisorId"`
+	SupervisorName  string  `json:"supervisorName"`
+	AuthorId        int64   `json:"autorId"`
+	AuthorName      string  `json:"autorNome"`
+	CriadoEm        string  `json:"criadoEm"`
+	IdVersaoOrigem  int64   `json:"idVersaoOrigem"`
+	StatusId        int64   `json:"statusId"`
+	CStatus         string  `json:"cStatus"`
+}
+type ProdutoPilar struct {
+	Order           int
+	Id              int64   `json:"id"`
+	EntidadeId      int64   `json:"entidadeId"`
+	EntidadeNome    int64   `json:"entidadeNome"`
+	CicloId         int64   `json:"cicloId"`
+	CicloNome       string  `json:"cicloNome"`
+	PilarId         int64   `json:"pilarId"`
+	PilarNome       string  `json:"pilarNome"`
+	TipoPontuacaoId int     `json:"tipoPontuacaoId"`
+	TipoPontuacao   string  `json:"tipoPontuacao"`
+	Nota            float64 `json:"nota"`
+	Motivacao       string  `json:"motivacao"`
+	AuditorId       int64   `json:"auditorId"`
+	AuditorName     string  `json:"auditorName"`
+	SupervisorId    int64   `json:"supervisorId"`
+	SupervisorName  string  `json:"supervisorName"`
+	AuthorId        int64   `json:"autorId"`
+	AuthorName      string  `json:"autorNome"`
+	CriadoEm        string  `json:"criadoEm"`
+	IdVersaoOrigem  int64   `json:"idVersaoOrigem"`
+	StatusId        int64   `json:"statusId"`
+	CStatus         string  `json:"cStatus"`
+}
+
+type ProdutoComponente struct {
+	Order           int
+	Id              int64   `json:"id"`
+	EntidadeId      int64   `json:"entidadeId"`
+	EntidadeNome    int64   `json:"entidadeNome"`
+	CicloId         int64   `json:"cicloId"`
+	CicloNome       string  `json:"cicloNome"`
+	PilarId         int64   `json:"pilarId"`
+	PilarNome       string  `json:"pilarNome"`
+	ComponenteId    int64   `json:"componenteId"`
+	ComponenteNome  string  `json:"componenteNome"`
+	TipoPontuacaoId int     `json:"tipoPontuacaoId"`
+	TipoPontuacao   string  `json:"tipoPontuacao"`
+	Nota            float64 `json:"nota"`
+	Motivacao       string  `json:"motivacao"`
+	AuditorId       int64   `json:"auditorId"`
+	AuditorName     string  `json:"auditorName"`
+	SupervisorId    int64   `json:"supervisorId"`
+	SupervisorName  string  `json:"supervisorName"`
+	AuthorId        int64   `json:"autorId"`
+	AuthorName      string  `json:"autorNome"`
+	CriadoEm        string  `json:"criadoEm"`
+	IdVersaoOrigem  int64   `json:"idVersaoOrigem"`
+	StatusId        int64   `json:"statusId"`
+	CStatus         string  `json:"cStatus"`
+}
+
 type Role struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -465,6 +541,13 @@ type PageEscritorios struct {
 	Entidades   []Entidade
 	Users       []User
 	LoggedUser  LoggedUser
+}
+
+type PageEntidadesCiclos struct {
+	AppName    string
+	Title      string
+	Entidades  []Entidade
+	LoggedUser LoggedUser
 }
 
 type PagePilares struct {
