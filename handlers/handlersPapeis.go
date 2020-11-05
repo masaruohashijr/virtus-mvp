@@ -63,6 +63,7 @@ func DesignarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 
 func UpdateProdutosComponentesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Produtos Componentes Handler")
+	log.Println("--------------")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		r.ParseForm()
 		for key, value := range r.Form {
