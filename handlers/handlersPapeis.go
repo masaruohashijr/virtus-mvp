@@ -148,7 +148,7 @@ func UpdateDesignarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, "/designarPapeis", 301)
+		http.Redirect(w, r, "/listDesignarPapeis", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -189,7 +189,7 @@ func UpdateDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, "/distribuirPapeis", 301)
+		http.Redirect(w, r, "/listDistribuirPapeis", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
