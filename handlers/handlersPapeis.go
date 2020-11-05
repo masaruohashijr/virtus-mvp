@@ -12,6 +12,7 @@ import (
 func DesignarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Designar Papeis Handler")
 	if sec.IsAuthenticated(w, r) {
+		log.Println("--------------")
 		currentUser := GetUserInCookie(w, r)
 		var page mdl.PageEntidadesCiclos
 		sql := "SELECT b.entidade_id, c.nome " +
