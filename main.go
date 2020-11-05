@@ -48,11 +48,14 @@ func main() {
 	r.HandleFunc("/login", hd.LoginHandler).Methods("POST")
 	r.HandleFunc("/logout", hd.LogoutHandler).Methods("GET")
 	// ----------------- AVALIAÇÕES
+	r.HandleFunc("/listAvaliarPapeis", hd.ListAvaliarPapeisHandler).Methods("GET")
+	r.HandleFunc("/avaliarPapeis", hd.AvaliarPapeisHandler).Methods("POST")
+	r.HandleFunc("/updateAvaliarPapeis", hd.UpdateDistribuirPapeisHandler).Methods("POST")
 	r.HandleFunc("/listDesignarPapeis", hd.ListDesignarPapeisHandler).Methods("GET")
 	r.HandleFunc("/designarPapeis", hd.DesignarPapeisHandler).Methods("POST")
+	r.HandleFunc("/updateDesignarPapeis", hd.UpdateDesignarPapeisHandler).Methods("POST")
 	r.HandleFunc("/listDistribuirPapeis", hd.ListDistribuirPapeisHandler).Methods("GET")
 	r.HandleFunc("/distribuirPapeis", hd.DistribuirPapeisHandler).Methods("POST")
-	r.HandleFunc("/updateDesignarPapeis", hd.UpdateDesignarPapeisHandler).Methods("POST")
 	r.HandleFunc("/updateDistribuirPapeis", hd.UpdateDistribuirPapeisHandler).Methods("POST")
 	// ----------------- ACTIONS
 	r.HandleFunc(route.ActionsRoute, hd.ListActionsHandler).Methods("GET")

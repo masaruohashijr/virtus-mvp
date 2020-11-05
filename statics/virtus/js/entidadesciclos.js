@@ -5,5 +5,5 @@ function submeterEntidadeCicloForm(e){
 	console.log(document.getElementById("CicloId").value);
 	document.getElementById("EntidadeId").value=e.parentNode.parentNode.childNodes[3].innerText;
 	document.getElementById("CicloId").value=e.parentNode.parentNode.childNodes[7].childNodes[1].value;
-	document.getElementById("formulario-designar-papeis").submit();
+	document.getElementById("formulario-editar-papeis").submit();
 }

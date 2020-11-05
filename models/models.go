@@ -389,6 +389,33 @@ type ProdutoComponente struct {
 	CStatus         string  `json:"cStatus"`
 }
 
+type ProdutoItem struct {
+	Order          int
+	Id             int64  `json:"id"`
+	EntidadeId     int64  `json:"entidadeId"`
+	EntidadeNome   string `json:"entidadeNome"`
+	CicloId        int64  `json:"cicloId"`
+	CicloNome      string `json:"cicloNome"`
+	PilarId        int64  `json:"pilarId"`
+	PilarNome      string `json:"pilarNome"`
+	ComponenteId   int64  `json:"componenteId"`
+	ComponenteNome string `json:"componenteNome"`
+	ElementoId     int64  `json:"elementoId"`
+	ElementoNome   string `json:"elementoNome"`
+	ItemId         int64  `json:"itemId"`
+	ItemNome       string `json:"itemNome"`
+	AuditorId      int64  `json:"auditorId"`
+	AuditorName    string `json:"auditorName"`
+	SupervisorId   int64  `json:"supervisorId"`
+	SupervisorName string `json:"supervisorName"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
 type Role struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -548,6 +575,15 @@ type PageEntidadesCiclos struct {
 	Title      string
 	Entidades  []Entidade
 	LoggedUser LoggedUser
+}
+
+type PageProdutosItens struct {
+	AppName      string
+	Title        string
+	Produtos     []ProdutoItem
+	Supervisores []User
+	Auditores    []User
+	LoggedUser   LoggedUser
 }
 
 type PageProdutosComponentes struct {
