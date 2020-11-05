@@ -65,7 +65,9 @@
 	                <td style="text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
 					{{$auxComponente = $produto.ComponenteNome}}
 					<td>
-						<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);" name="SupervisorComponente{{$produto.ComponenteId}}">
+						<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);"
+							{{if ne $.LoggedUser.User.Role 2}}readOnly disabled{{end}}
+							name="SupervisorComponente{{$produto.ComponenteId}}">
 							<option value=""></option>
 							{{range $i, $supervisor := $.Supervisores }}
 				                <option value="{{$supervisor.Id}}" {{if eq $produto.SupervisorId $supervisor.Id}}selected{{end}}>
@@ -75,7 +77,9 @@
 			            </select>
 					</td>
 	                <td>
-						<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);" name="AuditorComponente{{$produto.ComponenteId}}">
+						<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);"
+							{{if eq $.LoggedUser.User.Role 4}}readOnly disabled{{end}} 
+							name="AuditorComponente{{$produto.ComponenteId}}">
 							<option value=""></option>
 							{{range $i, $auditor := $.Auditores }}
 				                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>

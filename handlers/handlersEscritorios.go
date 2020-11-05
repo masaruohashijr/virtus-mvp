@@ -27,6 +27,22 @@ func CreateEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Nome: " + nome + " | Descrição: " + descricao)
+		if chefe != "" {
+			sqlStatement = "INSERT INTO membros ( " +
+				" escritorio_id, " +
+				" usuario_id, " +
+				" author_id, " +
+				" criado_em " +
+				" ) " +
+				" VALUES ($1, $2, $3, $4) "
+			log.Println(sqlStatement)
+			Db.QueryRow(
+				sqlStatement,
+				id,
+				chefe,
+				currentUser.Id,
+				time.Now())
+		}
 		http.Redirect(w, r, route.EscritoriosRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -45,6 +61,23 @@ func UpdateEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 			sqlStatement := "UPDATE escritorios SET nome=$1, descricao=$2, abreviatura=$3, chefe_id=$4 WHERE id=$5"
 			updtForm, _ := Db.Prepare(sqlStatement)
 			updtForm.Exec(nome, descricao, abreviatura, chefe, id)
+			sqlStatement = "INSERT INTO membros ( " +
+				" escritorio_id, " +
+				" usuario_id, " +
+				" author_id, " +
+				" criado_em " +
+				" ) " +
+				" SELECT $1, $2, $3, $4 WHERE NOT EXISTS " +
+				" (SELECT 1 FROM membros WHERE escritorio_id = $5 AND usuario_id =$6)"
+			log.Println(sqlStatement)
+			Db.QueryRow(
+				sqlStatement,
+				id,
+				chefe,
+				GetUserInCookie(w, r).Id,
+				time.Now(),
+				id,
+				chefe)
 		} else {
 			sqlStatement := "UPDATE escritorios SET nome=$1, descricao=$2, abreviatura=$3 WHERE id=$4"
 			updtForm, _ := Db.Prepare(sqlStatement)
