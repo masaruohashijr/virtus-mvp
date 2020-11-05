@@ -48,7 +48,12 @@ func main() {
 	r.HandleFunc("/login", hd.LoginHandler).Methods("POST")
 	r.HandleFunc("/logout", hd.LogoutHandler).Methods("GET")
 	// ----------------- AVALIAÇÕES
-	r.HandleFunc("/designarPapeis", hd.DesignarPapeisHandler).Methods("GET")
+	r.HandleFunc("/listDesignarPapeis", hd.ListDesignarPapeisHandler).Methods("GET")
+	r.HandleFunc("/designarPapeis", hd.DesignarPapeisHandler).Methods("POST")
+	r.HandleFunc("/listDistribuirPapeis", hd.ListDistribuirPapeisHandler).Methods("GET")
+	r.HandleFunc("/distribuirPapeis", hd.DistribuirPapeisHandler).Methods("POST")
+	r.HandleFunc("/updateDesignarPapeis", hd.UpdateDesignarPapeisHandler).Methods("POST")
+	r.HandleFunc("/updateDistribuirPapeis", hd.UpdateDistribuirPapeisHandler).Methods("POST")
 	// ----------------- ACTIONS
 	r.HandleFunc(route.ActionsRoute, hd.ListActionsHandler).Methods("GET")
 	r.HandleFunc("/createAction", hd.CreateActionHandler).Methods("POST")
@@ -60,9 +65,6 @@ func main() {
 	r.HandleFunc("/createCiclo", hd.CreateCicloHandler).Methods("POST")
 	r.HandleFunc("/updateCiclo", hd.UpdateCicloHandler).Methods("POST")
 	r.HandleFunc("/deleteCiclo", hd.DeleteCicloHandler).Methods("POST")
-	// ----------------- PRODUTOS COMPONENTES
-	r.HandleFunc("/listProdutosComponentes", hd.ListProdutosComponentesHandler).Methods("POST")
-	r.HandleFunc("/updateProdutosComponentes", hd.UpdateProdutosComponentesHandler).Methods("POST")
 	// ----------------- COMPONENTES
 	r.HandleFunc(route.ComponentesRoute, hd.ListComponentesHandler).Methods("GET")
 	r.HandleFunc("/createComponente", hd.CreateComponenteHandler).Methods("POST")

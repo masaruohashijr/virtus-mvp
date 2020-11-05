@@ -9,10 +9,10 @@
   
   <a href="#">Sobre</a>
   {{if (call .LoggedUser.HasPermission "designarPapeis")}}
-  <a href="/designarPapeis">Designar Papéis</a>
+  <a href="/listDesignarPapeis">Designar Papéis</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "distribuirPapeis")}}
-  <a href="/distribuirPapeis">Distribuir Papéis</a>
+  <a href="/listDistribuirPapeis">Distribuir Papéis</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "avaliarPapeis")}}
   <a href="/avaliarPapeis">Avaliar Papéis</a>
