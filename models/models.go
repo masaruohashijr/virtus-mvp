@@ -366,7 +366,7 @@ type ProdutoComponente struct {
 	Order           int
 	Id              int64   `json:"id"`
 	EntidadeId      int64   `json:"entidadeId"`
-	EntidadeNome    int64   `json:"entidadeNome"`
+	EntidadeNome    string  `json:"entidadeNome"`
 	CicloId         int64   `json:"cicloId"`
 	CicloNome       string  `json:"cicloNome"`
 	PilarId         int64   `json:"pilarId"`
@@ -548,6 +548,15 @@ type PageEntidadesCiclos struct {
 	Title      string
 	Entidades  []Entidade
 	LoggedUser LoggedUser
+}
+
+type PageProdutosComponentes struct {
+	AppName      string
+	Title        string
+	Produtos     []ProdutoComponente
+	Supervisores []User
+	Auditores    []User
+	LoggedUser   LoggedUser
 }
 
 type PagePilares struct {

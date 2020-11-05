@@ -143,4 +143,19 @@ func createUsers() {
 		" 'sergio@gmail.com', '61 984385415', 'Sergio Djundi Taniguchi', 4, 1, now()::timestamp  " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'sergio')"
 	db.Exec(sql)
+	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
+		" SELECT 31, 'fulano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" 'fulano@gmail.com', '61 984385415', 'Fulano de Tal', 2, 1, now()::timestamp " +
+		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'fulano')"
+	db.Exec(sql)
+	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
+		" SELECT 29, 'sicrano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" 'sicrano@gmail.com', '61 984385415', 'Sicrano de Tal', 3, 1, now()::timestamp " +
+		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'sicrano')"
+	db.Exec(sql)
+	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
+		" SELECT 30, 'beltrano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" 'beltrano@gmail.com', '61 984385415', 'Beltrano de Tal', 4, 1, now()::timestamp " +
+		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'beltrano')"
+	db.Exec(sql)
 }

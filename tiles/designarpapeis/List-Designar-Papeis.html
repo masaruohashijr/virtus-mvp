@@ -1,5 +1,5 @@
-{{define "List-Produtos-Elemento"}}
-<!-- List Produtos Elemento -->
+{{define "List-Designar-Papeis"}}
+<!-- List Designar Papéis-->
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
 		    <div class="aria">
@@ -11,7 +11,7 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
-					{{$allowed := (call .LoggedUser.HasPermission "createProdutoElemento")}}
+					{{$allowed := (call .LoggedUser.HasPermission "designarPapeis")}}
 					{{if $allowed}}
 					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
@@ -26,38 +26,45 @@
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
             <thead>
             <tr>
-                <th>Ord</th>
-                <th>Sumário</th>
-                <th>Componente</th>
-                <th>Supervisor</th>
-                <th>Auditor</th>
+                <th style="width:5%">Ord</th>
+                <th style="width:5%">Id</th>
+                <th style="text-align:left; width:65%">Nome</th>
+                <th style="text-align:left; width:20%">Ciclos</th>
 				{{if $allowed}}
-				<th>Ações</th>
+				<th style="width:5%">Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
-            {{range $index, $produto := .ProdutosCiclos}}
+            {{range $index, $entidade := .Entidades}}
             <tr>
-                <td>#{{$produto.Order}}</td>
-                <td>{{$produto.Id}}</td>
-                <td>{{$produto.Entidade}}</td>
-                <td>{{$produto.Plano}}</td>
-                <td>{{$produto.Ciclo}}</td>
-                <td>{{$produto.Pilar}}</td>
-                <td>{{$produto.Componente}}</td>
-                <td>{{$produto.Supervisor}}</td>
-                <td>{{$produto.Auditor}}</td>
+                <td>#{{$entidade.Order}}</td>
+                <td>{{$entidade.Id}}</td>
+                <td style="text-align:left">
+					{{$entidade.Nome}}
+				</td>
+                <td>
+					<select class="w3-input">
+						{{range $i, $cicloEntidade := $entidade.CiclosEntidade }}
+			                <option value="{{$cicloEntidade.Id}}">
+								{{$cicloEntidade.Nome}}
+							</option>
+			            {{end}}
+		            </select>
+				</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="editProdutoElemento(this)">Editar</button>
-                    <button class="w3-btn w3-red" onclick="deleteProdutoElemento(this)">Apagar</button>
+                    <button class="w3-btn w3-teal" onclick="submeterEntidadeCicloForm(this)">Equipe</button>
                 </td>
 				{{end}}
             </tr>
             {{end}}
             </tbody>
         </table>
+		<form action="/listProdutosComponentes" method="POST" id="formulario-designar-papeis">
+			<input type="hidden" id="EntidadeId" name="EntidadeId">
+			<input type="hidden" id="CicloId" name="CicloId">
+		</form>
     </div>
 </div>
 {{end}}

@@ -60,6 +60,9 @@ func main() {
 	r.HandleFunc("/createCiclo", hd.CreateCicloHandler).Methods("POST")
 	r.HandleFunc("/updateCiclo", hd.UpdateCicloHandler).Methods("POST")
 	r.HandleFunc("/deleteCiclo", hd.DeleteCicloHandler).Methods("POST")
+	// ----------------- PRODUTOS COMPONENTES
+	r.HandleFunc("/listProdutosComponentes", hd.ListProdutosComponentesHandler).Methods("POST")
+	r.HandleFunc("/updateProdutosComponentes", hd.UpdateProdutosComponentesHandler).Methods("POST")
 	// ----------------- COMPONENTES
 	r.HandleFunc(route.ComponentesRoute, hd.ListComponentesHandler).Methods("GET")
 	r.HandleFunc("/createComponente", hd.CreateComponenteHandler).Methods("POST")
