@@ -402,6 +402,19 @@ type ProdutoItem struct {
 	ComponenteNome string `json:"componenteNome"`
 	ElementoId     int64  `json:"elementoId"`
 	ElementoNome   string `json:"elementoNome"`
+	TipoNotaId     int    `json:"tipoNotaId"`
+	TipoNotaNome   string `json:"tipoNotaNome"`
+	PesoPadraoEC   string `json:"pesoPadraoEC"`
+	TipoMediaCPId  int    `json:"tipoMediaCPId"`
+	TipoMediaCP    string `json:"tipoMediaCP"`
+	PesoPadraoCP   string `json:"pesoPadraoCP"`
+	TipoMediaPCId  int    `json:"tipoMediaPCId"`
+	TipoMediaPC    string `json:"tipoMediaPC"`
+	PesoPadraoPC   string `json:"pesoPadraoPC"`
+	TipoMediaCEId  int    `json:"tipoMediaCEId"`
+	TipoMediaCE    string `json:"tipoMediaCE"`
+	IniciaEm       string `json:"iniciaEm"`
+	TerminaEm      string `json:"terminaEm"`
 	ItemId         int64  `json:"itemId"`
 	ItemNome       string `json:"itemNome"`
 	AuditorId      int64  `json:"auditorId"`

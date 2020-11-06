@@ -116,9 +116,9 @@ function editMembro(e) {
 	var terminaEm = linha.childNodes[3].innerText;
 	console.log(terminaEm);
 	// Atribuindo os valores de edit-item-form
-	document.getElementById('Id-CEForUpdate').value=id;
-	document.getElementById('Order-CEForUpdate').value=order;
-	document.getElementById('EntidadeId-CEForUpdate').value=entidadeId;
+	document.getElementById('Id-MEForUpdate').value=id;
+	document.getElementById('Order-MEForUpdate').value=order;
+	document.getElementById('EscritorioId-MEForUpdate').value=entidadeId;
 	document.getElementById('MembroForUpdate').value=cicloId;
 	document.getElementById('TipoMediaForUpdate').value=tipoMediaId;
 	document.getElementById('IniciaEmForUpdate').value=iniciaEm;

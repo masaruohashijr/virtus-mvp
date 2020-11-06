@@ -12,11 +12,6 @@
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
 					{{$allowed := (call .LoggedUser.HasPermission "designarEquipes")}}
-					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
-							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
-						</a>&nbsp;
-					{{end}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>

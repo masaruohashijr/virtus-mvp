@@ -260,6 +260,12 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" a.pilar_id, d.nome as pilar_nome,  " +
 			" a.componente_id, e.nome as componente_nome,  " +
 			" a.elemento_id, f.nome as elemento_nome,  " +
+
+			" ec.tipo_nota_id, ec.peso_padrao,  " +
+			" cp.tipo_media, cp.peso_padrao,  " +
+			" pc.tipo_media, pc.peso_padrao,  " +
+			" ce.tipo_media, ce.inicia_em, ce.termina_em,  " +
+
 			" a.item_id, g.nome as item_nome,  " +
 			" coalesce(b.nome,''), a.entidade_id,  " +
 			" coalesce(j.supervisor_id,0) as super_id, coalesce(h.name,'') as supervisor_nome,  " +
@@ -270,6 +276,10 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" LEFT JOIN pilares d ON a.pilar_id = d.id  " +
 			" LEFT JOIN componentes e ON a.componente_id = e.id  " +
 			" LEFT JOIN produtos_componentes j ON a.componente_id = j.id  " +
+			" LEFT JOIN elementos_componentes ec ON a.elemento_id = ec.id  " +
+			" LEFT JOIN componentes_pilares cp ON a.componente_id = cp.id  " +
+			" LEFT JOIN pilares_ciclos pc ON a.componente_id = pc.id  " +
+			" LEFT JOIN ciclos_entidades ce ON a.componente_id = ce.id  " +
 			" LEFT JOIN elementos f ON a.elemento_id = f.id  " +
 			" LEFT JOIN itens g ON a.item_id = g.id  " +
 			" LEFT JOIN users h ON j.supervisor_id = h.id  " +
@@ -291,6 +301,15 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.ComponenteNome,
 				&produto.ElementoId,
 				&produto.ElementoNome,
+				&produto.TipoNotaId,
+				&produto.PesoPadraoEC,
+				&produto.TipoMediaCPId,
+				&produto.PesoPadraoCP,
+				&produto.TipoMediaPCId,
+				&produto.PesoPadraoPC,
+				&produto.TipoMediaCEId,
+				&produto.IniciaEm,
+				&produto.TerminaEm,
 				&produto.ItemId,
 				&produto.ItemNome,
 				&produto.EntidadeNome,

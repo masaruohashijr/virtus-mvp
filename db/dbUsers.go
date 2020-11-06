@@ -144,67 +144,67 @@ func createUsers() {
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'sergio')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 31, 'fulano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 29, 'fulano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'fulano@gmail.com', '61 984385415', 'Fulano de Tal', 2, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'fulano')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 29, 'sicrano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 30, 'sicrano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'sicrano@gmail.com', '61 984385415', 'Sicrano de Tal', 3, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'sicrano')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 30, 'beltrano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 31, 'beltrano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'beltrano@gmail.com', '61 984385415', 'Beltrano de Tal', 4, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'beltrano')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 31, 'huguinho', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 32, 'huguinho', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'huguinho@gmail.com', '61 984385415', 'Huguinho da Silva', 2, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'huguinho')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 32, 'zezinho', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 33, 'zezinho', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'zezinho@gmail.com', '61 984385415', 'Zezinho da Silva', 3, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'zezinho')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 33, 'luisinho', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 34, 'luisinho', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'luisinho@gmail.com', '61 984385415', 'Luisinho de Tal', 4, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'luisinho')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 34, 'athos', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 35, 'athos', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'athos@gmail.com', '61 984385415', 'Athos Mosqueteiro', 2, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'athos')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 35, 'porthos', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 36, 'porthos', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'porthos@gmail.com', '61 984385415', 'Porthos Mosqueteiro', 3, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'porthos')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 36, 'aramis', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 37, 'aramis', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'aramis@gmail.com', '61 984385415', 'Aramis Mosqueteiro', 4, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'aramis')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 34, 'zuenir', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 38, 'zuenir', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'zuenir@gmail.com', '61 984385415', 'Zuenir Ventura', 2, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'zuenir')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 35, 'verissimo', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 39, 'verissimo', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'verissimo@gmail.com', '61 984385415', 'Luís Fernando Veríssimo', 3, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'verissimo')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 36, 'ariano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 40, 'ariano', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'ariano@gmail.com', '61 984385415', 'Ariano Suassuna', 4, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'ariano')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
-		" SELECT 37, 'otto', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" SELECT 41, 'otto', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
 		" 'otto@gmail.com', '61 984385415', 'Otto Maximiliano Pereira de Cordeiro Ferreira', 5, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'otto')"
 	db.Exec(sql)
