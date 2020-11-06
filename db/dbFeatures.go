@@ -37,7 +37,7 @@ func createFeatures() {
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 28, 'Criar Escritório', 'createEscritorio' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 28)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 29, 'Listar Tipos de Notas', 'listTiposNotas' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 29)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 30, 'Criar Tipo de Nota', 'createTipoNota' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 30)")
-	db.Exec("INSERT INTO public.features (id, name, code) SELECT 31, 'Designar Papéis', 'designarPapeis' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 31)")
+	db.Exec("INSERT INTO public.features (id, name, code) SELECT 31, 'Designar Equipes', 'designarEquipes' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 31)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 32, 'Distribuir Papéis', 'distribuirPapeis' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 32)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 33, 'Avaliar Papéis', 'avaliarPapeis' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 33)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 34, 'Visualizar Matriz', 'viewMatriz' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 34)")
@@ -60,6 +60,23 @@ func createRoleFeatures() {
 		}
 	}
 	pos := strings.LastIndex(stmt2, "UNION")
+	stmt2 = stmt2[:pos]
+	log.Println(stmt1 + stmt2)
+	db.Exec(stmt1 + stmt2)
+	stmt1 = " INSERT INTO features_roles (role_id, feature_id) "
+	stmt2 = ""
+	for j := 1; j <= 34; j++ {
+		roleId := "5"
+		featureId := strconv.Itoa(j)
+		stmt2 = stmt2 + " SELECT " + roleId + ", " + featureId +
+			" WHERE NOT EXISTS (SELECT 1 FROM features_roles a " +
+			" LEFT JOIN features b ON a.feature_id = a.id " +
+			" WHERE a.feature_id = " +
+			featureId + " AND a.role_id = " + roleId +
+			" AND substring(a.code,1,4) = 'list' " +
+			") UNION "
+	}
+	pos = strings.LastIndex(stmt2, "UNION")
 	stmt2 = stmt2[:pos]
 	log.Println(stmt1 + stmt2)
 	db.Exec(stmt1 + stmt2)

@@ -8,8 +8,8 @@
 	<br>
   
   <a href="#">Sobre</a>
-  {{if (call .LoggedUser.HasPermission "designarPapeis")}}
-  <a href="/listDesignarPapeis">Designar Papéis</a>
+  {{if (call .LoggedUser.HasPermission "designarEquipes")}}
+  <a href="/listDesignarEquipes">Designar Equipes</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "distribuirPapeis")}}
   <a href="/listDistribuirPapeis">Distribuir Papéis</a>

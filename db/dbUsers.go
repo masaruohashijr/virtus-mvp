@@ -203,4 +203,9 @@ func createUsers() {
 		" 'ariano@gmail.com', '61 984385415', 'Ariano Suassuna', 4, 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'ariano')"
 	db.Exec(sql)
+	sql = "INSERT INTO users (id, username, password, email, mobile, name, role_id, author_id, criado_em) " +
+		" SELECT 37, 'otto', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
+		" 'otto@gmail.com', '61 984385415', 'Otto Maximiliano Pereira de Cordeiro Ferreira', 5, 1, now()::timestamp " +
+		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'otto')"
+	db.Exec(sql)
 }
