@@ -68,6 +68,9 @@
 									</option>
 					            {{end}}
 				            </select>
+							<input type="hidden" name="Entidade_SupervisorComponente{{$produto.ComponenteId}}" value="{{$produto.EntidadeId}}"/>
+							<input type="hidden" name="Ciclo_SupervisorComponente{{$produto.ComponenteId}}" value="{{$produto.CicloId}}"/>
+							<input type="hidden" name="Pilar_SupervisorComponente{{$produto.ComponenteId}}" value="{{$produto.PilarId}}"/>
 						</td>
 		                <td>
 							<select class="w3-input" onchange="sinalizarAlteracao(this);" name="AuditorComponente{{$produto.ComponenteId}}">
@@ -78,6 +81,9 @@
 									</option>
 					            {{end}}
 				            </select>
+							<input type="hidden" name="Entidade_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.EntidadeId}}"/>
+							<input type="hidden" name="Ciclo_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.CicloId}}"/>
+							<input type="hidden" name="Pilar_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.PilarId}}"/>
 						</td>
 		            </tr>
 	            {{end}}

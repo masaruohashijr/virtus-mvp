@@ -254,6 +254,25 @@ type Membro struct {
 	EscritorioId   int64  `json:"escritorioId"`
 	UsuarioId      int64  `json:"usuarioId"`
 	UsuarioNome    string `json:"usuarioNome"`
+	UsuarioPerfil  string `json:"usuarioPerfil"`
+	IniciaEm       string `json:"iniciaEm"`
+	TerminaEm      string `json:"terminaEm"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type Integrante struct {
+	Order          int
+	Id             int64  `json:"id"`
+	EntidadeId     int64  `json:"entidadeId"`
+	CicloId        int64  `json:"cicloId"`
+	UsuarioId      int64  `json:"usuarioId"`
+	UsuarioNome    string `json:"usuarioNome"`
+	UsuarioPerfil  string `json:"usuarioPerfil"`
 	IniciaEm       string `json:"iniciaEm"`
 	TerminaEm      string `json:"terminaEm"`
 	AuthorId       int64  `json:"autorId"`
@@ -584,10 +603,12 @@ type PageEscritorios struct {
 }
 
 type PageEntidadesCiclos struct {
-	AppName    string
-	Title      string
-	Entidades  []Entidade
-	LoggedUser LoggedUser
+	AppName      string
+	Title        string
+	Entidades    []Entidade
+	Membros      []Membro
+	Supervisores []User
+	LoggedUser   LoggedUser
 }
 
 type PageProdutosItens struct {

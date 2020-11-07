@@ -1,5 +1,5 @@
 {{define "Edit-Jurisdicao-Escritorio"}}
-<!-- Edit Escritorio -->
+<!-- Edit Jurisdicao Escritorio -->
 <div class="w3-container">
     <div id="edit-jurisdicao-escritorio-form" class="w3-modal">
         <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px">
@@ -10,7 +10,7 @@
                       onclick="document.getElementById('edit-jurisdicao-escritorio-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/updateJurisdicaoEscritorio" method="POST">
+            <form class="w3-container" action="/updateJurisdicao" method="POST">
                 <input type="hidden" name="Id" id="EscritorioIdJUForUpdate">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Nome" id="EscritorioNomeJUForUpdate" value="">

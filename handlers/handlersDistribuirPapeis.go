@@ -9,8 +9,8 @@ import (
 	sec "virtus/security"
 )
 
-func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("List Designar Equipes Handler")
+func ListDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("List Distribuir Papeis Handler")
 	if sec.IsAuthenticated(w, r) {
 		log.Println("--------------")
 		currentUser := GetUserInCookie(w, r)
@@ -51,30 +51,38 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		page.Entidades = entidades
 		page.AppName = mdl.AppName
-		page.Title = "Designar Equipes"
+		page.Title = "Distribuir Papéis"
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
-		var tmpl = template.Must(template.ParseGlob("tiles/designarequipes/*"))
+		var tmpl = template.Must(template.ParseGlob("tiles/distribuirpapeis/*"))
 		tmpl.ParseGlob("tiles/*")
-		tmpl.ExecuteTemplate(w, "Main-Entidades-Designar-Equipes", page)
+		tmpl.ExecuteTemplate(w, "Main-Entidades-Distribuir-Papeis", page)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
 }
 
-func UpdateDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Update Designar Equipes Handler")
+func UpdateDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Update Distribuir Papeis Handler")
 	log.Println("--------------")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		r.ParseForm()
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "SupervisorComponente") {
+				entidadeId := r.FormValue("Entidade_" + key)
+				cicloId := r.FormValue("Ciclo_" + key)
+				pilarId := r.FormValue("Pilar_" + key)
+				componenteId := key[20:len(key)]
 				log.Println(key + "- value: " + value[0])
 				if value[0] != "" {
 					sqlStatement := "UPDATE produtos_componentes SET " +
-						"supervisor_id=$1 WHERE id=$2"
+						" supervisor_id=$1 " +
+						" WHERE entidade_id=$2 " +
+						" AND ciclo_id=$3 " +
+						" AND pilar_id=$4 " +
+						" AND componente_id=$5 "
 					log.Println(sqlStatement)
 					updtForm, _ := Db.Prepare(sqlStatement)
-					_, err := updtForm.Exec(value[0], key[20:len(key)])
+					_, err := updtForm.Exec(value[0], entidadeId, cicloId, pilarId, componenteId)
 					if err != nil {
 						panic(err.Error())
 					}
@@ -82,13 +90,21 @@ func UpdateDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			if strings.HasPrefix(key, "AuditorComponente") {
+				entidadeId := r.FormValue("Entidade_" + key)
+				cicloId := r.FormValue("Ciclo_" + key)
+				pilarId := r.FormValue("Pilar_" + key)
+				componenteId := key[17:len(key)]
 				log.Println(key + "- value: " + value[0])
 				if value[0] != "" {
 					sqlStatement := "UPDATE produtos_componentes SET " +
-						"auditor_id=$1 WHERE id=$2"
+						" auditor_id=$1 " +
+						" WHERE entidade_id=$2 " +
+						" AND ciclo_id=$3 " +
+						" AND pilar_id=$4 " +
+						" AND componente_id=$5 "
 					log.Println(sqlStatement)
 					updtForm, _ := Db.Prepare(sqlStatement)
-					_, err := updtForm.Exec(value[0], key[17:len(key)])
+					_, err := updtForm.Exec(value[0], entidadeId, cicloId, pilarId, componenteId)
 					if err != nil {
 						panic(err.Error())
 					}
@@ -96,14 +112,14 @@ func UpdateDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, "/listDesignarEquipes", 301)
+		http.Redirect(w, r, "/listDistribuirPapeis", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
 }
 
-func DesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Designar Equipes Handler")
+func DistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Distribuir Papéis Handler")
 	if sec.IsAuthenticated(w, r) {
 		currentUser := GetUserInCookie(w, r)
 		entidadeId := r.FormValue("EntidadeId")
@@ -146,7 +162,7 @@ func DesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.AuditorName)
 			produto.Order = i
 			i++
-			//			log.Println(produto)
+			// log.Println(produto)
 			produtos = append(produtos, produto)
 		}
 		page.Produtos = produtos
@@ -186,11 +202,11 @@ func DesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 		page.Supervisores = supervisores
 		page.Auditores = auditores
 		page.AppName = mdl.AppName
-		page.Title = "Designar Equipes"
+		page.Title = "Distribuir Papéis"
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
-		var tmpl = template.Must(template.ParseGlob("tiles/designarequipes/*"))
+		var tmpl = template.Must(template.ParseGlob("tiles/distribuirpapeis/*"))
 		tmpl.ParseGlob("tiles/*")
-		tmpl.ExecuteTemplate(w, "Main-Designar-Equipes", page)
+		tmpl.ExecuteTemplate(w, "Main-Distribuir-Papeis", page)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

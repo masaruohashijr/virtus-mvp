@@ -36,7 +36,7 @@ function editJurisdicaoEscritorio(e) {
 	loadJurisdicoesByEscritorioId(escritorioId);
 }
 
-function editEquipeEscritorio(e) {
+function editMembrosEscritorio(e) {
 	resetDetalhesEscritorio();
     var editForm = document.getElementById('edit-equipe-form');
     editForm.style.display = 'block';
@@ -101,6 +101,7 @@ function loadMembrosByEscritorioId(escritorioId){
 				membros = [];
 				for(order = 0;membrosJson != null && order<membrosJson.length;order++){
 					membros[order]=membrosJson[order];
+					removerOpcoesUsuarios("UsuarioMEForInsert",membros[order].usuarioId);
 					addMembroRow("table-membros-edit");
 				}
 			}

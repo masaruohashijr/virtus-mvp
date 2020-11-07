@@ -58,6 +58,7 @@ func createTable() {
 			" ciclo_id integer," +
 			" entidade_id integer," +
 			" tipo_media integer," +
+			" supervisor_id integer," + // TODO FK
 			" inicia_em timestamp without time zone," +
 			" termina_em timestamp without time zone," +
 			" author_id integer," +
@@ -170,6 +171,21 @@ func createTable() {
 			" feature_id integer," +
 			" activity_id integer)")
 
+	// Table INTEGRANTES
+	db.Exec(
+		" CREATE TABLE public.integrantes (" +
+			" id integer DEFAULT nextval('integrantes_id_seq'::regclass)," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" usuario_id integer," +
+			" inicia_em timestamp without time zone," +
+			" termina_em timestamp without time zone," +
+			" motivacao character varying(4000)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table ITENS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.itens (" +
@@ -242,6 +258,7 @@ func createTable() {
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
 			" status_id integer)")
+
 	// Table PRODUTOS_CICLOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS public.produtos_ciclos (" +
@@ -382,7 +399,6 @@ func createTable() {
 			" email character varying(255)," +
 			" mobile character varying(255)," +
 			" role_id integer," +
-			" escritorio_id integer," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +

@@ -101,15 +101,17 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 		sql := "SELECT " +
 			" a.id, a.name, a.username, a.password, " +
 			" a.email, a.mobile, COALESCE(a.role_id, 0), COALESCE(b.name,'') as role_name, " +
-			" COALESCE(a.escritorio_id, 0), COALESCE(c.nome,'') as escritorio_nome, " +
+			" COALESCE(f.id, 0), COALESCE(f.abreviatura,'') as escritorio_nome, " +
 			" a.author_id, " +
 			" e.name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
 			" coalesce(d.name,'') as cstatus, " +
 			" a.status_id, " +
 			" a.id_versao_origem " +
-			" FROM users a LEFT JOIN roles b ON a.role_id = b.id " +
-			" LEFT JOIN escritorios c ON a.escritorio_id = c.id " +
+			" FROM users a " +
+			" LEFT JOIN roles b ON a.role_id = b.id " +
+			" LEFT JOIN membros c ON a.id = c.usuario_id " +
+			" LEFT JOIN escritorios f ON c.escritorio_id = f.id " +
 			" LEFT JOIN status d ON a.status_id = c.id " +
 			" LEFT JOIN users e ON a.author_id = e.id " +
 			" ORDER BY a.name ASC "

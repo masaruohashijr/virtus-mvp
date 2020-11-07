@@ -4,7 +4,7 @@ function wipeRows(tableID) {
 	console.log('tableID: '+tableID);
 	console.log('tableRef: '+tableRef);
 	console.log('tableRef.childNodes.length: '+tableRef.rows.length);
-	for(i=1;i<tableRef.rows.length;i++){
+	while(tableRef.rows.length>1){
 		tableRef.deleteRow(1);
 	}
 }

@@ -1,4 +1,4 @@
-function updateUser(e) {
+function editUser(e) {
 	var editForm = document.getElementById('edit-form');
 	editForm.style.display = 'block';
 	var userId = e.parentNode.parentNode.childNodes[3].innerText;

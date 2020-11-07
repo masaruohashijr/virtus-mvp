@@ -11,85 +11,51 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
+					{{$allowed := (call .LoggedUser.HasPermission "designarEquipes")}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>
 				</div>
 		    </div>
 		</header>
-		<form action="/updateDesignarPapeis" method="POST">
-	        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
-					style="border: 1px solid red">
-	            <thead>
-	            <tr>
-	                <th style="width:5%">Ord</th>
-	                <th style="text-align:left">Sumário</th>
-	                <th style="width:10%">Supervisor</th>
-	                <th style="width:10%">Auditor</th>
-	            </tr>
-	            </thead>
-	            <tbody>
-				{{$primeiraLinha := true}}
-				{{$auxSumario := ""}}
-	            {{range $index, $produto := .Produtos}}
-					{{if $primeiraLinha}}
-			            <tr>
-			                <td>&nbsp;</td>
-			                <td style="text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
-			                <td>&nbsp;</td>
-			                <td>&nbsp;</td>
-			            </tr>
-			            <tr>
-			                <td>&nbsp;</td>
-			                <td style="text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
-			                <td>&nbsp;</td>
-			                <td>&nbsp;</td>
-			            </tr>
-						{{$primeiraLinha = false}}
-					{{end}}
-					{{if ne $auxSumario $produto.PilarNome}}
-		            <tr>
-		                <td>&nbsp;</td>
-		                <td style="text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
-						{{$auxSumario = $produto.PilarNome}}
-		                <td>&nbsp;</td>
-		                <td>&nbsp;</td>
-		            </tr>
-					{{end}}
-		            <tr>
-		                <td>{{$produto.Order}}</td>
-		                <td style="text-align:left;padding-left: 30px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
-		                <td>
-							<select class="w3-input" onchange="sinalizarAlteracao(this);" name="SupervisorComponente{{$produto.ComponenteId}}">
-								<option value=""></option>
-								{{range $i, $supervisor := $.Supervisores }}
-					                <option value="{{$supervisor.Id}}" {{if eq $produto.SupervisorId $supervisor.Id}}selected{{end}}>
-										{{$supervisor.Name}}
-									</option>
-					            {{end}}
-				            </select>
-						</td>
-		                <td>
-							<select class="w3-input" onchange="sinalizarAlteracao(this);" name="AuditorComponente{{$produto.ComponenteId}}">
-								<option value=""></option>
-								{{range $i, $auditor := $.Auditores }}
-					                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>
-										{{$auditor.Name}}
-									</option>
-					            {{end}}
-				            </select>
-						</td>
-		            </tr>
-	            {{end}}
-				<tr>
-					<td colspan="2" style="text-align: center"></td>
-					<td colspan="2" style="text-align: center">
-						<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Salvar</button>
-					</td>
-				</tr>
-	            </tbody>
-	        </table>
-		</form>
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <thead>
+            <tr>
+                <th style="width:5%">Ord</th>
+                <th style="width:5%">Id</th>
+                <th style="text-align:left; width:65%">Nome</th>
+                <th style="text-align:left; width:20%">Ciclos</th>
+				{{if $allowed}}
+				<th style="width:5%">Ações</th>
+				{{end}}
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $entidade := .Entidades}}
+            <tr>
+                <td>#{{$entidade.Order}}</td>
+                <td>{{$entidade.Id}}</td>
+                <td style="text-align:left">
+					{{$entidade.Nome}}
+				</td>
+                <td>
+					<select class="w3-input">
+						{{range $i, $cicloEntidade := $entidade.CiclosEntidade }}
+			                <option value="{{$cicloEntidade.Id}}">
+								{{$cicloEntidade.Nome}}
+							</option>
+			            {{end}}
+		            </select>
+				</td>
+				{{if $allowed}}
+                <td>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEquipe(this)">Equipe</button>
+                </td>
+				{{end}}
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
     </div>
 </div>
 {{end}}

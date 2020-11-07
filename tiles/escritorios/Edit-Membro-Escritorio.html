@@ -1,8 +1,8 @@
-{{define "Edit-Equipe-Escritorio"}}
+{{define "Edit-Membro-Escritorio"}}
 <!-- Edit Escritorio -->
 <div class="w3-container">
     <div id="edit-equipe-form" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width:80%">
             <!-- head -->
             <div class="w3-container w3-teal">
                 <h2>Editar equipe do escritório</h2>
@@ -10,7 +10,7 @@
                       onclick="document.getElementById('edit-equipe-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/updateEquipe" method="POST">
+            <form class="w3-container" action="/updateMembrosEscritorio" method="POST">
                 <input type="hidden" name="Id" id="EscritorioIdESForUpdate">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" id="EscritorioNomeESForUpdate" name="Nome" value="">
@@ -35,7 +35,7 @@
 								&nbsp;
 				    		</a>
 		                </div>
-	                	<h4>Equipe</h4>
+	                	<h4>Membro</h4>
 		                <div style="margin-top: 8px">
 		                    <div class="w3-right" id="edit-form-equipe-btn" >
 		                        <a href="#" onclick="document.getElementById('create-membro-form').style.display='block'">
@@ -49,6 +49,7 @@
 					id="table-membros-edit">
 		            <tr>
 		                <td>Nome</td>
+		                <td>Perfil</td>
 		                <td>Inicia Em</td>
 		                <td>Termina Em</td>
 						<td>Ações</td>

@@ -108,6 +108,13 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
+	// Sequence INTEGRANTES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.integrantes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
 	// Sequence ITENS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.itens_id_seq " +
 		" START WITH 1" +

@@ -11,7 +11,7 @@ import (
 )
 
 func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdElementos int, qtdItens int) {
-	//createTiposNotas()
+	createTiposNotas()
 	// Ciclos - código: 1
 	autor := 1
 	tipoMedia := 1

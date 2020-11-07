@@ -51,9 +51,7 @@ func main() {
 	r.HandleFunc("/listAvaliarPapeis", hd.ListAvaliarPapeisHandler).Methods("GET")
 	r.HandleFunc("/avaliarPapeis", hd.AvaliarPapeisHandler).Methods("POST")
 	r.HandleFunc("/updateAvaliarPapeis", hd.UpdateDistribuirPapeisHandler).Methods("POST")
-	r.HandleFunc("/listDesignarEquipes", hd.ListDesignarEquipesHandler).Methods("GET")
-	r.HandleFunc("/designarPapeis", hd.DesignarEquipesHandler).Methods("POST")
-	r.HandleFunc("/updateDesignarEquipes", hd.UpdateDesignarEquipesHandler).Methods("POST")
+	// ----------------- EQUIPES
 	r.HandleFunc("/listDistribuirPapeis", hd.ListDistribuirPapeisHandler).Methods("GET")
 	r.HandleFunc("/distribuirPapeis", hd.DistribuirPapeisHandler).Methods("POST")
 	r.HandleFunc("/updateDistribuirPapeis", hd.UpdateDistribuirPapeisHandler).Methods("POST")
@@ -87,9 +85,12 @@ func main() {
 	r.HandleFunc(route.EscritoriosRoute, hd.ListEscritoriosHandler).Methods("GET")
 	r.HandleFunc("/createEscritorio", hd.CreateEscritorioHandler).Methods("POST")
 	r.HandleFunc("/updateEscritorio", hd.UpdateEscritorioHandler).Methods("POST")
-	r.HandleFunc("/updateJurisdicaoEscritorio", hd.UpdateJurisdicaoEscritorioHandler).Methods("POST")
-	r.HandleFunc("/updateEquipe", hd.UpdateEquipeHandler).Methods("POST")
+	r.HandleFunc("/updateJurisdicao", hd.UpdateJurisdicaoHandler).Methods("POST")
+	r.HandleFunc("/updateMembrosEscritorio", hd.UpdateMembrosEscritorioHandler).Methods("POST")
 	r.HandleFunc("/deleteEscritorio", hd.DeleteEscritorioHandler).Methods("POST")
+	// ----------------- EQUIPES
+	r.HandleFunc("/listDesignarEquipes", hd.ListDesignarEquipesHandler).Methods("GET")
+	r.HandleFunc("/updateDesignarEquipe", hd.UpdateDesignarEquipeHandler).Methods("POST")
 	// ----------------- FEATURES
 	r.HandleFunc(route.FeaturesRoute, hd.ListFeaturesHandler).Methods("GET")
 	r.HandleFunc("/createFeature", hd.CreateFeatureHandler).Methods("POST")
@@ -122,13 +123,14 @@ func main() {
 	r.HandleFunc("/deleteUser", hd.DeleteUserHandler).Methods("POST")
 	r.HandleFunc("/registerUser", hd.RegisterUserHandler).Methods("GET")
 	r.HandleFunc("/recoverPassword", hd.RecoverUserPasswordHandler).Methods("GET")
-
 	// ----------------- WORKFLOWS
 	r.HandleFunc(route.WorkflowsRoute, hd.ListWorkflowsHandler).Methods("GET")
 	r.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler).Methods("POST")
 	r.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler).Methods("POST")
 	r.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler).Methods("POST")
 	// ----------------- LOADS
+	r.HandleFunc("/loadSupervisorByEntidadeIdCicloId", hd.LoadSupervisorByEntidadeIdCicloIdHandler).Methods("GET")
+	r.HandleFunc("/loadIntegrantesByEntidadeIdCicloId", hd.LoadIntegrantesByEntidadeIdCicloIdHandler).Methods("GET")
 	r.HandleFunc("/loadMembrosByEscritorioId", hd.LoadMembrosByEscritorioId).Methods("GET")
 	r.HandleFunc("/loadJurisdicoesByEscritorioId", hd.LoadJurisdicoesByEscritorioId).Methods("GET")
 	r.HandleFunc("/loadElementosByComponenteId", hd.LoadElementosByComponenteId).Methods("GET")

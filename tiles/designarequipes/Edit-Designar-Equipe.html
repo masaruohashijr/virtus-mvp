@@ -1,0 +1,62 @@
+{{define "Edit-Designar-Equipe"}}
+<!-- Edit Equipe -->
+<div class="w3-container">
+    <div id="edit-designar-equipe-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar Equipe</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-designar-equipe-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/updateDesignarEquipe" method="POST" id="formulario-equipe-form">
+                <input type="hidden" name="EntidadeId" id="EntidadeIdForUpdate">
+                <input type="hidden" name="CicloId" id="CicloIdForUpdate">
+                <label class="w3-label">Entidade</label>
+                <input class="w3-input" type="text" id="EntidadeNomeForUpdate" readOnly value="">
+				<label class="w3-label">Ciclo</label>	
+				<input class="w3-input" type="text" id="CicloNomeForUpdate" readOnly value="">
+				<label class="w3-label">Supervisor</label>
+				<br>
+	            <select class="w3-input" name="SupervisorId" id="SupervisorEquipeForUpdate">
+		            <option value=""></option>
+					{{range $index, $super := .Supervisores }}
+		                <option value="{{$super.Id}}">
+							{{$super.Name}}
+						</option>
+		            {{end}}
+	            </select>				
+				<header class="w3-container w3-center w3-teal">
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Equipe</h4>
+		                <div style="margin-top: 8px">
+		                    <div class="w3-right" id="edit-form-equipe-btn" >
+		                        <a href="#" onclick="document.getElementById('create-integrante-form').style.display='block'">
+		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+		                        </a>
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-integrantes-edit">
+		            <tr>
+		                <td>Nome</td>
+		                <td>Perfil</td>
+		                <td>Inicia Em</td>
+		                <td>Termina Em</td>
+						<td>Ações</td>
+		            </tr>
+		        </table>
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

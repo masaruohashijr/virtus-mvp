@@ -12,7 +12,7 @@ import (
 	sec "virtus/security"
 )
 
-func UpdateJurisdicaoEscritorioHandler(w http.ResponseWriter, r *http.Request) {
+func UpdateJurisdicaoHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Jurisdicao")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		currentUser := GetUserInCookie(w, r)

@@ -12,8 +12,8 @@ import (
 	sec "virtus/security"
 )
 
-func UpdateEquipeHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Update Equipe")
+func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Update Membros")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		currentUser := GetUserInCookie(w, r)
 		escritorioId := r.FormValue("Id")
@@ -133,6 +133,7 @@ func ListMembrosByEscritorioId(escritorioId string) []mdl.Membro {
 		"a.escritorio_id, " +
 		"a.usuario_id, " +
 		"coalesce(d.name,'') as usuario_nome, " +
+		"coalesce(e.name,'') as role_name, " +
 		"coalesce(to_char(a.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
 		"coalesce(to_char(a.termina_em,'DD/MM/YYYY')) as termina_em, " +
 		"a.author_id, " +
@@ -141,9 +142,10 @@ func ListMembrosByEscritorioId(escritorioId string) []mdl.Membro {
 		"a.status_id, " +
 		"coalesce(c.name,'') as status_name " +
 		"FROM membros a " +
-		"LEFT JOIN users d ON a.usuario_id = d.id " +
 		"LEFT JOIN users b ON a.author_id = b.id " +
 		"LEFT JOIN status c ON a.status_id = c.id " +
+		"LEFT JOIN users d ON a.usuario_id = d.id " +
+		"LEFT JOIN roles e ON d.role_id = e.id " +
 		"WHERE a.escritorio_id = $1 ORDER BY d.name ASC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, escritorioId)
@@ -156,6 +158,7 @@ func ListMembrosByEscritorioId(escritorioId string) []mdl.Membro {
 			&membro.EscritorioId,
 			&membro.UsuarioId,
 			&membro.UsuarioNome,
+			&membro.UsuarioPerfil,
 			&membro.IniciaEm,
 			&membro.TerminaEm,
 			&membro.AuthorId,
@@ -236,9 +239,9 @@ func hasSomeFieldChangedMembro(jurisdicaoPage mdl.Membro, jurisdicaoDB mdl.Membr
 
 func updateMembroHandler(ce mdl.Membro, jurisdicaoDB mdl.Membro) {
 	sqlStatement := "UPDATE jurisdicoes SET " +
-		"tipo_media=$1, peso_padrao=$2 WHERE id=$3"
+		"inicia_em=$1, termina_em=$2 WHERE id=$3"
 	log.Println(sqlStatement)
 	updtForm, _ := Db.Prepare(sqlStatement)
-	updtForm.Exec(ce.Id)
+	updtForm.Exec(ce.IniciaEm, ce.TerminaEm, ce.Id)
 	log.Println("Statement: " + sqlStatement)
 }

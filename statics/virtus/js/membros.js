@@ -1,12 +1,13 @@
 var membro_tobe_deleted;
 	
 class Membro {
-	constructor(order, id, escritorioId, usuarioId, usuarioNome, iniciaEm, terminaEm, autorId, autorNome, criadoEm, idVersaoOrigem, statusId, cStatus) {
+	constructor(order, id, escritorioId, usuarioId, usuarioNome, usuarioPerfil, iniciaEm, terminaEm, autorId, autorNome, criadoEm, idVersaoOrigem, statusId, cStatus) {
 		this.order = order;
 		this.id = id;
 		this.escritorioId = escritorioId;
 		this.usuarioId = usuarioId;
 		this.usuarioNome = usuarioNome;
+		this.usuarioPerfil = usuarioPerfil;
 		this.iniciaEm = iniciaEm;
 		this.terminaEm = terminaEm;
 		this.autorId = autorId;
@@ -20,7 +21,7 @@ class Membro {
 
 function criarMembro(){
 	console.log('criarMembro');
-	let campoSelect = document.getElementById('UsuarioForInsert');
+	let campoSelect = document.getElementById('UsuarioMEForInsert');
 	let usuarioId = 0;
 	let usuarioNome = '';
 	for(n=0;n<campoSelect.options.length;n++){
@@ -39,7 +40,7 @@ function criarMembro(){
 	let iniciaEm = document.getElementById('IniciaEmForInsert').value;
 	let terminaEm = document.getElementById('TerminaEmForInsert').value;
 	membroId = getMaxId(membros);
-	membro = new Membro(0, membroId, 0, usuarioId, usuarioNome, iniciaEm, terminaEm, '', '', '', '', '', '', '');
+	membro = new Membro(0, membroId, 0, usuarioId, usuarioNome, '', iniciaEm, terminaEm, '', '', '', '', '', '', '');
 	membros.push(membro);
 	addMembroRow("table-membros-"+contexto);
 	limparCamposMembroForm();
@@ -65,18 +66,22 @@ function addMembroRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="escritorioId" value="'+membro.escritorioId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+membro.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
-	// Inicio Em
+	// Perfil
 	newCell = newRow.insertCell(1);
+	newText = document.createTextNode(membro.usuarioPerfil);
+	newCell.appendChild(newText);
+	// Inicio Em
+	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(membro.iniciaEm);
 	newCell.appendChild(newText);
 	// Termina Em
-	newCell = newRow.insertCell(2);
+	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(membro.terminaEm);
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+membro.autorId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" value="'+membro.criadoEm+'"/>'+newCell.innerHTML;
 	// Botões
-	newCell = newRow.insertCell(3);
+	newCell = newRow.insertCell(4);
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";
@@ -106,21 +111,17 @@ function editMembro(e) {
 	editMembroForm.style.display = 'block';
 	var linha = e.parentNode.parentNode;
 	var order = linha.childNodes[0].childNodes[0].value;
-	var id = linha.childNodes[0].childNodes[1].value;
+	var usuarioId = linha.childNodes[0].childNodes[3].value;
 	var entidadeId = linha.childNodes[0].childNodes[2].value;
-	var cicloId = linha.childNodes[0].childNodes[3].value;
-	var tipoMediaId = linha.childNodes[1].childNodes[0].value;
 	// var tipoMedia = linha.childNodes[1].innerText;
 	var iniciaEm = linha.childNodes[2].innerText;
 	console.log(iniciaEm);
 	var terminaEm = linha.childNodes[3].innerText;
 	console.log(terminaEm);
 	// Atribuindo os valores de edit-item-form
-	document.getElementById('Id-MEForUpdate').value=id;
+	document.getElementById('UsuarioMEForUpdate').value=usuarioId;
 	document.getElementById('Order-MEForUpdate').value=order;
 	document.getElementById('EscritorioId-MEForUpdate').value=entidadeId;
-	document.getElementById('MembroForUpdate').value=cicloId;
-	document.getElementById('TipoMediaForUpdate').value=tipoMediaId;
 	document.getElementById('IniciaEmForUpdate').value=iniciaEm;
 	document.getElementById('TerminaEmForUpdate').value=terminaEm;
 }
@@ -131,7 +132,7 @@ function updateMembro() {
 	var id = document.getElementById('Id-MEForUpdate').value;
 	var order = document.getElementById('Order-MEForUpdate').value;
 	var escritorioId = document.getElementById('EscritorioId-MEForUpdate').value;
-	let campoSelect = document.getElementById('MembroForUpdate');
+	let campoSelect = document.getElementById('UsuarioMEForUpdate');
 	let usuarioId = 0;
 	let usuarioNome = '';
 	console.log(campoSelect.options.length);

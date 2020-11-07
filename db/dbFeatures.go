@@ -63,21 +63,13 @@ func createRoleFeatures() {
 	stmt2 = stmt2[:pos]
 	log.Println(stmt1 + stmt2)
 	db.Exec(stmt1 + stmt2)
-	stmt1 = " INSERT INTO features_roles (role_id, feature_id) "
-	stmt2 = ""
-	for j := 1; j <= 34; j++ {
-		roleId := "5"
-		featureId := strconv.Itoa(j)
-		stmt2 = stmt2 + " SELECT " + roleId + ", " + featureId +
-			" WHERE NOT EXISTS (SELECT 1 FROM features_roles a " +
-			" LEFT JOIN features b ON a.feature_id = a.id " +
-			" WHERE a.feature_id = " +
-			featureId + " AND a.role_id = " + roleId +
-			" AND substring(a.code,1,4) = 'list' " +
-			") UNION "
-	}
-	pos = strings.LastIndex(stmt2, "UNION")
-	stmt2 = stmt2[:pos]
-	log.Println(stmt1 + stmt2)
-	db.Exec(stmt1 + stmt2)
+	stmt1 = " INSERT INTO features_roles (role_id, feature_id) " +
+		" SELECT 5, a.id FROM features a " +
+		" WHERE NOT EXISTS ( " +
+		" SELECT 1  " +
+		" FROM features_roles b " +
+		" WHERE b.role_id = 5 AND b.feature_id = a.id) " +
+		" AND SUBSTRING(a.code,1,4) = 'list' "
+	log.Println(stmt1)
+	db.Exec(stmt1)
 }

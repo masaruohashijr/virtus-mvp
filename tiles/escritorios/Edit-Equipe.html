@@ -1,0 +1,36 @@
+{{define "Edit-Equipe"}}
+<!-- Edit Equipe -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar escritório</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/updateEscritorio" method="POST">
+                <input type="hidden" name="Id" id="EscritorioIdForUpdate">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" id="EscritorioNomeForUpdate" name="Nome" value="">
+				<label class="w3-label">Abreviatura</label>	
+				<input class="w3-input" type="text" id="EscritorioAbreviaturaForUpdate" name="Abreviatura" value="" maxlength="4">
+                <label class="w3-label">Descrição</label>
+                <textarea class="w3-input" id="EscritorioDescricaoForUpdate" name="Descricao" rows="5" value=""></textarea>
+				<label class="w3-label">Chefe do Escritório</label>
+				<br>
+	            <select class="w3-input" name="Chefe" id="EscritorioChefeForUpdate">
+		            <option value=""></option>
+					{{range $index, $user := .Users }}
+		                <option value="{{$user.Id}}">
+							{{$user.Name}}
+						</option>
+		            {{end}}
+	            </select>
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

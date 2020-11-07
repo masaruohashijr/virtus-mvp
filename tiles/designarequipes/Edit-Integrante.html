@@ -1,0 +1,42 @@
+{{define "Edit-Integrante"}}
+<!-- Edit Integrante Form -->
+<div class="w3-container">
+    <div id="edit-integrante-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar integrante</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-integrante-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-integrante-edit">
+				<input type="hidden" id="Id-MEForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="Order-MEForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="EntidadeId-MEForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="CicloId-MEForUpdate" value="" readonly="readonly" disabled="disabled">
+				<label class="w3-label">Integrante</label>
+				<br>
+	            <select class="w3-input" name="UsuarioMEForUpdate" id="UsuarioMEForUpdate">
+					<option value=""></option>
+					{{range $index, $membro := .Membros }}
+		                <option value="{{$membro.UsuarioId}}">
+							{{$membro.UsuarioNome}}
+						</option>
+		            {{end}}
+	            </select>
+				<br>
+                <label class="w3-label">Inicia Em</label>
+				<input class="w3-input" type="date" id="IniciaEmMEForUpdate" name="IniciaEmMEForUpdate" value="">
+				<label class="w3-label">Termina Em</label>
+				<input class="w3-input" type="date" id="TerminaEmMEForUpdate" name="TerminaEmMEForUpdate" value="">
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="updateIntegrante()"
+					>Salvar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}
