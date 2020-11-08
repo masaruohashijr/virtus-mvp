@@ -3,6 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/denisenkom/go-mssqldb"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
@@ -11,10 +15,6 @@ import (
 	hd "virtus/handlers"
 	route "virtus/routes"
 	sec "virtus/security"
-
-	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
-	_ "github.com/lib/pq"
 )
 
 func determineListenAddress() (string, error) {
@@ -26,7 +26,7 @@ func determineListenAddress() (string, error) {
 }
 
 func dbConn() *sql.DB {
-	dbase, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	dbase, err := sql.Open(os.Getenv("DRIVER"), os.Getenv("DATABASE_URL"))
 	log.Println(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
@@ -50,7 +50,7 @@ func main() {
 	// ----------------- AVALIAÇÕES
 	r.HandleFunc("/listAvaliarPapeis", hd.ListAvaliarPapeisHandler).Methods("GET")
 	r.HandleFunc("/avaliarPapeis", hd.AvaliarPapeisHandler).Methods("POST")
-	r.HandleFunc("/updateAvaliarPapeis", hd.UpdateDistribuirPapeisHandler).Methods("POST")
+	r.HandleFunc("/updateAvaliarPapeis", hd.UpdateAvaliarPapeisHandler).Methods("POST")
 	// ----------------- EQUIPES
 	r.HandleFunc("/listDistribuirPapeis", hd.ListDistribuirPapeisHandler).Methods("GET")
 	r.HandleFunc("/distribuirPapeis", hd.DistribuirPapeisHandler).Methods("POST")

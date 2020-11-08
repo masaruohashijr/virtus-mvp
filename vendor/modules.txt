@@ -1,3 +1,11 @@
+# github.com/denisenkom/go-mssqldb v0.9.0
+## explicit
+github.com/denisenkom/go-mssqldb
+github.com/denisenkom/go-mssqldb/internal/cp
+github.com/denisenkom/go-mssqldb/internal/decimal
+github.com/denisenkom/go-mssqldb/internal/querytext
+# github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe
+github.com/golang-sql/civil
 # github.com/gorilla/mux v1.8.0
 ## explicit
 github.com/gorilla/mux
@@ -13,9 +21,12 @@ github.com/lib/pq/oid
 github.com/lib/pq/scram
 # github.com/unidoc/unidoc v2.2.0+incompatible
 ## explicit
+# go.elastic.co/apm/module/apmsql v1.9.0
+## explicit
 # golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 ## explicit
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
+golang.org/x/crypto/md4
 # golang.org/x/image v0.0.0-20200801110659-972c09e46d76
 ## explicit

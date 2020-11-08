@@ -123,7 +123,7 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 				" criado_em " +
 				" ) " +
 				" SELECT $1, $2, $3, $4, $5 WHERE NOT EXISTS " +
-				" (SELECT 1 FROM membros WHERE entidade_id = $6 AND ciclo_id = $7 AND usuario_id =$8)"
+				" (SELECT 1 FROM integrantes WHERE entidade_id = $6 AND ciclo_id = $7 AND usuario_id =$8)"
 			log.Println(sqlStatement)
 			Db.QueryRow(
 				sqlStatement,
@@ -300,7 +300,15 @@ func UpdateIntegrantesHandler(integrantesPage []mdl.Integrante, integrantesDB []
 }
 
 func hasSomeFieldChangedIntegrante(integrantePage mdl.Integrante, integranteDB mdl.Integrante) bool {
-	return false
+	log.Println("integrantePage.Nome: " + integrantePage.UsuarioNome)
+	log.Println("integranteDB.Nome: " + integranteDB.UsuarioNome)
+	if integrantePage.IniciaEm != integranteDB.IniciaEm {
+		return true
+	} else if integrantePage.TerminaEm != integranteDB.TerminaEm {
+		return true
+	} else {
+		return false
+	}
 }
 
 func updateIntegranteHandler(integrante mdl.Integrante, jurisdicaoDB mdl.Integrante) {

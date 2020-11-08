@@ -101,25 +101,31 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 				elementoNome := strings.Split(array[4], ":")[1]
 				log.Println("elementoNome -------- " + elementoNome)
 				elementoComponentePage.ElementoNome = elementoNome
-				pesoPadrao := strings.Split(array[5], ":")[1]
+				tipoNotaId := strings.Split(array[5], ":")[1]
+				log.Println("tipoNotaId -------- " + tipoNotaId)
+				elementoComponentePage.TipoNotaId, _ = strconv.ParseInt(tipoNotaId, 10, 64)
+				tipoNotaNome := strings.Split(array[6], ":")[1]
+				log.Println("tipoNotaNome -------- " + tipoNotaNome)
+				elementoComponentePage.TipoNotaNome = tipoNotaNome
+				pesoPadrao := strings.Split(array[7], ":")[1]
 				log.Println("pesoPadrao -------- " + pesoPadrao)
 				elementoComponentePage.PesoPadrao, _ = strconv.Atoi(pesoPadrao)
-				authorId := strings.Split(array[6], ":")[1]
+				authorId := strings.Split(array[8], ":")[1]
 				log.Println("authorId -------- " + authorId)
 				elementoComponentePage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)
-				authorName := strings.Split(array[7], ":")[1]
+				authorName := strings.Split(array[9], ":")[1]
 				log.Println("authorName -------- " + authorName)
 				elementoComponentePage.AuthorName = authorName
-				criadoEm := strings.Split(array[8], ":")[1]
+				criadoEm := strings.Split(array[10], ":")[1]
 				log.Println("criadoEm -------- " + criadoEm)
 				elementoComponentePage.CriadoEm = criadoEm
-				idVersaoOrigem := strings.Split(array[9], ":")[1]
+				idVersaoOrigem := strings.Split(array[11], ":")[1]
 				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
 				elementoComponentePage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
-				statusId := strings.Split(array[10], ":")[1]
+				statusId := strings.Split(array[12], ":")[1]
 				log.Println("StatusId -------- " + statusId)
 				elementoComponentePage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
-				cStatus := strings.Split(array[11], ":")[1]
+				cStatus := strings.Split(array[13], ":")[1]
 				log.Println("cStatus -------- " + cStatus)
 				elementoComponentePage.CStatus = cStatus
 				elementosComponentePage = append(elementosComponentePage, elementoComponentePage)

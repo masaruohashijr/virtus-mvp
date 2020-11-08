@@ -61,9 +61,20 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var user mdl.User
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	log.Println(string(bytes))
-	Db.QueryRow("SELECT id, name, "+
-		" username, password, COALESCE(role_id, 0)"+
-		" FROM users WHERE username=$1", &username).Scan(&user.Id, &user.Name, &user.Username, &user.Password, &user.Role)
+	Db.QueryRow("SELECT u.id, "+
+		" u.name, "+
+		" u.username, "+
+		" u.password, "+
+		" COALESCE(u.role_id, 0), "+
+		" coalesce(r.name,'') as role_name "+
+		" FROM users u "+
+		" LEFT JOIN roles r ON u.role_id = r.id "+
+		" WHERE username=$1", &username).Scan(
+		&user.Id, &user.Name,
+		&user.Username,
+		&user.Password,
+		&user.Role,
+		&user.RoleName)
 	// validate password
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {

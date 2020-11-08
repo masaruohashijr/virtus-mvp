@@ -15,11 +15,12 @@ func ListDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("--------------")
 		currentUser := GetUserInCookie(w, r)
 		var page mdl.PageEntidadesCiclos
-		sql := "SELECT b.entidade_id, c.nome " +
-			"FROM escritorios a " +
-			"LEFT JOIN jurisdicoes b ON a.id = b.escritorio_id " +
-			"LEFT JOIN entidades c ON c.id = b.entidade_id " +
-			"WHERE a.chefe_id = $1"
+		sql := "SELECT b.entidade_id, d.nome " +
+			" FROM escritorios a " +
+			" LEFT JOIN jurisdicoes b ON a.id = b.escritorio_id " +
+			" LEFT JOIN membros c ON c.escritorio_id = b.escritorio_id " +
+			" LEFT JOIN entidades d ON d.id = b.entidade_id " +
+			" WHERE c.usuario_id = $1 "
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id)
 		var entidades []mdl.Entidade
@@ -67,44 +68,24 @@ func UpdateDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		r.ParseForm()
 		for key, value := range r.Form {
-			if strings.HasPrefix(key, "SupervisorComponente") {
-				entidadeId := r.FormValue("Entidade_" + key)
-				cicloId := r.FormValue("Ciclo_" + key)
-				pilarId := r.FormValue("Pilar_" + key)
-				componenteId := key[20:len(key)]
-				log.Println(key + "- value: " + value[0])
-				if value[0] != "" {
-					sqlStatement := "UPDATE produtos_componentes SET " +
-						" supervisor_id=$1 " +
-						" WHERE entidade_id=$2 " +
-						" AND ciclo_id=$3 " +
-						" AND pilar_id=$4 " +
-						" AND componente_id=$5 "
-					log.Println(sqlStatement)
-					updtForm, _ := Db.Prepare(sqlStatement)
-					_, err := updtForm.Exec(value[0], entidadeId, cicloId, pilarId, componenteId)
-					if err != nil {
-						panic(err.Error())
-					}
-					log.Println("Statement: " + sqlStatement)
-				}
-			}
+			log.Println("-------------- key: " + key)
 			if strings.HasPrefix(key, "AuditorComponente") {
+				supervisorId := r.FormValue("SupervisorComponenteId")
 				entidadeId := r.FormValue("Entidade_" + key)
 				cicloId := r.FormValue("Ciclo_" + key)
 				pilarId := r.FormValue("Pilar_" + key)
 				componenteId := key[17:len(key)]
-				log.Println(key + "- value: " + value[0])
+				//				log.Println(key + "- value: " + value[0])
 				if value[0] != "" {
 					sqlStatement := "UPDATE produtos_componentes SET " +
-						" auditor_id=$1 " +
-						" WHERE entidade_id=$2 " +
-						" AND ciclo_id=$3 " +
-						" AND pilar_id=$4 " +
-						" AND componente_id=$5 "
+						" auditor_id=$1, supervisor_id=$2 " +
+						" WHERE entidade_id=$3 " +
+						" AND ciclo_id=$4 " +
+						" AND pilar_id=$5 " +
+						" AND componente_id=$6 "
 					log.Println(sqlStatement)
 					updtForm, _ := Db.Prepare(sqlStatement)
-					_, err := updtForm.Exec(value[0], entidadeId, cicloId, pilarId, componenteId)
+					_, err := updtForm.Exec(value[0], supervisorId, entidadeId, cicloId, pilarId, componenteId)
 					if err != nil {
 						panic(err.Error())
 					}
@@ -130,14 +111,15 @@ func DistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" a.pilar_id, d.nome as pilar_nome, " +
 			" a.componente_id, e.nome as componente_nome, " +
 			" coalesce(b.nome,''), a.entidade_id, " +
-			" coalesce(a.supervisor_id,0) as super_id, coalesce(f.name,'') as supervisor_nome, " +
+			" coalesce(h.supervisor_id,0) as super_id, coalesce(f.name,'') as supervisor_nome, " +
 			" coalesce(a.auditor_id,0) as audit_id, coalesce(g.name,'') as auditor_nome  " +
 			" FROM produtos_componentes a " +
 			" LEFT JOIN entidades b ON a.entidade_id = b.id " +
 			" LEFT JOIN ciclos c ON a.ciclo_id = c.id " +
 			" LEFT JOIN pilares d ON a.pilar_id = d.id " +
 			" LEFT JOIN componentes e ON a.componente_id = e.id " +
-			" LEFT JOIN users f ON a.supervisor_id = f.id " +
+			" LEFT JOIN ciclos_entidades h ON a.entidade_id = " + entidadeId + " AND a.ciclo_id = " + cicloId +
+			" LEFT JOIN users f ON h.supervisor_id = f.id " +
 			" LEFT JOIN users g ON a.auditor_id = g.id " +
 			" WHERE a.entidade_id = " + entidadeId + " AND a.ciclo_id = " + cicloId +
 			" ORDER BY d.nome, e.nome "
@@ -172,7 +154,7 @@ func DistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" FROM escritorios a " +
 			" LEFT JOIN membros b ON a.id = b.escritorio_id " +
 			" LEFT JOIN users c ON b.usuario_id = c.id " +
-			" WHERE a.chefe_id = $1 AND c.role_id = 3 "
+			" WHERE b.usuario_id = $1 AND c.role_id = 3 "
 		log.Println(sql)
 		rows, _ = Db.Query(sql, currentUser.Id)
 		var supervisores []mdl.User
@@ -184,12 +166,11 @@ func DistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		page.Supervisores = supervisores
 
-		sql = " SELECT " +
-			" b.usuario_id, coalesce(c.name,'') " +
-			" FROM escritorios a " +
-			" LEFT JOIN membros b ON a.id = b.escritorio_id " +
+		sql = " SELECT  b.usuario_id, c.name " +
+			" FROM membros a " +
+			" LEFT JOIN membros b ON a.escritorio_id = b.escritorio_id " +
 			" LEFT JOIN users c ON b.usuario_id = c.id " +
-			" WHERE a.chefe_id = $1 AND c.role_id = 4 "
+			" WHERE a.usuario_id = $1 AND c.role_id = 4"
 		log.Println(sql)
 		rows, _ = Db.Query(sql, currentUser.Id)
 		var auditores []mdl.User

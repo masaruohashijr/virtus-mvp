@@ -10,7 +10,7 @@
 				</div>
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
-                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>
@@ -23,57 +23,51 @@
 	            <thead>
 	            <tr>
 	                <th>Ord</th>
-	                <th style="text-align:left">Sumário</th>
-	                <th>Supervisor</th>
-	                <th>Auditor</th>
+	                <th style="text-align:left">Nível</th>
+	                <th style="text-align:left; width:60%">Sumário</th>
+	                <th>Equipe</th>
 	            </tr>
 	            </thead>
 	            <tbody>
 				{{$primeiraLinha := true}}
 				{{$auxSumario := ""}}
+				{{$currentUser := .LoggedUser.User.Id}}
 	            {{range $index, $produto := .Produtos}}
 					{{if $primeiraLinha}}
 			            <tr>
 			                <td>&nbsp;</td>
+			                <td style="text-align:left">Entidade</td>
 			                <td style="text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
-			                <td>&nbsp;</td>
-			                <td>&nbsp;</td>
+			                <td>Supervisor</td>
 			            </tr>
 			            <tr>
 			                <td>&nbsp;</td>
+							<td style="text-align:left">&nbsp;&nbsp;Ciclo</td>
 			                <td style="text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
-			                <td>&nbsp;</td>
-			                <td>&nbsp;</td>
+			                <th>
+								<input name="SupervisorComponenteId" type="hidden" value="{{$produto.SupervisorId}}">
+								<input class="w3-input" type="text" readOnly disabled value="{{$produto.SupervisorName}}">
+							</th>
 			            </tr>
 						{{$primeiraLinha = false}}
 					{{end}}
 					{{if ne $auxSumario $produto.PilarNome}}
 		            <tr>
 		                <td>&nbsp;</td>
+						<td style="text-align:left">&nbsp;&nbsp;&nbsp;Pilar</td>
 		                <td style="text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
 						{{$auxSumario = $produto.PilarNome}}
-		                <td>&nbsp;</td>
-		                <td>&nbsp;</td>
+		                <th>Auditores</th>
 		            </tr>
 					{{end}}
 		            <tr>
-		                <td>{{$produto.Order}}</td>
+						<td>{{$produto.Order}}</td>
+						<td style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;Componente</td>
 		                <td style="text-align:left;padding-left: 30px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
 		                <td>
-							<select class="w3-input" onchange="sinalizarAlteracao(this);" name="SupervisorComponente{{$produto.ComponenteId}}">
-								<option value=""></option>
-								{{range $i, $supervisor := $.Supervisores }}
-					                <option value="{{$supervisor.Id}}" {{if eq $produto.SupervisorId $supervisor.Id}}selected{{end}}>
-										{{$supervisor.Name}}
-									</option>
-					            {{end}}
-				            </select>
-							<input type="hidden" name="Entidade_SupervisorComponente{{$produto.ComponenteId}}" value="{{$produto.EntidadeId}}"/>
-							<input type="hidden" name="Ciclo_SupervisorComponente{{$produto.ComponenteId}}" value="{{$produto.CicloId}}"/>
-							<input type="hidden" name="Pilar_SupervisorComponente{{$produto.ComponenteId}}" value="{{$produto.PilarId}}"/>
-						</td>
-		                <td>
-							<select class="w3-input" onchange="sinalizarAlteracao(this);" name="AuditorComponente{{$produto.ComponenteId}}">
+							<select class="w3-input" onchange="sinalizarAlteracao(this);"
+								{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
+								name="AuditorComponente{{$produto.ComponenteId}}">
 								<option value=""></option>
 								{{range $i, $auditor := $.Auditores }}
 					                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>
@@ -88,8 +82,7 @@
 		            </tr>
 	            {{end}}
 				<tr>
-					<td colspan="2" style="text-align: center"></td>
-					<td colspan="2" style="text-align: center">
+					<td colspan="4" style="text-align: center">
 						<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Salvar</button>
 					</td>
 				</tr>

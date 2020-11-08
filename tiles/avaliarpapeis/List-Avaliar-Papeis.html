@@ -10,7 +10,7 @@
 				</div>
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
-                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "avaliarPapeis")}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
@@ -23,15 +23,15 @@
 			style="border: 1px solid red">
             <tr>
                 <th style="width:5%">Ord</th>
-                <th style="text-align:left">Sumário</th>
-                <th style="width:10%">Supervisor</th>
-                <th style="width:10%">Auditor</th>
-                <th style="width:5%">Tipo</th>
-                <th style="width:10%">Peso</th>
+                <th style="text-align:left; width:30%">Sumário</th>
+                <th style="width:15%">&nbsp;</th>
+                <th style="width:15%">&nbsp;</th>
+                <th style="width:5%">&nbsp;</th>
+                <th style="width:5%">&nbsp;</th>
                 <th style="width:5%">Situação</th>
-                <th style="width:10%">Nota</th>
+                <th style="width:5%">Nota</th>
 				{{if $allowed}}
-				<th style="width:20%">Ações</th>
+				<th style="width:15%">Ações</th>
 				{{end}}
             </tr>
 			{{$primeiraLinha := true}}
@@ -39,7 +39,12 @@
 			{{$auxComponente := ""}}
 			{{$auxElemento := ""}}
 			{{$auxItem := ""}}
+			{{$pesoPadraoEC := ""}}
+			{{$elementoNota := ""}}
+			{{$currentUser := .LoggedUser.User.Id}}
+			
             {{range $index, $produto := .Produtos}}
+
 			{{if $primeiraLinha}}
             <tr style="background-color: aliceblue">
                 <td>&nbsp;</td>
@@ -60,30 +65,22 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="4">4</option>
-						<option value="8">8</option>
-						<option value="16">16</option>
-						<option value="32">32</option>
-		            </select>	
-				</td>
-                <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
+					<select style="width: 75px; text-align:center" class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
 						<option value="M">M</option>
 						<option value="A">A</option>
 						<option value="C">C</option>
+						<option value="F">F</option>
 		            </select>
 				</td>
                 <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-		            </select>
+					<input style="width: 75px; text-align:center"
+						name="CicloNota{{$produto.ComponenteId}}" 
+						class="w3-input" 
+						type="number" 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.CicloNota}}">
 				</td>
 				{{if $allowed}}
                 <td>
@@ -96,49 +93,40 @@
 			{{end}}
 			{{if ne $auxPilar $produto.PilarNome}}
 			<tr style="background-color: #f6faff">
-                <th style="width:5%">Ord</th>
-                <th style="text-align:left">Sumário</th>
-                <th style="width:10%">Supervisor</th>
-                <th style="width:10%">Auditor</th>
-                <th style="width:5%">Tipo</th>
-                <th style="width:10%">Peso</th>
-                <th style="width:5%">Situação</th>
-                <th style="width:10%">Nota</th>
+                <th style="vertical-align:middle" >Ord</th>
+                <th style="vertical-align:middle;text-align:left">Sumário</th>
+                <th style="vertical-align:middle" >&nbsp;</th>
+                <th >&nbsp;</th>
+                <th >&nbsp;</th>
+                <th style="vertical-align:middle" >Peso</th>
+                <th style="vertical-align:middle" >Situação</th>
+                <th style="vertical-align:middle" >Nota</th>
 				{{if $allowed}}
-				<th style="width:20%">Ações</th>
+				<th style="vertical-align:middle" >Ações</th>
 				{{end}}
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td style="text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
 				{{$auxPilar = $produto.PilarNome}}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="4">4</option>
-						<option value="8">8</option>
-						<option value="16">16</option>
-						<option value="32">32</option>
-		            </select>	
+					{{ $combine := (printf "%v%v" $produto.PesoPadraoPC " %") }}
+					<input style="width: 75px; text-align:center" class="w3-input" type="text" 
+						disabled onchange="sinalizarAlteracao(this)" 
+						value="{{ $combine }}">
 				</td>
-                <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
+                <td style="vertical-align:middle">
+					<select style="width: 75px; text-align:center" class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
 						<option value="M">M</option>
 						<option value="A">A</option>
 						<option value="C">C</option>
 		            </select>
 				</td>
-                <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-		            </select>
+                <td style="vertical-align:middle">
+					<input style="width: 75px; text-align:center" class="w3-input" type="number" name="PilarNota{{$produto.PilarId}}" disabled onchange="sinalizarAlteracao(this)" value="{{$produto.PilarNota}}">
 				</td>
 				{{if $allowed}}
                 <td>
@@ -150,34 +138,25 @@
 			{{end}}
 			{{if ne $auxComponente $produto.ComponenteNome}}
 			<tr style="background-color: #f8fcff">
-                <th style="width:5%">Ord</th>
-                <th style="text-align:left">Sumário</th>
-                <th style="width:10%">Supervisor</th>
-                <th style="width:10%">Auditor</th>
-                <th style="width:5%">Tipo</th>
-                <th style="width:10%">Peso</th>
-                <th style="width:5%">Situação</th>
-                <th style="width:10%">Nota</th>
+                <th style="vertical-align:middle" >Ord</th>
+                <th style="vertical-align:middle;text-align:left">Sumário</th>
+                <th style="vertical-align:middle" >Supervisor</th>
+                <th style="vertical-align:middle" >Auditor</th>
+                <th style="vertical-align:middle" >Tipo de Nota</th>
+                <th style="vertical-align:middle" >Peso</th>
+                <th style="vertical-align:middle" >Situação</th>
+                <th style="vertical-align:middle" >Nota</th>
 				{{if $allowed}}
-				<th style="width:20%">Ações</th>
+				<th style="vertical-align:middle" >Ações</th>
 				{{end}}
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td style="text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
-				{{$auxComponente = $produto.ComponenteNome}}
-				<td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);"
-						{{if ne $.LoggedUser.User.Role 2}}readOnly disabled{{end}}
-						name="SupervisorComponente{{$produto.ComponenteId}}">
-						<option value=""></option>
-						{{range $i, $supervisor := $.Supervisores }}
-			                <option value="{{$supervisor.Id}}" {{if eq $produto.SupervisorId $supervisor.Id}}selected{{end}}>
-								{{$supervisor.Name}}
-							</option>
-			            {{end}}
-		            </select>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
+					{{$produto.ComponenteNome}}
 				</td>
+				{{$auxComponente = $produto.ComponenteNome}}
+				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
                 <td>
 					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);"
 						{{if eq $.LoggedUser.User.Role 4}}readOnly disabled{{end}} 
@@ -192,29 +171,24 @@
 				</td>
 				<td>&nbsp;</td>
                 <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="4">4</option>
-						<option value="8">8</option>
-						<option value="16">16</option>
-						<option value="32">32</option>
-		            </select>	
+					<input style="width: 75px; text-align:center" class="w3-input" type="number" disabled onchange="sinalizarAlteracao(this)" value="{{$produto.PesoPadraoCP}}">
 				</td>
                 <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
+					<select style="width: 75px; text-align:center" class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
 						<option value="M">M</option>
 						<option value="A">A</option>
 						<option value="C">C</option>
+						<option value="I">I</option>
 		            </select>
 				</td>
                 <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-		            </select>
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" 
+						name="ComponenteNota{{$produto.ComponenteId}}" 
+						disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.ComponenteNota}}">
 				</td>
 				{{if $allowed}}
                 <td>
@@ -227,34 +201,49 @@
 			{{if ne $auxElemento $produto.ElementoNome}}
             <tr>
                 <td>&nbsp;</td>
-                <td style="text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
+					&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}
+				</td>
 				{{$auxElemento = $produto.ElementoNome}}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="4">4</option>
-						<option value="8">8</option>
-						<option value="16">16</option>
-						<option value="32">32</option>
+				{{ $bgColor := (printf "%v%v" "#" $produto.TipoNotaCorLetra ) }}
+                <td style="vertical-align:middle">
+					<input style="color:white; background-color:{{print $bgColor}};width: 75px; text-align:center"
+						disabled 
+						type="text" 
+						value="{{$produto.TipoNotaLetra}}">
+                <td style="vertical-align:middle">
+				{{$pesoPadraoEC = $produto.PesoPadraoEC}}
+					<select style="width: 75px; text-align:center" class="w3-input" 
+						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.ElementoId}}"
+						{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
+						onchange="sinalizarAlteracao(this);">
+						<option value="1" {{if eq $pesoPadraoEC "1" }}selected{{end}}>1</option>
+						<option value="2" {{if eq $pesoPadraoEC "2" }}selected{{end}}>2</option>
+						<option value="4" {{if eq $pesoPadraoEC "4" }}selected{{end}}>4</option>
+						<option value="8" {{if eq $pesoPadraoEC "8" }}selected{{end}}>8</option>
+						<option value="16" {{if eq $pesoPadraoEC "16" }}selected{{end}}>16</option>
+						<option value="32" {{if eq $pesoPadraoEC "32" }}selected{{end}}>32</option>
 		            </select>	
 				</td>
-                <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
+                <td style="vertical-align:middle">
+					<select style="width: 75px; text-align:center" class="w3-input" 
+						onchange="sinalizarAlteracao(this);">
 						<option value="M">M</option>
 						<option value="A">A</option>
-						<option value="C">C</option>
 		            </select>
 				</td>
-                <td>
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
+                <td style="vertical-align:middle">
+					{{$elementoNota = $produto.ElementoNota}}
+					<select style="width: 75px; text-align:center" 
+						class="w3-input" 
+						name="ElementoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.ElementoId}}"
+						onchange="sinalizarAlteracao(this)">
+						<option value="1" {{if eq $elementoNota "1" }}selected{{end}}>1</option>
+						<option value="2" {{if eq $elementoNota "2" }}selected{{end}}>2</option>
+						<option value="3" {{if eq $elementoNota "3" }}selected{{end}}>3</option>
+						<option value="4" {{if eq $elementoNota "4" }}selected{{end}}>4</option>
 		            </select>
 				</td>
 				{{if $allowed}}
@@ -267,7 +256,9 @@
 			{{end}}				
 			<tr>
                 <td>{{$produto.Order}}</td>
-                <td style="text-align:left;padding-left: 30px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 30px">
+					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}
+				</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -283,7 +274,7 @@
             </tr>
        		{{end}}
 			<tr>
-				<td colspan="8" style="text-align: center">
+				<td colspan="10" style="text-align: center">
 					<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Salvar</button>
 				</td>
 			</tr>

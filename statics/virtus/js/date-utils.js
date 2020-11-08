@@ -1,5 +1,6 @@
 function formatarData(date){
 	console.log('formatarData');
+	if(date=='') return date;
 	let tokenBr = "/";
 	let tokenEn = "-";
 	let snippet = [];

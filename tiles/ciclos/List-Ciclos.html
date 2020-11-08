@@ -10,7 +10,7 @@
 				</div>
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
-                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}}</span>
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createCiclo")}}
 					{{if $allowed}}
 					    <a style="margin-top: 6px" href="#" onclick="resetCicloForms();document.getElementById('create-form').style.display='block'">

@@ -58,6 +58,7 @@ func ListElementosByComponenteId(componenteId string) []mdl.ElementoComponente {
 }
 
 func UpdateElementosComponenteHandler(elementosComponentePage []mdl.ElementoComponente, elementosComponenteDB []mdl.ElementoComponente) {
+	log.Println("UpdateElementosComponenteHandler")
 	for i := range elementosComponentePage {
 		id := elementosComponentePage[i].Id
 		log.Println("id: " + strconv.FormatInt(id, 10))
@@ -75,6 +76,9 @@ func UpdateElementosComponenteHandler(elementosComponentePage []mdl.ElementoComp
 }
 
 func hasSomeFieldChangedElementoComponente(elementoComponentePage mdl.ElementoComponente, elementoComponenteDB mdl.ElementoComponente) bool {
+	log.Println("hasSomeFieldChangedElementoComponente")
+	log.Println(elementoComponentePage.PesoPadrao)
+	log.Println(elementoComponenteDB.PesoPadrao)
 	if elementoComponentePage.PesoPadrao != elementoComponenteDB.PesoPadrao {
 		return true
 	} else {
@@ -83,11 +87,29 @@ func hasSomeFieldChangedElementoComponente(elementoComponentePage mdl.ElementoCo
 }
 
 func updateElementoComponenteHandler(elementoComponente mdl.ElementoComponente, elementoComponenteDB mdl.ElementoComponente) {
+	log.Println("updateElementoComponenteHandler")
 	sqlStatement := "UPDATE elementos_componentes SET " +
 		"peso_padrao=$1 WHERE id=$2"
 	log.Println(sqlStatement)
 	updtForm, _ := Db.Prepare(sqlStatement)
 	_, err := updtForm.Exec(elementoComponente.PesoPadrao, elementoComponente.Id)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println("Statement: " + sqlStatement)
+	sqlStatement = "UPDATE componentes_pilares a " +
+		" SET peso_padrao = " +
+		" (SELECT round(avg(b.peso_padrao),2) " +
+		" FROM elementos_componentes b " +
+		" WHERE b.componente_id = a.componente_id AND " +
+		" b.pilar_id = a.pilar_id AND " +
+		" b.ciclo_id = a.ciclo_id AND " +
+		" b.entidade_id = a.entidade_id " +
+		" GROUP BY b.entidade_id, b.ciclo_id, b.pilar_id, b.componente_id) " +
+		" WHERE a.id=$1 "
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec(elementoComponente.ComponenteId)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -73,12 +73,15 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 			descricao = "Descricao do " + nome
 			db.QueryRow(stmt, nome, descricao, autor, criadoEm, statusZero).Scan(&idPilar)
 			//log.Println(pesoPadrao)
+			log.Println("++++++++++++ PESO PADRAO PILARES")
 			pesoPadrao = rand.Intn(max)
 			if j < qtdPilares {
+				log.Println("j: " + strconv.Itoa(j))
 				max = max - pesoPadrao
 			} else {
 				pesoPadrao = max
 			}
+			log.Println("pesoPadrao: " + strconv.Itoa(pesoPadrao))
 			stmt = " SELECT " + strconv.Itoa(idCiclo) + ", " +
 				strconv.Itoa(idPilar) + ", " +
 				strconv.Itoa(tipoMedia) + ", " +

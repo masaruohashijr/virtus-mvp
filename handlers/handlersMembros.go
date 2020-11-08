@@ -234,7 +234,15 @@ func UpdateMembrosHandler(membrosPage []mdl.Membro, membrosDB []mdl.Membro) {
 }
 
 func hasSomeFieldChangedMembro(jurisdicaoPage mdl.Membro, jurisdicaoDB mdl.Membro) bool {
-	return false
+	log.Println("jurisdicaoPage.Nome: " + jurisdicaoPage.UsuarioNome)
+	log.Println("jurisdicaoDB.Nome: " + jurisdicaoDB.UsuarioNome)
+	if jurisdicaoPage.IniciaEm != jurisdicaoDB.IniciaEm {
+		return true
+	} else if jurisdicaoPage.TerminaEm != jurisdicaoDB.TerminaEm {
+		return true
+	} else {
+		return false
+	}
 }
 
 func updateMembroHandler(ce mdl.Membro, jurisdicaoDB mdl.Membro) {

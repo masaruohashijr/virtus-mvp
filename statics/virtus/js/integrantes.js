@@ -38,8 +38,8 @@ function criarIntegrante(){
 		alert(erros);
 		return;
 	}
-	let iniciaEm = document.getElementById('IniciaEmForInsert').value;
-	let terminaEm = document.getElementById('TerminaEmForInsert').value;
+	let iniciaEm = formatarData(document.getElementById('IniciaEmForInsert').value);
+	let terminaEm = formatarData(document.getElementById('TerminaEmForInsert').value);
 	integranteId = getMaxId(integrantes);
 	integrante = new Integrante(0, integranteId, 0, 0, usuarioId, usuarioNome, '', iniciaEm, terminaEm, '', '', '', '', '', '', '');
 	integrantes.push(integrante);
@@ -177,8 +177,8 @@ function updateIntegrante() {
 		alert(erros);
 		return;
 	}
-	let iniciaEm = document.getElementById('IniciaEmMEForUpdate').value;
-	let terminaEm = document.getElementById('TerminaEmMEForUpdate').value;
+	let iniciaEm = formatarData(document.getElementById('IniciaEmMEForUpdate').value);
+	let terminaEm = formatarData(document.getElementById('TerminaEmMEForUpdate').value);
 	integrante = new Integrante(order, id, entidadeId, cicloId, usuarioId, usuarioNome, '', iniciaEm, terminaEm, '', '', '', '', '', '');
 	integrantes[order] = integrante;
 	updateIntegranteRow("table-integrantes-"+contexto,order);
@@ -229,10 +229,10 @@ function updateIntegranteRow(tableID, order){
 	celula.innerHTML = '<input type="hidden" name="id" value="'+integrantes[order].id+'"/>'+celula.innerHTML;
 	console.log('order: '+order);
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
-	celula = row.childNodes[1];
+	celula = row.childNodes[2];
 	console.log('integrantes[order].iniciaEm: '+integrantes[order].iniciaEm);
 	celula.innerText = integrantes[order].iniciaEm;
-	celula = row.childNodes[2];
+	celula = row.childNodes[3];
 	console.log('integrantes[order].terminaEm: '+integrantes[order].terminaEm);
 	celula.innerText = integrantes[order].terminaEm;
 }
