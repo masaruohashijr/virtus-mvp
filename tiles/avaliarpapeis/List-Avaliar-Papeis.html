@@ -41,6 +41,7 @@
 			{{$auxItem := ""}}
 			{{$pesoPadraoEC := ""}}
 			{{$elementoNota := ""}}
+			{{$elementoPeso := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
 			
             {{range $index, $produto := .Produtos}}
@@ -219,16 +220,17 @@
 						value="{{$produto.TipoNotaLetra}}">
                 <td style="vertical-align:middle">
 				{{$pesoPadraoEC = $produto.PesoPadraoEC}}
+				{{$elementoPeso = $produto.ElementoPeso}}
 					<select style="width: 75px; text-align:center" class="w3-input" 
 						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.ElementoId}}"
 						{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
 						onchange="sinalizarAlteracao(this);">
-						<option value="1" {{if eq $pesoPadraoEC "1" }}selected{{end}}>1</option>
-						<option value="2" {{if eq $pesoPadraoEC "2" }}selected{{end}}>2</option>
-						<option value="4" {{if eq $pesoPadraoEC "4" }}selected{{end}}>4</option>
-						<option value="8" {{if eq $pesoPadraoEC "8" }}selected{{end}}>8</option>
-						<option value="16" {{if eq $pesoPadraoEC "16" }}selected{{end}}>16</option>
-						<option value="32" {{if eq $pesoPadraoEC "32" }}selected{{end}}>32</option>
+						<option value="1" {{if eq $elementoPeso "1" }}selected{{end}}>1</option>
+						<option value="2" {{if eq $elementoPeso "2" }}selected{{end}}>2</option>
+						<option value="4" {{if eq $elementoPeso "4" }}selected{{end}}>4</option>
+						<option value="8" {{if eq $elementoPeso "8" }}selected{{end}}>8</option>
+						<option value="16" {{if eq $elementoPeso "16" }}selected{{end}}>16</option>
+						<option value="32" {{if eq $elementoPeso "32" }}selected{{end}}>32</option>
 		            </select>	
 				</td>
                 <td style="vertical-align:middle">

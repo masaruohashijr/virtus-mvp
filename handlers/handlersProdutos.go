@@ -51,8 +51,25 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 }
 
 func registrarPesoComponente(produto mdl.ProdutoElemento, currentUser mdl.User) {
+	sqlStatement := "UPDATE produtos_elementos SET peso = $1 " +
+		" WHERE entidade_id = $2 AND " +
+		" ciclo_id = $3 AND " +
+		" pilar_id = $4 AND " +
+		" componente_id = $5 AND " +
+		" elemento_id = $6 "
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(produto.Peso,
+		produto.EntidadeId,
+		produto.CicloId,
+		produto.PilarId,
+		produto.ComponenteId,
+		produto.ElementoId)
 	// Testei e funcionou corretamente
-	sqlStatement := "UPDATE produtos_componentes a " +
+	sqlStatement = "UPDATE produtos_componentes a " +
 		" SET peso = (SELECT round(CAST(avg(b.peso) as numeric),2) " +
 		" FROM produtos_elementos b " +
 		" WHERE b.componente_id = a.componente_id AND " +
@@ -65,7 +82,7 @@ func registrarPesoComponente(produto mdl.ProdutoElemento, currentUser mdl.User) 
 		" pilar_id = $3 AND " +
 		" componente_id = $4 "
 	log.Println(sqlStatement)
-	updtForm, err := Db.Prepare(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
