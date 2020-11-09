@@ -153,7 +153,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
-					{{$produto.ComponenteNome}}
+					{{$produto.ComponenteNome}} 
 				</td>
 				{{$auxComponente = $produto.ComponenteNome}}
 				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
@@ -171,7 +171,11 @@
 				</td>
 				<td>&nbsp;</td>
                 <td>
-					<input style="width: 75px; text-align:center" class="w3-input" type="number" disabled onchange="sinalizarAlteracao(this)" value="{{$produto.PesoPadraoCP}}">
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.ComponentePeso}}">
 				</td>
                 <td>
 					<select style="width: 75px; text-align:center" class="w3-input" readOnly onchange="sinalizarAlteracao(this);">

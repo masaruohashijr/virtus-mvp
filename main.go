@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	//_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	_ "github.com/lib/pq"

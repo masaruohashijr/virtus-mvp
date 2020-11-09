@@ -39,7 +39,7 @@ func registrarPesoNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User
 		" pilar_id = $4 AND " +
 		" componente_id = $5 "
 	log.Println(sqlStatement)
-	/*updtForm, err = Db.Prepare(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -48,7 +48,30 @@ func registrarPesoNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User
 		produto.EntidadeId,
 		produto.CicloId,
 		produto.PilarId,
-		produto.ComponenteId)*/
+		produto.ComponenteId)
+
+	sqlStatement = "update produtos_componentes a " +
+		" set nota = (select  " +
+		" sum(nota*peso)/sum(peso) as media " +
+		" from produtos_elementos b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" and a.ciclo_id = b.ciclo_id  " +
+		" and a.pilar_id = b.pilar_id " +
+		" and a.componente_id = b.componente_id " +
+		" group by b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id, " +
+		" b.componente_id) " +
+		" WHERE b.entidade_id = " + entidadeId +
+		" AND b.ciclo_id = " + cicloId
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec()
+
 }
 
 func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId string) {
@@ -107,35 +130,7 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 	if err != nil {
 		log.Println(err)
 	}
-	sqlStatement = "INSERT INTO public.produtos_componentes ( " +
-		" entidade_id, " +
-		" ciclo_id, " +
-		" pilar_id, " +
-		" componente_id, " +
-		" peso, " +
-		" tipo_pontuacao_id, " +
-		" author_id, " +
-		" criado_em ) " +
-		" SELECT " + entidadeId + ", " + cicloId + ", a.pilar_id, b.componente_id, b.peso_padrao, $1, $2, $3 FROM " +
-		" pilares_ciclos a LEFT JOIN " +
-		" componentes_pilares b ON a.pilar_id = b.pilar_id " +
-		" WHERE NOT EXISTS " +
-		"  (SELECT 1 " +
-		"   FROM produtos_componentes c " +
-		"   WHERE c.entidade_id = " + entidadeId +
-		"     AND c.ciclo_id = a.ciclo_id " +
-		"     AND c.pilar_id = a.pilar_id " +
-		"     AND c.componente_id = b.componente_id) RETURNING id"
-	log.Println(sqlStatement)
-	produtoComponenteId := 0
-	err = Db.QueryRow(
-		sqlStatement,
-		mdl.Manual,
-		currentUser.Id,
-		time.Now()).Scan(&produtoComponenteId)
-	if err != nil {
-		log.Println(err)
-	}
+
 	sqlStatement = "INSERT INTO public.produtos_elementos ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
@@ -144,11 +139,12 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		" elemento_id, " +
 		" tipo_nota_id, " +
 		" peso," +
+		" nota," +
 		" tipo_pontuacao_id, " +
 		" author_id, " +
 		" criado_em ) " +
 		" SELECT " + entidadeId + ", " + cicloId + ", a.pilar_id, b.componente_id, " +
-		" c.elemento_id, c.tipo_nota_id, c.peso_padrao, $1, $2, $3 " +
+		" c.elemento_id, c.tipo_nota_id, c.peso_padrao, 1, $1, $2, $3 " +
 		" FROM " +
 		" pilares_ciclos a " +
 		" LEFT JOIN " +
@@ -167,12 +163,51 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 	produtoElementoId := 0
 	err = Db.QueryRow(
 		sqlStatement,
-		mdl.Manual,
+		mdl.Calculada,
 		currentUser.Id,
 		time.Now()).Scan(&produtoElementoId)
 	if err != nil {
 		log.Println(err)
 	}
+
+	sqlStatement = "INSERT INTO public.produtos_componentes ( " +
+		" entidade_id, " +
+		" ciclo_id, " +
+		" pilar_id, " +
+		" componente_id, " +
+		" peso, " +
+		" tipo_pontuacao_id, " +
+		" author_id, " +
+		" criado_em ) " +
+		" SELECT " + entidadeId + ", " + cicloId + ", a.pilar_id, b.componente_id, " +
+		" round(CAST(avg(c.peso_padrao) AS numeric),2), " +
+		" $1, $2, $3 " +
+		" FROM " +
+		" PILARES_CICLOS a " +
+		" LEFT JOIN COMPONENTES_PILARES b ON (a.pilar_id = b.pilar_id) " +
+		" LEFT JOIN ELEMENTOS_COMPONENTES c ON (b.componente_id = c.componente_id) " +
+		" WHERE  " +
+		" a.ciclo_id = " + cicloId +
+		" AND NOT EXISTS " +
+		"  (SELECT 1 " +
+		"   FROM produtos_componentes c " +
+		"   WHERE c.entidade_id = " + entidadeId +
+		"     AND c.ciclo_id = a.ciclo_id " +
+		"     AND c.pilar_id = a.pilar_id " +
+		"     AND c.componente_id = b.componente_id) " +
+		" GROUP BY 1,2,3,4 ORDER BY 1,2,3,4" +
+		" RETURNING id"
+	log.Println(sqlStatement)
+	produtoComponenteId := 0
+	err = Db.QueryRow(
+		sqlStatement,
+		mdl.Manual,
+		currentUser.Id,
+		time.Now()).Scan(&produtoComponenteId)
+	if err != nil {
+		log.Println(err)
+	}
+
 	sqlStatement = "INSERT INTO public.produtos_itens ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
@@ -206,4 +241,27 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 	if err != nil {
 		log.Println(err)
 	}
+
+	sqlStatement = "update produtos_componentes a " +
+		" set nota = (select  " +
+		" sum(nota*peso)/sum(peso) as media " +
+		" from produtos_elementos b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" and a.ciclo_id = b.ciclo_id  " +
+		" and a.pilar_id = b.pilar_id " +
+		" and a.componente_id = b.componente_id " +
+		" group by b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id, " +
+		" b.componente_id) " +
+		" WHERE b.entidade_id = " + entidadeId +
+		" AND b.ciclo_id = " + cicloId
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec()
+
 }
