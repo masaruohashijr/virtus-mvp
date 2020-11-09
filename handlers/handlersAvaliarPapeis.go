@@ -410,7 +410,7 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				produtoElemento.ComponenteId, _ = strconv.ParseInt(s[4], 10, 64)
 				produtoElemento.ElementoId, _ = strconv.ParseInt(s[5], 10, 64)
 				produtoElemento.Nota, _ = strconv.ParseFloat(value[0], 64)
-				registrarPesoNotaElemento(produtoElemento, GetUserInCookie(w, r))
+				registrarNotaElemento(produtoElemento, GetUserInCookie(w, r))
 			}
 			if strings.HasPrefix(key, "ElementoPeso") {
 				log.Println("Peso: " + value[0])
@@ -428,7 +428,7 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				produtoElemento.ComponenteId, _ = strconv.ParseInt(s[4], 10, 64)
 				produtoElemento.ElementoId, _ = strconv.ParseInt(s[5], 10, 64)
 				produtoElemento.Peso, _ = strconv.ParseFloat(value[0], 64)
-				registrarPesoNotaElemento(produtoElemento, GetUserInCookie(w, r))
+				registrarPesoComponente(produtoElemento, GetUserInCookie(w, r))
 			}
 		}
 		AtualizarPapeisHandler(entidadeId, cicloId, w, r)

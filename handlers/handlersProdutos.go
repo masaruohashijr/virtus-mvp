@@ -6,72 +6,74 @@ import (
 	mdl "virtus/models"
 )
 
-func registrarPesoNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
-	sqlStatement := "UPDATE produtos_elementos SET peso = $1, nota = $2 " +
-		" WHERE entidade_id = $3 AND " +
-		" ciclo_id = $4 AND " +
-		" pilar_id = $5 AND " +
-		" componente_id = $6 AND " +
-		" elemento_id = $7 "
+func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
+	sqlStatement := "UPDATE produtos_elementos SET nota = $1 " +
+		" WHERE entidade_id = $2 AND " +
+		" ciclo_id = $3 AND " +
+		" pilar_id = $4 AND " +
+		" componente_id = $5 AND " +
+		" elemento_id = $6 "
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
-	updtForm.Exec(produto.Peso,
-		produto.Nota,
+	updtForm.Exec(produto.Nota,
 		produto.EntidadeId,
 		produto.CicloId,
 		produto.PilarId,
 		produto.ComponenteId,
 		produto.ElementoId)
-
+	// Testei e funcionou corretamente
 	sqlStatement = "UPDATE produtos_componentes a " +
-		" SET peso = $1, nota = (SELECT round(CAST(avg(b.peso) as numeric),2) " +
+		" set nota = (select  " +
+		" sum(nota*peso)/sum(peso) as media " +
+		" FROM produtos_elementos b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" and a.ciclo_id = b.ciclo_id  " +
+		" and a.pilar_id = b.pilar_id " +
+		" and a.componente_id = b.componente_id " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id, " +
+		" b.componente_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(produto.EntidadeId, produto.CicloId)
+
+}
+
+func registrarPesoComponente(produto mdl.ProdutoElemento, currentUser mdl.User) {
+	// Testei e funcionou corretamente
+	sqlStatement := "UPDATE produtos_componentes a " +
+		" SET peso = (SELECT round(CAST(avg(b.peso) as numeric),2) " +
 		" FROM produtos_elementos b " +
 		" WHERE b.componente_id = a.componente_id AND " +
 		" b.pilar_id = a.pilar_id AND " +
 		" b.ciclo_id = a.ciclo_id AND " +
 		" b.entidade_id = a.entidade_id " +
 		" GROUP BY b.entidade_id, b.ciclo_id, b.pilar_id, b.componente_id) " +
-		" WHERE entidade_id = $2 AND " +
-		" ciclo_id = $3 AND " +
-		" pilar_id = $4 AND " +
-		" componente_id = $5 "
-	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
-	if err != nil {
-		panic(err.Error())
-	}
-	updtForm.Exec(produto.Peso,
-		produto.Nota,
-		produto.EntidadeId,
-		produto.CicloId,
-		produto.PilarId,
-		produto.ComponenteId)
-
-	sqlStatement = "update produtos_componentes a " +
-		" set nota = (select  " +
-		" sum(nota*peso)/sum(peso) as media " +
-		" from produtos_elementos b " +
-		" WHERE " +
-		" a.entidade_id = b.entidade_id " +
-		" and a.ciclo_id = b.ciclo_id  " +
-		" and a.pilar_id = b.pilar_id " +
-		" and a.componente_id = b.componente_id " +
-		" group by b.entidade_id,  " +
-		" b.ciclo_id, " +
-		" b.pilar_id, " +
-		" b.componente_id) " +
-		" WHERE b.entidade_id = " + entidadeId +
-		" AND b.ciclo_id = " + cicloId
+		" WHERE entidade_id = $1 AND " +
+		" ciclo_id = $2 AND " +
+		" pilar_id = $3 AND " +
+		" componente_id = $4 "
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
-	updtForm.Exec()
-
+	updtForm.Exec(
+		produto.EntidadeId,
+		produto.CicloId,
+		produto.PilarId,
+		produto.ComponenteId)
 }
 
 func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId string) {
@@ -242,26 +244,28 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		log.Println(err)
 	}
 
-	sqlStatement = "update produtos_componentes a " +
+	log.Println("INICIANDO CICLO --  UPDATE NOTA")
+	// Testei e funcionou corretamente
+	sqlStatement = "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
 		" sum(nota*peso)/sum(peso) as media " +
-		" from produtos_elementos b " +
+		" FROM produtos_elementos b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
 		" and a.ciclo_id = b.ciclo_id  " +
 		" and a.pilar_id = b.pilar_id " +
 		" and a.componente_id = b.componente_id " +
-		" group by b.entidade_id,  " +
+		" GROUP BY b.entidade_id,  " +
 		" b.ciclo_id, " +
 		" b.pilar_id, " +
-		" b.componente_id) " +
-		" WHERE b.entidade_id = " + entidadeId +
-		" AND b.ciclo_id = " + cicloId
+		" b.componente_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
-	updtForm.Exec()
-
+	updtForm.Exec(entidadeId, cicloId)
 }
