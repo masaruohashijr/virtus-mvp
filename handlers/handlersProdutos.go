@@ -25,6 +25,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 		produto.ComponenteId,
 		produto.ElementoId)
 	// Testei e funcionou corretamente
+	// PRODUTOS_COMPONENTES
 	sqlStatement = "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
 		" sum(nota*peso)/sum(peso) as media " +
@@ -38,6 +39,46 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 		" b.ciclo_id, " +
 		" b.pilar_id, " +
 		" b.componente_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(produto.EntidadeId, produto.CicloId)
+	// PRODUTOS_PILARES
+	sqlStatement = "UPDATE produtos_pilares a " +
+		" SET nota = (select  " +
+		" sum(nota*peso)/sum(peso) AS media " +
+		" FROM produtos_componentes b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" AND a.ciclo_id = b.ciclo_id  " +
+		" AND a.pilar_id = b.pilar_id " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(produto.EntidadeId, produto.CicloId)
+	// PRODUTOS_CICLOS
+	sqlStatement = "UPDATE produtos_ciclos a " +
+		" SET nota = (select  " +
+		" sum(nota*peso)/sum(peso) AS media " +
+		" FROM produtos_pilares b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" AND a.ciclo_id = b.ciclo_id  " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id " +
 		" HAVING sum(peso)>0) " +
 		" WHERE a.entidade_id = $1 " +
 		" AND a.ciclo_id = $2 "
