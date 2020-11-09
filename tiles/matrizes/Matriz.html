@@ -1,0 +1,78 @@
+{{define "Matriz"}}
+<!-- Matriz -->
+<div id="main" class="w3-row-padding">
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				    <h3>{{.Title}}</h3>
+				<div style="margin-top: 10px;">
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+					{{$allowed := (call .LoggedUser.HasPermission "viewMatriz")}}
+				    <a style="margin-top: 6px" href="/logout">
+						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
+					</a>
+				</div>
+		    </div>
+		</header>
+		<form action="/updateMatriz" method="POST">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+			{{$primeiraLinha := true}}
+			{{$auxEntidade := ""}}
+			{{$notaCiclo := ""}}
+			{{$auxPilar := ""}}
+			{{$auxComponente := ""}}
+			{{$auxTipoNota := ""}}
+			{{$pilarColSpan := ""}}
+			{{$cicloColSpan := ""}}
+			{{$elementoNota := ""}}
+			{{$elementoPeso := ""}}
+			{{$currentUser := .LoggedUser.User.Id}}
+            <tr>
+				<td style="vertical-align:middle; border: 1px solid lightgrey" rowspan="2">EFPC</td>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if $primeiraLinha}}
+						{{$primeiraLinha = false}}
+						{{$notaCiclo = $m.CicloNota}}
+						{{$cicloColSpan = $m.CicloColSpan}}
+					{{end}}
+					{{if ne $auxPilar $m.PilarNome}}
+						{{$auxPilar = $m.PilarNome}}
+						<td style="border: 1px solid lightgrey" colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
+					{{end}}
+				{{end}}
+            </tr>
+			{{$auxPilar = ""}}
+			<tr>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if ne $auxComponente $m.ComponenteNome}}
+						{{$auxComponente = $m.ComponenteNome}}
+						<td style="border: 1px solid lightgrey">{{$m.ComponenteNome}}</td>
+					{{end}}
+				{{end}}
+			</tr>
+			<tr>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if ne $auxEntidade $m.EntidadeNome}}
+						{{$auxEntidade = $m.EntidadeNome}}
+							<td>{{$m.EntidadeNome}}</td>
+					{{end}}
+					{{if ne $auxComponente $m.ComponenteNome}}
+						{{$auxComponente = $m.ComponenteNome}}
+							<td style="border: 1px solid lightgrey">{{$m.ComponenteNota}}</td> 
+					{{end}}
+				{{end}}
+			</tr>
+			<tr>
+				<td style="border:1px solid lightgrey">NOTA EFPC</td>
+				<td style="border: 1px solid lightgrey">{{$notaCiclo}}</td>
+				<td colspan="{{$cicloColSpan}}">&nbsp;</td>
+			</tr>
+        </table>
+		</form>
+    </div>
+</div>
+{{end}}

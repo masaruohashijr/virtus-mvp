@@ -51,6 +51,10 @@ func main() {
 	r.HandleFunc("/listAvaliarPapeis", hd.ListAvaliarPapeisHandler).Methods("GET")
 	r.HandleFunc("/avaliarPapeis", hd.AvaliarPapeisHandler).Methods("POST")
 	r.HandleFunc("/updateAvaliarPapeis", hd.UpdateAvaliarPapeisHandler).Methods("POST")
+	// ----------------- MATRIZES
+	r.HandleFunc("/listMatrizes", hd.ListMatrizesHandler).Methods("GET")
+	r.HandleFunc("/executarMatriz", hd.ExecutarMatrizHandler).Methods("POST")
+	r.HandleFunc("/updateMatriz", hd.UpdateMatrizHandler).Methods("POST")
 	// ----------------- EQUIPES
 	r.HandleFunc("/listDistribuirPapeis", hd.ListDistribuirPapeisHandler).Methods("GET")
 	r.HandleFunc("/distribuirPapeis", hd.DistribuirPapeisHandler).Methods("POST")

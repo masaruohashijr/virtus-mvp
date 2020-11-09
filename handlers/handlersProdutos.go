@@ -28,7 +28,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	// PRODUTOS_COMPONENTES
 	sqlStatement = "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
-		" sum(nota*peso)/sum(peso) as media " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
 		" FROM produtos_elementos b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
@@ -51,7 +51,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	// PRODUTOS_PILARES
 	sqlStatement = "UPDATE produtos_pilares a " +
 		" SET nota = (select  " +
-		" sum(nota*peso)/sum(peso) AS media " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) AS media " +
 		" FROM produtos_componentes b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
@@ -72,7 +72,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	// PRODUTOS_CICLOS
 	sqlStatement = "UPDATE produtos_ciclos a " +
 		" SET nota = (select  " +
-		" sum(nota*peso)/sum(peso) AS media " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) AS media " +
 		" FROM produtos_pilares b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
