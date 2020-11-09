@@ -48,26 +48,26 @@
 
 			{{if $primeiraLinha}}
             <tr style="background-color: aliceblue">
-                <td>&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
                 <td style="text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
 				{{if $allowed}}
-                <td>&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
 				{{end}}
             </tr>
             <tr style="background-color: white">
-                <td>&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
                 <td style="text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
 					<select style="width: 75px; text-align:center" class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
 						<option value="M">M</option>
 						<option value="A">A</option>
@@ -75,7 +75,7 @@
 						<option value="F">F</option>
 		            </select>
 				</td>
-                <td>
+                <td style="vertical-align:middle">
 					<input style="width: 100px; text-align:center"
 						name="CicloNota{{$produto.ComponenteId}}" 
 						class="w3-input" 
@@ -84,7 +84,7 @@
 						value="{{$produto.CicloNota}}">
 				</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="">Detalhar</button>
                     <button class="w3-btn w3-black" onclick="">Histórico</button>
@@ -108,13 +108,13 @@
 				{{end}}
             </tr>
             <tr>
-                <td>&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
 				{{$auxPilar = $produto.PilarNome}}
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
 					{{ $combine := (printf "%v%v" $produto.PesoPadraoPC " %") }}
 					<input style="width: 75px; text-align:center" class="w3-input" type="text" 
 						disabled onchange="sinalizarAlteracao(this)" 
@@ -137,7 +137,7 @@
 						value="{{$produto.PilarNota}}">
 				</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="">Detalhar</button>
                     <button class="w3-btn w3-brown" onclick="">Histórico</button>
@@ -160,13 +160,13 @@
 				{{end}}
             </tr>
             <tr>
-                <td>&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
 					{{$produto.ComponenteNome}} 
 				</td>
 				{{$auxComponente = $produto.ComponenteNome}}
 				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
-                <td>
+                <td style="vertical-align:middle">
 					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);"
 						{{if eq $.LoggedUser.User.Role 4}}readOnly disabled{{end}} 
 						name="AuditorComponente{{$produto.ComponenteId}}">
@@ -178,15 +178,15 @@
 			            {{end}}
 		            </select>
 				</td>
-				<td>&nbsp;</td>
-                <td>
+				<td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
 						type="number" disabled 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.ComponentePeso}}">
 				</td>
-                <td>
+                <td style="vertical-align:middle">
 					<select style="width: 75px; text-align:center" class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
 						<option value="M">M</option>
 						<option value="A">A</option>
@@ -194,7 +194,7 @@
 						<option value="I">I</option>
 		            </select>
 				</td>
-                <td>
+                <td style="vertical-align:middle">
 					<input style="width: 100px; text-align:center" 
 						class="w3-input" 
 						type="number" 
@@ -204,7 +204,7 @@
 						value="{{$produto.ComponenteNota}}">
 				</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="">Detalhar</button>
                     <button class="w3-btn w3-deep-green" onclick="">Histórico</button>
