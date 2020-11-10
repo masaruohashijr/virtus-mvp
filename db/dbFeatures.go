@@ -1,7 +1,7 @@
 package db
 
 import (
-	"log"
+	//"log"
 	"strconv"
 	"strings"
 )
@@ -45,7 +45,7 @@ func createFeatures() {
 
 func updateFeatures() {
 	query := " UPDATE features SET author_id = 1 WHERE id <= 34"
-	log.Println(query)
+	//log.Println(query)
 	db.Exec(query)
 }
 
@@ -61,7 +61,7 @@ func createRoleFeatures() {
 	}
 	pos := strings.LastIndex(stmt2, "UNION")
 	stmt2 = stmt2[:pos]
-	log.Println(stmt1 + stmt2)
+	//log.Println(stmt1 + stmt2)
 	db.Exec(stmt1 + stmt2)
 	stmt1 = " INSERT INTO features_roles (role_id, feature_id) " +
 		" SELECT 5, a.id FROM features a " +
@@ -70,6 +70,6 @@ func createRoleFeatures() {
 		" FROM features_roles b " +
 		" WHERE b.role_id = 5 AND b.feature_id = a.id) " +
 		" AND SUBSTRING(a.code,1,4) = 'list' "
-	log.Println(stmt1)
+	//log.Println(stmt1)
 	db.Exec(stmt1)
 }

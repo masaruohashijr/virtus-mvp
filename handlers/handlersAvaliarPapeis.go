@@ -77,7 +77,9 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" coalesce(l.nota,0) as ciclo_nota, " +
 			" a.elemento_id, f.nome as elemento_nome, " +
 			" coalesce(n.peso,0) as elemento_peso, coalesce(n.nota,0) as elemento_nota, " +
-			" ec.tipo_nota_id, m.letra, m.cor_letra, ec.peso_padrao, " +
+			" ec.tipo_nota_id, m.letra, m.cor_letra, m.nome, " +
+			" coalesce(o.peso,0) as tipo_nota_peso, coalesce(o.nota,0) as tipo_nota_nota, " +
+			" ec.peso_padrao, " +
 			" cp.tipo_media, cp.peso_padrao, " +
 			" pc.tipo_media, pc.peso_padrao, " +
 			" ce.tipo_media, ce.inicia_em, ce.termina_em, " +
@@ -90,6 +92,12 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" LEFT JOIN ciclos c ON a.ciclo_id = c.id " +
 			" LEFT JOIN pilares d ON a.pilar_id = d.id " +
 			" LEFT JOIN componentes e ON a.componente_id = e.id " +
+			" LEFT JOIN produtos_tipos_notas o ON " +
+			" ( a.tipo_nota_id = o.tipo_nota_id AND " +
+			" a.componente_id = o.componente_id AND " +
+			" a.pilar_id = o.pilar_id AND " +
+			" a.ciclo_id = o.ciclo_id AND " +
+			" a.entidade_id = o.entidade_id )" +
 			" LEFT JOIN produtos_elementos n ON " +
 			" ( a.elemento_id = n.elemento_id AND " +
 			" a.componente_id = n.componente_id AND " +
@@ -124,6 +132,7 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY a.ciclo_id, " +
 			" a.pilar_id,  " +
 			" a.componente_id, " +
+			" a.tipo_nota_id, " +
 			" a.elemento_id, " +
 			" a.item_id "
 		log.Println(sql)
@@ -151,6 +160,9 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.TipoNotaId,
 				&produto.TipoNotaLetra,
 				&produto.TipoNotaCorLetra,
+				&produto.TipoNotaNome,
+				&produto.TipoNotaPeso,
+				&produto.TipoNotaNota,
 				&produto.PesoPadraoEC,
 				&produto.TipoMediaCPId,
 				&produto.PesoPadraoCP,
@@ -239,7 +251,9 @@ func AtualizarPapeisHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" coalesce(l.nota,0) as ciclo_nota, " +
 		" a.elemento_id, f.nome as elemento_nome, " +
 		" coalesce(n.peso,0) as elemento_peso, coalesce(n.nota,0) as elemento_nota, " +
-		" ec.tipo_nota_id, m.letra, m.cor_letra, ec.peso_padrao, " +
+		" ec.tipo_nota_id, m.letra, m.cor_letra, m.nome, " +
+		" coalesce(o.peso,0) as tipo_nota_peso, coalesce(o.nota,0) as tipo_nota_nota, " +
+		" ec.peso_padrao, " +
 		" cp.tipo_media, cp.peso_padrao, " +
 		" pc.tipo_media, pc.peso_padrao, " +
 		" ce.tipo_media, ce.inicia_em, ce.termina_em, " +
@@ -252,6 +266,12 @@ func AtualizarPapeisHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" LEFT JOIN ciclos c ON a.ciclo_id = c.id " +
 		" LEFT JOIN pilares d ON a.pilar_id = d.id " +
 		" LEFT JOIN componentes e ON a.componente_id = e.id " +
+		" LEFT JOIN produtos_tipos_notas o ON " +
+		" ( a.tipo_nota_id = o.tipo_nota_id AND " +
+		" a.componente_id = o.componente_id AND " +
+		" a.pilar_id = o.pilar_id AND " +
+		" a.ciclo_id = o.ciclo_id AND " +
+		" a.entidade_id = o.entidade_id )" +
 		" LEFT JOIN produtos_elementos n ON " +
 		" ( a.elemento_id = n.elemento_id AND " +
 		" a.componente_id = n.componente_id AND " +
@@ -286,6 +306,7 @@ func AtualizarPapeisHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" ORDER BY a.ciclo_id, " +
 		" a.pilar_id,  " +
 		" a.componente_id, " +
+		" a.tipo_nota_id, " +
 		" a.elemento_id, " +
 		" a.item_id "
 	log.Println(sql)
@@ -313,6 +334,9 @@ func AtualizarPapeisHandler(entidadeId string, cicloId string, w http.ResponseWr
 			&produto.TipoNotaId,
 			&produto.TipoNotaLetra,
 			&produto.TipoNotaCorLetra,
+			&produto.TipoNotaNome,
+			&produto.TipoNotaPeso,
+			&produto.TipoNotaNota,
 			&produto.PesoPadraoEC,
 			&produto.TipoMediaCPId,
 			&produto.PesoPadraoCP,

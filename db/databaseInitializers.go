@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"log"
+	//"log"
 	hd "virtus/handlers"
 )
 
@@ -31,6 +31,6 @@ func createStatusZERO() {
 	query := "INSERT INTO status (id, name, stereotype, description, author_id, created_at)" +
 		" SELECT 0, '-', '', '', 1, now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM status WHERE id = 0)"
-	log.Println(query)
+	//log.Println(query)
 	db.Exec(query)
 }

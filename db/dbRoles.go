@@ -1,7 +1,7 @@
 package db
 
 import (
-	"log"
+//"log"
 )
 
 func createRoles() {
@@ -29,6 +29,6 @@ func createRoles() {
 
 func updateRoles() {
 	query := " UPDATE roles SET author_id = 1 WHERE name = 'Admin' AND (SELECT author_id FROM roles WHERE name = 'Admin') IS NULL "
-	log.Println(query)
+	//log.Println(query)
 	db.Exec(query)
 }

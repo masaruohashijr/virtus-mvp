@@ -1,12 +1,12 @@
 package db
 
 import (
-	"log"
+//"log"
 )
 
 func createTable() {
 	// Table ACTIONS
-	stmt := " CREATE TABLE IF NOT EXISTS actions (" +
+	db.Exec(" CREATE TABLE IF NOT EXISTS actions (" +
 		" id integer DEFAULT nextval('actions_id_seq'::regclass) NOT NULL, " +
 		" name character varying(255) NOT NULL, " +
 		" origin_status_id integer, " +
@@ -16,12 +16,8 @@ func createTable() {
 		" author_id integer," +
 		" created_at timestamp without time zone," +
 		" id_versao_origem integer," +
-		" status_id integer)"
-	log.Println(stmt)
-	_, err := db.Exec(stmt)
-	if err != nil {
-		panic(err)
-	}
+		" status_id integer)")
+
 	// Table ACTIONS_STATUS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS actions_status (" +
@@ -330,9 +326,9 @@ func createTable() {
 			" ciclo_id integer," +
 			" pilar_id integer," +
 			" componente_id integer," +
+			" tipo_nota_id integer," +
 			" elemento_id integer," +
 			" tipo_pontuacao_id integer," +
-			" tipo_nota_id integer," +
 			" peso double precision," +
 			" nota double precision," +
 			" motivacao_peso character varying(4000)," +
@@ -353,6 +349,7 @@ func createTable() {
 			" ciclo_id integer," +
 			" pilar_id integer," +
 			" componente_id integer," +
+			" tipo_nota_id integer," +
 			" elemento_id integer," +
 			" item_id integer," +
 			" avaliacao character varying(4000)," +
@@ -361,6 +358,25 @@ func createTable() {
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
 			" status_id integer)")
+
+	// Table PRODUTOS_TIPOS_NOTAS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS produtos_tipos_notas (" +
+			" id integer DEFAULT nextval('produtos_tipos_notas_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" componente_id integer," +
+			" tipo_nota_id integer," +
+			" tipo_pontuacao_id integer," +
+			" peso double precision," +
+			" nota double precision," +
+			" anexo character varying(4000)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table ROLES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS roles  (" +

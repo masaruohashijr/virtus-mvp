@@ -36,6 +36,7 @@
 			{{$primeiraLinha := true}}
 			{{$auxPilar := ""}}
 			{{$auxComponente := ""}}
+			{{$auxTipoNota := ""}}
 			{{$auxElemento := ""}}
 			{{$auxItem := ""}}
 			{{$pesoPadraoEC := ""}}
@@ -109,7 +110,7 @@
             <tr>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
-				{{$auxPilar = $produto.PilarNome}}
+				&nbsp;&nbsp;&nbsp;{{$auxPilar = $produto.PilarNome}}
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -161,7 +162,7 @@
             <tr>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
-					{{$produto.ComponenteNome}} 
+					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}} 
 				</td>
 				{{$auxComponente = $produto.ComponenteNome}}
 				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
@@ -211,11 +212,57 @@
 				{{end}}					
         	</tr>
 			{{end}}				
+			{{if ne $auxTipoNota $produto.TipoNotaNome}}
+            <tr>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.TipoNotaNome}} 
+				</td>
+				{{$auxTipoNota = $produto.TipoNotaNome}}
+				<td style="vertical-align:middle;text-align:center">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;
+				</td>
+				<td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
+					{{ $combine := (printf "%v%v" $produto.TipoNotaPeso " %") }}
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="text" disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{ $combine }}">
+				</td>
+                <td style="vertical-align:middle">
+					<select style="width: 75px; text-align:center" 
+						class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
+						<option value="M">M</option>
+						<option value="A">A</option>
+						<option value="C">C</option>
+						<option value="I">I</option>
+		            </select>
+				</td>
+                <td style="vertical-align:middle">
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" 
+						name="TipoNotaNota{{$produto.TipoNotaId}}" 
+						disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.TipoNotaNota}}">
+				</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+					<button class="w3-btn w3-teal" type="submit">Salvar</button>
+                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
+                    <button class="w3-btn w3-deep-green" onclick="">Histórico</button>
+                </td>
+				{{end}}					
+        	</tr>
+			{{end}}				
 			{{if ne $auxElemento $produto.ElementoNome}}
             <tr>
                 <td>&nbsp;</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
-					&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}
 				</td>
 				{{$auxElemento = $produto.ElementoNome}}
                 <td>&nbsp;</td>
@@ -273,7 +320,7 @@
 			<tr>
                 <td>{{$produto.Order}}</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 30px">
-					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}
 				</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>

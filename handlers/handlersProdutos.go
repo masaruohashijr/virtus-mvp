@@ -25,11 +25,36 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 		produto.ComponenteId,
 		produto.ElementoId)
 	// Testei e funcionou corretamente
+	// PRODUTOS_TIPOS_NOTAS
+	sqlStatement = "UPDATE produtos_tipos_notas a " +
+		" set nota = (select  " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
+		" FROM produtos_elementos b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" and a.ciclo_id = b.ciclo_id  " +
+		" and a.pilar_id = b.pilar_id " +
+		" and a.componente_id = b.componente_id " +
+		" and a.tipo_nota_id = b.tipo_nota_id " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id, " +
+		" b.componente_id, " +
+		" b.tipo_nota_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(produto.EntidadeId, produto.CicloId)
 	// PRODUTOS_COMPONENTES
 	sqlStatement = "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
 		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
-		" FROM produtos_elementos b " +
+		" FROM produtos_tipos_notas b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
 		" and a.ciclo_id = b.ciclo_id  " +
@@ -268,17 +293,60 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		log.Println(err)
 	}
 
+	sqlStatement = "INSERT INTO public.produtos_tipos_notas ( " +
+		" entidade_id, " +
+		" ciclo_id, " +
+		" pilar_id, " +
+		" componente_id, " +
+		" tipo_nota_id, " +
+		" peso, " +
+		" tipo_pontuacao_id, " +
+		" author_id, " +
+		" criado_em ) " +
+		" SELECT " + entidadeId + ", " + cicloId + ", a.pilar_id, b.componente_id, " +
+		" d.tipo_nota_id, " +
+		" round(CAST(avg(d.peso_padrao) AS numeric),2), " +
+		" $1, $2, $3 " +
+		" FROM " +
+		" PILARES_CICLOS a " +
+		" LEFT JOIN COMPONENTES_PILARES b ON (a.pilar_id = b.pilar_id) " +
+		" LEFT JOIN ELEMENTOS_COMPONENTES c ON (b.componente_id = c.componente_id) " +
+		" LEFT JOIN TIPOS_NOTAS_COMPONENTES d ON (b.componente_id = d.componente_id AND c.tipo_nota_id = d.tipo_nota_id) " +
+		" WHERE  " +
+		" a.ciclo_id = " + cicloId +
+		" AND NOT EXISTS " +
+		"  (SELECT 1 " +
+		"   FROM produtos_tipos_notas e " +
+		"   WHERE e.entidade_id = " + entidadeId +
+		"     AND e.ciclo_id = a.ciclo_id " +
+		"     AND e.pilar_id = a.pilar_id " +
+		"     AND e.tipo_nota_id = d.tipo_nota_id " +
+		"     AND e.componente_id = b.componente_id) " +
+		" GROUP BY 1,2,3,4,5 ORDER BY 1,2,3,4,5" +
+		" RETURNING id"
+	log.Println(sqlStatement)
+	produtoTipoNotaId := 0
+	err = Db.QueryRow(
+		sqlStatement,
+		mdl.Manual,
+		currentUser.Id,
+		time.Now()).Scan(&produtoTipoNotaId)
+	if err != nil {
+		log.Println(err)
+	}
+
 	sqlStatement = "INSERT INTO public.produtos_itens ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
 		" pilar_id, " +
 		" componente_id, " +
+		" tipo_nota_id, " +
 		" elemento_id, " +
 		" item_id, " +
 		" author_id, " +
 		" criado_em ) " +
 		" SELECT " + entidadeId + ", " + cicloId + ", " +
-		" a.pilar_id, b.componente_id, c.elemento_id, d.id, $1, $2 " +
+		" a.pilar_id, b.componente_id, c.tipo_nota_id, c.elemento_id, d.id, $1, $2 " +
 		" FROM pilares_ciclos a " +
 		" LEFT JOIN componentes_pilares b ON a.pilar_id = b.pilar_id " +
 		" LEFT JOIN elementos_componentes c ON b.componente_id = c.componente_id " +
@@ -322,6 +390,32 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		" AND a.ciclo_id = $2 "
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(entidadeId, cicloId)
+
+	// PRODUTOS TIPOS NOTAS
+	sqlStatement = "UPDATE produtos_tipos_notas a " +
+		" set nota = (select  " +
+		" sum(nota*peso)/sum(peso) as media " +
+		" FROM produtos_elementos b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" and a.ciclo_id = b.ciclo_id  " +
+		" and a.pilar_id = b.pilar_id " +
+		" and a.componente_id = b.componente_id " +
+		" and a.tipo_nota_id = b.tipo_nota_id " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id, " +
+		" b.componente_id, " +
+		" b.tipo_nota_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}

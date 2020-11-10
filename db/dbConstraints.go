@@ -33,8 +33,10 @@ func createUniqueKey() {
 		" ADD CONSTRAINT produtos_pilares_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_componentes" +
 		" ADD CONSTRAINT produtos_componentes_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id)")
+	db.Exec(" ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT produtos_tipos_notas_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, tipo_nota_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_elementos" +
-		" ADD CONSTRAINT produtos_elementos_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, elemento_id)")
+		" ADD CONSTRAINT produtos_elementos_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, tipo_nota_id, elemento_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_itens" +
 		" ADD CONSTRAINT produtos_itens_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, elemento_id, item_id)")
 }
@@ -469,6 +471,55 @@ func createFKey() {
 		" ON DELETE RESTRICT" +
 		" NOT VALID")
 
+	// PRODUTOS_TIPOS_NOTAS
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT entidades_fkey FOREIGN KEY (entidade_id)" +
+		" REFERENCES entidades (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT ciclos_fkey FOREIGN KEY (ciclo_id)" +
+		" REFERENCES ciclos (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT pilares_fkey FOREIGN KEY (pilar_id)" +
+		" REFERENCES pilares (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT componentes_fkey FOREIGN KEY (componente_id)" +
+		" REFERENCES componentes (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT tipos_notas_fkey FOREIGN KEY (tipo_nota_id)" +
+		" REFERENCES tipos_notas (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
 	// PRODUTOS_ELEMENTOS
 	db.Exec("ALTER TABLE ONLY produtos_elementos" +
 		" ADD CONSTRAINT entidades_fkey FOREIGN KEY (entidade_id)" +
@@ -494,6 +545,13 @@ func createFKey() {
 	db.Exec("ALTER TABLE ONLY produtos_elementos" +
 		" ADD CONSTRAINT componentes_fkey FOREIGN KEY (componente_id)" +
 		" REFERENCES componentes (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
+	db.Exec("ALTER TABLE ONLY produtos_elementos" +
+		" ADD CONSTRAINT tipos_notas_fkey FOREIGN KEY (tipo_nota_id)" +
+		" REFERENCES tipos_notas (id) MATCH SIMPLE" +
 		" ON UPDATE RESTRICT" +
 		" ON DELETE RESTRICT" +
 		" NOT VALID")

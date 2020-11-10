@@ -1,7 +1,7 @@
 package db
 
 import (
-	"log"
+//"log"
 )
 
 func createEntidades() {
@@ -469,9 +469,6 @@ func createEntidades() {
 		"SELECT 'VOLKSWAGEN PREVIDENCIA PRIVADA','0347-2','VWPP','NORMAL',false,'SAO BERNARDO DO CAMPO','SP',1, now()::timestamp, 0  WHERE NOT EXISTS (SELECT 1 FROM entidades WHERE codigo = '0347-2') UNION " +
 		"SELECT 'WEG SEGURIDADE SOCIAL','0105-1','WEG','NORMAL',false,'JARAGUA DO SUL','SC',1, now()::timestamp, 0  WHERE NOT EXISTS (SELECT 1 FROM entidades WHERE codigo = '0105-1') UNION " +
 		"SELECT 'WYETH PREV - SOCIEDADE PREVIDENCIARIA','0375-3','WYETH PREV','NORMAL',false,'SAO PAULO','SP',1, now()::timestamp, 0  WHERE NOT EXISTS (SELECT 1 FROM entidades WHERE codigo = '0375-3')"
-	log.Println(sql)
-	_, err := db.Exec(sql)
-	if err != nil {
-		log.Println(err)
-	}
+	//log.Println(sql)
+	db.Exec(sql)
 }

@@ -462,6 +462,8 @@ type ProdutoItem struct {
 	TipoNotaNome     string `json:"tipoNotaNome"`
 	TipoNotaLetra    string `json:"tipoNotaLetra"`
 	TipoNotaCorLetra string `json:"tipoNotaCorLetra"`
+	TipoNotaPeso     string `json:"tipoNotaPeso"`
+	TipoNotaNota     string `json:"tipoNotaNota"`
 	PesoPadraoEC     string `json:"pesoPadraoEC"`
 	TipoMediaCPId    int    `json:"tipoMediaCPId"`
 	TipoMediaCP      string `json:"tipoMediaCP"`
@@ -517,6 +519,8 @@ type ElementoDaMatriz struct {
 	TipoNotaNome            string `json:"tipoNotaNome"`
 	TipoNotaLetra           string `json:"tipoNotaLetra"`
 	TipoNotaCorLetra        string `json:"tipoNotaCorLetra"`
+	TipoNotaPeso            string `json:"tipoNotaPeso"`
+	TipoNotaNota            string `json:"tipoNotaNota"`
 	PesoPadraoEC            string `json:"pesoPadraoEC"`
 	TipoMediaCPId           int    `json:"tipoMediaCPId"`
 	TipoMediaCP             string `json:"tipoMediaCP"`
