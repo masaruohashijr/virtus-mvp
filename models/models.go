@@ -575,21 +575,23 @@ type Status struct {
 }
 
 type TipoNota struct {
-	Order             int
-	Id                int64  `json:"id"`
-	Nome              string `json:"nome"`
-	Descricao         string `json:"descricao"`
-	Letra             string `json:"letra"`
-	CorLetra          string `json:"corLetra"`
-	DominioComponente bool   `json:"dominioComponente"`
-	AuthorId          int64  `json:"authorId"`
-	AuthorName        string `json:"authorName"`
-	CreatedAt         string `json:"createdAt"`
-	C_CreatedAt       string `json:"c_createdAt"`
-	IdVersaoOrigem    int64  `json:"idVersaoOrigem"`
-	StatusId          int64  `json:"statusId"`
-	CStatus           string `json:"cStatus"`
-	Selected          bool
+	Order          int
+	Id             int64  `json:"id"`
+	TipoNotaId     string `json:"tipoNotaId"'`
+	ComponenteId   string `json:"componenteId"'`
+	Nome           string `json:"nome"`
+	Descricao      string `json:"descricao"`
+	Letra          string `json:"letra"`
+	CorLetra       string `json:"corLetra"`
+	PesoPadrao     string `json:"pesoPadrao"'`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CreatedAt      string `json:"createdAt"`
+	C_CreatedAt    string `json:"c_createdAt"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+	Selected       bool
 }
 
 type User struct {

@@ -5,52 +5,38 @@ import ()
 func createUniqueKey() {
 	db.Exec(" ALTER TABLE ONLY actions_status" +
 		" ADD CONSTRAINT action_status_unique_key UNIQUE (action_id, origin_status_id, destination_status_id)")
-
 	db.Exec(" ALTER TABLE ONLY features_roles" +
 		" ADD CONSTRAINT feature_role_unique_key UNIQUE (role_id, feature_id)")
-
 	db.Exec(" ALTER TABLE ONLY users" +
 		" ADD CONSTRAINT username_unique_key UNIQUE (username)")
-
 	db.Exec(" ALTER TABLE ONLY activities_roles" +
 		" ADD CONSTRAINT action_role_unique_key UNIQUE (activity_id, role_id)")
-
 	db.Exec(" ALTER TABLE ONLY features_activities" +
 		" ADD CONSTRAINT features_activities_unique_key UNIQUE (activity_id, feature_id)")
-
 	db.Exec(" ALTER TABLE ONLY jurisdicoes" +
 		" ADD CONSTRAINT jurisdicoes_unique_key UNIQUE (escritorio_id, entidade_id)")
-
 	db.Exec(" ALTER TABLE ONLY membros" +
 		" ADD CONSTRAINT membros_unique_key UNIQUE (escritorio_id, usuario_id)")
-
 	db.Exec(" ALTER TABLE ONLY ciclos_entidades" +
 		" ADD CONSTRAINT ciclos_entidades_unique_key UNIQUE (entidade_id, ciclo_id)")
-
 	db.Exec(" ALTER TABLE ONLY pilares_ciclos" +
 		" ADD CONSTRAINT pilares_ciclos_unique_key UNIQUE (ciclo_id, pilar_id)")
-
 	db.Exec(" ALTER TABLE ONLY componentes_pilares" +
 		" ADD CONSTRAINT componentes_pilares_unique_key UNIQUE (pilar_id, componente_id)")
-
 	db.Exec(" ALTER TABLE ONLY elementos_componentes" +
 		" ADD CONSTRAINT elementos_componentes_unique_key UNIQUE (componente_id, elemento_id)")
-
+	db.Exec(" ALTER TABLE ONLY tipos_notas_componentes" +
+		" ADD CONSTRAINT tipos_notas_componentes_unique_key UNIQUE (componente_id, tipo_nota_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_ciclos" +
 		" ADD CONSTRAINT produtos_ciclos_unique_key UNIQUE (entidade_id, ciclo_id)")
-
 	db.Exec(" ALTER TABLE ONLY produtos_pilares" +
 		" ADD CONSTRAINT produtos_pilares_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id)")
-
 	db.Exec(" ALTER TABLE ONLY produtos_componentes" +
 		" ADD CONSTRAINT produtos_componentes_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id)")
-
 	db.Exec(" ALTER TABLE ONLY produtos_elementos" +
 		" ADD CONSTRAINT produtos_elementos_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, elemento_id)")
-
 	db.Exec(" ALTER TABLE ONLY produtos_itens" +
 		" ADD CONSTRAINT produtos_itens_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, elemento_id, item_id)")
-
 }
 
 func createFKey() {
@@ -602,6 +588,31 @@ func createFKey() {
 		" ON DELETE RESTRICT" +
 		" NOT VALID")
 
+	// TIPOS_NOTAS_COMPONENTES
+	db.Exec("ALTER TABLE ONLY tipos_notas_componentes" +
+		" ADD CONSTRAINT tipos_notas_fkey FOREIGN KEY (tipo_nota_id)" +
+		" REFERENCES tipos_notas (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+	db.Exec("ALTER TABLE ONLY tipos_notas_componentes" +
+		" ADD CONSTRAINT componentes_fkey FOREIGN KEY (componente_id)" +
+		" REFERENCES componentes (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+	db.Exec("ALTER TABLE ONLY tipos_notas" +
+		" ADD CONSTRAINT authors_fkey FOREIGN KEY (author_id)" +
+		" REFERENCES users (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT ON DELETE RESTRICT" +
+		" NOT VALID")
+	db.Exec("ALTER TABLE ONLY tipos_notas" +
+		" ADD CONSTRAINT status_fkey FOREIGN KEY (status_id)" +
+		" REFERENCES status (id) MATCH SIMPLE" +
+		" ON UPDATE RESTRICT" +
+		" ON DELETE RESTRICT" +
+		" NOT VALID")
+
 	// USERS
 	db.Exec("ALTER TABLE ONLY users " +
 		" ADD CONSTRAINT roles_fkey FOREIGN KEY (role_id)" +
@@ -707,6 +718,7 @@ func createPKey() {
 	db.Exec("ALTER TABLE ONLY roles ADD CONSTRAINT roles_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY status ADD CONSTRAINT status_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY tipos_notas ADD CONSTRAINT tipos_notas_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY tipos_notas_componentes ADD CONSTRAINT tipos_notas_componentes_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY users ADD CONSTRAINT users_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY workflows ADD CONSTRAINT workflows_pkey PRIMARY KEY (id)")
 }

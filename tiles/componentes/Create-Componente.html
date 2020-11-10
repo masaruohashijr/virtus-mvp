@@ -10,11 +10,43 @@
                       onclick="document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/createComponente" method="POST">
+            <form class="w3-container" action="/createComponente" method="POST" id="formulario-componente-create">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Nome" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="Descricao" rows="5" value=""></textarea>
+				<br>
+		        <header class="w3-container w3-center w3-teal">
+					<div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Tipos de Notas</h4>
+		                <div style="margin-top: 8px">
+		                    <div class="w3-right" id="create-form-item-btn" >
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-elementos-componente-create">
+		            <thead>
+		            <tr>
+		                <th>Nome</th>
+		                <th>Peso Padrão</th>
+		            </tr>
+		            </thead>
+		            <tbody>
+ 					{{range $index, $tipoNota := .TiposNota}}
+						<tr>
+			                <td width="80%">{{$tipoNota.Nome}}</td>
+			                <td><input style="width:75px" type="number" name="TipoNota_{{$tipoNota.Id}}" value=""></td>
+			            </tr>
+					{{end}}
+		            </tbody>
+		        </table>
 				<br>
 		        <header class="w3-container w3-center w3-teal">
 					<div class="aria">

@@ -21,3 +21,5 @@ var jurisdicao;
 var jurisdicoes = [];
 var membro;
 var membros = [];
+var tipo;
+var tipos = [];

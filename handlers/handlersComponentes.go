@@ -37,7 +37,7 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 				tipoNotaId := strings.Split(array[3], ":")[1]
 				pesoPadrao := strings.Split(array[5], ":")[1]
 				sqlStatement := " INSERT INTO " +
-					" public.elementos_componentes( " +
+					" elementos_componentes( " +
 					" componente_id, " +
 					" elemento_id, " +
 					" tipo_nota_id, " +
@@ -60,8 +60,35 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 					panic(err.Error())
 				}
 			}
+			if strings.HasPrefix(key, "TipoNota_") {
+				log.Println(value[0])
+				tipoNotaComponenteId := 0
+				tipoNotaId := strings.Split(key, "_")[1]
+				pesoPadrao := value[0]
+				statusTipoNotaId := GetStartStatus("tipo_nota")
+				sqlStatement := " INSERT INTO " +
+					" tipos_notas_componentes( " +
+					" componente_id," +
+					" tipo_nota_id," +
+					" peso_padrao, " +
+					" author_id, " +
+					" criado_em, " +
+					" status_id) " +
+					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+				log.Println(sqlStatement)
+				err := Db.QueryRow(
+					sqlStatement,
+					idComponente,
+					tipoNotaId,
+					pesoPadrao,
+					currentUser.Id,
+					time.Now(),
+					statusTipoNotaId).Scan(&tipoNotaComponenteId)
+				if err != nil {
+					panic(err.Error())
+				}
+			}
 		}
-
 		http.Redirect(w, r, route.ComponentesRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -130,6 +157,23 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 				elementoComponentePage.CStatus = cStatus
 				elementosComponentePage = append(elementosComponentePage, elementoComponentePage)
 			}
+			if strings.HasPrefix(key, "TipoNota_") {
+				tipoNotaId := strings.Split(key, "_")[1]
+				tipoNotaPeso := value[0]
+				sqlStatement = "INSERT INTO tipos_notas_componentes (tipo_nota_id,componente_id) " +
+					" SELECT " + tipoNotaId + ", " + componenteId +
+					" WHERE NOT EXISTS (select 1 from tipos_notas_componentes " +
+					" WHERE tipo_nota_id = " + tipoNotaId + " AND componente_id = " + componenteId + ")"
+				log.Println(sqlStatement)
+				Db.QueryRow(sqlStatement)
+				sqlStatement = "UPDATE tipos_notas_componentes SET peso_padrao=$1 WHERE tipo_nota_id=$2 AND componente_id = $3"
+				updtForm, err = Db.Prepare(sqlStatement)
+				if err != nil {
+					panic(err.Error())
+				}
+				updtForm.Exec(value[0], tipoNotaId, componenteId)
+				log.Println("UPDATE: Tipo Nota PESO: " + tipoNotaPeso + " - Id: " + tipoNotaId)
+			}
 		}
 		if len(elementosComponentePage) < len(elementosComponenteDB) {
 			log.Println("Quantidade de Elementos do Componente da Página: " + strconv.Itoa(len(elementosComponentePage)))
@@ -187,8 +231,15 @@ func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Componente")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM elementos_componentes WHERE componente_id=$1"
+		sqlStatement := "DELETE FROM tipos_notas_componentes WHERE componente_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
+		if err != nil {
+			panic(err.Error())
+		}
+		deleteForm.Exec(id)
+
+		sqlStatement = "DELETE FROM elementos_componentes WHERE componente_id=$1"
+		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -263,8 +314,6 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 		i = 1
 		for rows.Next() {
 			rows.Scan(&tipoNota.Id, &tipoNota.Nome)
-			tipoNota.Order = i
-			i++
 			tiposNota = append(tiposNota, tipoNota)
 		}
 
@@ -292,4 +341,15 @@ func LoadElementosByComponenteId(w http.ResponseWriter, r *http.Request) {
 	jsonElementosComponente, _ := json.Marshal(elementosComponente)
 	w.Write([]byte(jsonElementosComponente))
 	log.Println("JSON Elementos de Componente")
+}
+
+func LoadTiposNotaByComponenteId(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Tipos Nota By Componente Id")
+	r.ParseForm()
+	var componenteId = r.FormValue("componenteId")
+	log.Println("componenteId: " + componenteId)
+	tiposNotaComponente := ListTiposNotaByComponenteId(componenteId)
+	jsonTiposNotaComponente, _ := json.Marshal(tiposNotaComponente)
+	w.Write([]byte(jsonTiposNotaComponente))
+	log.Println("JSON Tipos de Nota de Componente")
 }

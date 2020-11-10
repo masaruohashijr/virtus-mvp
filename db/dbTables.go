@@ -391,11 +391,23 @@ func createTable() {
 			" descricao character varying(255)," +
 			" letra character(1) NOT NULL," +
 			" cor_letra character(6)," +
-			" dominio_componente bool," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
 			" status_id integer)")
+
+	// Table TIPOS_NOTAS_COMPONENTES
+	db.Exec(
+		" CREATE TABLE tipos_notas_componentes (" +
+			" id integer DEFAULT nextval('tipos_notas_componentes_id_seq'::regclass)," +
+			" componente_id integer," +
+			" tipo_nota_id integer," +
+			" peso_padrao integer," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table USERS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS users (" +

@@ -9,13 +9,46 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
             </div>
-            <form class="w3-container" action="/updateComponente" method="POST">
+            <form class="w3-container" action="/updateComponente" method="POST" id="formulario-componente-edit">
                 <input type="hidden" name="Id" id="ComponenteIdForUpdate">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" id="ComponenteNomeForUpdate" name="Nome" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" id="ComponenteDescricaoForUpdate" name="Descricao" rows="5" value="">
 				</textarea>
+				<br>
+		        <header class="w3-container w3-center w3-teal">
+					<div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Tipos de Notas</h4>
+		                <div style="margin-top: 8px">
+		                    <div class="w3-right" id="create-form-item-btn" >
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-tipos-nota-edit">
+		            <thead>
+		            <tr>
+		                <th>Nome</th>
+		                <th>Peso Padrão</th>
+		            </tr>
+		            </thead>
+		            <tbody>
+ 					{{range $index, $tipoNota := .TiposNota}}
+						<tr>
+			                <td width="80%">{{$tipoNota.Nome}}</td>
+			                <td><input style="width:75px" type="number" id="TipoNota_{{$tipoNota.Id}}" 
+									name="TipoNota_{{$tipoNota.Id}}" value=""></td>
+			            </tr>
+					{{end}}
+		            </tbody>
+		        </table>
 				<br>
 		        <header class="w3-container w3-center w3-teal">
 					<div class="aria">

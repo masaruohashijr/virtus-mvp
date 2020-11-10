@@ -213,6 +213,13 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
+	// Sequence TIPOS_NOTAS_COMPONENTES_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.tipos_notas_componentes_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
 	// Sequence USERS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.users_id_seq " +
 		" START WITH 2" +

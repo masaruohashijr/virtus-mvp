@@ -320,7 +320,7 @@ func updateIntegranteHandler(integrante mdl.Integrante, jurisdicaoDB mdl.Integra
 	log.Println("Statement: " + sqlStatement)
 }
 
-func LoadIntegrantesByEntidadeIdCicloIdHandler(w http.ResponseWriter, r *http.Request) {
+func LoadIntegrantesByEntidadeIdCicloId(w http.ResponseWriter, r *http.Request) {
 	log.Println("Load Integrantes")
 	r.ParseForm()
 	var entidadeId = r.FormValue("entidadeId")
@@ -333,7 +333,7 @@ func LoadIntegrantesByEntidadeIdCicloIdHandler(w http.ResponseWriter, r *http.Re
 	log.Println("JSON Integrantes")
 }
 
-func LoadSupervisorByEntidadeIdCicloIdHandler(w http.ResponseWriter, r *http.Request) {
+func LoadSupervisorByEntidadeIdCicloId(w http.ResponseWriter, r *http.Request) {
 	log.Println("Load Supervisor")
 	r.ParseForm()
 	var entidadeId = r.FormValue("entidadeId")

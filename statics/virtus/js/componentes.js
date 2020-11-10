@@ -1,6 +1,8 @@
 function editComponente(e) {
     var editForm = document.getElementById('edit-form');
     editForm.style.display = 'block';
+	document.getElementById('formulario-componente-create').reset();
+	document.getElementById('formulario-componente-edit').reset();
     var componenteId = e.parentNode.parentNode.childNodes[3].innerText;
     var componenteNome = e.parentNode.parentNode.childNodes[5].innerText;
     var componenteDescricao = e.parentNode.parentNode.childNodes[7].innerText;
@@ -8,6 +10,7 @@ function editComponente(e) {
     document.getElementById('ComponenteNomeForUpdate').value = componenteNome;
     document.getElementById('ComponenteDescricaoForUpdate').value = componenteDescricao;
 	loadElementosByComponenteId(componenteId);
+	loadTiposNotaByComponenteId(componenteId);
 }
 
 function deleteComponente(e) {
@@ -37,5 +40,26 @@ function loadElementosByComponenteId(componenteId){
 			}
 	}
 	xmlhttp.open("GET","/loadElementosByComponenteId?componenteId="+componenteId,true);
+	xmlhttp.send(); 
+}
+
+function loadTiposNotaByComponenteId(componenteId){
+	console.log('loadTiposNotaByComponenteId');
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				var tiposNotaJson = JSON.parse(xmlhttp.responseText);
+				tipos = [];
+				for(order = 0;tiposNotaJson != null && order<tiposNotaJson.length;order++){
+					tipos[order]=tiposNotaJson[order];
+					console.log("TipoNota_"+tiposNotaJson[order].Id);
+					document.getElementById("TipoNota_"+tiposNotaJson[order].tipoNotaId).value=tiposNotaJson[order].pesoPadrao;
+				}
+			}
+	}
+	xmlhttp.open("GET","/loadTiposNotaByComponenteId?componenteId="+componenteId,true);
 	xmlhttp.send(); 
 }
