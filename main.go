@@ -45,7 +45,7 @@ func main() {
 	sec.Store = sessions.NewCookieStore([]byte("vindixit123581321"))
 	hd.Db = dbConn()
 	// injetando a variável Authenticated
-	//dpk.Initialize()
+	dpk.Initialize()
 	r := mux.NewRouter()
 	// ----------------- HOME E SECURITY
 	r.HandleFunc("/", hd.IndexHandler).Methods("GET")
