@@ -23,9 +23,11 @@
 	            <select class="w3-input" name="Chefe" id="EscritorioChefeForUpdate">
 		            <option value=""></option>
 					{{range $index, $user := .Users }}
+						{{if eq $user.Role 2}}
 		                <option value="{{$user.Id}}">
 							{{$user.Name}}
 						</option>
+						{{end}}
 		            {{end}}
 	            </select>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Salvar</button>

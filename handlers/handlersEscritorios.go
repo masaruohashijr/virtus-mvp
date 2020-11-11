@@ -155,13 +155,13 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 		var page mdl.PageEscritorios
 		page.Escritorios = escritorios
 
-		sql = "SELECT id, name FROM users WHERE role_id = 2 ORDER BY name asc"
+		sql = "SELECT id, name, role_id FROM users ORDER BY name asc"
 		rows, _ = Db.Query(sql)
 		var users []mdl.User
 		var user mdl.User
 		i = 1
 		for rows.Next() {
-			rows.Scan(&user.Id, &user.Name)
+			rows.Scan(&user.Id, &user.Name, &user.Role)
 			user.Order = i
 			i++
 			users = append(users, user)
