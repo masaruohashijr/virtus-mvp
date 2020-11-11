@@ -70,7 +70,8 @@ func DeleteStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListStatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Status")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listStatus") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.name, " +

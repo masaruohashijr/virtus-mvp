@@ -97,7 +97,8 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Users")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listUsers") {
 		sql := "SELECT " +
 			" a.id, a.name, a.username, a.password, " +
 			" a.email, a.mobile, COALESCE(a.role_id, 0), COALESCE(b.name,'') as role_name, " +

@@ -421,6 +421,8 @@ type ProdutoElemento struct {
 	ComponenteNome  string  `json:"componenteNome"`
 	ElementoId      int64   `json:"elementoId"`
 	ElementoNome    string  `json:"elementoNome"`
+	TipoNotaId      int64   `json:"tipoNotaId"`
+	TipoNotaNome    string  `json:"tipoNotaNome"`
 	TipoPontuacaoId int     `json:"tipoPontuacaoId"`
 	TipoPontuacao   string  `json:"tipoPontuacao"`
 	Peso            float64 `json:"peso"`
@@ -498,18 +500,18 @@ type ElementoDaMatriz struct {
 	CicloNome               string `json:"cicloNome"`
 	CicloNota               string `json:"cicloNota"`
 	CicloQtdPilares         string `json:"cicloQtdPilares"`
-	CicloColSpan            string `json:"cicloColSpan"`
+	CicloColSpan            int    `json:"cicloColSpan"`
 	PilarId                 int64  `json:"pilarId"`
 	PilarNome               string `json:"pilarNome"`
 	PilarPeso               string `json:"pilarPeso"`
 	PilarNota               string `json:"pilarNota"`
-	PilarColSpan            string `json:"pilarColSpan"`
+	PilarColSpan            int    `json:"pilarColSpan"`
 	PilarQtdComponentes     string `json:"pilarQtdComponentes"`
 	ComponenteId            int64  `json:"componenteId"`
 	ComponenteNome          string `json:"componenteNome"`
 	ComponentePeso          string `json:"componentePeso"`
 	ComponenteNota          string `json:"componenteNota"`
-	ComponenteColSpan       string `json:"componenteColSpan"`
+	ComponenteColSpan       int    `json:"componenteColSpan"`
 	ComponenteQtdTiposNotas string `json:"componenteQtdTiposNotas"`
 	ElementoId              int64  `json:"elementoId"`
 	ElementoNome            string `json:"elementoNome"`

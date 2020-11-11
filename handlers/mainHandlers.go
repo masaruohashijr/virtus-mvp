@@ -139,3 +139,27 @@ func BuildLoggedUser(user mdl.User) mdl.LoggedUser {
 	}
 	return loggedUser
 }
+
+func HasPermission(currentUser mdl.User, permission string) bool {
+	log.Println("HasPermission")
+	query := "SELECT " +
+		"A.feature_id, B.code FROM features_roles A, features B " +
+		"WHERE A.feature_id = B.id AND A.role_id = $1"
+	rows, _ := Db.Query(query, currentUser.Role)
+	var featuresCurrentUser []mdl.Feature
+	var feature mdl.Feature
+	for rows.Next() {
+		rows.Scan(&feature.Id, &feature.Code)
+		featuresCurrentUser = append(featuresCurrentUser, feature)
+	}
+	for _, value := range featuresCurrentUser {
+		//log.Println("Feature CurUser: " + value.Code)
+		if value.Code == permission {
+			//log.Println("Permission: " + permission)
+			//log.Println("PASSEI NO VESTIBULAR")
+			return true
+		}
+	}
+	//log.Println("NÃO PASSEI ")
+	return false
+}

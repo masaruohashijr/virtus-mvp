@@ -14,9 +14,9 @@ import (
 
 func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Designar Equipes Handler")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "designarEquipes") {
 		log.Println("--------------")
-		currentUser := GetUserInCookie(w, r)
 		var page mdl.PageEntidadesCiclos
 		sql := "SELECT b.entidade_id, c.nome " +
 			"FROM escritorios a " +

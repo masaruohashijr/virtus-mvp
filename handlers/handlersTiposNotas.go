@@ -76,7 +76,8 @@ func DeleteTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Tipos de Notas")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listTiposNotas") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +

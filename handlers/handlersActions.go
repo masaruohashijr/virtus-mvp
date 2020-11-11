@@ -193,7 +193,8 @@ func DeleteActionHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListActionsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Actions")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listActions") {
 		sql := " SELECT " +
 			" a.id, " +
 			" a.name, " +

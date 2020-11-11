@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"os"
 	"time"
-	dpk "virtus/db"
+	//dpk "virtus/db"
 	hd "virtus/handlers"
 	route "virtus/routes"
 	sec "virtus/security"
@@ -26,7 +26,11 @@ func determineListenAddress() (string, error) {
 }
 
 func dbConn() *sql.DB {
-	dbase, err := sql.Open(os.Getenv("DRIVER"), os.Getenv("DATABASE_URL"))
+	driver := os.Getenv("DRIVER")
+	if driver == "" {
+		driver = "postgres"
+	}
+	dbase, err := sql.Open(driver, os.Getenv("DATABASE_URL"))
 	log.Println(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
@@ -41,7 +45,7 @@ func main() {
 	sec.Store = sessions.NewCookieStore([]byte("vindixit123581321"))
 	hd.Db = dbConn()
 	// injetando a variável Authenticated
-	dpk.Initialize()
+	//dpk.Initialize()
 	r := mux.NewRouter()
 	// ----------------- HOME E SECURITY
 	r.HandleFunc("/", hd.IndexHandler).Methods("GET")

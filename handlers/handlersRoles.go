@@ -141,7 +141,8 @@ func DeleteRoleHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListPerfisHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Perfis")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listRoles") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.name, " +

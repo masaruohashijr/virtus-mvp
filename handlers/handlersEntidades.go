@@ -320,7 +320,8 @@ func DeleteEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Entidades")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listEntidades") {
 		var page mdl.PageEntidades
 		sql := "SELECT " +
 			" b.name, " +

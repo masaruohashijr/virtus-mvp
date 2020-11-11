@@ -26,13 +26,24 @@
 			{{$auxPilar := ""}}
 			{{$auxComponente := ""}}
 			{{$auxTipoNota := ""}}
+			{{$componenteColSpan := ""}}
 			{{$pilarColSpan := ""}}
 			{{$cicloColSpan := ""}}
 			{{$elementoNota := ""}}
 			{{$elementoPeso := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
             <tr>
-				<td style="vertical-align:middle; border: 1px solid lightgrey" rowspan="2">EFPC</td>
+				<td style="vertical-align:middle; border: 1px solid lightgrey" rowspan="4">EFPC</td>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if $primeiraLinha}}
+						{{$primeiraLinha = false}}
+						{{$notaCiclo = $m.CicloNota}}
+						{{$cicloColSpan = $m.CicloColSpan}}
+						<td style="font-size:2em;border: 1px solid lightgrey" colspan="{{$m.CicloColSpan}}">{{$m.CicloNome}}</td>
+					{{end}}
+				{{end}}
+            </tr>
+            <tr>
 				{{range $index, $m := .ElementosDaMatriz}}
 					{{if $primeiraLinha}}
 						{{$primeiraLinha = false}}
@@ -41,7 +52,7 @@
 					{{end}}
 					{{if ne $auxPilar $m.PilarNome}}
 						{{$auxPilar = $m.PilarNome}}
-						<td style="border: 1px solid lightgrey" colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
+						<td style="font-size:1.4em;border: 1px solid lightgrey" colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
 					{{end}}
 				{{end}}
             </tr>
@@ -50,7 +61,15 @@
 				{{range $index, $m := .ElementosDaMatriz}}
 					{{if ne $auxComponente $m.ComponenteNome}}
 						{{$auxComponente = $m.ComponenteNome}}
-						<td style="border: 1px solid lightgrey">{{$m.ComponenteNome}}</td>
+						<td style="font-size:1.1em;border: 1px solid lightgrey" colspan="{{$m.ComponenteColSpan}}">{{$m.ComponenteNome}}</td>
+					{{end}}
+				{{end}}
+			</tr>
+			<tr>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if ne $auxComponente $m.ComponenteNome}}
+						{{$auxComponente = $m.ComponenteNome}}
+							<td style="border: 1px solid lightgrey" colspan="{{$m.ComponenteColSpan}}">{{$m.ComponenteNota}}</td> 
 					{{end}}
 				{{end}}
 			</tr>
@@ -58,18 +77,26 @@
 				{{range $index, $m := .ElementosDaMatriz}}
 					{{if ne $auxEntidade $m.EntidadeNome}}
 						{{$auxEntidade = $m.EntidadeNome}}
-							<td>{{$m.EntidadeNome}}</td>
+							<td style="font-size:1.5em" rowspan="2">{{$m.EntidadeNome}}</td>
 					{{end}}
-					{{if ne $auxComponente $m.ComponenteNome}}
-						{{$auxComponente = $m.ComponenteNome}}
-							<td style="border: 1px solid lightgrey">{{$m.ComponenteNota}}</td> 
+					{{ $bgColor := (printf "%v%v" "#" $m.TipoNotaCorLetra ) }}
+					{{if ne $auxTipoNota $m.TipoNotaLetra}}
+						{{$auxTipoNota = $m.TipoNotaLetra}}
+							<td style="background-color:{{print $bgColor}};border: 1px solid lightgrey">{{$m.TipoNotaLetra}}</td> 
+					{{end}}
+				{{end}}
+			</tr>
+			<tr>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if ne $auxTipoNota $m.TipoNotaLetra}}
+						{{$auxTipoNota = $m.TipoNotaLetra}}
+							<td style="border: 1px solid lightgrey">{{$m.TipoNotaNota}}</td> 
 					{{end}}
 				{{end}}
 			</tr>
 			<tr>
 				<td style="border:1px solid lightgrey">NOTA EFPC</td>
-				<td style="border: 1px solid lightgrey">{{$notaCiclo}}</td>
-				<td colspan="{{$cicloColSpan}}">&nbsp;</td>
+				<td  colspan="{{$cicloColSpan}}" style="font-size:2em;border: 1px solid lightgrey">{{$notaCiclo}}</td>
 			</tr>
         </table>
 		</form>

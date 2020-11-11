@@ -293,7 +293,8 @@ func DeleteWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Workflows")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listWorkflows") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.name, " +

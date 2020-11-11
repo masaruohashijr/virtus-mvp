@@ -11,7 +11,7 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
-					{{$allowed := (call .LoggedUser.HasPermission "distribuirPapeis")}}
+					{{$allowed := (call .LoggedUser.HasPermission "avaliarPapeis")}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>

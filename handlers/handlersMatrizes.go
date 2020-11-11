@@ -12,7 +12,8 @@ import (
 
 func ListMatrizesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Matrizes Handler")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "viewMatriz") {
 		log.Println("--------------")
 		currentUser := GetUserInCookie(w, r)
 		var page mdl.PageEntidadesCiclos
@@ -80,6 +81,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" (SELECT count(1) FROM (SELECT pilar_id FROM pilares_ciclos WHERE ciclo_id = a.ciclo_id GROUP BY pilar_id) R) as qtdPilares, " +
 			" a.elemento_id, f.nome as elemento_nome, " +
 			" coalesce(n.peso,0) as elemento_peso, coalesce(n.nota,0) as elemento_nota, " +
+			" coalesce(o.peso,0) as tipo_nota_peso, coalesce(o.nota,0) as tipo_nota_nota, " +
 			" ec.tipo_nota_id, m.letra, m.cor_letra, ec.peso_padrao, " +
 			" cp.tipo_media, cp.peso_padrao, " +
 			" pc.tipo_media, pc.peso_padrao, " +
@@ -99,6 +101,12 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" a.pilar_id = n.pilar_id AND " +
 			" a.ciclo_id = n.ciclo_id AND " +
 			" a.entidade_id = n.entidade_id )" +
+			" LEFT JOIN produtos_tipos_notas o ON " +
+			" ( a.tipo_nota_id = o.tipo_nota_id AND " +
+			" a.componente_id = o.componente_id AND " +
+			" a.pilar_id = o.pilar_id AND " +
+			" a.ciclo_id = o.ciclo_id AND " +
+			" a.entidade_id = o.entidade_id )" +
 			" LEFT JOIN produtos_componentes j ON " +
 			" ( a.componente_id = j.componente_id AND " +
 			" a.pilar_id = j.pilar_id AND " +
@@ -127,6 +135,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY a.ciclo_id, " +
 			" a.pilar_id,  " +
 			" a.componente_id, " +
+			" a.tipo_nota_id, " +
 			" a.elemento_id, " +
 			" a.item_id "
 		log.Println(sql)
@@ -134,6 +143,11 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		var elementosMatriz []mdl.ElementoDaMatriz
 		var elementoMatriz mdl.ElementoDaMatriz
 		var i = 1
+		cicloColspan := 0
+		pilarColspan := 0
+		auxPilarNome := ""
+		componenteColspan := 0
+		auxComponenteNome := ""
 		for rows.Next() {
 			rows.Scan(
 				&elementoMatriz.CicloId,
@@ -154,6 +168,8 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 				&elementoMatriz.ElementoNome,
 				&elementoMatriz.ElementoPeso,
 				&elementoMatriz.ElementoNota,
+				&elementoMatriz.TipoNotaPeso,
+				&elementoMatriz.TipoNotaNota,
 				&elementoMatriz.TipoNotaId,
 				&elementoMatriz.TipoNotaLetra,
 				&elementoMatriz.TipoNotaCorLetra,
@@ -174,15 +190,25 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 				&elementoMatriz.AuditorId,
 				&elementoMatriz.AuditorName)
 			elementoMatriz.Order = i
-			//op1, _ := strconv.Atoi(elementoMatriz.ComponenteQtdTiposNotas)
-			op2, _ := strconv.Atoi(elementoMatriz.PilarQtdComponentes)
-			op3, _ := strconv.Atoi(elementoMatriz.CicloQtdPilares)
-			res := op2 * op3
-			res = res - 1
-			elementoMatriz.PilarColSpan = strconv.Itoa(op2)
-			elementoMatriz.CicloColSpan = strconv.Itoa(res)
 			i++
-			// log.Println(produto)
+			log.Println(elementoMatriz)
+			if auxPilarNome != elementoMatriz.PilarNome {
+				log.Println("Calculando Pilar colspan")
+				pilarColspan = calcularColspan("pilar", elementoMatriz.PilarId)
+				auxPilarNome = elementoMatriz.PilarNome
+			}
+			if auxComponenteNome != elementoMatriz.ComponenteNome {
+				log.Println("Calculando Componente colspan")
+				componenteColspan = calcularColspan("componente", elementoMatriz.ComponenteId)
+				auxComponenteNome = elementoMatriz.ComponenteNome
+			}
+			if cicloColspan == 0 {
+				log.Println("Calculando Ciclo colspan")
+				cicloColspan = calcularColspan("ciclo", elementoMatriz.CicloId)
+			}
+			elementoMatriz.ComponenteColSpan = componenteColspan
+			elementoMatriz.PilarColSpan = pilarColspan
+			elementoMatriz.CicloColSpan = cicloColspan
 			elementosMatriz = append(elementosMatriz, elementoMatriz)
 		}
 		page.ElementosDaMatriz = elementosMatriz
@@ -238,6 +264,33 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
+}
+
+func calcularColspan(tipo string, identificador int64) int {
+	sql := ""
+	if tipo == "ciclo" {
+		tipo = "pc.ciclo"
+	} else if tipo == "pilar" {
+		tipo = "pc.pilar"
+	} else if tipo == "componente" {
+		tipo = "cp.componente"
+	}
+	sql = " SELECT COUNT(1) FROM ( " +
+		" SELECT ciclo_id, pc.pilar_id, cp.componente_id, tnc.tipo_nota_id " +
+		" FROM tipos_notas_componentes tnc " +
+		" LEFT JOIN componentes c ON tnc.componente_id = c.id " +
+		" LEFT JOIN componentes_pilares cp ON c.id = cp.componente_id " +
+		" LEFT JOIN pilares p ON p.id = cp.pilar_id " +
+		" LEFT JOIN pilares_ciclos pc ON p.id = pc.pilar_id " +
+		" WHERE " + tipo + "_id = $1) R "
+	log.Println(sql)
+	rows, _ := Db.Query(sql, identificador)
+	resultado := 0
+	if rows.Next() {
+		rows.Scan(&resultado)
+		return resultado
+	}
+	return 0
 }
 
 func AtualizarMatrizHandler(entidadeId string, cicloId string, w http.ResponseWriter, r *http.Request) {
@@ -434,14 +487,16 @@ func UpdateMatrizHandler(w http.ResponseWriter, r *http.Request) {
 				cicloId = s[2]
 				log.Println("Pilar: " + s[3])
 				log.Println("Componente: " + s[4])
-				log.Println("Elemento: " + s[5])
+				log.Println("TipoNota: " + s[5])
+				log.Println("Elemento: " + s[6])
 				produtoElemento.EntidadeId, _ = strconv.ParseInt(s[1], 10, 64)
 				produtoElemento.CicloId, _ = strconv.ParseInt(s[2], 10, 64)
 				produtoElemento.PilarId, _ = strconv.ParseInt(s[3], 10, 64)
 				produtoElemento.ComponenteId, _ = strconv.ParseInt(s[4], 10, 64)
-				produtoElemento.ElementoId, _ = strconv.ParseInt(s[5], 10, 64)
+				produtoElemento.TipoNotaId, _ = strconv.ParseInt(s[5], 10, 64)
+				produtoElemento.ElementoId, _ = strconv.ParseInt(s[6], 10, 64)
 				produtoElemento.Peso, _ = strconv.ParseFloat(value[0], 64)
-				registrarPesoComponente(produtoElemento, GetUserInCookie(w, r))
+				registrarPesoElemento(produtoElemento, GetUserInCookie(w, r))
 			}
 		}
 		AtualizarPapeisHandler(entidadeId, cicloId, w, r)

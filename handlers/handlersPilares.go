@@ -214,7 +214,8 @@ func DeletePilarHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Pilares")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listPilares") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +

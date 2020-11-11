@@ -259,7 +259,8 @@ func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Componentes")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listCiclos") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +

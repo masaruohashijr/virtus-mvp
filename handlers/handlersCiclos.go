@@ -268,7 +268,8 @@ func DeleteCicloHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Ciclos")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listCiclos") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +

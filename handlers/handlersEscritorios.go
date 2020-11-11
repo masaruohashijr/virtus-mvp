@@ -109,7 +109,8 @@ func DeleteEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Escritorios")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listEscritorios") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
@@ -154,7 +155,7 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 		var page mdl.PageEscritorios
 		page.Escritorios = escritorios
 
-		sql = "SELECT id, name FROM users ORDER BY name asc"
+		sql = "SELECT id, name FROM users WHERE role_id = 2 ORDER BY name asc"
 		rows, _ = Db.Query(sql)
 		var users []mdl.User
 		var user mdl.User

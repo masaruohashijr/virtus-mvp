@@ -93,7 +93,8 @@ func DeleteFeaturesHandler(diffDB []mdl.Feature) {
 
 func ListFeaturesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Features")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listFeatures") {
 		sql := "SELECT " +
 			" a.id, " +
 			" a.name, " +

@@ -6,6 +6,21 @@ import (
 	mdl "virtus/models"
 )
 
+func registrarAuditorComponente(produto mdl.ProdutoElemento) {
+	sqlStatement := "UPDATE produtos_componentes SET " +
+		" auditor_id=$1 " +
+		" WHERE entidade_id=$2 " +
+		" AND ciclo_id=$3 " +
+		" AND pilar_id=$4 " +
+		" AND componente_id=$5 "
+	log.Println(sqlStatement)
+	updtForm, _ := Db.Prepare(sqlStatement)
+	_, err := updtForm.Exec(produto.AuditorId, produto.EntidadeId, produto.CicloId, produto.PilarId, produto.ComponenteId)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
 func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	sqlStatement := "UPDATE produtos_elementos SET nota = $1 " +
 		" WHERE entidade_id = $2 AND " +
@@ -116,7 +131,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 
 }
 
-func registrarPesoComponente(produto mdl.ProdutoElemento, currentUser mdl.User) {
+func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	sqlStatement := "UPDATE produtos_elementos SET peso = $1 " +
 		" WHERE entidade_id = $2 AND " +
 		" ciclo_id = $3 AND " +
@@ -134,6 +149,63 @@ func registrarPesoComponente(produto mdl.ProdutoElemento, currentUser mdl.User) 
 		produto.PilarId,
 		produto.ComponenteId,
 		produto.ElementoId)
+	// Testei e funcionou corretamente
+	sqlStatement = "UPDATE produtos_tipos_notas a " +
+		" SET peso = ( " +
+		" WITH TMP AS (SELECT entidade_id, " +
+		"			 ciclo_id, " +
+		"			 pilar_id, " +
+		"			 componente_id, " +
+		"			 round(CAST(sum(peso) as numeric),2) AS TOTAL " +
+		"		 FROM produtos_elementos  " +
+		"		 WHERE  " +
+		"		 componente_id = $1 AND  " +
+		"		 pilar_id = $2 AND  " +
+		"		 ciclo_id = $3 AND  " +
+		"		 entidade_id = $4 " +
+		"		 GROUP BY entidade_id, ciclo_id, pilar_id, componente_id) " +
+		" SELECT round(CAST((sum(r.peso)/(sum(t.TOTAL)/count(1)))*100 as numeric),2) AS pesoTipoNota " +
+		" FROM  " +
+		" (SELECT b.entidade_id, b.ciclo_id, b.pilar_id, b.componente_id, b.tipo_nota_id, " +
+		" 		b.peso " +
+		"		 FROM produtos_elementos b " +
+		"		 WHERE  " +
+		"		 b.tipo_nota_id = $5 AND  " +
+		"		 b.componente_id = $6 AND  " +
+		"		 b.pilar_id = $7 AND  " +
+		"		 b.ciclo_id = $8 AND  " +
+		"		 b.entidade_id = $9) r " +
+		" LEFT JOIN TMP t   " +
+		"		 ON r.entidade_id = t.entidade_id AND " +
+		"		 r.ciclo_id = t.ciclo_id AND " +
+		"		 r.pilar_id = t.pilar_id AND " +
+		"		 r.componente_id = t.componente_id " +
+		" GROUP BY r.entidade_id, r.ciclo_id, r.pilar_id, r.componente_id, r.tipo_nota_id ) " +
+		" WHERE a.tipo_nota_id = $10 " +
+		" AND a.componente_id = $11 " +
+		" AND a.pilar_id = $12 " +
+		" AND a.ciclo_id = $13 " +
+		" AND a.entidade_id = $14 "
+
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(produto.ComponenteId,
+		produto.PilarId,
+		produto.CicloId,
+		produto.EntidadeId,
+		produto.TipoNotaId,
+		produto.ComponenteId,
+		produto.PilarId,
+		produto.CicloId,
+		produto.EntidadeId,
+		produto.TipoNotaId,
+		produto.ComponenteId,
+		produto.PilarId,
+		produto.CicloId,
+		produto.EntidadeId)
 	// Testei e funcionou corretamente
 	sqlStatement = "UPDATE produtos_componentes a " +
 		" SET peso = (SELECT round(CAST(avg(b.peso) as numeric),2) " +

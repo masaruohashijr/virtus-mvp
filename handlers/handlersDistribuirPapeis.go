@@ -11,9 +11,9 @@ import (
 
 func ListDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Distribuir Papeis Handler")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "distribuirPapeis") {
 		log.Println("--------------")
-		currentUser := GetUserInCookie(w, r)
 		var page mdl.PageEntidadesCiclos
 		sql := "SELECT b.entidade_id, d.nome " +
 			" FROM escritorios a " +
@@ -89,7 +89,6 @@ func UpdateDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 					if err != nil {
 						panic(err.Error())
 					}
-					log.Println("Statement: " + sqlStatement)
 				}
 			}
 		}

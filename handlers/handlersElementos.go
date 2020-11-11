@@ -182,7 +182,8 @@ func DeleteElementoHandler(w http.ResponseWriter, r *http.Request) {
 
 func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Elementos")
-	if sec.IsAuthenticated(w, r) {
+	currentUser := GetUserInCookie(w, r)
+	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listElementos") {
 		query := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
