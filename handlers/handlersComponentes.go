@@ -222,7 +222,6 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		UpdateElementosComponenteHandler(elementosComponentePage, elementosComponenteDB)
-
 	}
 	http.Redirect(w, r, route.ComponentesRoute, 301)
 }

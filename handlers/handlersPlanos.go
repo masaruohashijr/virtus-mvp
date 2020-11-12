@@ -58,12 +58,14 @@ func UpdatePlanosHandler(planosPage []mdl.Plano, planosDB []mdl.Plano) {
 				fieldsChanged := hasSomeFieldChangedPlano(planosPage[i], planosDB[j]) //DONE
 				log.Println(fieldsChanged)
 				if fieldsChanged {
-					updatePlanoHandler(planosPage[i], planosDB[j]) // TODO
+					updatePlanoHandler(planosPage[i], planosDB[j])
 				}
+				planosDB = removePlano(planosDB, planosPage[i])
 				break
 			}
 		}
 	}
+	DeletePlanosHandler(planosDB)
 }
 
 func hasSomeFieldChangedPlano(planoPage mdl.Plano, planoDB mdl.Plano) bool {
@@ -103,7 +105,6 @@ func DeletePlanoHandler(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
 		http.Redirect(w, r, route.PlanosRoute, 301)
 	} else {

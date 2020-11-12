@@ -39,7 +39,7 @@
 					{{$entidade.Nome}}
 				</td>
                 <td>
-					<select class="w3-input">
+					<select class="w3-input" id="CicloEntidade_{{$entidade.Id}}">
 						{{range $i, $cicloEntidade := $entidade.CiclosEntidade }}
 			                <option value="{{$cicloEntidade.Id}}">
 								{{$cicloEntidade.Nome}}
@@ -49,7 +49,7 @@
 				</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEquipe(this)">Equipe</button>
+                    <button class="w3-btn w3-teal" onclick="if(validarDesignarEquipe(this)){contexto='edit';editEquipe(this);}">Equipe</button>
                 </td>
 				{{end}}
             </tr>

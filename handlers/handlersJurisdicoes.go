@@ -196,7 +196,7 @@ func ListJurisdicoesByEscritorioId(escritorioId string) []mdl.Jurisdicao {
 }
 
 func UpdateJurisdicoesHandler(jurisdicoesPage []mdl.Jurisdicao, jurisdicoesDB []mdl.Jurisdicao) {
-	for i := range jurisdicoesPage {
+	for i := range jurisdicoesPage { // BACEN BB CAIXA (PAGE) -> (DB) BACEN BB BANESES
 		id := jurisdicoesPage[i].Id
 		log.Println("Jurisdicao Page id: " + strconv.FormatInt(id, 10))
 		for j := range jurisdicoesDB {
@@ -205,12 +205,14 @@ func UpdateJurisdicoesHandler(jurisdicoesPage []mdl.Jurisdicao, jurisdicoesDB []
 				fieldsChanged := hasSomeFieldChangedJurisdicao(jurisdicoesPage[i], jurisdicoesDB[j]) //DONE
 				log.Println(fieldsChanged)
 				if fieldsChanged {
-					updateJurisdicaoHandler(jurisdicoesPage[i], jurisdicoesDB[j]) // TODO
+					updateJurisdicaoHandler(jurisdicoesPage[i], jurisdicoesDB[j])
 				}
+				jurisdicoesDB = removeJurisdicao(jurisdicoesDB, jurisdicoesPage[i]) // CORREÇÃO
 				break
 			}
 		}
 	}
+	DeleteJurisdicoesHandler(jurisdicoesDB) // CORREÇÃO
 }
 
 func hasSomeFieldChangedJurisdicao(jurisdicaoPage mdl.Jurisdicao, jurisdicaoDB mdl.Jurisdicao) bool {
@@ -237,7 +239,7 @@ func updateJurisdicaoHandler(jurisdicao mdl.Jurisdicao, jurisdicaoDB mdl.Jurisdi
 	log.Println("De " + jurisdicao.IniciaEm + " a " + jurisdicao.TerminaEm)
 	if jurisdicao.IniciaEm != "" {
 		sqlStatement = "UPDATE jurisdicoes SET inicia_em = to_date('" +
-			jurisdicao.IniciaEm + "','YYYY-MM-DD') " +
+			jurisdicao.IniciaEm + "','DD/MM/YYYY') " +
 			"WHERE id = " + strconv.FormatInt(jurisdicao.Id, 10)
 		_, err = Db.Exec(sqlStatement)
 		if err != nil {
@@ -246,7 +248,7 @@ func updateJurisdicaoHandler(jurisdicao mdl.Jurisdicao, jurisdicaoDB mdl.Jurisdi
 	}
 	if jurisdicao.TerminaEm != "" {
 		sqlStatement = "UPDATE jurisdicoes SET termina_em = to_date('" +
-			jurisdicao.TerminaEm + "','YYYY-MM-DD') " +
+			jurisdicao.TerminaEm + "','DD/MM/YYYY') " +
 			"WHERE id = " + strconv.FormatInt(jurisdicao.Id, 10)
 		_, err = Db.Exec(sqlStatement)
 		if err != nil {

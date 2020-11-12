@@ -73,10 +73,12 @@ func UpdateItensHandler(itensPage []mdl.Item, itensDB []mdl.Item) {
 				if fieldsChanged {
 					updateItemHandler(itensPage[i], itensDB[j]) // TODO
 				}
+				itensDB = removeItem(itensDB, itensPage[i]) // CORREÇÃO
 				break
 			}
 		}
 	}
+	DeleteItensHandler(itensDB) // CORREÇÃO
 }
 
 func hasSomeFieldChanged(itemPage mdl.Item, itemDB mdl.Item) bool {

@@ -22,23 +22,33 @@ func registrarAuditorComponente(produto mdl.ProdutoElemento) {
 }
 
 func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
-	sqlStatement := "UPDATE produtos_elementos SET nota = $1 " +
-		" WHERE entidade_id = $2 AND " +
-		" ciclo_id = $3 AND " +
-		" pilar_id = $4 AND " +
-		" componente_id = $5 AND " +
-		" elemento_id = $6 "
+	sqlStatement := "UPDATE produtos_elementos a SET nota = $1,  " +
+		" tipo_pontuacao_id = (SELECT case when b.supervisor_id = $2 " +
+		" then 3 else 1 end FROM produtos_componentes b where " +
+		" a.entidade_id = b.entidade_id and " +
+		" a.ciclo_id = b.ciclo_id and " +
+		" a.pilar_id = b.pilar_id and " +
+		" a.componente_id = b.componente_id) " +
+		" WHERE a.entidade_id = $3 " +
+		" AND a.ciclo_id = $4 " +
+		" AND a.pilar_id = $5 " +
+		" AND a.componente_id = $6 " +
+		" AND a.elemento_id = $7 " +
+		" AND a.nota <> $8 "
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
-	updtForm.Exec(produto.Nota,
+	updtForm.Exec(
+		produto.Nota,
+		currentUser.Id,
 		produto.EntidadeId,
 		produto.CicloId,
 		produto.PilarId,
 		produto.ComponenteId,
-		produto.ElementoId)
+		produto.ElementoId,
+		produto.Nota)
 	// Testei e funcionou corretamente
 	// PRODUTOS_TIPOS_NOTAS
 	sqlStatement = "UPDATE produtos_tipos_notas a " +
@@ -128,7 +138,78 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 		panic(err.Error())
 	}
 	updtForm.Exec(produto.EntidadeId, produto.CicloId)
+	// registrarTiposPontuacao(produto, currentUser)
+}
 
+func registrarTiposPontuacao(produto mdl.ProdutoElemento, currentUser mdl.User) {
+	sqlStatement := "UPDATE produtos_tipos_notas a SET " +
+		" tipo_pontuacao_id = (SELECT case when b.supervisor_id = $1 " +
+		" then 3 else 2 end FROM produtos_componentes b where a.id = b.id) " +
+		" WHERE entidade_id = $2 " +
+		" AND  ciclo_id = $3 " +
+		" AND  pilar_id = $4 " +
+		" AND  componente_id = $5 " +
+		" AND  tipo_nota_id = $6 "
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(
+		currentUser.Id,
+		produto.EntidadeId,
+		produto.CicloId,
+		produto.PilarId,
+		produto.ComponenteId,
+		produto.TipoNotaId)
+	sqlStatement = "UPDATE produtos_componentes a SET " +
+		" tipo_pontuacao_id = (SELECT case when b.supervisor_id = $1 " +
+		" then 3 else 2 end FROM produtos_componentes b where a.id = b.id) " +
+		" WHERE entidade_id = $2 " +
+		" AND  ciclo_id = $3 " +
+		" AND  pilar_id = $4 " +
+		" AND  componente_id = $5 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(
+		currentUser.Id,
+		produto.EntidadeId,
+		produto.CicloId,
+		produto.PilarId,
+		produto.ComponenteId)
+	sqlStatement = "UPDATE produtos_pilares a SET " +
+		" tipo_pontuacao_id = (SELECT case when b.supervisor_id = $1 " +
+		" then 3 else 2 end FROM produtos_pilares b where a.id = b.id) " +
+		" WHERE entidade_id = $2 " +
+		" AND  ciclo_id = $3 " +
+		" AND  pilar_id = $4 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(
+		currentUser.Id,
+		produto.EntidadeId,
+		produto.CicloId,
+		produto.PilarId)
+	sqlStatement = "UPDATE produtos_ciclos a SET " +
+		" tipo_pontuacao_id = (SELECT case when b.supervisor_id = $1 " +
+		" then 3 else 2 end FROM produtos_ciclos b where a.id = b.id) " +
+		" WHERE entidade_id = $2 " +
+		" AND  ciclo_id = $3 "
+	log.Println(sqlStatement)
+	updtForm, err = Db.Prepare(sqlStatement)
+	if err != nil {
+		panic(err.Error())
+	}
+	updtForm.Exec(
+		currentUser.Id,
+		produto.EntidadeId,
+		produto.CicloId)
 }
 
 func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
@@ -281,7 +362,7 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 	produtoPilarId := 0
 	err = Db.QueryRow(
 		sqlStatement,
-		mdl.Manual,
+		mdl.Calculada,
 		currentUser.Id,
 		time.Now()).Scan(&produtoPilarId)
 	if err != nil {
@@ -358,7 +439,7 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 	produtoComponenteId := 0
 	err = Db.QueryRow(
 		sqlStatement,
-		mdl.Manual,
+		mdl.Calculada,
 		currentUser.Id,
 		time.Now()).Scan(&produtoComponenteId)
 	if err != nil {
@@ -400,7 +481,7 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 	produtoTipoNotaId := 0
 	err = Db.QueryRow(
 		sqlStatement,
-		mdl.Manual,
+		mdl.Calculada,
 		currentUser.Id,
 		time.Now()).Scan(&produtoTipoNotaId)
 	if err != nil {

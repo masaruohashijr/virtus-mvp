@@ -49,7 +49,7 @@
 				</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="submeterDistribuirPapeisForm(this)">Distribuir Papéis</button>
+                    <button class="w3-btn w3-teal" onclick="if(validarDistribuirPapeis(this)){submeterDistribuirPapeisForm(this);}">Distribuir Papéis</button>
                 </td>
 				{{end}}
             </tr>

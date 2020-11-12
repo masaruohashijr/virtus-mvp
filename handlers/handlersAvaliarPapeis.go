@@ -24,6 +24,7 @@ const sqlPapeis = " SELECT  " +
 	" coalesce(o.peso,0) as tipo_nota_peso, coalesce(o.nota,0) as tipo_nota_nota, " +
 	" a.elemento_id, f.nome as elemento_nome, " +
 	" coalesce(n.peso,0) as elemento_peso, coalesce(n.nota,0) as elemento_nota, " +
+	" n.tipo_pontuacao_id, " +
 	" ec.peso_padrao, " +
 	" cp.tipo_media, cp.peso_padrao, " +
 	" pc.tipo_media, pc.peso_padrao, " +
@@ -86,6 +87,7 @@ func ListAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 		var page mdl.PageEntidadesCiclos
 		// Entidades da jurisdição do Escritório ao qual pertenço
 		sql := "SELECT a.entidade_id, b.nome FROM jurisdicoes a " +
+			" INNER JOIN ciclos_entidades d ON d.entidade_id = a.entidade_id " +
 			" LEFT JOIN entidades b ON a.entidade_id = b.id " +
 			" LEFT JOIN membros c ON a.escritorio_id = c.escritorio_id " +
 			" WHERE c.usuario_id = $1"
@@ -170,6 +172,7 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.ElementoNome,
 				&produto.ElementoPeso,
 				&produto.ElementoNota,
+				&produto.TipoPontuacaoId,
 				&produto.PesoPadraoEC,
 				&produto.TipoMediaCPId,
 				&produto.PesoPadraoCP,
@@ -278,6 +281,7 @@ func AtualizarPapeisHandler(entidadeId string, cicloId string, w http.ResponseWr
 			&produto.ElementoNome,
 			&produto.ElementoPeso,
 			&produto.ElementoNota,
+			&produto.TipoPontuacaoId,
 			&produto.PesoPadraoEC,
 			&produto.TipoMediaCPId,
 			&produto.PesoPadraoCP,

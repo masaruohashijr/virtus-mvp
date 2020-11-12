@@ -18,11 +18,12 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "designarEquipes") {
 		log.Println("--------------")
 		var page mdl.PageEntidadesCiclos
-		sql := "SELECT b.entidade_id, c.nome " +
-			"FROM escritorios a " +
-			"LEFT JOIN jurisdicoes b ON a.id = b.escritorio_id " +
-			"LEFT JOIN entidades c ON c.id = b.entidade_id " +
-			"WHERE a.chefe_id = $1"
+		sql := " SELECT b.entidade_id, c.nome " +
+			" FROM escritorios a " +
+			" LEFT JOIN jurisdicoes b ON a.id = b.escritorio_id " +
+			" LEFT JOIN entidades c ON c.id = b.entidade_id " +
+			" INNER JOIN ciclos_entidades d ON d.entidade_id = b.entidade_id " +
+			" WHERE a.chefe_id = $1"
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id)
 		var entidades []mdl.Entidade
@@ -293,10 +294,12 @@ func UpdateIntegrantesHandler(integrantesPage []mdl.Integrante, integrantesDB []
 				if fieldsChanged {
 					updateIntegranteHandler(integrantesPage[i], integrantesDB[j]) // TODO
 				}
+				integrantesDB = removeIntegrante(integrantesDB, integrantesPage[i]) // CORREÇÃO
 				break
 			}
 		}
 	}
+	DeleteIntegrantesHandler(integrantesDB) // CORREÇÃO
 }
 
 func hasSomeFieldChangedIntegrante(integrantePage mdl.Integrante, integranteDB mdl.Integrante) bool {

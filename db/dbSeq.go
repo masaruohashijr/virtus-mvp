@@ -82,14 +82,14 @@ func createSeq() {
 		" CACHE 1")
 	// Sequence ESCRITORIOS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.escritorios_id_seq " +
-		" START WITH 1" +
+		" START WITH 6" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
 	// Sequence FEATURES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.features_id_seq " +
-		" START WITH 18" +
+		" START WITH 35" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +

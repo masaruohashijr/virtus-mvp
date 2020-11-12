@@ -460,6 +460,7 @@ type ProdutoItem struct {
 	ElementoNome     string `json:"elementoNome"`
 	ElementoPeso     string `json:"elementoPeso"`
 	ElementoNota     string `json:"elementoNota"`
+	TipoPontuacaoId  string `json:"tipoPontuacaoId"`
 	TipoNotaId       int    `json:"tipoNotaId"`
 	TipoNotaNome     string `json:"tipoNotaNome"`
 	TipoNotaLetra    string `json:"tipoNotaLetra"`
@@ -643,6 +644,7 @@ type Workflow struct {
 
 // PÁGINAS
 type PageActions struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Statuss    []Status
@@ -651,6 +653,7 @@ type PageActions struct {
 }
 
 type PageCiclos struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Ciclos     []Ciclo
@@ -661,6 +664,7 @@ type PageCiclos struct {
 }
 
 type PageComponentes struct {
+	ErrMsg      string
 	AppName     string
 	Title       string
 	TiposNota   []TipoNota
@@ -671,6 +675,7 @@ type PageComponentes struct {
 }
 
 type PageElementos struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Elementos  []Elemento
@@ -679,6 +684,7 @@ type PageElementos struct {
 }
 
 type PageEntidades struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Entidades  []Entidade
@@ -689,6 +695,7 @@ type PageEntidades struct {
 }
 
 type PageFeatures struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Features   []Feature
@@ -696,6 +703,7 @@ type PageFeatures struct {
 }
 
 type PageEscritorios struct {
+	ErrMsg      string
 	AppName     string
 	Title       string
 	Escritorios []Escritorio
@@ -705,6 +713,7 @@ type PageEscritorios struct {
 }
 
 type PageEntidadesCiclos struct {
+	ErrMsg       string
 	AppName      string
 	Title        string
 	Entidades    []Entidade
@@ -714,6 +723,7 @@ type PageEntidadesCiclos struct {
 }
 
 type PageMatriz struct {
+	ErrMsg            string
 	AppName           string
 	Title             string
 	ElementosDaMatriz []ElementoDaMatriz
@@ -723,6 +733,7 @@ type PageMatriz struct {
 }
 
 type PageProdutosItens struct {
+	ErrMsg       string
 	AppName      string
 	Title        string
 	Produtos     []ProdutoItem
@@ -732,6 +743,7 @@ type PageProdutosItens struct {
 }
 
 type PageProdutosComponentes struct {
+	ErrMsg       string
 	AppName      string
 	Title        string
 	Produtos     []ProdutoComponente
@@ -741,6 +753,7 @@ type PageProdutosComponentes struct {
 }
 
 type PagePilares struct {
+	ErrMsg      string
 	AppName     string
 	Title       string
 	Pilares     []Pilar
@@ -750,6 +763,7 @@ type PagePilares struct {
 }
 
 type PagePlanos struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Planos     []Plano
@@ -758,6 +772,7 @@ type PagePlanos struct {
 }
 
 type PageRoles struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Roles      []Role
@@ -766,6 +781,7 @@ type PageRoles struct {
 }
 
 type PageStatus struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Statuss    []Status
@@ -773,6 +789,7 @@ type PageStatus struct {
 }
 
 type PageTiposNotas struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	TiposNotas []TipoNota
@@ -781,6 +798,7 @@ type PageTiposNotas struct {
 }
 
 type PageUsers struct {
+	ErrMsg      string
 	AppName     string
 	Title       string
 	Users       []User
@@ -790,6 +808,7 @@ type PageUsers struct {
 }
 
 type PageWorkflows struct {
+	ErrMsg     string
 	AppName    string
 	Title      string
 	Features   []Feature

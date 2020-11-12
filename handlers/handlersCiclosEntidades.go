@@ -75,12 +75,14 @@ func UpdateCiclosEntidadeHandler(ciclosEntidadePage []mdl.CicloEntidade, ciclosE
 				fieldsChanged := hasSomeFieldChangedCicloEntidade(ciclosEntidadePage[i], ciclosEntidadeDB[j]) //DONE
 				log.Println(fieldsChanged)
 				if fieldsChanged {
-					updateCicloEntidadeHandler(ciclosEntidadePage[i], ciclosEntidadeDB[j]) // TODO
+					updateCicloEntidadeHandler(ciclosEntidadePage[i], ciclosEntidadeDB[j])
 				}
+				ciclosEntidadeDB = removeCicloEntidade(ciclosEntidadeDB, ciclosEntidadePage[i])
 				break
 			}
 		}
 	}
+	DeleteCiclosEntidadeHandler(ciclosEntidadeDB) // CORREÇÃO
 }
 
 func hasSomeFieldChangedCicloEntidade(cicloEntidadePage mdl.CicloEntidade, cicloEntidadeDB mdl.CicloEntidade) bool {

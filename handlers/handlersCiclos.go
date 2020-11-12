@@ -91,7 +91,7 @@ func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
 				snippet1 = snippet1 + ", termina_em "
 				snippet2 = snippet2 + ", $6"
 			}
-			sqlStatement := "INSERT INTO public.ciclos_entidades ( " +
+			sqlStatement := "INSERT INTO ciclos_entidades ( " +
 				" entidade_id, " +
 				" ciclo_id, " +
 				" tipo_media, " +

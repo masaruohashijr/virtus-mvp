@@ -111,25 +111,28 @@ function editMembro(e) {
 	editMembroForm.style.display = 'block';
 	var linha = e.parentNode.parentNode;
 	var order = linha.childNodes[0].childNodes[0].value;
+	var membroId = linha.childNodes[0].childNodes[1].value;
+	var escritorioId = linha.childNodes[0].childNodes[2].value;
 	var usuarioId = linha.childNodes[0].childNodes[3].value;
-	var entidadeId = linha.childNodes[0].childNodes[2].value;
 	// var tipoMedia = linha.childNodes[1].innerText;
 	var iniciaEm = linha.childNodes[2].innerText;
 	console.log(iniciaEm);
 	var terminaEm = linha.childNodes[3].innerText;
 	console.log(terminaEm);
 	// Atribuindo os valores de edit-item-form
+	document.getElementById('Id-MEForUpdate').value=membroId;
 	document.getElementById('UsuarioMEForUpdate').value=usuarioId;
 	document.getElementById('Order-MEForUpdate').value=order;
-	document.getElementById('EscritorioId-MEForUpdate').value=entidadeId;
-	document.getElementById('IniciaEmForUpdate').value=iniciaEm;
-	document.getElementById('TerminaEmForUpdate').value=terminaEm;
+	document.getElementById('EscritorioId-MEForUpdate').value=escritorioId;
+	document.getElementById('IniciaEmMEForUpdate').value=formatarData(iniciaEm);
+	document.getElementById('TerminaEmMEForUpdate').value=formatarData(terminaEm);
 }
 
 
 function updateMembro() {
 	console.log('updateMembro');
-	var id = document.getElementById('Id-MEForUpdate').value;
+	var membroId = document.getElementById('Id-MEForUpdate').value;
+	console.log('membroId: '+membroId);
 	var order = document.getElementById('Order-MEForUpdate').value;
 	var escritorioId = document.getElementById('EscritorioId-MEForUpdate').value;
 	let campoSelect = document.getElementById('UsuarioMEForUpdate');
@@ -153,9 +156,9 @@ function updateMembro() {
 		alert(erros);
 		return;
 	}
-	let iniciaEm = document.getElementById('IniciaEmForUpdate').value;
-	let terminaEm = document.getElementById('TerminaEmForUpdate').value;
-	membro = new Membro(order, id, escritorioId, usuarioId, usuarioNome, iniciaEm, terminaEm, '', '', '', '', '', '');
+	let iniciaEm = document.getElementById('IniciaEmMEForUpdate').value;
+	let terminaEm = document.getElementById('TerminaEmMEForUpdate').value;
+	membro = new Membro(order, membroId, escritorioId, usuarioId, usuarioNome, '', formatarData(iniciaEm), formatarData(terminaEm), '', '', '', '', '', '');
 	membros[order] = membro;
 	updateMembroRow("table-membros-"+contexto,order);
 	limparCamposMembroForm();
@@ -205,10 +208,10 @@ function updateMembroRow(tableID, order){
 	celula.innerHTML = '<input type="hidden" name="id" value="'+membros[order].id+'"/>'+celula.innerHTML;
 	console.log('order: '+order);
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
-	celula = row.childNodes[1];
+	celula = row.childNodes[2];
 	console.log('membros[order].iniciaEm: '+membros[order].iniciaEm);
 	celula.innerText = membros[order].iniciaEm;
-	celula = row.childNodes[2];
+	celula = row.childNodes[3];
 	console.log('membros[order].terminaEm: '+membros[order].terminaEm);
 	celula.innerText = membros[order].terminaEm;
 }

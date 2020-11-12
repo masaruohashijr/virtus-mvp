@@ -23,11 +23,11 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 		email := r.FormValue("Email")
 		mobile := r.FormValue("Mobile")
 		role := r.FormValue("RoleForInsert")
-		escritorio := r.FormValue("EscritorioForInsert")
 		hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		sqlStatement := "INSERT INTO Users(name, username, password, email, mobile, role_id, escritorio_id, author_id, criado_em) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id"
+		sqlStatement := "INSERT INTO Users(name, username, password, email, mobile, role_id, author_id, criado_em) " +
+			" VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"
 		id := 0
-		err = Db.QueryRow(sqlStatement, name, username, hash, email, mobile, role, escritorio, currentUser.Id, time.Now()).Scan(&id)
+		err = Db.QueryRow(sqlStatement, name, username, hash, email, mobile, role, currentUser.Id, time.Now()).Scan(&id)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
@@ -36,7 +36,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("INSERT: Id: " + strconv.Itoa(id) +
 			" | Name: " + name + " | Username: " + username +
 			" | Password: " + password + " | Email: " + email +
-			" | Mobile: " + mobile + " | Role: " + role + " | Escritório: " + escritorio)
+			" | Mobile: " + mobile + " | Role: " + role)
 	}
 	http.Redirect(w, r, route.UsersRoute, 301)
 }
@@ -50,28 +50,23 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		email := r.FormValue("Email")
 		mobile := r.FormValue("Mobile")
 		role := r.FormValue("RoleForUpdate")
-		escritorio := r.FormValue("EscritorioForUpdate")
-		if escritorio == "" {
-			escritorio = "0"
-		}
 		log.Println("Role: " + role)
 		sqlStatement := " UPDATE Users SET name=$1, " +
-			" username=$2, email=$3, mobile=$4, role_id=$5 , escritorio_id=$6 " +
-			" WHERE id=$7 "
+			" username=$2, email=$3, mobile=$4, role_id=$5 " +
+			" WHERE id=$6 "
 		log.Println(sqlStatement)
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
-		updtForm.Exec(name, username, email, mobile, role, escritorio, id)
+		updtForm.Exec(name, username, email, mobile, role, id)
 		log.Println("UPDATE: Id: " +
 			id + " | Name: " +
 			name + " | Username: " +
 			username + " | E-mail: " +
 			email + " | Mobile: " +
 			mobile + " | Role: " +
-			role + " | Escritorio: " +
-			escritorio)
+			role)
 		http.Redirect(w, r, route.UsersRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)

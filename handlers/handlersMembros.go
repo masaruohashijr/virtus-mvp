@@ -46,28 +46,28 @@ func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 				usuarioNome := strings.Split(array[4], ":")[1]
 				log.Println("usuarioNome -------- " + usuarioNome)
 				membroPage.UsuarioNome = usuarioNome
-				iniciaEm := strings.Split(array[5], ":")[1]
+				iniciaEm := strings.Split(array[6], ":")[1]
 				log.Println("iniciaEm -------- " + iniciaEm)
 				membroPage.IniciaEm = iniciaEm
-				terminaEm := strings.Split(array[6], ":")[1]
+				terminaEm := strings.Split(array[7], ":")[1]
 				log.Println("terminaEm -------- " + terminaEm)
 				membroPage.TerminaEm = terminaEm
-				autorId := strings.Split(array[7], ":")[1]
+				autorId := strings.Split(array[8], ":")[1]
 				log.Println("autorId -------- " + autorId)
 				membroPage.AuthorId, _ = strconv.ParseInt(autorId, 10, 64)
-				autorNome := strings.Split(array[8], ":")[1]
+				autorNome := strings.Split(array[9], ":")[1]
 				log.Println("autorNome -------- " + autorNome)
 				membroPage.AuthorName = autorNome
-				criadoEm := strings.Split(array[9], ":")[1]
+				criadoEm := strings.Split(array[10], ":")[1]
 				log.Println("criadoEm -------- " + criadoEm)
 				membroPage.CriadoEm = criadoEm
-				idVersaoOrigem := strings.Split(array[10], ":")[1]
+				idVersaoOrigem := strings.Split(array[11], ":")[1]
 				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
 				membroPage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
-				statusId := strings.Split(array[11], ":")[1]
+				statusId := strings.Split(array[12], ":")[1]
 				log.Println("statusId -------- " + statusId)
 				membroPage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
-				cStatus := strings.Split(array[12], ":")[1]
+				cStatus := strings.Split(array[13], ":")[1]
 				log.Println("cStatus -------- " + cStatus)
 				membroPage.CStatus = cStatus
 				membrosPage = append(membrosPage, membroPage)
@@ -95,26 +95,35 @@ func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			var membro mdl.Membro
 			membroId := 0
-			statusComponenteId := GetStartStatus("plano")
+			statusComponenteId := GetStartStatus("membro")
 			for i := range diffPage {
 				membro = diffPage[i]
 				log.Println("Escritorio Id: " + escritorioId)
 				sqlStatement := "INSERT INTO membros ( " +
 					" escritorio_id, " +
 					" usuario_id, " +
+					" inicia_em, " +
+					" termina_em, " +
 					" author_id, " +
 					" criado_em, " +
 					" status_id " +
 					" ) " +
-					" VALUES ($1, $2, $3, $4, $5) RETURNING id"
+					" SELECT $1, $2, $3, $4, $5, $6, $7 " +
+					" WHERE NOT EXISTS (SELECT 1 FROM membros " +
+					" WHERE usuario_id = $8 AND escritorio_id = $9) " +
+					" RETURNING id"
 				log.Println(sqlStatement)
 				Db.QueryRow(
 					sqlStatement,
 					escritorioId,
 					membro.UsuarioId,
+					membro.IniciaEm,
+					membro.TerminaEm,
 					currentUser.Id,
 					time.Now(),
-					statusComponenteId).Scan(&membroId)
+					statusComponenteId,
+					membro.UsuarioId,
+					escritorioId).Scan(&membroId)
 			}
 		}
 		UpdateMembrosHandler(membrosPage, membrosDB)
@@ -134,13 +143,13 @@ func ListMembrosByEscritorioId(escritorioId string) []mdl.Membro {
 		"a.usuario_id, " +
 		"coalesce(d.name,'') as usuario_nome, " +
 		"coalesce(e.name,'') as role_name, " +
-		"coalesce(to_char(a.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
-		"coalesce(to_char(a.termina_em,'DD/MM/YYYY')) as termina_em, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
 		"coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em, " +
 		"a.status_id, " +
-		"coalesce(c.name,'') as status_name " +
+		"coalesce(c.name,'') as status_name, " +
+		"coalesce(to_char(a.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
+		"coalesce(to_char(a.termina_em,'DD/MM/YYYY')) as termina_em " +
 		"FROM membros a " +
 		"LEFT JOIN users b ON a.author_id = b.id " +
 		"LEFT JOIN status c ON a.status_id = c.id " +
@@ -159,16 +168,18 @@ func ListMembrosByEscritorioId(escritorioId string) []mdl.Membro {
 			&membro.UsuarioId,
 			&membro.UsuarioNome,
 			&membro.UsuarioPerfil,
-			&membro.IniciaEm,
-			&membro.TerminaEm,
 			&membro.AuthorId,
 			&membro.AuthorName,
 			&membro.CriadoEm,
 			&membro.StatusId,
-			&membro.CStatus)
+			&membro.CStatus,
+			&membro.IniciaEm,
+			&membro.TerminaEm)
 		membro.Order = i
 		i++
 		membros = append(membros, membro)
+		membro.IniciaEm = ""
+		membro.TerminaEm = ""
 		log.Println(membro)
 	}
 	return membros
@@ -227,29 +238,45 @@ func UpdateMembrosHandler(membrosPage []mdl.Membro, membrosDB []mdl.Membro) {
 				if fieldsChanged {
 					updateMembroHandler(membrosPage[i], membrosDB[j]) // TODO
 				}
+				membrosDB = removeMembro(membrosDB, membrosPage[i]) // CORREÇÃO
 				break
 			}
 		}
 	}
+	DeleteMembrosHandler(membrosDB) // CORREÇÃO
 }
 
-func hasSomeFieldChangedMembro(jurisdicaoPage mdl.Membro, jurisdicaoDB mdl.Membro) bool {
-	log.Println("jurisdicaoPage.Nome: " + jurisdicaoPage.UsuarioNome)
-	log.Println("jurisdicaoDB.Nome: " + jurisdicaoDB.UsuarioNome)
-	if jurisdicaoPage.IniciaEm != jurisdicaoDB.IniciaEm {
+func hasSomeFieldChangedMembro(membroPage mdl.Membro, membroDB mdl.Membro) bool {
+	log.Println("membroPage.Nome: " + membroPage.UsuarioNome)
+	log.Println("membroDB.Nome: " + membroDB.UsuarioNome)
+	if membroPage.IniciaEm != membroDB.IniciaEm {
 		return true
-	} else if jurisdicaoPage.TerminaEm != jurisdicaoDB.TerminaEm {
+	} else if membroPage.TerminaEm != membroDB.TerminaEm {
 		return true
 	} else {
 		return false
 	}
 }
 
-func updateMembroHandler(ce mdl.Membro, jurisdicaoDB mdl.Membro) {
-	sqlStatement := "UPDATE jurisdicoes SET " +
-		"inicia_em=$1, termina_em=$2 WHERE id=$3"
-	log.Println(sqlStatement)
-	updtForm, _ := Db.Prepare(sqlStatement)
-	updtForm.Exec(ce.IniciaEm, ce.TerminaEm, ce.Id)
-	log.Println("Statement: " + sqlStatement)
+func updateMembroHandler(membro mdl.Membro, membroDB mdl.Membro) {
+	if membro.IniciaEm != "" {
+		log.Println(membro.IniciaEm)
+		sqlStatement := "UPDATE membros SET inicia_em = to_date('" +
+			membro.IniciaEm + "','DD/MM/YYYY') " +
+			"WHERE id = " + strconv.FormatInt(membro.Id, 10)
+		_, err := Db.Exec(sqlStatement)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	log.Println(membro.TerminaEm)
+	if membro.TerminaEm != "" {
+		sqlStatement := "UPDATE membros SET termina_em = to_date('" +
+			membro.TerminaEm + "','DD/MM/YYYY') " +
+			"WHERE id = " + strconv.FormatInt(membro.Id, 10)
+		_, err := Db.Exec(sqlStatement)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 }

@@ -128,7 +128,7 @@ function updateJurisdicao() {
 	}
 	let iniciaEm = document.getElementById('IniciaEmForUpdate').value;
 	let terminaEm = document.getElementById('TerminaEmForUpdate').value;
-	jurisdicao = new Jurisdicao(order, id, escritorioId, entidadeId, entidadeNome, iniciaEm, terminaEm, '', '', '', '', '', '');
+	jurisdicao = new Jurisdicao(order, id, escritorioId, entidadeId, entidadeNome, formatarData(iniciaEm), formatarData(terminaEm), '', '', '', '', '', '');
 	jurisdicoes[order] = jurisdicao;
 	updateJurisdicaoRow("table-jurisdicoes-"+contexto,order);
 	limparCamposJurisdicaoForm();
@@ -179,13 +179,11 @@ function updateJurisdicaoRow(tableID, order){
 	console.log('order: '+order);
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
 	celula = row.childNodes[1];
-	let strIniciaEm = formatarData(jurisdicoes[order].iniciaEm);
-	let strTerminaEm = formatarData(jurisdicoes[order].terminaEm);
-	console.log('jurisdicoes[order].iniciaEm: '+strIniciaEm);
-	celula.innerText = strIniciaEm;
+	console.log('jurisdicoes[order].iniciaEm: '+jurisdicoes[order].iniciaEm);
+	celula.innerText = jurisdicoes[order].iniciaEm;
 	celula = row.childNodes[2];
-	console.log('jurisdicoes[order].terminaEm: '+strTerminaEm);
-	celula.innerText = strTerminaEm;
+	console.log('jurisdicoes[order].terminaEm: '+jurisdicoes[order].terminaEm);
+	celula.innerText = jurisdicoes[order].terminaEm;
 }
 
 function showDeleteJurisdicaoForm(e){

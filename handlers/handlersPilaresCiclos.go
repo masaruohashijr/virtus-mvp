@@ -75,10 +75,12 @@ func UpdatePilaresCicloHandler(pilaresCicloPage []mdl.PilarCiclo, pilaresCicloDB
 				if fieldsChanged {
 					updatePilarCicloHandler(pilaresCicloPage[i], pilaresCicloDB[j]) // TODO
 				}
+				pilaresCicloDB = removePilarCiclo(pilaresCicloDB, pilaresCicloPage[i])
 				break
 			}
 		}
 	}
+	DeletePilaresCicloHandler(pilaresCicloDB) // CORREÇÃO
 }
 
 func hasSomeFieldChangedPilarCiclo(pilarCicloPage mdl.PilarCiclo, pilarCicloDB mdl.PilarCiclo) bool {

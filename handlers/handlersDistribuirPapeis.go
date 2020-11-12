@@ -20,6 +20,7 @@ func ListDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" LEFT JOIN jurisdicoes b ON a.id = b.escritorio_id " +
 			" LEFT JOIN membros c ON c.escritorio_id = b.escritorio_id " +
 			" LEFT JOIN entidades d ON d.id = b.entidade_id " +
+			" INNER JOIN ciclos_entidades e ON e.entidade_id = b.entidade_id " +
 			" WHERE c.usuario_id = $1 "
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id)

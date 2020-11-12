@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
+	e "virtus/errors"
 	mdl "virtus/models"
 	route "virtus/routes"
 	sec "virtus/security"
@@ -20,8 +22,12 @@ func CreateFeatureHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "INSERT INTO features(name, code, description) VALUES ($1, $2, $3) RETURNING id"
 		id := 0
 		err := Db.QueryRow(sqlStatement, name, code, description).Scan(&id)
-		if err != nil {
-			panic(err.Error())
+		if err != nil && strings.Contains(err.Error(), "duplicate key") {
+			page := listFeatures(e.ErroChaveDuplicada)
+			page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
+			var tmpl = template.Must(template.ParseGlob("tiles/features/*"))
+			tmpl.ParseGlob("tiles/*")
+			tmpl.ExecuteTemplate(w, "Main-Status", page)
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Name: " + name + " | Code: " + code + " | Description: " + description)
 		http.Redirect(w, r, route.FeaturesRoute, 301)
@@ -39,11 +45,9 @@ func UpdateFeatureHandler(w http.ResponseWriter, r *http.Request) {
 		description := r.FormValue("Description")
 		sqlStatement := "UPDATE features SET name=$1, code=$2, description=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			panic(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(name, code, id)
 		log.Println("UPDATE: Id: " + id + " | Name: " + name + " | Code: " + code + " | Description: " + description)
 		http.Redirect(w, r, route.FeaturesRoute, 301)
@@ -79,6 +83,7 @@ func DeleteFeaturesByRoleHandler(roleId string) {
 	deleteForm.Exec(roleId)
 	log.Println("DELETE features_roles in Role Id: " + roleId)
 }
+
 func DeleteFeaturesHandler(diffDB []mdl.Feature) {
 	sqlStatement := "DELETE FROM features_roles WHERE feature_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
@@ -95,47 +100,7 @@ func ListFeaturesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Features")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listFeatures") {
-		sql := "SELECT " +
-			" a.id, " +
-			" a.name, " +
-			" a.code, " +
-			" coalesce(a.description,'') as dsc, " +
-			" a.author_id, " +
-			" b.name, " +
-			" to_char(a.created_at,'DD/MM/YYYY HH24:MI:SS'), " +
-			" coalesce(c.name,'') as cstatus, " +
-			" a.status_id, " +
-			" a.id_versao_origem " +
-			" FROM features a LEFT JOIN users b " +
-			" ON a.author_id = b.id " +
-			" LEFT JOIN status c ON a.status_id = c.id " +
-			" order by a.id asc"
-		log.Println(sql)
-		rows, _ := Db.Query(sql)
-		var features []mdl.Feature
-		var feature mdl.Feature
-		var i = 1
-		for rows.Next() {
-			rows.Scan(
-				&feature.Id,
-				&feature.Name,
-				&feature.Code,
-				&feature.Description,
-				&feature.AuthorId,
-				&feature.AuthorName,
-				&feature.C_CreatedAt,
-				&feature.CStatus,
-				&feature.StatusId,
-				&feature.IdVersaoOrigem)
-			log.Println(feature.AuthorName)
-			feature.Order = i
-			i++
-			features = append(features, feature)
-		}
-		var page mdl.PageFeatures
-		page.Features = features
-		page.AppName = mdl.AppName
-		page.Title = "Funcionalidades"
+		page := listFeatures("")
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 		var tmpl = template.Must(template.ParseGlob("tiles/features/*"))
 		tmpl.ParseGlob("tiles/*")
@@ -143,6 +108,54 @@ func ListFeaturesHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
+}
+
+func listFeatures(errorMsg string) mdl.PageFeatures {
+	sql := "SELECT " +
+		" a.id, " +
+		" a.name, " +
+		" a.code, " +
+		" coalesce(a.description,'') as dsc, " +
+		" a.author_id, " +
+		" b.name, " +
+		" to_char(a.created_at,'DD/MM/YYYY HH24:MI:SS'), " +
+		" coalesce(c.name,'') as cstatus, " +
+		" a.status_id, " +
+		" a.id_versao_origem " +
+		" FROM features a LEFT JOIN users b " +
+		" ON a.author_id = b.id " +
+		" LEFT JOIN status c ON a.status_id = c.id " +
+		" order by a.id asc"
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	var features []mdl.Feature
+	var feature mdl.Feature
+	var i = 1
+	for rows.Next() {
+		rows.Scan(
+			&feature.Id,
+			&feature.Name,
+			&feature.Code,
+			&feature.Description,
+			&feature.AuthorId,
+			&feature.AuthorName,
+			&feature.C_CreatedAt,
+			&feature.CStatus,
+			&feature.StatusId,
+			&feature.IdVersaoOrigem)
+		log.Println(feature.AuthorName)
+		feature.Order = i
+		i++
+		features = append(features, feature)
+	}
+	var page mdl.PageFeatures
+	page.Features = features
+	page.AppName = mdl.AppName
+	page.Title = "Funcionalidades"
+	if errorMsg != "" {
+		page.ErrMsg = errorMsg
+	}
+	return page
 }
 
 // AJAX

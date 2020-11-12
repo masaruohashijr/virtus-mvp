@@ -61,7 +61,6 @@ func CreatePilarHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
 		http.Redirect(w, r, route.PilaresRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)

@@ -69,10 +69,12 @@ func UpdateElementosComponenteHandler(elementosComponentePage []mdl.ElementoComp
 				if fieldsChanged {
 					updateElementoComponenteHandler(elementosComponentePage[i], elementosComponenteDB[j]) // TODO
 				}
+				elementosComponenteDB = removeElementoComponente(elementosComponenteDB, elementosComponentePage[i])
 				break
 			}
 		}
 	}
+	DeleteElementosComponenteHandler(elementosComponenteDB)
 }
 
 func hasSomeFieldChangedElementoComponente(elementoComponentePage mdl.ElementoComponente, elementoComponenteDB mdl.ElementoComponente) bool {

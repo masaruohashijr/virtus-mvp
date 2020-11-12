@@ -18,16 +18,16 @@
 				</div>
 		    </div>
 		</header>
-		<form action="/updateAvaliarPapeis" method="POST">
+		<form action="/updateAvaliarPapeis" method="POST" id="form-avaliar-papeis">
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
             <tr>
                 <th style="width:2%">Ord</th>
-                <th style="text-align:left; width:30%">Sumário</th>
+                <th style="text-align:left; width:25%">Sumário</th>
                 <th style="width:12%">&nbsp;</th>
                 <th style="width:12%">&nbsp;</th>
                 <th style="width:3%">&nbsp;</th>
                 <th style="width:3%">&nbsp;</th>
-                <th style="width:4%">Situação</th>
+                <th style="width:4%">Método</th>
                 <th style="width:4%">Nota</th>
 				{{if $allowed}}
 				<th style="width:17%">Ações</th>
@@ -42,6 +42,7 @@
 			{{$pesoPadraoEC := ""}}
 			{{$elementoNota := ""}}
 			{{$elementoPeso := ""}}
+			{{$tipoPontuacao := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
 			
             {{range $index, $produto := .Produtos}}
@@ -71,8 +72,6 @@
 					<select style="width: 75px; text-align:center" class="w3-input" 
 						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
 						onchange="sinalizarAlteracao(this);">
-						<option value="M">M</option>
-						<option value="A">A</option>
 						<option value="C">C</option>
 						<option value="F">F</option>
 		            </select>
@@ -88,8 +87,8 @@
 				{{if $allowed}}
                 <td style="vertical-align:middle">
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
-                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
-                    <button class="w3-btn w3-black" onclick="">Histórico</button>
+                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-black" onclick="openHist(this)">Histórico</button>
                 </td>
 				{{end}}
             </tr>
@@ -102,8 +101,8 @@
                 <th style="vertical-align:middle" >&nbsp;</th>
                 <th >&nbsp;</th>
                 <th >&nbsp;</th>
-                <th style="vertical-align:middle">Peso</th>
-                <th style="vertical-align:middle">Situação</th>
+                <th style="vertical-align:middle">Peso (%)</th>
+                <th style="vertical-align:middle">Método</th>
                 <th style="vertical-align:middle">Nota</th>
 				{{if $allowed}}
 				<th style="vertical-align:middle">Ações</th>
@@ -117,22 +116,13 @@
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">
-					{{ $combine := (printf "%v%v" $produto.PesoPadraoPC " %") }}
-					<input style="width: 75px; text-align:center" class="w3-input" type="text"
+					<input style="width: 75px; text-align:center" class="w3-input" 
+						type="number"
 						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
 						onchange="sinalizarAlteracao(this)" 
-						value="{{ $combine }}">
+						value="{{ $produto.PilarPeso }}">
 				</td>
-                <td style="vertical-align:middle">
-					<select style="width: 75px; text-align:center" 
-						class="w3-input" 
-						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
-						onchange="sinalizarAlteracao(this);">
-						<option value="M">M</option>
-						<option value="A">A</option>
-						<option value="C">C</option>
-		            </select>
-				</td>
+                <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
@@ -145,21 +135,21 @@
 				{{if $allowed}}
                 <td style="vertical-align:middle">
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
-                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
-                    <button class="w3-btn w3-brown" onclick="">Histórico</button>
+                    <button class="w3-btn w3-teal" onclick="openDet()">Detalhar</button>
+                    <button class="w3-btn w3-brown" onclick="openHist()">Histórico</button>
                 </td>
 				{{end}}
             </tr>
 			{{end}}
 			{{if ne $auxComponente $produto.ComponenteNome}}
-			<tr style="background-color: #f8fcff">
+			<tr style="background-color: #f8fcff" >
                 <th style="vertical-align:middle" >Ord</th>
-                <th style="vertical-align:middle;text-align:left">Sumário</th>
+                <th style="vertical-align:middle;text-align:left" >Sumário</th>
                 <th style="vertical-align:middle" >Supervisor</th>
                 <th style="vertical-align:middle" >Auditor</th>
                 <th style="vertical-align:middle" >Tipo de Nota</th>
                 <th style="vertical-align:middle" >Peso</th>
-                <th style="vertical-align:middle" >Situação</th>
+                <th style="vertical-align:middle" >Método</th>
                 <th style="vertical-align:middle" >Nota</th>
 				{{if $allowed}}
 				<th style="vertical-align:middle" >Ações</th>
@@ -192,17 +182,7 @@
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.ComponentePeso}}">
 				</td>
-                <td style="vertical-align:middle">
-					<select style="width: 75px; text-align:center" 
-						class="w3-input" 
-						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
-						onchange="sinalizarAlteracao(this);">
-						<option value="M">M</option>
-						<option value="A">A</option>
-						<option value="C">C</option>
-						<option value="I">I</option>
-		            </select>
-				</td>
+                <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
@@ -215,8 +195,8 @@
 				{{if $allowed}}
                 <td style="vertical-align:middle">
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
-                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
-                    <button class="w3-btn w3-deep-green" onclick="">Histórico</button>
+                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button>
                 </td>
 				{{end}}					
         	</tr>
@@ -240,16 +220,7 @@
 						onchange="sinalizarAlteracao(this)" 
 						value="{{ $combine }}">
 				</td>
-                <td style="vertical-align:middle">
-					<select style="width: 75px; text-align:center" 
-						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}}
-						class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
-						<option value="M">M</option>
-						<option value="A">A</option>
-						<option value="C">C</option>
-						<option value="I">I</option>
-		            </select>
-				</td>
+                <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
@@ -262,8 +233,8 @@
 				{{if $allowed}}
                 <td style="vertical-align:middle">
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
-                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
-                    <button class="w3-btn w3-deep-green" onclick="">Histórico</button>
+                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button>
                 </td>
 				{{end}}					
         	</tr>
@@ -297,11 +268,13 @@
 		            </select>	
 				</td>
                 <td style="vertical-align:middle">
+				{{$tipoPontuacao = $produto.TipoPontuacaoId}}
 					<select style="width: 75px; text-align:center" class="w3-input"
 						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
 						onchange="sinalizarAlteracao(this);">
-						<option value="M">M</option>
-						<option value="A">A</option>
+						<option value="1" {{if eq $tipoPontuacao "1" }}selected{{end}}>M</option>
+						<option value="2" {{if eq $tipoPontuacao "2" }}selected{{end}}>C</option>
+						<option value="3" {{if eq $tipoPontuacao "3" }}selected{{end}}>A</option>
 		            </select>
 				</td>
                 <td style="vertical-align:middle">
@@ -320,8 +293,8 @@
 				{{if $allowed}}
                 <td>
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
-                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
-                    <button class="w3-btn w3-dark-green" onclick="">Histórico</button>
+                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-dark-green" onclick="openHist(this)">Histórico</button>
                 </td>
 				{{end}}
             </tr>
@@ -340,8 +313,8 @@
 				{{if $allowed}}
                 <td>
 					<button class="w3-btn w3-teal" type="submit">Salvar</button>
-                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
-                    <button class="w3-btn w3-green" onclick="">Histórico</button>
+                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-green" onclick="openHist(this)">Histórico</button>
                 </td>
 				{{end}}
             </tr>

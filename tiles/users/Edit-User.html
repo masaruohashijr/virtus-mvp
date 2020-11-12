@@ -20,15 +20,6 @@
                 <input class="w3-input" type="text" name="Email" id="userEmail" value="">
                 <label class="w3-label">Celular</label>
                 <input class="w3-input" type="text" name="Mobile" id="userMobile" value="">
-				<label class="w3-label">Escritório</label>
-	            <select class="w3-input" name="EscritorioForUpdate" id="EscritorioForUpdate">
-					<option value=""></option>
-					{{range $index, $escritorio := .Escritorios }}
-		                <option value="{{$escritorio.Id}}" {{if eq true $escritorio.Selected}} selected="selected"{{end}}>
-							{{$escritorio.Nome}}
-						</option>
-		            {{end}}
-	            </select>
 				<label class="w3-label">Perfil</label>
 	            <select class="w3-input" name="RoleForUpdate" id="RoleForUpdate">
 					<option value=""></option>

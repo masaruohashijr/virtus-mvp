@@ -1,0 +1,351 @@
+{{define "List-Avaliar-Papeis2"}}
+<!-- List Avaliar Papeis -->
+<div id="main" class="w3-row-padding">
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				    <h3>{{.Title}}</h3>
+				<div style="margin-top: 10px;">
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+					{{$allowed := (call .LoggedUser.HasPermission "avaliarPapeis")}}
+				    <a style="margin-top: 6px" href="/logout">
+						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
+					</a>
+				</div>
+		    </div>
+		</header>
+		<form action="/updateAvaliarPapeis" method="POST">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <tr>
+                <th style="width:2%">Ord</th>
+                <th style="text-align:left; width:30%">Sumário</th>
+                <th style="width:12%">&nbsp;</th>
+                <th style="width:12%">&nbsp;</th>
+                <th style="width:3%">&nbsp;</th>
+                <th style="width:3%">&nbsp;</th>
+                <th style="width:4%">Situação</th>
+                <th style="width:4%">Nota</th>
+				{{if $allowed}}
+				<th style="width:17%">Ações</th>
+				{{end}}
+            </tr>
+			{{$primeiraLinha := true}}
+			{{$auxPilar := ""}}
+			{{$auxComponente := ""}}
+			{{$auxTipoNota := ""}}
+			{{$auxElemento := ""}}
+			{{$auxItem := ""}}
+			{{$pesoPadraoEC := ""}}
+			{{$elementoNota := ""}}
+			{{$elementoPeso := ""}}
+			{{$tipoPontuacao := ""}}
+			{{$currentUser := .LoggedUser.User.Id}}
+			
+            {{range $index, $produto := .Produtos}}
+
+			{{if $primeiraLinha}}
+            <tr style="background-color: aliceblue">
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="font-size:2em;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">&nbsp;</td>
+				{{end}}
+            </tr>
+            <tr style="background-color: white">
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="font-size:1.5em;vertical-align:middle;text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
+					<select style="width: 75px; text-align:center" class="w3-input" 
+						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
+						onchange="sinalizarAlteracao(this);">
+						<option value="C">C</option>
+						<option value="F">F</option>
+		            </select>
+				</td>
+                <td style="vertical-align:middle">
+					<input style="font-size:1.5em;width: 90px; text-align:center"
+						name="CicloNota{{$produto.ComponenteId}}" 
+						class="w3-input" 
+						type="number" 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.CicloNota}}">
+				</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+					<button class="w3-btn w3-teal" type="submit">Salvar</button>
+                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
+                    <button class="w3-btn w3-black" onclick="">Histórico</button>
+                </td>
+				{{end}}
+            </tr>
+			{{$primeiraLinha = false}}
+			{{end}}
+			{{if ne $auxPilar $produto.PilarNome}}
+			<tr style="background-color: #f6faff">
+                <th style="vertical-align:middle" >Ord</th>
+                <th style="vertical-align:middle;text-align:left">Sumário</th>
+                <th style="vertical-align:middle" >&nbsp;</th>
+                <th >&nbsp;</th>
+                <th >&nbsp;</th>
+                <th style="vertical-align:middle">Peso</th>
+                <th style="vertical-align:middle">Situação</th>
+                <th style="vertical-align:middle">Nota</th>
+				{{if $allowed}}
+				<th style="vertical-align:middle">Ações</th>
+				{{end}}
+            </tr>
+            <tr>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
+				&nbsp;&nbsp;&nbsp;{{$auxPilar = $produto.PilarNome}}
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
+					{{ $combine := (printf "%v%v" $produto.PesoPadraoPC " %") }}
+					<input style="width: 75px; text-align:center" class="w3-input" type="text"
+						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{ $combine }}">
+				</td>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" 
+						name="PilarNota{{$produto.PilarId}}" 
+						disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.PilarNota}}">
+				</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+					<button class="w3-btn w3-teal" type="submit">Salvar</button>
+                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
+                    <button class="w3-btn w3-brown" onclick="">Histórico</button>
+                </td>
+				{{end}}
+            </tr>
+			{{end}}
+			{{if ne $auxComponente $produto.ComponenteNome}}
+			<tr style="background-color: #f8fcff">
+                <th style="vertical-align:middle" >Ord</th>
+                <th style="vertical-align:middle;text-align:left">Sumário</th>
+                <th style="vertical-align:middle" >Supervisor</th>
+                <th style="vertical-align:middle" >Auditor</th>
+                <th style="vertical-align:middle" >Tipo de Nota</th>
+                <th style="vertical-align:middle" >Peso</th>
+                <th style="vertical-align:middle" >Situação</th>
+                <th style="vertical-align:middle" >Nota</th>
+				{{if $allowed}}
+				<th style="vertical-align:middle" >Ações</th>
+				{{end}}
+            </tr>
+            <tr>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
+					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}} 
+				</td>
+				{{$auxComponente = $produto.ComponenteNome}}
+				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
+                <td style="vertical-align:middle">
+					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);"
+						{{if or (eq $.LoggedUser.User.Role 4) (ne $produto.SupervisorId $currentUser) }}readOnly disabled{{end}} 
+						name="AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}">
+						<option value=""></option>
+						{{range $i, $auditor := $.Auditores }}
+			                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>
+								{{$auditor.Name}}
+							</option>
+			            {{end}}
+		            </select>
+				</td>
+				<td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.ComponentePeso}}">
+				</td>
+                <td style="vertical-align:middle">
+					<select style="width: 75px; text-align:center" 
+						class="w3-input" 
+						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
+						onchange="sinalizarAlteracao(this);">
+						<option value="M">M</option>
+						<option value="A">A</option>
+						<option value="C">C</option>
+						<option value="I">I</option>
+		            </select>
+				</td>
+                <td style="vertical-align:middle">
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" 
+						name="ComponenteNota{{$produto.ComponenteId}}" 
+						disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.ComponenteNota}}">
+				</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+					<button class="w3-btn w3-teal" type="submit">Salvar</button>
+                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
+                    <button class="w3-btn w3-deep-green" onclick="">Histórico</button>
+                </td>
+				{{end}}					
+        	</tr>
+			{{end}}				
+			{{if ne $auxTipoNota $produto.TipoNotaNome}}
+            <tr>
+                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.TipoNotaNome}} 
+				</td>
+				{{$auxTipoNota = $produto.TipoNotaNome}}
+				<td style="vertical-align:middle;text-align:center">&nbsp;</td>
+                <td style="vertical-align:middle">&nbsp;
+				</td>
+				<td style="vertical-align:middle">&nbsp;</td>
+                <td style="vertical-align:middle">
+					{{ $combine := (printf "%v%v" $produto.TipoNotaPeso " %") }}
+					<input style="width: 85px; text-align:center" 
+						class="w3-input" 
+						type="text" disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{ $combine }}">
+				</td>
+                <td style="vertical-align:middle">
+					{{$tipoPontuacao = $produto.TipoPontuacaoId}}
+					<select style="width: 75px; text-align:center" 
+						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}}
+						class="w3-input" readOnly onchange="sinalizarAlteracao(this);">
+						<option value="M" {{if eq $tipoPontuacao "1" }}selected{{end}}>M</option>
+						<option value="A" {{if eq $tipoPontuacao "3" }}selected{{end}}>A</option>
+						<option value="C" {{if eq $tipoPontuacao "2" }}selected{{end}}>C</option>
+						<option value="I" {{if eq $tipoPontuacao "4" }}selected{{end}}>I</option>
+		            </select>
+				</td>
+                <td style="vertical-align:middle">
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" 
+						name="TipoNotaNota{{$produto.TipoNotaId}}" 
+						disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.TipoNotaNota}}">
+				</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+					<button class="w3-btn w3-teal" type="submit">Salvar</button>
+                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
+                    <button class="w3-btn w3-deep-green" onclick="">Histórico</button>
+                </td>
+				{{end}}					
+        	</tr>
+			{{end}}				
+			{{if ne $auxElemento $produto.ElementoNome}}
+            <tr>
+                <td>&nbsp;</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}
+				</td>
+				{{$auxElemento = $produto.ElementoNome}}
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+				{{ $bgColor := (printf "%v%v" "#" $produto.TipoNotaCorLetra ) }}
+                <td style="vertical-align:middle">
+					<input style="color:white; background-color:{{print $bgColor}};width: 75px; text-align:center"
+						disabled 
+						type="text" 
+						value="{{$produto.TipoNotaLetra}}">
+                <td style="vertical-align:middle">
+				{{$pesoPadraoEC = $produto.PesoPadraoEC}}
+				{{$elementoPeso = $produto.ElementoPeso}}
+					<select style="width: 75px; text-align:center" class="w3-input" 
+						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}"
+						{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
+						onchange="sinalizarAlteracao(this);">
+						<option value="1" {{if eq $elementoPeso "1" }}selected{{end}}>1</option>
+						<option value="2" {{if eq $elementoPeso "2" }}selected{{end}}>2</option>
+						<option value="4" {{if eq $elementoPeso "4" }}selected{{end}}>4</option>
+						<option value="8" {{if eq $elementoPeso "8" }}selected{{end}}>8</option>
+		            </select>	
+				</td>
+                <td style="vertical-align:middle">
+				{{$tipoPontuacao = $produto.TipoPontuacaoId}}
+					<select style="width: 75px; text-align:center" class="w3-input"
+						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
+						onchange="sinalizarAlteracao(this);">
+						<option value="1" {{if eq $tipoPontuacao "1" }}selected{{end}}>M</option>
+						<option value="2" {{if eq $tipoPontuacao "2" }}selected{{end}}>C</option>
+						<option value="3" {{if eq $tipoPontuacao "3" }}selected{{end}}>A</option>
+		            </select>
+				</td>
+                <td style="vertical-align:middle">
+					{{$elementoNota = $produto.ElementoNota}}
+					<select style="width: 75px; text-align:center" 
+						class="w3-input" 
+						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}}
+						name="ElementoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.ElementoId}}"
+						onchange="sinalizarAlteracao(this)">
+						<option value="1" {{if eq $elementoNota "1" }}selected{{end}}>1</option>
+						<option value="2" {{if eq $elementoNota "2" }}selected{{end}}>2</option>
+						<option value="3" {{if eq $elementoNota "3" }}selected{{end}}>3</option>
+						<option value="4" {{if eq $elementoNota "4" }}selected{{end}}>4</option>
+		            </select>
+				</td>
+				{{if $allowed}}
+                <td>
+					<button class="w3-btn w3-teal" type="submit">Salvar</button>
+                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
+                    <button class="w3-btn w3-dark-green" onclick="">Histórico</button>
+                </td>
+				{{end}}
+            </tr>
+			{{end}}				
+			<tr>
+                <td>{{$produto.Order}}</td>
+                <td style="vertical-align:middle;text-align:left;padding-left: 30px">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}
+				</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+				{{if $allowed}}
+                <td>
+					<button class="w3-btn w3-teal" type="submit">Salvar</button>
+                    <button class="w3-btn w3-teal" onclick="">Detalhar</button>
+                    <button class="w3-btn w3-green" onclick="">Histórico</button>
+                </td>
+				{{end}}
+            </tr>
+       		{{end}}
+			<tr>
+				<td colspan="10" style="text-align: center">
+					<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Salvar</button>
+				</td>
+			</tr>
+        </table>
+		</form>
+    </div>
+</div>
+{{end}}

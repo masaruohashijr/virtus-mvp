@@ -2,6 +2,9 @@
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Detalhar-Elemento" . }}
+{{ template "Historico-Elemento" . }}
 {{ template "Menu" . }}
 {{ template "List-Avaliar-Papeis" . }}
 </body>

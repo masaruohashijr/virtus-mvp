@@ -6,14 +6,12 @@ function editUser(e) {
 	var userUsername = e.parentNode.parentNode.childNodes[7].innerText;
 	var userEmail = e.parentNode.parentNode.childNodes[9].innerText;
 	var userMobile = e.parentNode.parentNode.childNodes[11].innerText;
-	var userEscritorio = e.parentNode.parentNode.childNodes[13].childNodes[1].value;
 	var userRole = e.parentNode.parentNode.childNodes[15].childNodes[1].value;
 	document.getElementById('userIdToUpdate').value = userId;
 	document.getElementById('userName').value = userName;
 	document.getElementById('userUsername').value = userUsername;
 	document.getElementById('userEmail').value = userEmail;
 	document.getElementById('userMobile').value = userMobile;
-	document.getElementById('EscritorioForUpdate').value = userEscritorio;
 	document.getElementById('RoleForUpdate').value = userRole;
 }
 
