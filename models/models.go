@@ -20,6 +20,13 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+type ColSpan struct {
+	CicloId      int64 `json:"cicloId"`
+	PilarId      int64 `json:"pilarId"`
+	ComponenteId int64 `json:"componenteId"`
+	Qtd          int   `json:"qtd"`
+}
+
 type Action struct {
 	Order          int
 	Id             int64  `json:"id"`

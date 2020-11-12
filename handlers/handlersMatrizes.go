@@ -145,11 +145,6 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		var elementosMatriz []mdl.ElementoDaMatriz
 		var elementoMatriz mdl.ElementoDaMatriz
 		var i = 1
-		cicloColspan := 0
-		pilarColspan := 0
-		auxPilarNome := ""
-		componenteColspan := 0
-		auxComponenteNome := ""
 		for rows.Next() {
 			rows.Scan(
 				&elementoMatriz.CicloId,
@@ -194,26 +189,9 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			elementoMatriz.Order = i
 			i++
 			log.Println(elementoMatriz)
-			if auxPilarNome != elementoMatriz.PilarNome {
-				log.Println("Calculando Pilar colspan")
-				pilarColspan = calcularColspan("pilar", elementoMatriz.PilarId)
-				auxPilarNome = elementoMatriz.PilarNome
-			}
-			if auxComponenteNome != elementoMatriz.ComponenteNome {
-				log.Println("Calculando Componente colspan")
-				componenteColspan = calcularColspan("componente", elementoMatriz.ComponenteId)
-				auxComponenteNome = elementoMatriz.ComponenteNome
-			}
-			if cicloColspan == 0 {
-				log.Println("Calculando Ciclo colspan")
-				cicloColspan = calcularColspan("ciclo", elementoMatriz.CicloId)
-			}
-			elementoMatriz.ComponenteColSpan = componenteColspan
-			elementoMatriz.PilarColSpan = pilarColspan
-			elementoMatriz.CicloColSpan = cicloColspan
 			elementosMatriz = append(elementosMatriz, elementoMatriz)
 		}
-		page.ElementosDaMatriz = elementosMatriz
+		page.ElementosDaMatriz = preencherColspans(elementosMatriz, cicloId)
 
 		sql = " SELECT " +
 			" a.usuario_id, " +
@@ -356,7 +334,7 @@ func AtualizarMatrizHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" a.componente_id, " +
 		" a.elemento_id, " +
 		" a.item_id "
-	log.Println(sql)
+	// log.Println(sql)
 	rows, _ := Db.Query(sql)
 	var produtos []mdl.ProdutoItem
 	var produto mdl.ProdutoItem
@@ -503,4 +481,101 @@ func UpdateMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		AtualizarPapeisHandler(entidadeId, cicloId, w, r)
 	}
+}
+
+func preencherColspans(elementosMatriz []mdl.ElementoDaMatriz, cicloId string) []mdl.ElementoDaMatriz {
+	sql := "SELECT ciclo_id, " +
+		"       0 AS pilar_id, " +
+		"       0 AS componente_id, " +
+		"       sum(qtdCelula) AS qtdCelula " +
+		"FROM " +
+		"  (SELECT ciclo_id, " +
+		"          pilar_id, " +
+		"          SUM(qtdCelula) AS qtdCelula " +
+		"   FROM " +
+		"     (SELECT ciclo_id, " +
+		"             pilar_id, " +
+		"             componente_id, " +
+		"             COUNT(1) AS qtdCelula " +
+		"      FROM " +
+		"        (SELECT a.ciclo_id, " +
+		"                a.pilar_id, " +
+		"                b.componente_id, " +
+		"                c.tipo_nota_id " +
+		"         FROM pilares_ciclos a " +
+		"         LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
+		"         LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id) R1 " +
+		"      GROUP BY 1, " +
+		"               2, " +
+		"               3) R2 " +
+		"   GROUP BY 1, " +
+		"            2) R3 " +
+		"GROUP BY 1, " +
+		"         2, " +
+		"         3 " +
+		"UNION " +
+		"SELECT ciclo_id, " +
+		"       pilar_id, " +
+		"       0, " +
+		"       SUM(qtdCelula) AS qtdCelula " +
+		"FROM " +
+		"  (SELECT ciclo_id, " +
+		"          pilar_id, " +
+		"          componente_id, " +
+		"          COUNT(1) AS qtdCelula " +
+		"   FROM " +
+		"     (SELECT a.ciclo_id, " +
+		"             a.pilar_id, " +
+		"             b.componente_id, " +
+		"             c.tipo_nota_id " +
+		"      FROM pilares_ciclos a " +
+		"      LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
+		"      LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id) R1 " +
+		"   GROUP BY 1, " +
+		"            2, " +
+		"            3) R2 " +
+		"GROUP BY 1, " +
+		"         2 " +
+		"UNION " +
+		"SELECT ciclo_id, " +
+		"       pilar_id, " +
+		"       componente_id, " +
+		"       COUNT(1) AS qtdCelula " +
+		"FROM " +
+		"  (SELECT a.ciclo_id, " +
+		"          a.pilar_id, " +
+		"          b.componente_id, " +
+		"          c.tipo_nota_id " +
+		"   FROM pilares_ciclos a " +
+		"   LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
+		"   LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id) R1 " +
+		"WHERE ciclo_id = $1 " +
+		"GROUP BY 1, " +
+		"         2, " +
+		"         3 " +
+		"ORDER BY 1, " +
+		"         2, " +
+		"         3 "
+	rows, _ := Db.Query(sql, cicloId)
+	var cols []mdl.ColSpan
+	var col mdl.ColSpan
+	for rows.Next() {
+		rows.Scan(&col.CicloId, &col.PilarId, &col.ComponenteId, &col.Qtd)
+		cols = append(cols, col)
+		// log.Println(col)
+	}
+	var novosElementos []mdl.ElementoDaMatriz
+	for _, elemento := range elementosMatriz {
+		for _, col := range cols {
+			if col.PilarId == 0 && col.ComponenteId == 0 {
+				elemento.CicloColSpan = col.Qtd
+			} else if elemento.PilarId == col.PilarId && col.ComponenteId == 0 {
+				elemento.PilarColSpan = col.Qtd
+			} else if elemento.PilarId == col.PilarId && elemento.ComponenteId == col.ComponenteId {
+				elemento.ComponenteColSpan = col.Qtd
+			}
+		}
+		novosElementos = append(novosElementos, elemento)
+	}
+	return novosElementos
 }

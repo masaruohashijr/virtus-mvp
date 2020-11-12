@@ -35,9 +35,9 @@ func dbConn() *sql.DB {
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
 	}
-	dbase.SetMaxOpenConns(80)
-	dbase.SetMaxIdleConns(40)
-	dbase.SetConnMaxLifetime(5 * time.Minute)
+	dbase.SetMaxOpenConns(20)
+	dbase.SetMaxIdleConns(20)
+	dbase.SetConnMaxLifetime(10 * time.Second)
 	return dbase
 }
 
