@@ -85,7 +85,9 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" ec.tipo_nota_id, m.letra, m.cor_letra, ec.peso_padrao, " +
 			" cp.tipo_media, cp.peso_padrao, " +
 			" pc.tipo_media, pc.peso_padrao, " +
-			" ce.tipo_media, ce.inicia_em, ce.termina_em, " +
+			" coalesce(ce.tipo_media,0), " +
+			" coalesce(to_char(ce.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
+			" coalesce(to_char(ce.termina_em,'DD/MM/YYYY')) as termina_em, " +
 			" a.item_id, g.nome as item_nome, " +
 			" coalesce(b.nome,''), a.entidade_id, " +
 			" coalesce(j.supervisor_id,0) as super_id, coalesce(h.name,'') as supervisor_nome, " +
