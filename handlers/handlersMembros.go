@@ -102,23 +102,19 @@ func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 				sqlStatement := "INSERT INTO membros ( " +
 					" escritorio_id, " +
 					" usuario_id, " +
-					" inicia_em, " +
-					" termina_em, " +
 					" author_id, " +
 					" criado_em, " +
 					" status_id " +
 					" ) " +
-					" SELECT $1, $2, $3, $4, $5, $6, $7 " +
+					" SELECT $1, $2, $3, $4, $5 " +
 					" WHERE NOT EXISTS (SELECT 1 FROM membros " +
-					" WHERE usuario_id = $8 AND escritorio_id = $9) " +
+					" WHERE usuario_id = $6 AND escritorio_id = $7) " +
 					" RETURNING id"
 				log.Println(sqlStatement)
 				Db.QueryRow(
 					sqlStatement,
 					escritorioId,
 					membro.UsuarioId,
-					membro.IniciaEm,
-					membro.TerminaEm,
 					currentUser.Id,
 					time.Now(),
 					statusComponenteId,

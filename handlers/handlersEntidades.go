@@ -324,11 +324,9 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listEntidades") {
 		var page mdl.PageEntidades
 		sql := "SELECT " +
-			" b.name, " +
-			" coalesce(c.name,'') as cstatus, " +
-			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
 			" a.id, " +
 			" a.nome, " +
+			" a.descricao, " +
 			" a.sigla, " +
 			" a.codigo, " +
 			" a.situacao, " +
@@ -336,8 +334,10 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 			" a.municipio, " +
 			" a.sigla_uf, " +
 			" a.author_id, " +
+			" coalesce(b.name,'') as author_name, " +
+			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
 			" a.status_id, " +
-			" a.descricao, " +
+			" coalesce(c.name,'') as cstatus, " +
 			" a.id_versao_origem " +
 			" FROM entidades a LEFT JOIN users b " +
 			" ON a.author_id = b.id " +
@@ -350,11 +350,9 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 		var i = 1
 		for rows.Next() {
 			rows.Scan(
-				&entidade.AuthorName,
-				&entidade.CStatus,
-				&entidade.C_CriadoEm,
 				&entidade.Id,
 				&entidade.Nome,
+				&entidade.Descricao,
 				&entidade.Sigla,
 				&entidade.Codigo,
 				&entidade.Situacao,
@@ -362,8 +360,10 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 				&entidade.Municipio,
 				&entidade.SiglaUF,
 				&entidade.AuthorId,
+				&entidade.AuthorName,
+				&entidade.C_CriadoEm,
 				&entidade.StatusId,
-				&entidade.Descricao,
+				&entidade.CStatus,
 				&entidade.IdVersaoOrigem)
 			entidade.Order = i
 			i++
