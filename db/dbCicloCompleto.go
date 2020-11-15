@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	//"log"
+	"log"
 	"math"
 	"math/rand"
 	"strconv"
@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdElementos int, qtdItens int) {
+func createCicloCompleto() {
 	createTiposNotas()
 	// Ciclos - código: 1
 	autor := 1
@@ -53,7 +53,7 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 		" peso_padrao, " +
 		" author_id, " +
 		" criado_em ) %s"
-
+	qtdCiclos := 1
 	for i := 1; i <= qtdCiclos; i++ {
 		var unsavedPilaresCiclos []string
 		var unsavedComponentesPilares []string
@@ -68,6 +68,11 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 		// Pilares - código: 11
 		pesoPadrao = 100
 		max := 100
+		qtdPilares := rand.Intn(5)
+		for qtdPilares < 3 {
+			qtdPilares = rand.Intn(4)
+			log.Println("qtdPilares " + strconv.Itoa(qtdPilares))
+		}
 		for j := 1; j <= qtdPilares; j++ {
 			nome = "Pilar " + strconv.Itoa(i) + strconv.Itoa(j)
 			stmt := " INSERT INTO pilares(nome, descricao, author_id, criado_em, status_id) " +
@@ -93,6 +98,11 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 				" to_timestamp('" + criadoEm + "','DD-Mon-YYYY HH24:MI:SS') " +
 				" WHERE NOT EXISTS ( SELECT id FROM pilares_ciclos WHERE ciclo_id = " + strconv.Itoa(idCiclo) + " AND pilar_id = " + strconv.Itoa(idPilar) + " ) "
 			unsavedPilaresCiclos = append(unsavedPilaresCiclos, stmt)
+			qtdComponentes := rand.Intn(4)
+			for qtdComponentes == 0 {
+				qtdComponentes = rand.Intn(4)
+				log.Println("qtdComponentes " + strconv.Itoa(qtdComponentes))
+			}
 			// Componentes - código: 111
 			for k := 1; k <= qtdComponentes; k++ {
 				nome = "Componente " + strconv.Itoa(i) +
@@ -105,10 +115,7 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 					" SELECT $1, $2, $3, $4, $5 WHERE NOT EXISTS (SELECT id FROM componentes WHERE nome = '" + nome + "' ) RETURNING id"
 				descricao = "Descricao do " + nome
 				db.QueryRow(stmt, nome, descricao, autor, criadoEm, statusZero).Scan(&idComponente)
-				if idComponente == 0 {
-					return
-				}
-				//log.Println("idComponente: " + strconv.Itoa(idComponente))
+				log.Println("idComponente: " + strconv.Itoa(idComponente))
 				componenteId := strconv.Itoa(idComponente)
 				pesoPadrao = int(math.Pow(2, float64(k-1)))
 				stmt = " SELECT " + strconv.Itoa(idPilar) + ", " +
@@ -133,7 +140,14 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 				db.QueryRow(stmt, componenteId, 2, 50, autor, criadoEm, statusZero).Scan(&idTipoItem)
 
 				// Elementos - código: 1111
+				qtdElementos := rand.Intn(4)
+				for qtdElementos == 0 {
+					qtdElementos = rand.Intn(4)
+					log.Println("qtdElementos " + strconv.Itoa(qtdElementos))
+				}
 				for l := 1; l <= qtdElementos; l++ {
+					log.Println("Componente " + strconv.Itoa(idComponente))
+					log.Println("unsavedElementosComponentes " + strconv.Itoa(len(unsavedElementosComponentes)))
 
 					// ELEMENTO
 					nome = "Elemento " + strconv.Itoa(i) +
@@ -161,6 +175,11 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 						tipoNotaId = 1
 					}
 					// Itens - código: 11111
+					qtdItens := rand.Intn(4)
+					for qtdItens < 2 {
+						qtdItens = rand.Intn(4)
+						log.Println("qtdItens " + strconv.Itoa(qtdItens))
+					}
 					for m := 1; m <= qtdItens; m++ {
 						nome = "Item " + strconv.Itoa(i) +
 							strconv.Itoa(j) + strconv.Itoa(k) +
@@ -182,6 +201,6 @@ func createCicloCompleto(qtdCiclos int, qtdPilares int, qtdComponentes int, qtdE
 
 func BulkInsert(unsaved []string, pStmt string) {
 	stmt := fmt.Sprintf(pStmt, strings.Join(unsaved, " UNION "))
-	//log.Println(stmt)
+	log.Println(stmt)
 	db.Exec(stmt)
 }

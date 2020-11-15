@@ -374,6 +374,7 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				auditorIdOLD, _ := strconv.ParseInt(s[5], 10, 64)
 				produtoElemento.AuditorId, _ = strconv.ParseInt(value[0], 10, 64)
 				if auditorIdOLD != produtoElemento.AuditorId {
+					registrarHistoricoAuditorComponente(produtoElemento, GetUserInCookie(w, r))
 					registrarAuditorComponente(produtoElemento)
 				}
 			}

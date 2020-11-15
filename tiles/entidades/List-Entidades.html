@@ -29,11 +29,9 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th style="text-align:left">Nome</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-                <th>Status</th>
+                <th>Ciclo Atual</th>
 				{{if $allowed}}
-				<th style="width:250px">Ações</th>
+				<th style="width:350px">Ações</th>
 				{{end}}
             </tr>
             </thead>
@@ -46,9 +44,9 @@
 					{{$entidade.Nome}}
 					<input type="hidden" value="{{$entidade.Descricao}}">
 				</td>
-                <td>{{$entidade.AuthorName}}</td>
-                <td>{{$entidade.C_CriadoEm}}</td>
-                <td>{{$entidade.CStatus}}
+				<td><select class="w3-input" style="width: 100px">
+					<option>Ciclo 1</option>
+				</select>
 					<input type="hidden" value="{{$entidade.Sigla}}">
 					<input type="hidden" value="{{$entidade.Codigo}}">
 					<input type="hidden" value="{{$entidade.Situacao}}">
@@ -58,6 +56,7 @@
 				</td>
 				{{if $allowed}}
                 <td>
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';iniciarCiclo(this);">Ciclos</button>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editEntidade(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteEntidade(this)">Apagar</button>
                 </td>

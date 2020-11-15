@@ -36,8 +36,8 @@ function criarJurisdicao(){
 		alert(erros);
 		return;
 	}
-	let iniciaEm = document.getElementById('IniciaEmForInsert').value;
-	let terminaEm = document.getElementById('TerminaEmForInsert').value;
+	let iniciaEm = formatarData(document.getElementById('IniciaEmForInsert').value);
+	let terminaEm = formatarData(document.getElementById('TerminaEmForInsert').value);
 	jurisdicaoId = getMaxId(jurisdicoes);
 	jurisdicao = new Jurisdicao(0, jurisdicaoId, 0, entidadeId, entidadeNome, iniciaEm, terminaEm, '', '', '', '', '', '', '');
 	jurisdicoes.push(jurisdicao);

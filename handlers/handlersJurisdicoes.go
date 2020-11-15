@@ -122,7 +122,7 @@ func UpdateJurisdicaoHandler(w http.ResponseWriter, r *http.Request) {
 				log.Println("De " + jurisdicao.IniciaEm + " a " + jurisdicao.TerminaEm)
 				if jurisdicao.IniciaEm != "" {
 					sqlStatement = "UPDATE jurisdicoes SET inicia_em = to_date('" +
-						jurisdicao.IniciaEm + "','YYYY-MM-DD') " +
+						jurisdicao.IniciaEm + "','DD/MM/YYYY') " +
 						"WHERE id = " + strconv.Itoa(jurisdicaoId)
 					_, err = Db.Exec(sqlStatement)
 					if err != nil {
@@ -131,7 +131,7 @@ func UpdateJurisdicaoHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				if jurisdicao.TerminaEm != "" {
 					sqlStatement = "UPDATE jurisdicoes SET termina_em = to_date('" +
-						jurisdicao.TerminaEm + "','YYYY-MM-DD') " +
+						jurisdicao.TerminaEm + "','DD/MM/YYYY') " +
 						"WHERE id = " + strconv.Itoa(jurisdicaoId)
 					_, err = Db.Exec(sqlStatement)
 					if err != nil {

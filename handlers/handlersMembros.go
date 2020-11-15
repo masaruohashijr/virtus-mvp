@@ -96,6 +96,7 @@ func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 			var membro mdl.Membro
 			membroId := 0
 			statusComponenteId := GetStartStatus("membro")
+
 			for i := range diffPage {
 				membro = diffPage[i]
 				log.Println("Escritorio Id: " + escritorioId)
@@ -120,6 +121,27 @@ func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 					statusComponenteId,
 					membro.UsuarioId,
 					escritorioId).Scan(&membroId)
+
+				if membro.IniciaEm != "" {
+					log.Println(membro.IniciaEm)
+					sqlStatement := "UPDATE membros SET inicia_em = to_date('" +
+						membro.IniciaEm + "','DD/MM/YYYY') " +
+						"WHERE id = " + strconv.FormatInt(membro.Id, 10)
+					_, err := Db.Exec(sqlStatement)
+					if err != nil {
+						log.Println(err)
+					}
+				}
+				log.Println(membro.TerminaEm)
+				if membro.TerminaEm != "" {
+					sqlStatement := "UPDATE membros SET termina_em = to_date('" +
+						membro.TerminaEm + "','DD/MM/YYYY') " +
+						"WHERE id = " + strconv.FormatInt(membro.Id, 10)
+					_, err := Db.Exec(sqlStatement)
+					if err != nil {
+						log.Println(err)
+					}
+				}
 			}
 		}
 		UpdateMembrosHandler(membrosPage, membrosDB)

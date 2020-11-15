@@ -484,79 +484,50 @@ func UpdateMatrizHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func preencherColspans(elementosMatriz []mdl.ElementoDaMatriz, cicloId string) []mdl.ElementoDaMatriz {
-	sql := "SELECT ciclo_id, " +
-		"       0 AS pilar_id, " +
-		"       0 AS componente_id, " +
-		"       sum(qtdCelula) AS qtdCelula " +
-		"FROM " +
-		"  (SELECT ciclo_id, " +
-		"          pilar_id, " +
-		"          SUM(qtdCelula) AS qtdCelula " +
-		"   FROM " +
-		"     (SELECT ciclo_id, " +
-		"             pilar_id, " +
-		"             componente_id, " +
-		"             COUNT(1) AS qtdCelula " +
-		"      FROM " +
-		"        (SELECT a.ciclo_id, " +
-		"                a.pilar_id, " +
-		"                b.componente_id, " +
-		"                c.tipo_nota_id " +
-		"         FROM pilares_ciclos a " +
-		"         LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
-		"         LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id) R1 " +
-		"      GROUP BY 1, " +
-		"               2, " +
-		"               3) R2 " +
-		"   GROUP BY 1, " +
-		"            2) R3 " +
-		"GROUP BY 1, " +
-		"         2, " +
-		"         3 " +
-		"UNION " +
-		"SELECT ciclo_id, " +
-		"       pilar_id, " +
-		"       0, " +
-		"       SUM(qtdCelula) AS qtdCelula " +
-		"FROM " +
-		"  (SELECT ciclo_id, " +
-		"          pilar_id, " +
-		"          componente_id, " +
-		"          COUNT(1) AS qtdCelula " +
-		"   FROM " +
-		"     (SELECT a.ciclo_id, " +
-		"             a.pilar_id, " +
-		"             b.componente_id, " +
-		"             c.tipo_nota_id " +
-		"      FROM pilares_ciclos a " +
-		"      LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
-		"      LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id) R1 " +
-		"   GROUP BY 1, " +
-		"            2, " +
-		"            3) R2 " +
-		"GROUP BY 1, " +
-		"         2 " +
-		"UNION " +
-		"SELECT ciclo_id, " +
-		"       pilar_id, " +
-		"       componente_id, " +
-		"       COUNT(1) AS qtdCelula " +
-		"FROM " +
-		"  (SELECT a.ciclo_id, " +
-		"          a.pilar_id, " +
-		"          b.componente_id, " +
-		"          c.tipo_nota_id " +
-		"   FROM pilares_ciclos a " +
-		"   LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
-		"   LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id) R1 " +
-		"WHERE ciclo_id = $1 " +
-		"GROUP BY 1, " +
-		"         2, " +
-		"         3 " +
-		"ORDER BY 1, " +
-		"         2, " +
-		"         3 "
-	rows, _ := Db.Query(sql, cicloId)
+	sql := " SELECT ciclo_id, 0 AS pilar_id, 0 as componente_id, sum(qtdCelula) FROM ( " +
+		" SELECT ciclo_id, pilar_id, 0 as componente_id, sum(qtdCelula) AS qtdCelula FROM ( " +
+		" SELECT ciclo_id, pilar_id, componente_id, count(qtdCelula) AS qtdCelula FROM ( " +
+		" SELECT a.ciclo_id, a.pilar_id, b.componente_id, c.tipo_nota_id, COUNT(c.tipo_nota_id) AS qtdCelula " +
+		" FROM pilares_ciclos a " +
+		" LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
+		" LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id " +
+		" INNER JOIN elementos_componentes ec ON ec.tipo_nota_id = c.tipo_nota_id " +
+		" AND b.componente_id = ec.componente_id " +
+		" WHERE a.ciclo_id = $1 " +
+		" GROUP BY 1, 2, 3, 4 " +
+		" ORDER BY 1, 2, 3, 4) R1 " +
+		" GROUP BY 1, 2, 3 ) R2 " +
+		" GROUP BY 1, 2, 3 ) R3 " +
+		" GROUP BY 1, 2, 3 " +
+		" UNION " +
+		" SELECT ciclo_id, pilar_id, 0 as componente_id, sum(qtdCelula) AS qtdCelula FROM ( " +
+		" SELECT ciclo_id, pilar_id, componente_id, count(qtdCelula) AS qtdCelula FROM ( " +
+		" SELECT a.ciclo_id, a.pilar_id, b.componente_id, c.tipo_nota_id, COUNT(c.tipo_nota_id) AS qtdCelula " +
+		" FROM pilares_ciclos a " +
+		" LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
+		" LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id " +
+		" INNER JOIN elementos_componentes ec ON ec.tipo_nota_id = c.tipo_nota_id " +
+		" AND b.componente_id = ec.componente_id " +
+		" WHERE a.ciclo_id = $2 " +
+		" GROUP BY 1, 2, 3, 4 " +
+		" ORDER BY 1, 2, 3, 4) R1 " +
+		" GROUP BY 1, 2, 3 ) R2 " +
+		" GROUP BY 1, 2, 3  " +
+		" UNION " +
+		" SELECT ciclo_id, pilar_id, componente_id, count(qtdCelula) AS qtdCelula FROM ( " +
+		" SELECT a.ciclo_id, a.pilar_id, b.componente_id, c.tipo_nota_id, COUNT(c.tipo_nota_id) AS qtdCelula " +
+		" FROM pilares_ciclos a " +
+		" LEFT JOIN componentes_pilares b ON b.pilar_id = a.pilar_id " +
+		" LEFT JOIN tipos_notas_componentes c ON b.componente_id = c.componente_id " +
+		" INNER JOIN elementos_componentes ec ON ec.tipo_nota_id = c.tipo_nota_id " +
+		" AND b.componente_id = ec.componente_id " +
+		" WHERE a.ciclo_id = $3 " +
+		" GROUP BY 1, 2, 3, 4 " +
+		" ORDER BY 1, 2, 3, 4) R1 " +
+		" GROUP BY 1, 2, 3 " +
+		" ORDER BY 1, 2, 3 "
+	rows, _ := Db.Query(sql, cicloId, cicloId, cicloId)
+	log.Println(sql)
 	var cols []mdl.ColSpan
 	var col mdl.ColSpan
 	for rows.Next() {

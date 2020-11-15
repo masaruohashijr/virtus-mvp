@@ -85,6 +85,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 		" and a.ciclo_id = b.ciclo_id  " +
 		" and a.pilar_id = b.pilar_id " +
 		" and a.componente_id = b.componente_id " +
+		" and a.id_versao_origem is null " +
 		" GROUP BY b.entidade_id,  " +
 		" b.ciclo_id, " +
 		" b.pilar_id, " +

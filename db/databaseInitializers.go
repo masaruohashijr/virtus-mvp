@@ -11,7 +11,9 @@ var db *sql.DB
 func Initialize() {
 	db = hd.Db
 	createSeq()
+	createSeqHistoricos()
 	createTable()
+	createTablesHistoricos()
 	createFeatures()
 	createRoles()
 	createRoleFeatures()
@@ -24,7 +26,7 @@ func Initialize() {
 	createPKey()
 	createFKey()
 	createUniqueKey()
-	createCicloCompleto(1, 3, 3, 3, 3)
+	createCicloCompleto()
 }
 
 func createStatusZERO() {

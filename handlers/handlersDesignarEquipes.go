@@ -231,6 +231,28 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 					currentUser.Id,
 					time.Now(),
 					statusComponenteId).Scan(&integranteId)
+				if integrante.IniciaEm != "" {
+					log.Println("integrante.IniciaEm: " + integrante.IniciaEm)
+					log.Println("integranteId: " + strconv.Itoa(integranteId))
+					sqlStatement := "UPDATE integrantes SET inicia_em = to_date('" +
+						integrante.IniciaEm + "','DD/MM/YYYY') " +
+						"WHERE id = " + strconv.Itoa(integranteId)
+					_, err := Db.Exec(sqlStatement)
+					if err != nil {
+						log.Println(err)
+					}
+				}
+				if integrante.TerminaEm != "" {
+					log.Println("integrante.TerminaEm: " + integrante.TerminaEm)
+					log.Println("integranteId: " + strconv.Itoa(integranteId))
+					sqlStatement := "UPDATE integrantes SET termina_em = to_date('" +
+						integrante.TerminaEm + "','DD/MM/YYYY') " +
+						"WHERE id = " + strconv.Itoa(integranteId)
+					_, err := Db.Exec(sqlStatement)
+					if err != nil {
+						log.Println(err)
+					}
+				}
 			}
 		}
 		UpdateIntegrantesHandler(integrantesPage, integrantesDB)
@@ -315,12 +337,28 @@ func hasSomeFieldChangedIntegrante(integrantePage mdl.Integrante, integranteDB m
 }
 
 func updateIntegranteHandler(integrante mdl.Integrante, jurisdicaoDB mdl.Integrante) {
-	sqlStatement := "UPDATE integrantes SET " +
-		"incia_em=$1, termina_em=$2 WHERE id=$3"
-	log.Println(sqlStatement)
-	updtForm, _ := Db.Prepare(sqlStatement)
-	updtForm.Exec(integrante.IniciaEm, integrante.TerminaEm, integrante.Id)
-	log.Println("Statement: " + sqlStatement)
+	log.Println("De " + integrante.IniciaEm + " a " + integrante.TerminaEm)
+	if integrante.IniciaEm != "" {
+		sqlStatement := "UPDATE integrantes SET inicia_em = to_date('" +
+			integrante.IniciaEm + "','DD/MM/YYYY') " +
+			"WHERE id = " + strconv.FormatInt(integrante.Id, 10)
+		_, err := Db.Exec(sqlStatement)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(sqlStatement)
+	}
+	if integrante.TerminaEm != "" {
+		sqlStatement := "UPDATE integrantes SET termina_em = to_date('" +
+			integrante.TerminaEm + "','DD/MM/YYYY') " +
+			"WHERE id = " + strconv.FormatInt(integrante.Id, 10)
+		_, err := Db.Exec(sqlStatement)
+		log.Println("Statement: " + sqlStatement)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(sqlStatement)
+	}
 }
 
 func LoadIntegrantesByEntidadeIdCicloId(w http.ResponseWriter, r *http.Request) {

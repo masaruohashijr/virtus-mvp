@@ -37,10 +37,10 @@ function criarMembro(){
 		alert(erros);
 		return;
 	}
-	let iniciaEm = document.getElementById('IniciaEmForInsert').value;
-	let terminaEm = document.getElementById('TerminaEmForInsert').value;
+	let iniciaEm = formatarData(document.getElementById('IniciaEmMEForInsert').value);
+	let terminaEm = formatarData(document.getElementById('TerminaEmMEForInsert').value);
 	membroId = getMaxId(membros);
-	membro = new Membro(0, membroId, 0, usuarioId, usuarioNome, '', iniciaEm, terminaEm, '', '', '', '', '', '', '');
+	membro = new Membro(0, membroId, 0, usuarioId, usuarioNome, '', iniciaEm, terminaEm, '', '', '', '', '', '');
 	membros.push(membro);
 	addMembroRow("table-membros-"+contexto);
 	limparCamposMembroForm();

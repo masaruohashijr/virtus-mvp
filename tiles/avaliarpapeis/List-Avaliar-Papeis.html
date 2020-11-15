@@ -80,6 +80,7 @@
 					<input style="font-size:1.5em;width: 90px; text-align:center"
 						name="CicloNota{{$produto.ComponenteId}}" 
 						class="w3-input" 
+						readOnly
 						type="number" 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.CicloNota}}">
@@ -118,8 +119,9 @@
                 <td style="vertical-align:middle">
 					<input style="width: 75px; text-align:center" class="w3-input" 
 						type="number"
+						name="PilarPeso_{{$produto.PilarId}}" 
 						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
-						onchange="sinalizarAlteracao(this)" 
+						onchange="sinalizarAlteracao(this);alert()" 
 						value="{{ $produto.PilarPeso }}">
 				</td>
                 <td style="vertical-align:middle">&nbsp;</td>
