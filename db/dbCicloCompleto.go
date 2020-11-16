@@ -53,7 +53,7 @@ func createCicloCompleto() {
 		" peso_padrao, " +
 		" author_id, " +
 		" criado_em ) %s"
-	qtdCiclos := 1
+	qtdCiclos := 5
 	for i := 1; i <= qtdCiclos; i++ {
 		var unsavedPilaresCiclos []string
 		var unsavedComponentesPilares []string
@@ -68,9 +68,9 @@ func createCicloCompleto() {
 		// Pilares - código: 11
 		pesoPadrao = 100
 		max := 100
-		qtdPilares := rand.Intn(5)
+		qtdPilares := rand.Intn(6)
 		for qtdPilares < 3 {
-			qtdPilares = rand.Intn(4)
+			qtdPilares = rand.Intn(6)
 			log.Println("qtdPilares " + strconv.Itoa(qtdPilares))
 		}
 		for j := 1; j <= qtdPilares; j++ {

@@ -19,7 +19,7 @@
 		    </div>
 		</header>
 		<form action="/updateMatriz" method="POST">
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" max-width="100%">
 			{{$primeiraLinha := true}}
 			{{$auxEntidade := ""}}
 			{{$notaCiclo := ""}}
@@ -80,16 +80,18 @@
 							<td style="font-size:1.5em" rowspan="2">{{$m.EntidadeNome}}</td>
 					{{end}}
 					{{ $bgColor := (printf "%v%v" "#" $m.TipoNotaCorLetra ) }}
-					{{if ne $auxTipoNota $m.TipoNotaLetra}}
+					{{if or (ne $auxTipoNota $m.TipoNotaLetra) (ne $auxComponente $m.ComponenteNome)}}
 						{{$auxTipoNota = $m.TipoNotaLetra}}
-							<td style="background-color:{{print $bgColor}};border: 1px solid lightgrey">{{$m.TipoNotaLetra}}</td> 
+						{{$auxComponente = $m.ComponenteNome}}
+							<td style="background-color:{{print $bgColor}};border: 1px solid lightgrey">{{$m.ComponenteNome}} - {{$m.TipoNotaLetra}}</td> 
 					{{end}}
 				{{end}}
 			</tr>
 			<tr>
 				{{range $index, $m := .ElementosDaMatriz}}
-					{{if ne $auxTipoNota $m.TipoNotaLetra}}
+					{{if or (ne $auxTipoNota $m.TipoNotaLetra) (ne $auxComponente $m.ComponenteNome)}}
 						{{$auxTipoNota = $m.TipoNotaLetra}}
+						{{$auxComponente = $m.ComponenteNome}}
 							<td style="border: 1px solid lightgrey">{{$m.TipoNotaNota}}</td> 
 					{{end}}
 				{{end}}

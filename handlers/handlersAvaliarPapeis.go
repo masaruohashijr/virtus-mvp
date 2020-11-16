@@ -31,46 +31,46 @@ const sqlPapeis = " SELECT  " +
 	" ce.tipo_media, ce.inicia_em, ce.termina_em, " +
 	" a.item_id, g.nome as item_nome " +
 	" FROM produtos_itens a " +
-	" LEFT JOIN entidades b ON a.entidade_id = b.id " +
-	" LEFT JOIN ciclos c ON a.ciclo_id = c.id " +
-	" LEFT JOIN pilares d ON a.pilar_id = d.id " +
-	" LEFT JOIN componentes e ON a.componente_id = e.id " +
-	" LEFT JOIN produtos_tipos_notas o ON " +
+	" INNER JOIN entidades b ON a.entidade_id = b.id " +
+	" INNER JOIN ciclos c ON a.ciclo_id = c.id " +
+	" INNER JOIN pilares d ON a.pilar_id = d.id " +
+	" INNER JOIN componentes e ON a.componente_id = e.id " +
+	" INNER JOIN produtos_tipos_notas o ON " +
 	" ( a.tipo_nota_id = o.tipo_nota_id AND " +
 	" a.componente_id = o.componente_id AND " +
 	" a.pilar_id = o.pilar_id AND " +
 	" a.ciclo_id = o.ciclo_id AND " +
 	" a.entidade_id = o.entidade_id )" +
-	" LEFT JOIN produtos_elementos n ON " +
+	" INNER JOIN produtos_elementos n ON " +
 	" ( a.elemento_id = n.elemento_id AND " +
 	" a.componente_id = n.componente_id AND " +
 	" a.pilar_id = n.pilar_id AND " +
 	" a.ciclo_id = n.ciclo_id AND " +
 	" a.entidade_id = n.entidade_id )" +
-	" LEFT JOIN produtos_componentes j ON " +
+	" INNER JOIN produtos_componentes j ON " +
 	" ( a.componente_id = j.componente_id AND " +
 	" a.pilar_id = j.pilar_id AND " +
 	" a.ciclo_id = j.ciclo_id AND " +
 	" a.entidade_id = j.entidade_id )" +
-	" LEFT JOIN produtos_pilares k ON " +
+	" INNER JOIN produtos_pilares k ON " +
 	" ( a.pilar_id = k.pilar_id AND " +
 	"   a.ciclo_id = k.ciclo_id AND " +
 	"   a.entidade_id = k.entidade_id ) " +
-	" LEFT JOIN produtos_ciclos l ON " +
+	" INNER JOIN produtos_ciclos l ON " +
 	" ( a.ciclo_id = l.ciclo_id AND " +
 	"   a.entidade_id = l.entidade_id ) " +
-	" LEFT JOIN elementos_componentes ec ON " +
+	" INNER JOIN elementos_componentes ec ON " +
 	" ( a.elemento_id = ec.elemento_id AND a.componente_id = ec.componente_id ) " +
-	" LEFT JOIN componentes_pilares cp ON " +
+	" INNER JOIN componentes_pilares cp ON " +
 	" ( a.componente_id = cp.componente_id AND a.pilar_id = cp.pilar_id ) " +
-	" LEFT JOIN pilares_ciclos pc ON " +
+	" INNER JOIN pilares_ciclos pc ON " +
 	" ( a.pilar_id = pc.pilar_id AND a.ciclo_id = pc.ciclo_id ) " +
-	" LEFT JOIN ciclos_entidades ce ON a.componente_id = ce.id  " +
-	" LEFT JOIN elementos f ON a.elemento_id = f.id  " +
-	" LEFT JOIN itens g ON a.item_id = g.id  " +
-	" LEFT JOIN users h ON j.supervisor_id = h.id  " +
-	" LEFT JOIN users i ON j.auditor_id = i.id  " +
-	" LEFT JOIN tipos_notas m ON ec.tipo_nota_id = m.id " +
+	" INNER JOIN ciclos_entidades ce ON (a.ciclo_id = ce.ciclo_id and a.entidade_id = ce.entidade_id)  " +
+	" INNER JOIN elementos f ON a.elemento_id = f.id  " +
+	" INNER JOIN itens g ON a.item_id = g.id  " +
+	" INNER JOIN users h ON j.supervisor_id = h.id  " +
+	" INNER JOIN users i ON j.auditor_id = i.id  " +
+	" INNER JOIN tipos_notas m ON ec.tipo_nota_id = m.id " +
 	" WHERE a.entidade_id = $1 AND a.ciclo_id = $2 " +
 	" ORDER BY a.ciclo_id, " +
 	" a.pilar_id,  " +

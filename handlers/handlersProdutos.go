@@ -314,15 +314,17 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
 }
 
 func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId string) {
-	sqlStatement := "INSERT INTO public.produtos_ciclos ( " +
+	sqlStatement := "INSERT INTO produtos_ciclos ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
+		" nota, " +
 		" tipo_pontuacao_id, " +
 		" author_id, " +
 		" criado_em ) " +
 		" SELECT " +
 		entidadeId + ", " +
 		cicloId + ", " +
+		" 1, " +
 		" $1, " +
 		" $2, " +
 		" $3 " +
@@ -343,12 +345,13 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		log.Println(err)
 	}
 	sqlStatement = "INSERT INTO produtos_pilares " +
-		" (entidade_id, ciclo_id, pilar_id, peso, tipo_pontuacao_id, author_id, criado_em) " +
+		" (entidade_id, ciclo_id, pilar_id, peso, nota, tipo_pontuacao_id, author_id, criado_em) " +
 		" SELECT " +
 		entidadeId + ", " +
 		cicloId + ", " +
 		" a.pilar_id, " +
 		" a.peso_padrao, " +
+		" 1, " +
 		" $1, " +
 		" $2, " +
 		" $3 " +
@@ -370,7 +373,7 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		log.Println(err)
 	}
 
-	sqlStatement = "INSERT INTO public.produtos_elementos ( " +
+	sqlStatement = "INSERT INTO produtos_elementos ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
 		" pilar_id, " +
@@ -415,11 +418,12 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		" pilar_id, " +
 		" componente_id, " +
 		" peso, " +
+		" nota, " +
 		" tipo_pontuacao_id, " +
 		" author_id, " +
 		" criado_em ) " +
 		" SELECT " + entidadeId + ", " + cicloId + ", a.pilar_id, b.componente_id, " +
-		" round(CAST(avg(c.peso_padrao) AS numeric),2), " +
+		" round(CAST(avg(c.peso_padrao) AS numeric),2), 1, " +
 		" $1, $2, $3 " +
 		" FROM " +
 		" PILARES_CICLOS a " +
@@ -454,12 +458,13 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		" componente_id, " +
 		" tipo_nota_id, " +
 		" peso, " +
+		" nota, " +
 		" tipo_pontuacao_id, " +
 		" author_id, " +
 		" criado_em ) " +
 		" SELECT " + entidadeId + ", " + cicloId + ", a.pilar_id, b.componente_id, " +
 		" d.tipo_nota_id, " +
-		" round(CAST(avg(d.peso_padrao) AS numeric),2), " +
+		" round(CAST(avg(d.peso_padrao) AS numeric),2), 1, " +
 		" $1, $2, $3 " +
 		" FROM " +
 		" PILARES_CICLOS a " +
@@ -489,7 +494,7 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		log.Println(err)
 	}
 
-	sqlStatement = "INSERT INTO public.produtos_itens ( " +
+	sqlStatement = "INSERT INTO produtos_itens ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
 		" pilar_id, " +
