@@ -15,7 +15,7 @@
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" id="RoleNameForUpdate" name="Name" value="">
 				<label class="w3-label">Funcionalidades</label>
-	            <select class="w3-input" name="FeaturesForUpdate" id="FeaturesForUpdate" multiple style="width:100%">
+	            <select class="w3-input" name="FeaturesForUpdate" id="FeaturesForUpdate" multiple style="height:350px; width:100%">
 					{{range $index, $feature := .Features }}
 		                <option value="{{$feature.Id}}">
 							{{$feature.Name}}
