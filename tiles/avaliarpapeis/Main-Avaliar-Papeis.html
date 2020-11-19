@@ -3,8 +3,12 @@
 	{{ template "Header" .Title }}
 <body>
 {{ template "Error-Message" .ErrMsg }}
+{{ template "Motivar-Nota" . }}
+{{ template "Motivar-Peso" . }}
+{{ template "Motivar-Remocao" . }}
 {{ template "Detalhar-Elemento" . }}
 {{ template "Historico-Elemento" . }}
+{{ template "Motivo" . }}
 {{ template "Menu" . }}
 {{ template "List-Avaliar-Papeis" . }}
 </body>

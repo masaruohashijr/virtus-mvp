@@ -1,5 +1,6 @@
 {{define "List-Avaliar-Papeis"}}
 <!-- List Avaliar Papeis -->
+<form action="/updateAvaliarPapeis" method="POST" id="form-avaliar-papeis">
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
 		    <div class="aria">
@@ -18,19 +19,18 @@
 				</div>
 		    </div>
 		</header>
-		<form action="/updateAvaliarPapeis" method="POST" id="form-avaliar-papeis">
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
             <tr>
-                <th style="width:2%">Ord</th>
-                <th style="text-align:left; width:25%">Sumário</th>
-                <th style="width:12%">&nbsp;</th>
-                <th style="width:12%">&nbsp;</th>
-                <th style="width:3%">&nbsp;</th>
-                <th style="width:3%">&nbsp;</th>
-                <th style="width:4%">Método</th>
-                <th style="width:4%">Nota</th>
+                <td style="width:2%">Ord</td>
+                <td style="text-align:left; width:25%">Sumário</td>
+                <td style="width:12%">&nbsp;</td>
+                <td style="width:12%">&nbsp;</td>
+                <td style="width:3%">&nbsp;</td>
+                <td style="width:3%">&nbsp;</td>
+                <td style="width:4%">Método</td>
+                <td style="width:4%">Nota</td>
 				{{if $allowed}}
-				<th style="width:17%">Ações</th>
+				<td style="width:17%">Ações</td>
 				{{end}}
             </tr>
 			{{$primeiraLinha := true}}
@@ -45,8 +45,27 @@
 			{{$tipoPontuacao := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
 			
+			<script type="text/javascript">
+				entidadesMap = new Map();
+				ciclosMap = new Map();
+				pilaresMap = new Map();
+				componentesMap = new Map();
+				tiposNotasMap = new Map();
+				elementosMap = new Map();
+				itensMap = new Map();
+				auditoresMap = new Map();
+			</script>
             {{range $index, $produto := .Produtos}}
-
+			<script type="text/javascript">
+				entidadesMap.set("{{$produto.EntidadeId}}","{{$produto.EntidadeNome}}");
+				ciclosMap.set("{{$produto.CicloId}}","{{$produto.CicloNome}}");
+				pilaresMap.set("{{$produto.PilarId}}","{{$produto.PilarNome}}");
+				componentesMap.set("{{$produto.ComponenteId}}","{{$produto.ComponenteNome}}");
+				tiposNotasMap.set("{{$produto.TipoNotaId}}","{{$produto.TipoNotaNome}}");
+				elementosMap.set("{{$produto.ElementoId}}","{{$produto.ElementoNome}}");
+				itensMap.set("{{$produto.ItemId}}","{{$produto.ItemNome}}");
+				auditoresMap.set("{{$produto.AuditorId}}","{{$produto.AuditorName}}");
+			</script>
 			{{if $primeiraLinha}}
             <tr style="background-color: aliceblue">
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -70,7 +89,7 @@
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">
 					<select style="width: 75px; text-align:center" class="w3-input" 
-						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
+						readonly disabled 
 						onchange="sinalizarAlteracao(this);">
 						<option value="C">C</option>
 						<option value="F">F</option>
@@ -80,14 +99,13 @@
 					<input style="font-size:1.5em;width: 90px; text-align:center"
 						name="CicloNota{{$produto.ComponenteId}}" 
 						class="w3-input" 
-						readOnly
+						readOnly disabled
 						type="number" 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.CicloNota}}">
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
                     <button class="w3-btn w3-black" onclick="openHist(this)">Histórico</button>
                 </td>
@@ -136,7 +154,6 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="openDet()">Detalhar</button>
                     <button class="w3-btn w3-brown" onclick="openHist()">Histórico</button>
                 </td>
@@ -163,9 +180,10 @@
 					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}} 
 				</td>
 				{{$auxComponente = $produto.ComponenteNome}}
+				{{$auxTipoNota = ""}}
 				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
                 <td style="vertical-align:middle">
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);"
+					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);motivarRemocao(this);"
 						{{if or (eq $.LoggedUser.User.Role 4) (ne $produto.SupervisorId $currentUser) }}readOnly disabled{{end}} 
 						name="AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}">
 						<option value=""></option>
@@ -175,6 +193,7 @@
 							</option>
 			            {{end}}
 		            </select>
+					<input type="hidden" name="MotivacaoRemocao" value="">
 				</td>
 				<td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">
@@ -196,14 +215,13 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
                     <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button>
                 </td>
 				{{end}}					
         	</tr>
 			{{end}}				
-			{{if ne $auxTipoNota $produto.TipoNotaNome}}
+			{{if or (ne $auxComponente $produto.ComponenteNome) (ne $auxTipoNota $produto.TipoNotaNome) }}
             <tr>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
@@ -234,7 +252,6 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
                     <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button>
                 </td>
@@ -260,9 +277,9 @@
 				{{$pesoPadraoEC = $produto.PesoPadraoEC}}
 				{{$elementoPeso = $produto.ElementoPeso}}
 					<select style="width: 75px; text-align:center" class="w3-input" 
-						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}"
+						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}"
 						{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
-						onchange="sinalizarAlteracao(this);">
+						onchange="sinalizarAlteracao(this); motivarPeso(this);">
 						<option value="1" {{if eq $elementoPeso "1" }}selected{{end}}>1</option>
 						<option value="2" {{if eq $elementoPeso "2" }}selected{{end}}>2</option>
 						<option value="4" {{if eq $elementoPeso "4" }}selected{{end}}>4</option>
@@ -272,7 +289,7 @@
                 <td style="vertical-align:middle">
 				{{$tipoPontuacao = $produto.TipoPontuacaoId}}
 					<select style="width: 75px; text-align:center" class="w3-input"
-						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
+						readonly disabled 
 						onchange="sinalizarAlteracao(this);">
 						<option value="1" {{if eq $tipoPontuacao "1" }}selected{{end}}>M</option>
 						<option value="2" {{if eq $tipoPontuacao "2" }}selected{{end}}>C</option>
@@ -284,19 +301,22 @@
 					<select style="width: 75px; text-align:center" 
 						class="w3-input" 
 						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}}
-						name="ElementoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.ElementoId}}"
-						onchange="sinalizarAlteracao(this)">
+						name="ElementoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}"
+						onchange="sinalizarAlteracao(this); motivarNota(this);">
 						<option value="1" {{if eq $elementoNota "1" }}selected{{end}}>1</option>
 						<option value="2" {{if eq $elementoNota "2" }}selected{{end}}>2</option>
 						<option value="3" {{if eq $elementoNota "3" }}selected{{end}}>3</option>
 						<option value="4" {{if eq $elementoNota "4" }}selected{{end}}>4</option>
 		            </select>
+					<input type="hidden" id="MotivacaoNota" name="MotivacaoNota" value="">
+					<input type="hidden" id="MotivacaoPeso" name="MotivacaoPeso" value="">
 				</td>
 				{{if $allowed}}
                 <td>
-					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-dark-green" onclick="openHist(this)">Histórico</button>
+                    <button class="w3-btn w3-dark-green"
+						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}" 
+						onclick="openHistElemento(this)">Histórico</button>
                 </td>
 				{{end}}
             </tr>
@@ -314,20 +334,14 @@
                 <td>&nbsp;</td>
 				{{if $allowed}}
                 <td>
-					<button class="w3-btn w3-teal" type="submit">Salvar</button>
                     <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
                     <button class="w3-btn w3-green" onclick="openHist(this)">Histórico</button>
                 </td>
 				{{end}}
             </tr>
        		{{end}}
-			<tr>
-				<td colspan="10" style="text-align: center">
-					<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Salvar</button>
-				</td>
-			</tr>
         </table>
-		</form>
     </div>
 </div>
+</form>
 {{end}}

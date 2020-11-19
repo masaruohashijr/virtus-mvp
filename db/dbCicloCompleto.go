@@ -53,7 +53,7 @@ func createCicloCompleto() {
 		" peso_padrao, " +
 		" author_id, " +
 		" criado_em ) %s"
-	qtdCiclos := 5
+	qtdCiclos := 1
 	for i := 1; i <= qtdCiclos; i++ {
 		var unsavedPilaresCiclos []string
 		var unsavedComponentesPilares []string

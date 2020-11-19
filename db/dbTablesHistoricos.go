@@ -74,6 +74,7 @@ func createTablesHistoricos() {
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" tipo_alteracao character(1)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" justificativa character varying(4000)," +

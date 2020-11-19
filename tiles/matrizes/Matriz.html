@@ -83,7 +83,7 @@
 					{{if or (ne $auxTipoNota $m.TipoNotaLetra) (ne $auxComponente $m.ComponenteNome)}}
 						{{$auxTipoNota = $m.TipoNotaLetra}}
 						{{$auxComponente = $m.ComponenteNome}}
-							<td style="background-color:{{print $bgColor}};border: 1px solid lightgrey">{{$m.ComponenteNome}} - {{$m.TipoNotaLetra}}</td> 
+							<td style="background-color:{{print $bgColor}};border: 1px solid lightgrey">{{$m.TipoNotaLetra}}</td> 
 					{{end}}
 				{{end}}
 			</tr>

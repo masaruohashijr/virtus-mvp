@@ -5,45 +5,81 @@
         <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
-                <h2>Historico</h2>
+                <h2>Histórico do Elemento</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="resetFormAvaliarPapeis();document.getElementById('hist-elemento-form').style.display='none'">&times;</span>
             </div>
 
             <form class="w3-container" id="formulario-edit">
                 <input type="hidden" name="Id" id="CicloIdForUpdate" value="">
-                <label class="w3-label">Ciclo</label>
-                <input class="w3-input" type="text" name="Nome" id="NomeCicloForUpdate" value="">
-                <label class="w3-label">Pilar</label>
-                <input class="w3-input" type="text" name="Nome" id="NomeCicloForUpdate" value="">
-				<label class="w3-label">Componente</label>
-                <input class="w3-input" type="text" name="AuthorNameForUpdate" id="AuthorNameForUpdate" readonly="readonly" disabled="disabled" value="">
-				<label class="w3-label">Tipo de Nota</label>
-                <input class="w3-input" type="text" name="CriadoEmForUpdate" id="CriadoEmForUpdate" readonly="readonly" disabled="disabled" value="">
-				<label class="w3-label">Elemento</label>
-                <input class="w3-input" type="text" name="CriadoEmForUpdate" id="CriadoEmForUpdate" readonly="readonly" disabled="disabled" value="">
+				<input type="hidden" id="motNota_callback" value="">	
+				<table width="100%">
+					<tr>
+						<td>
+							<label class="w3-label">EFPC</label>					
+	                		<input class="w3-input" type="text" id="histEFPC" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>
+                		<td>
+							<label class="w3-label">Ciclo</label>
+							<input class="w3-input" type="text" id="histCiclo" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td>
+							<label class="w3-label">Pilar</label>
+                			<input class="w3-input" type="text" id="histPilar" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td>
+							<label class="w3-label">Componente</label>
+                			<input class="w3-input" type="text" id="histComponente" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<label class="w3-label">Tipo de Nota</label>
+                			<input class="w3-input" type="text" id="histTipoNota" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td>
+							<label class="w3-label">Elemento</label>
+                			<input class="w3-input" type="text" id="histElemento" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>
+				</table>
 		        <header class="w3-container w3-center w3-teal">
-		            <div class="w3-row">
-		                <div class="w3-half" style="text-align: center;z-index:0">
-		                    <h4 class="w3-right">Históricos</h4>
+					<div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Históricos</h4>
+		                <div style="margin-top: 8px">
+		                    <div class="w3-right" id="edit-form-elemento-componente-btn" >
+		                    </div>
 		                </div>
 		            </div>
 		        </header>
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
-					id="table-pilar-ciclo-edit">
+					id="table-historicos-edit">
 		            <tr>
-		                <th>Nota</th>
-		                <th>Método</th>
-		                <th>Peso</th>
-		                <th>Alterado em</th>
-		                <th>Autor</th>
-		                <th>Status</th>
-						<th>Ações</th>
+						<td>Alterou</td>
+		                <td>Nota</td>
+		                <td>Método</td>
+		                <td>Peso</td>
+		                <td>Autor</td>
+		                <td>Em</td>
+						<td>Ações</td>
 		            </tr>
 		        </table>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
 					onClick="resetFormAvaliarPapeis();document.getElementById('hist-elemento-form').style.display='none'" 
-					type="button">Salvar</button>
+					type="button">Fechar</button>
             </form>
         </div>
     </div>

@@ -1,0 +1,30 @@
+{{define "Motivo"}}
+<!-- Motivo -->
+<div class="w3-container">
+    <div id="motivo-form" class="w3-submodal" style="padding-top: 150 px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Motivo da alteração</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('motivo-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" id="formulario-edit">
+				<table width="100%">
+					<tr>
+						<td>
+							<label class="w3-label">Motivação</label>
+							<br>
+							<textarea id="mot_text" class="w3-input" rows="20" cols="55"></textarea>
+						</td>
+					</tr>	
+				</table>
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					onClick="document.getElementById('motivo-form').style.display='none'" 
+					type="button">Fechar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

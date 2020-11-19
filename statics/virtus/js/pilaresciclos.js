@@ -151,12 +151,12 @@ function updatePilarCiclo() {
 	let campoSelect = document.getElementById('PilarCicloForUpdate');
 	let pilarId = 0;
 	let pilarNome = '';
-	// console.log('campoSelect.options.length: '+campoSelect.options.length);
-	// console.log('campoSelect.options.selectedIndex: '+campoSelect.options.selectedIndex);
+	console.log('campoSelect.options.length: '+campoSelect.options.length);
+	console.log('campoSelect.options.selectedIndex: '+campoSelect.options.selectedIndex);
 	for(n=0;n<campoSelect.options.length;n++){
-		// console.log("n: "+n);
-		// console.log(campoSelect.options[n].selected);
-		// console.log(campoSelect.selectedIndex);
+		console.log("n: "+n);
+		console.log(campoSelect.options[n].selected);
+		console.log(campoSelect.selectedIndex);
 		if(campoSelect.options[n].selected){
 			pilarId = campoSelect.options[n].value;
 			pilarNome = campoSelect.options[n].text;
@@ -188,22 +188,22 @@ function updatePilarCiclo() {
 }
 
 function updatePilarCicloRow(tableID, order){
-	// console.log('updatePilarCicloRow');
-	// console.log('contexto: '+contexto);
+	console.log('updatePilarCicloRow');
+	console.log('contexto: '+contexto);
 	let tbl = document.getElementById(tableID);
-	// console.log('tableID: '+tableID);
+	console.log('tableID: '+tableID);
 	let linhas = tbl.childNodes[1].childNodes;
-	// console.log('linhas: '+linhas);
+	console.log('linhas: '+linhas);
 	let row = tbl.childNodes[0];
-	// console.log('row: '+row);
+	console.log('row: '+row);
 	for(y=0;y<linhas.length;y++){
 		if(linhas[y].childNodes[0]){
 			let inputOrder = linhas[y].childNodes[0].childNodes[0];
-			// console.log(inputOrder);
+			console.log(inputOrder);
 			if(inputOrder && inputOrder.tagName=='INPUT'){ 
-				// console.log('tagName: '+inputOrder.tagName);
-				// console.log('value: '+inputOrder.value);
-				// console.log('order: '+order);
+				console.log('tagName: '+inputOrder.tagName);
+				console.log('value: '+inputOrder.value);
+				console.log('order: '+order);
 				if(inputOrder.value==order){
 					// console.log("y: "+y);
 					row = linhas[y];
@@ -213,29 +213,29 @@ function updatePilarCicloRow(tableID, order){
 		}
 	}
 	let celula = row.childNodes[0];
-	// console.log(pilaresCiclo[order].pilarNome);
+	console.log(pilaresCiclo[order].pilarNome);
 	celula.innerText = pilaresCiclo[order].pilarNome;
 	let json = JSON.stringify(pilaresCiclo[order]);
 	json = json.split(',').join('#');
 	json = json.split('"').join('');
 	json = json.split('{').join('');
 	json = json.split('}').join('');
-	// console.log(json);
+	console.log(json);
 	celula.innerHTML = '<input type="hidden" name="pilarCiclo'+order+'" value="'+json+'"/>'+celula.innerHTML;
-	// console.log('pilarCiclo.pilarId: '+pilarCiclo.pilarId);
+	console.log('pilarCiclo.pilarId: '+pilarCiclo.pilarId);
 	celula.innerHTML = '<input type="hidden" name="pilarId" value="'+pilarCiclo.pilarId+'"/>'+celula.innerHTML;
-	// console.log('pilarCiclo.cicloId: '+pilarCiclo.cicloId);
+	console.log('pilarCiclo.cicloId: '+pilarCiclo.cicloId);
 	celula.innerHTML = '<input type="hidden" name="cicloId" value="'+pilarCiclo.cicloId+'"/>'+celula.innerHTML;
-	// console.log('pilaresCiclo[order].id: '+pilaresCiclo[order].id);
+	console.log('pilaresCiclo[order].id: '+pilaresCiclo[order].id);
 	celula.innerHTML = '<input type="hidden" name="id" value="'+pilaresCiclo[order].id+'"/>'+celula.innerHTML;
-	// console.log('order: '+order);
+	console.log('order: '+order);
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
 	celula = row.childNodes[1];
-	// console.log('pilaresCiclo[order].tipoMedia: '+pilaresCiclo[order].tipoMedia);
+	console.log('pilaresCiclo[order].tipoMedia: '+pilaresCiclo[order].tipoMedia);
 	celula.innerText = pilaresCiclo[order].tipoMedia;
 	celula.innerHTML = '<input type="hidden" value="'+pilaresCiclo[order].tipoMediaId+'"/>'+celula.innerHTML;
 	celula = row.childNodes[2];
-	// console.log('pilaresCiclo[order].iniciaEm: '+pilaresCiclo[order].iniciaEm);
+	console.log('pilaresCiclo[order].iniciaEm: '+pilaresCiclo[order].iniciaEm);
 	celula.innerText = pilaresCiclo[order].pesoPadrao+" %";
 }
 

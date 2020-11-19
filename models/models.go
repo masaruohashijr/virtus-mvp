@@ -219,6 +219,23 @@ type Feature struct {
 	Selected       bool
 }
 
+type Historico struct {
+	Id            string `json:"id"`
+	EntidadeId    string `json:"entidadeId"`
+	CicloId       string `json:"cicloId"`
+	PilarId       string `json:"pilarId"`
+	ComponenteId  string `json:"componenteId"`
+	ElementoId    string `json:"elementoId"`
+	Nota          string `json:"nota"`
+	Metodo        string `json:"metodo"`
+	Peso          string `json:"peso"`
+	AutorId       string `json:"autorId"`
+	AutorNome     string `json:"autorNome"`
+	AlteradoEm    string `json:"alteradoEm"`
+	Motivacao     string `json:"motivacao"`
+	TipoAlteracao string `json:"tipoAlteracao"`
+}
+
 type Item struct {
 	Order          int    `json:"order"`
 	Id             int64  `json:"id"`
@@ -433,7 +450,7 @@ type ProdutoElemento struct {
 	TipoPontuacaoId int     `json:"tipoPontuacaoId"`
 	TipoPontuacao   string  `json:"tipoPontuacao"`
 	Peso            float64 `json:"peso"`
-	Nota            float64 `json:"nota"`
+	Nota            int     `json:"nota"`
 	Motivacao       string  `json:"motivacao"`
 	AuditorId       int64   `json:"auditorId"`
 	AuditorName     string  `json:"auditorName"`

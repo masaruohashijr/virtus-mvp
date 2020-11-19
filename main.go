@@ -137,6 +137,7 @@ func main() {
 	r.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler).Methods("POST")
 	r.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler).Methods("POST")
 	// ----------------- LOADS
+	r.HandleFunc("/loadHistoricos", hd.LoadHistoricos).Methods("GET")
 	r.HandleFunc("/loadTiposNotaByComponenteId", hd.LoadTiposNotaByComponenteId).Methods("GET")
 	r.HandleFunc("/loadSupervisorByEntidadeIdCicloId", hd.LoadSupervisorByEntidadeIdCicloId).Methods("GET")
 	r.HandleFunc("/loadIntegrantesByEntidadeIdCicloId", hd.LoadIntegrantesByEntidadeIdCicloId).Methods("GET")

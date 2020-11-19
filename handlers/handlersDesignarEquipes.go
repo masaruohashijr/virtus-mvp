@@ -116,7 +116,7 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(sqlStatement)
 			updtForm, _ := Db.Prepare(sqlStatement)
 			updtForm.Exec(supervisorId, entidadeId, cicloId, supervisorId, entidadeId, cicloId)
-			sqlStatement = "INSERT INTO integrantes ( " +
+			/*sqlStatement = "INSERT INTO integrantes ( " +
 				" entidade_id, " +
 				" ciclo_id, " +
 				" usuario_id, " +
@@ -135,7 +135,7 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 				time.Now(),
 				entidadeId,
 				cicloId,
-				supervisorId)
+				supervisorId)*/
 		}
 		log.Println("UPDATE: EntidadeId: " + entidadeId + " | CicloId: " + cicloId + " | SupervisorId: " + supervisorId)
 
@@ -253,6 +253,7 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 						log.Println(err)
 					}
 				}
+				log.Println("Usuário cadastrado: " + integrante.UsuarioNome)
 			}
 		}
 		UpdateIntegrantesHandler(integrantesPage, integrantesDB)

@@ -455,7 +455,7 @@ func UpdateMatrizHandler(w http.ResponseWriter, r *http.Request) {
 				produtoElemento.PilarId, _ = strconv.ParseInt(s[3], 10, 64)
 				produtoElemento.ComponenteId, _ = strconv.ParseInt(s[4], 10, 64)
 				produtoElemento.ElementoId, _ = strconv.ParseInt(s[5], 10, 64)
-				produtoElemento.Nota, _ = strconv.ParseFloat(value[0], 64)
+				produtoElemento.Nota, _ = strconv.Atoi(value[0])
 				registrarNotaElemento(produtoElemento, GetUserInCookie(w, r))
 			}
 			if strings.HasPrefix(key, "ElementoPeso") {

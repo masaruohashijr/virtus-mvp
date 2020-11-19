@@ -11,7 +11,7 @@ import (
 )
 
 const sqlPapeis = " SELECT  " +
-	" a.entidade_id, coalesce(b.nome,''),  " +
+	" coalesce(b.nome,''), a.entidade_id, " +
 	" a.ciclo_id, c.nome as ciclo_nome, " +
 	" coalesce(l.nota,0) as ciclo_nota, " +
 	" a.pilar_id, d.nome as pilar_nome, " +
@@ -145,8 +145,8 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 		var i = 1
 		for rows.Next() {
 			rows.Scan(
-				&produto.EntidadeId,
 				&produto.EntidadeNome,
+				&produto.EntidadeId,
 				&produto.CicloId,
 				&produto.CicloNome,
 				&produto.CicloNota,
@@ -254,8 +254,8 @@ func AtualizarPapeisHandler(entidadeId string, cicloId string, w http.ResponseWr
 	var i = 1
 	for rows.Next() {
 		rows.Scan(
-			&produto.EntidadeId,
 			&produto.EntidadeNome,
+			&produto.EntidadeId,
 			&produto.CicloId,
 			&produto.CicloNome,
 			&produto.CicloNota,
@@ -354,8 +354,15 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 	entidadeId := ""
 	cicloId := ""
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		currentUser := GetUserInCookie(w, r)
 		r.ParseForm()
 		var produtoElemento mdl.ProdutoElemento
+		motivacaoNota := r.FormValue("MotivacaoNota")
+		motivacaoPeso := r.FormValue("MotivacaoPeso")
+		motivacaoRemocao := r.FormValue("MotivacaoRemocao")
+		log.Println("******************")
+		log.Println(motivacaoRemocao)
+		log.Println("******************")
 		for key, value := range r.Form {
 			if strings.HasPrefix(key, "AuditorComponente_") {
 				s := strings.Split(key, "_")
@@ -374,8 +381,9 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				auditorIdOLD, _ := strconv.ParseInt(s[5], 10, 64)
 				produtoElemento.AuditorId, _ = strconv.ParseInt(value[0], 10, 64)
 				if auditorIdOLD != produtoElemento.AuditorId {
-					registrarHistoricoAuditorComponente(produtoElemento, GetUserInCookie(w, r))
+					produtoElemento.Motivacao = motivacaoRemocao
 					registrarAuditorComponente(produtoElemento)
+					registrarHistoricoAuditorComponente(produtoElemento, currentUser)
 				}
 			}
 			if strings.HasPrefix(key, "ElementoNota") {
@@ -387,14 +395,22 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				cicloId = s[2]
 				log.Println("Pilar: " + s[3])
 				log.Println("Componente: " + s[4])
-				log.Println("Elemento: " + s[5])
+				log.Println("TipoNota: " + s[5])
+				log.Println("Elemento: " + s[6])
+				log.Println("NotaAnterior: " + s[7])
+				notaOLD, _ := strconv.Atoi(s[7])
 				produtoElemento.EntidadeId, _ = strconv.ParseInt(s[1], 10, 64)
 				produtoElemento.CicloId, _ = strconv.ParseInt(s[2], 10, 64)
 				produtoElemento.PilarId, _ = strconv.ParseInt(s[3], 10, 64)
 				produtoElemento.ComponenteId, _ = strconv.ParseInt(s[4], 10, 64)
-				produtoElemento.ElementoId, _ = strconv.ParseInt(s[5], 10, 64)
-				produtoElemento.Nota, _ = strconv.ParseFloat(value[0], 64)
-				registrarNotaElemento(produtoElemento, GetUserInCookie(w, r))
+				produtoElemento.TipoNotaId, _ = strconv.ParseInt(s[5], 10, 64)
+				produtoElemento.ElementoId, _ = strconv.ParseInt(s[6], 10, 64)
+				produtoElemento.Nota, _ = strconv.Atoi(value[0])
+				if notaOLD != produtoElemento.Nota {
+					produtoElemento.Motivacao = motivacaoNota
+					registrarNotaElemento(produtoElemento, currentUser)
+					registrarHistoricoNotaElemento(produtoElemento, currentUser)
+				}
 			}
 			if strings.HasPrefix(key, "ElementoPeso") {
 				log.Println("Peso: " + value[0])
@@ -405,7 +421,10 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				cicloId = s[2]
 				log.Println("Pilar: " + s[3])
 				log.Println("Componente: " + s[4])
-				log.Println("Elemento: " + s[5])
+				log.Println("TipoNota: " + s[5])
+				log.Println("Elemento: " + s[6])
+				log.Println("PesoAnterior: " + s[7])
+				pesoOLD, _ := strconv.ParseFloat(s[7], 10)
 				produtoElemento.EntidadeId, _ = strconv.ParseInt(s[1], 10, 64)
 				produtoElemento.CicloId, _ = strconv.ParseInt(s[2], 10, 64)
 				produtoElemento.PilarId, _ = strconv.ParseInt(s[3], 10, 64)
@@ -413,7 +432,11 @@ func UpdateAvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 				produtoElemento.TipoNotaId, _ = strconv.ParseInt(s[5], 10, 64)
 				produtoElemento.ElementoId, _ = strconv.ParseInt(s[6], 10, 64)
 				produtoElemento.Peso, _ = strconv.ParseFloat(value[0], 64)
-				registrarPesoElemento(produtoElemento, GetUserInCookie(w, r))
+				if pesoOLD != produtoElemento.Peso {
+					produtoElemento.Motivacao = motivacaoPeso
+					registrarPesoElemento(produtoElemento, currentUser)
+					registrarHistoricoPesoElemento(produtoElemento, currentUser)
+				}
 			}
 		}
 		AtualizarPapeisHandler(entidadeId, cicloId, w, r)

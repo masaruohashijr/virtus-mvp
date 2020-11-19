@@ -2,53 +2,53 @@ package handlers
 
 import (
 	"log"
+	"strconv"
 	"time"
 	mdl "virtus/models"
 )
 
 func registrarAuditorComponente(produto mdl.ProdutoElemento) {
 	sqlStatement := "UPDATE produtos_componentes SET " +
-		" auditor_id=$1 " +
-		" WHERE entidade_id=$2 " +
-		" AND ciclo_id=$3 " +
-		" AND pilar_id=$4 " +
-		" AND componente_id=$5 "
+		" auditor_id=$1, justificativa=$2 " +
+		" WHERE entidade_id=$3 " +
+		" AND ciclo_id=$4 " +
+		" AND pilar_id=$5 " +
+		" AND componente_id=$6 "
 	log.Println(sqlStatement)
 	updtForm, _ := Db.Prepare(sqlStatement)
-	_, err := updtForm.Exec(produto.AuditorId, produto.EntidadeId, produto.CicloId, produto.PilarId, produto.ComponenteId)
+	_, err := updtForm.Exec(
+		produto.AuditorId,
+		produto.Motivacao,
+		produto.EntidadeId,
+		produto.CicloId,
+		produto.PilarId,
+		produto.ComponenteId)
 	if err != nil {
 		panic(err.Error())
 	}
 }
 
 func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
-	sqlStatement := "UPDATE produtos_elementos a SET nota = $1,  " +
-		" tipo_pontuacao_id = (SELECT case when b.supervisor_id = $2 " +
+	sqlStatement := "UPDATE produtos_elementos a SET nota = " + strconv.Itoa(produto.Nota) + ", " +
+		" motivacao_nota = $1 , " +
+		" tipo_pontuacao_id = (SELECT case when b.supervisor_id = " + strconv.FormatInt(currentUser.Id, 10) +
 		" then 3 else 1 end FROM produtos_componentes b where " +
 		" a.entidade_id = b.entidade_id and " +
 		" a.ciclo_id = b.ciclo_id and " +
 		" a.pilar_id = b.pilar_id and " +
 		" a.componente_id = b.componente_id) " +
-		" WHERE a.entidade_id = $3 " +
-		" AND a.ciclo_id = $4 " +
-		" AND a.pilar_id = $5 " +
-		" AND a.componente_id = $6 " +
-		" AND a.elemento_id = $7 " +
-		" AND a.nota <> $8 "
+		" WHERE a.entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) +
+		" AND a.ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) +
+		" AND a.pilar_id = " + strconv.FormatInt(produto.PilarId, 10) +
+		" AND a.componente_id = " + strconv.FormatInt(produto.ComponenteId, 10) +
+		" AND a.elemento_id = " + strconv.FormatInt(produto.ElementoId, 10) +
+		" AND a.nota <> " + strconv.Itoa(produto.Nota)
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
-	updtForm.Exec(
-		produto.Nota,
-		currentUser.Id,
-		produto.EntidadeId,
-		produto.CicloId,
-		produto.PilarId,
-		produto.ComponenteId,
-		produto.ElementoId,
-		produto.Nota)
+	updtForm.Exec(produto.Motivacao)
 	// Testei e funcionou corretamente
 	// PRODUTOS_TIPOS_NOTAS
 	sqlStatement = "UPDATE produtos_tipos_notas a " +
@@ -214,80 +214,78 @@ func registrarTiposPontuacao(produto mdl.ProdutoElemento, currentUser mdl.User) 
 }
 
 func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) {
-	sqlStatement := "UPDATE produtos_elementos SET peso = $1 " +
-		" WHERE entidade_id = $2 AND " +
-		" ciclo_id = $3 AND " +
-		" pilar_id = $4 AND " +
-		" componente_id = $5 AND " +
-		" elemento_id = $6 "
+	sqlStatement := "UPDATE produtos_elementos SET peso = $1, motivacao_peso = $2 " +
+		" WHERE entidade_id = $3 AND " +
+		" ciclo_id = $4 AND " +
+		" pilar_id = $5 AND " +
+		" componente_id = $6 AND " +
+		" elemento_id = $7 "
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
 	updtForm.Exec(produto.Peso,
+		produto.Motivacao,
 		produto.EntidadeId,
 		produto.CicloId,
 		produto.PilarId,
 		produto.ComponenteId,
 		produto.ElementoId)
 	// Testei e funcionou corretamente
-	sqlStatement = "UPDATE produtos_tipos_notas a " +
-		" SET peso = ( " +
-		" WITH TMP AS (SELECT entidade_id, " +
-		"			 ciclo_id, " +
-		"			 pilar_id, " +
-		"			 componente_id, " +
-		"			 round(CAST(sum(peso) as numeric),2) AS TOTAL " +
-		"		 FROM produtos_elementos  " +
-		"		 WHERE  " +
-		"		 componente_id = $1 AND  " +
-		"		 pilar_id = $2 AND  " +
-		"		 ciclo_id = $3 AND  " +
-		"		 entidade_id = $4 " +
-		"		 GROUP BY entidade_id, ciclo_id, pilar_id, componente_id) " +
-		" SELECT round(CAST((sum(r.peso)/(sum(t.TOTAL)/count(1)))*100 as numeric),2) AS pesoTipoNota " +
-		" FROM  " +
-		" (SELECT b.entidade_id, b.ciclo_id, b.pilar_id, b.componente_id, b.tipo_nota_id, " +
-		" 		b.peso " +
-		"		 FROM produtos_elementos b " +
-		"		 WHERE  " +
-		"		 b.tipo_nota_id = $5 AND  " +
-		"		 b.componente_id = $6 AND  " +
-		"		 b.pilar_id = $7 AND  " +
-		"		 b.ciclo_id = $8 AND  " +
-		"		 b.entidade_id = $9) r " +
-		" LEFT JOIN TMP t   " +
-		"		 ON r.entidade_id = t.entidade_id AND " +
-		"		 r.ciclo_id = t.ciclo_id AND " +
-		"		 r.pilar_id = t.pilar_id AND " +
-		"		 r.componente_id = t.componente_id " +
-		" GROUP BY r.entidade_id, r.ciclo_id, r.pilar_id, r.componente_id, r.tipo_nota_id ) " +
-		" WHERE a.tipo_nota_id = $10 " +
-		" AND a.componente_id = $11 " +
-		" AND a.pilar_id = $12 " +
-		" AND a.ciclo_id = $13 " +
-		" AND a.entidade_id = $14 "
-
+	sqlStatement = "UPDATE produtos_tipos_notas as p SET peso = R1.peso " +
+		"FROM " +
+		"(WITH TMP AS " +
+		"     (SELECT entidade_id, " +
+		"             ciclo_id, " +
+		"             pilar_id, " +
+		"             componente_id, " +
+		"             round(CAST(sum(peso) AS numeric), 2) AS TOTAL " +
+		"      FROM produtos_elementos " +
+		"      WHERE componente_id = " + strconv.FormatInt(produto.ComponenteId, 10) +
+		"        AND pilar_id = " + strconv.FormatInt(produto.PilarId, 10) +
+		"        AND ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) +
+		"        AND entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) +
+		"      GROUP BY entidade_id, " +
+		"               ciclo_id, " +
+		"               pilar_id, " +
+		"               componente_id)  " +
+		"   SELECT r.entidade_id, r.ciclo_id, r.pilar_id, r.componente_id, r.tipo_nota_id, round(CAST((sum(r.peso)/(sum(t.TOTAL)/count(1)))*100 AS numeric), 2) AS peso " +
+		"   FROM " +
+		"     (SELECT b.entidade_id, " +
+		"             b.ciclo_id, " +
+		"             b.pilar_id, " +
+		"             b.componente_id, " +
+		"             b.tipo_nota_id, " +
+		"             b.peso " +
+		"      FROM produtos_elementos b " +
+		"      WHERE componente_id = " + strconv.FormatInt(produto.ComponenteId, 10) +
+		"        AND pilar_id = " + strconv.FormatInt(produto.PilarId, 10) +
+		"        AND ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) +
+		"        AND entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) +
+		"   ) r " +
+		"   LEFT JOIN TMP t ON r.entidade_id = t.entidade_id " +
+		"   AND r.ciclo_id = t.ciclo_id " +
+		"   AND r.pilar_id = t.pilar_id " +
+		"   AND r.componente_id = t.componente_id " +
+		"   GROUP BY r.entidade_id, " +
+		"            r.ciclo_id, " +
+		"            r.pilar_id, " +
+		"            r.componente_id, " +
+		"            r.tipo_nota_id) AS R1 " +
+		"	WHERE " +
+		"		 p.tipo_nota_id = R1.tipo_nota_id " +
+		"	 	 AND p.componente_id = R1.componente_id " +
+		"        AND p.pilar_id = R1.pilar_id " +
+		"        AND p.ciclo_id = R1.ciclo_id " +
+		"        AND p.entidade_id = R1.entidade_id "
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
 		panic(err.Error())
 	}
-	updtForm.Exec(produto.ComponenteId,
-		produto.PilarId,
-		produto.CicloId,
-		produto.EntidadeId,
-		produto.TipoNotaId,
-		produto.ComponenteId,
-		produto.PilarId,
-		produto.CicloId,
-		produto.EntidadeId,
-		produto.TipoNotaId,
-		produto.ComponenteId,
-		produto.PilarId,
-		produto.CicloId,
-		produto.EntidadeId)
+	res, _ := updtForm.Exec()
+	log.Println(res.RowsAffected())
 	// Testei e funcionou corretamente
 	sqlStatement = "UPDATE produtos_componentes a " +
 		" SET peso = (SELECT round(CAST(avg(b.peso) as numeric),2) " +
