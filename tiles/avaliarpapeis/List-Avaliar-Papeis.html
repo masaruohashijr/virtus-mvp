@@ -21,18 +21,20 @@
 		</header>
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
             <tr>
-                <td style="width:2%">Ord</td>
-                <td style="text-align:left; width:25%">Sumário</td>
+                <td style="border:1px solid #ddd;width:2%">Linha</td>
+				<td style="border:1px solid #ddd;width:4%;vertical-align:middle">Nível</td>
+                <td style="text-align:left; width:20%">Sumário</td>
                 <td style="width:12%">&nbsp;</td>
-                <td style="width:12%">&nbsp;</td>
-                <td style="width:3%">&nbsp;</td>
-                <td style="width:3%">&nbsp;</td>
+                <td style="width:10%">&nbsp;</td>
+                <td style="width:9%">&nbsp;</td>
+                <td style="width:9%">&nbsp;</td>
                 <td style="width:4%">Método</td>
                 <td style="width:4%">Nota</td>
 				{{if $allowed}}
-				<td style="width:17%">Ações</td>
+				<td style="width:20%">&nbsp;</td>
 				{{end}}
             </tr>
+			{{$linha := 1}}
 			{{$primeiraLinha := true}}
 			{{$auxPilar := ""}}
 			{{$auxComponente := ""}}
@@ -68,7 +70,8 @@
 			</script>
 			{{if $primeiraLinha}}
             <tr style="background-color: aliceblue">
-                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;vertical-align:middle">{{$linha}}</td>
+				<td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">EFPC</td>
                 <td style="font-size:2em;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -81,7 +84,8 @@
 				{{end}}
             </tr>
             <tr style="background-color: white">
-                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Ciclo</td>
                 <td style="font-size:1.5em;vertical-align:middle;text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -106,8 +110,8 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-black" onclick="openHist(this)">Histórico</button>
+                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-black" onclick="openHist(this)">Histórico</button-->
                 </td>
 				{{end}}
             </tr>
@@ -115,20 +119,22 @@
 			{{end}}
 			{{if ne $auxPilar $produto.PilarNome}}
 			<tr style="background-color: #f6faff">
-                <th style="vertical-align:middle" >Ord</th>
-                <th style="vertical-align:middle;text-align:left">Sumário</th>
-                <th style="vertical-align:middle" >&nbsp;</th>
-                <th >&nbsp;</th>
-                <th >&nbsp;</th>
-                <th style="vertical-align:middle">Peso (%)</th>
-                <th style="vertical-align:middle">Método</th>
-                <th style="vertical-align:middle">Nota</th>
+                <td style="border:1px solid #ddd;vertical-align:middle" >Linha</td>
+				<td style="border:1px solid #ddd;vertical-align:middle">Nível</td>
+                <td style="vertical-align:middle;text-align:left">Sumário</td>
+                <td style="vertical-align:middle" >&nbsp;</td>
+                <td >&nbsp;</td>
+                <td >&nbsp;</td>
+                <td style="vertical-align:middle">Peso (%)</td>
+                <td style="vertical-align:middle">Método</td>
+                <td style="vertical-align:middle">Nota</td>
 				{{if $allowed}}
-				<th style="vertical-align:middle">Ações</th>
+				<td style="vertical-align:middle">&nbsp;</td>
 				{{end}}
             </tr>
             <tr>
-                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Pilar</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
 				&nbsp;&nbsp;&nbsp;{{$auxPilar = $produto.PilarNome}}
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -154,28 +160,30 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <button class="w3-btn w3-teal" onclick="openDet()">Detalhar</button>
-                    <button class="w3-btn w3-brown" onclick="openHist()">Histórico</button>
+                    <!--button class="w3-btn w3-teal" onclick="openDet()">Detalhar</button>
+                    <button class="w3-btn w3-brown" onclick="openHist()">Histórico</button-->
                 </td>
 				{{end}}
             </tr>
 			{{end}}
 			{{if ne $auxComponente $produto.ComponenteNome}}
 			<tr style="background-color: #f8fcff" >
-                <th style="vertical-align:middle" >Ord</th>
-                <th style="vertical-align:middle;text-align:left" >Sumário</th>
-                <th style="vertical-align:middle" >Supervisor</th>
-                <th style="vertical-align:middle" >Auditor</th>
-                <th style="vertical-align:middle" >Tipo de Nota</th>
-                <th style="vertical-align:middle" >Peso</th>
-                <th style="vertical-align:middle" >Método</th>
-                <th style="vertical-align:middle" >Nota</th>
+                <td style="border:1px solid #ddd;vertical-align:middle" >Linha</td>
+				<td style="border:1px solid #ddd;vertical-align:middle">Nível</td>
+                <td style="vertical-align:middle;text-align:left" >Sumário</td>
+                <td style="vertical-align:middle" >Supervisor</td>
+                <td style="vertical-align:middle" >Auditor</td>
+                <td style="vertical-align:middle" >Tipo de Nota</td>
+                <td style="vertical-align:middle" >Peso</td>
+                <td style="vertical-align:middle" >Método</td>
+                <td style="vertical-align:middle" >Nota</td>
 				{{if $allowed}}
-				<th style="vertical-align:middle" >Ações</th>
+				<td style="vertical-align:middle" >Ações</td>
 				{{end}}
             </tr>
             <tr>
-                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Componente</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
 					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}} 
 				</td>
@@ -215,15 +223,16 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button>
+                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button-->
                 </td>
 				{{end}}					
         	</tr>
 			{{end}}				
 			{{if or (ne $auxComponente $produto.ComponenteNome) (ne $auxTipoNota $produto.TipoNotaNome) }}
             <tr>
-                <td style="vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Tipo de Nota</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.TipoNotaNome}} 
 				</td>
@@ -252,15 +261,16 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button>
+                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button-->
                 </td>
 				{{end}}					
         	</tr>
 			{{end}}				
 			{{if ne $auxElemento $produto.ElementoNome}}
             <tr>
-                <td>&nbsp;</td>
+                <td style="border:1px solid #ddd;">&nbsp;</td>
+                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Elemento</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}
 				</td>
@@ -280,6 +290,7 @@
 						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}"
 						{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
 						onchange="sinalizarAlteracao(this); motivarPeso(this);">
+						<option value="0" {{if eq $elementoPeso "1" }}selected{{end}}>N/A</option>
 						<option value="1" {{if eq $elementoPeso "1" }}selected{{end}}>1</option>
 						<option value="2" {{if eq $elementoPeso "2" }}selected{{end}}>2</option>
 						<option value="4" {{if eq $elementoPeso "4" }}selected{{end}}>4</option>
@@ -313,7 +324,9 @@
 				</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-teal"
+						name="DetalheElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}_{{$elementoNota}}" 
+						onclick="openDet(this)">Detalhar</button>&nbsp;
                     <button class="w3-btn w3-dark-green"
 						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}" 
 						onclick="openHistElemento(this)">Histórico</button>
@@ -322,7 +335,8 @@
             </tr>
 			{{end}}				
 			<tr>
-                <td>{{$produto.Order}}</td>
+                <td style="border:1px solid #ddd;">{{$produto.Order}}</td>
+                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Item</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 30px">
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}
 				</td>
@@ -334,8 +348,8 @@
                 <td>&nbsp;</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-green" onclick="openHist(this)">Histórico</button>
+                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
+                    <button class="w3-btn w3-green" onclick="openHist(this)">Histórico</button-->
                 </td>
 				{{end}}
             </tr>

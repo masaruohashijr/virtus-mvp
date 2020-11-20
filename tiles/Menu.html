@@ -8,6 +8,15 @@
 	<br>
   
   <a href="#">Sobre</a>
+  {{if (call .LoggedUser.HasPermission "homeChefe")}}
+  <a href="/homeChefe">Home Chefe</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "homeSupervisor")}}
+  <a href="/homeSupervisor">Home Supervisor</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "homeAuditor")}}
+  <a href="/homeAuditor">Home Auditor</a>
+  {{end}}
   {{if (call .LoggedUser.HasPermission "designarEquipes")}}
   <a href="/listDesignarEquipes">Designar Equipes</a>
   {{end}}

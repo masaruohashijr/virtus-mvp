@@ -34,3 +34,28 @@ func createEscritorios() {
 		" WHERE NOT EXISTS (SELECT id FROM escritorios WHERE id = 6)"
 	db.Exec(sql)
 }
+
+func createMembros() {
+	sql := " INSERT INTO membros " +
+		" (  escritorio_id,  usuario_id,  author_id,  criado_em  ) " +
+		" SELECT 6, 29, 1, now()::timestamp WHERE NOT EXISTS " +
+		" (SELECT 1 FROM membros WHERE escritorio_id = 6 AND usuario_id = 29) "
+	db.Exec(sql)
+	sql = " INSERT INTO membros " +
+		" (  escritorio_id,  usuario_id,  author_id,  criado_em  ) " +
+		" SELECT 6, 30, 1, now()::timestamp WHERE NOT EXISTS " +
+		" (SELECT 1 FROM membros WHERE escritorio_id = 6 AND usuario_id = 30) "
+	db.Exec(sql)
+	sql = " INSERT INTO membros " +
+		" (  escritorio_id,  usuario_id,  author_id,  criado_em  ) " +
+		" SELECT 6, 31, 1, now()::timestamp WHERE NOT EXISTS " +
+		" (SELECT 1 FROM membros WHERE escritorio_id = 6 AND usuario_id = 31) "
+	db.Exec(sql)
+	sql = " INSERT INTO membros " +
+		" (  escritorio_id,  usuario_id,  author_id,  criado_em  ) " +
+		" SELECT 6, 37, 1, now()::timestamp WHERE NOT EXISTS " +
+		" (SELECT 1 FROM membros WHERE escritorio_id = 6 AND usuario_id = 37) "
+	db.Exec(sql)
+	sql = " UPDATE escritorios SET chefe_id = 29 WHERE id = 6 "
+	db.Exec(sql)
+}

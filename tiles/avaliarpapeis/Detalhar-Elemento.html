@@ -9,18 +9,12 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="resetFormAvaliarPapeis();document.getElementById('det-elemento-form').style.display='none'">&times;</span>
             </div>
-
             <form class="w3-container" id="formulario-edit">
 				<table width="100%">
 					<tr>
-						<td width="50%" colspan="2">
+						<td colspan="2">
 							<label class="w3-label">EFPC</label>					
 	                		<input class="w3-input" type="text" name="Nome" id="detEntidade" readonly="readonly" disabled="disabled" value="">
-						</td>
-						<td width="50%" rowspan="7" style="vertical-align: top;">
-							<label class="w3-label">Motivação Nota</label>
-							<br>
-							<textarea class="w3-input" rows="20" cols="55"></textarea>
 						</td>
 					</tr>	
 					<tr>
@@ -55,12 +49,12 @@
 					</tr>
 					<tr>						
 						<td>
-							<label class="w3-label">Nota Anterior</label>
-                			<input class="w3-input" type="text" name="NotaAnterior" id="detNotaAnterior" readonly="readonly" disabled="disabled" value="">
+							<label class="w3-label">Peso</label>
+                			<input class="w3-input" type="text" name="Peso" id="detPeso" readonly="readonly" disabled="disabled" value="">
 						</td>
 						<td>
-							<label class="w3-label">Nova Nota</label>
-                			<input class="w3-input" type="text" name="NovaNota" id="detNovaNota" readonly="readonly" disabled="disabled" value="">
+							<label class="w3-label">Nota</label>
+                			<input class="w3-input" type="text" name="Nota" id="detNota" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>
 				</table>	
@@ -74,10 +68,10 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					id="table-pilar-ciclo-edit">
 		            <tr>
-		                <th>Nome</th>
+		                <th>Título</th>
 		                <th>Postado em</th>
 		                <th>Autor</th>
-		                <th>Status</th>
+		                <th>Tamanho</th>
 						<th>Ações</th>
 		            </tr>
 		        </table>

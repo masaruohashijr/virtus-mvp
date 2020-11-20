@@ -1,27 +1,3 @@
-function openDet(btn){
-	btn.disabled = true;
-	document.getElementById('det-elemento-form').style.display='block';
-	return false;
-}
-function openHistElemento(btn){
-	btn.disabled = true;
-	let entidadeId = btn.name.split("_")[1];
-	let cicloId = btn.name.split("_")[2];
-	let pilarId = btn.name.split("_")[3];
-	let componenteId = btn.name.split("_")[4];
-	let tipoNotaId = btn.name.split("_")[5];
-	let elementoId = btn.name.split("_")[6];
-	document.getElementById('hist-elemento-form').style.display='block';
-	document.getElementById("histEFPC").value = entidadesMap.get(entidadeId);
-	document.getElementById("histCiclo").value = ciclosMap.get(cicloId);
-	document.getElementById("histPilar").value = pilaresMap.get(pilarId);
-	document.getElementById("histComponente").value = componentesMap.get(componenteId);
-	document.getElementById("histTipoNota").value = tiposNotasMap.get(tipoNotaId);
-	document.getElementById("histElemento").value = elementosMap.get(elementoId);
-	loadHistoricos(btn);
-	return false;
-}
-
 function resetFormAvaliarPapeis(){
 	let inputs = document.getElementById('form-avaliar-papeis').elements;
 	for (i = 0; i < inputs.length; i++) {
@@ -152,4 +128,27 @@ function salvarRemocao(){
 		motivacao.focus();
 		return;		
 	}
+}
+
+function openDet(btn){
+	btn.disabled = true;
+	document.getElementById('det-elemento-form').style.display='block';
+	let entidadeId = btn.name.split("_")[1];
+	let cicloId = btn.name.split("_")[2];
+	let pilarId = btn.name.split("_")[3];
+	let componenteId = btn.name.split("_")[4];
+	let tipoNotaId = btn.name.split("_")[5];
+	let elementoId = btn.name.split("_")[6];
+	let peso = btn.name.split("_")[7];
+	let nota = btn.name.split("_")[8];	
+	document.getElementById('det-elemento-form').style.display='block';
+	document.getElementById("detEntidade").value = entidadesMap.get(entidadeId);
+	document.getElementById("detCiclo").value = ciclosMap.get(cicloId);
+	document.getElementById("detPilar").value = pilaresMap.get(pilarId);
+	document.getElementById("detComponente").value = componentesMap.get(componenteId);
+	document.getElementById("detTipoNota").value = tiposNotasMap.get(tipoNotaId);
+	document.getElementById("detElemento").value = elementosMap.get(elementoId);
+	document.getElementById("detPeso").value = peso;
+	document.getElementById("detNota").value = nota;	
+	return false;
 }

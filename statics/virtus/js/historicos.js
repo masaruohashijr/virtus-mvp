@@ -83,5 +83,37 @@ function addHistoricoRow(tableID) {
 
 function openMotivo(e){
 	document.getElementById('motivo-form').style.display='block';
-	document.getElementById('mot_text').value=e.parentNode.parentNode.childNodes[5].childNodes[0].value;
+	let tipoAlteracao = e.parentNode.parentNode.childNodes[0].innerText;
+	let nota = e.parentNode.parentNode.childNodes[1].innerText;
+	let metodo = e.parentNode.parentNode.childNodes[2].innerText;
+	let peso = e.parentNode.parentNode.childNodes[3].innerText;
+	let autor = e.parentNode.parentNode.childNodes[4].innerText;
+	let alteradoEm = e.parentNode.parentNode.childNodes[5].innerText;
+	let motivacao = e.parentNode.parentNode.childNodes[5].childNodes[0].value;
+	document.getElementById('mot_hist_alteracao').value=tipoAlteracao;
+	document.getElementById('mot_hist_nota').value=nota;
+	document.getElementById('mot_hist_metodo').value=metodo;
+	document.getElementById('mot_hist_peso').value=peso;
+	document.getElementById('mot_hist_autor').value=autor;
+	document.getElementById('mot_hist_alterado_em').value=alteradoEm;
+	document.getElementById('mot_text').value=motivacao;
+}
+
+function openHistElemento(btn){
+	btn.disabled = true;
+	let entidadeId = btn.name.split("_")[1];
+	let cicloId = btn.name.split("_")[2];
+	let pilarId = btn.name.split("_")[3];
+	let componenteId = btn.name.split("_")[4];
+	let tipoNotaId = btn.name.split("_")[5];
+	let elementoId = btn.name.split("_")[6];
+	document.getElementById('hist-elemento-form').style.display='block';
+	document.getElementById("histEFPC").value = entidadesMap.get(entidadeId);
+	document.getElementById("histCiclo").value = ciclosMap.get(cicloId);
+	document.getElementById("histPilar").value = pilaresMap.get(pilarId);
+	document.getElementById("histComponente").value = componentesMap.get(componenteId);
+	document.getElementById("histTipoNota").value = tiposNotasMap.get(tipoNotaId);
+	document.getElementById("histElemento").value = elementosMap.get(elementoId);
+	loadHistoricos(btn);
+	return false;
 }
