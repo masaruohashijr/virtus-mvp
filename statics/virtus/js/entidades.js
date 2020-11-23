@@ -5,12 +5,12 @@ function editEntidade(e) {
     var entidadeId = e.parentNode.parentNode.childNodes[3].innerText;
     var entidadeNome = e.parentNode.parentNode.childNodes[5].innerText;
     var entidadeDescricao = e.parentNode.parentNode.childNodes[5].childNodes[1].value;
-    var entidadeSigla = e.parentNode.parentNode.childNodes[11].childNodes[1].value;
-    var entidadeCodigo = e.parentNode.parentNode.childNodes[11].childNodes[3].value;
-    var entidadeSituacao = e.parentNode.parentNode.childNodes[11].childNodes[5].value;
-    var entidadeESI = e.parentNode.parentNode.childNodes[11].childNodes[7].value;
-    var entidadeMunicipio = e.parentNode.parentNode.childNodes[11].childNodes[9].value;
-    var entidadeSiglaUF = e.parentNode.parentNode.childNodes[11].childNodes[11].value;
+    var entidadeSigla = e.parentNode.parentNode.childNodes[7].childNodes[1].value;
+    var entidadeCodigo = e.parentNode.parentNode.childNodes[7].childNodes[3].value;
+    var entidadeSituacao = e.parentNode.parentNode.childNodes[7].childNodes[5].value;
+    var entidadeESI = e.parentNode.parentNode.childNodes[7].childNodes[7].value;
+    var entidadeMunicipio = e.parentNode.parentNode.childNodes[7].childNodes[9].value;
+    var entidadeSiglaUF = e.parentNode.parentNode.childNodes[7].childNodes[11].value;
 
 	document.getElementById('EntidadeIdForUpdate').value = entidadeId;
     document.getElementById('EntidadeNomeForUpdate').value = entidadeNome;
@@ -71,13 +71,12 @@ function loadCiclosByEntidadeId(entidadeId){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var ciclosEnt = JSON.parse(xmlhttp.responseText);
-				wipeRows("table-ciclos-entidade-edit", ciclos)
+				wipeRows("table-ciclos-entidade-edit")
 				ciclosEntidade = [];
 				for(order = 0;ciclosEnt != null && order<ciclosEnt.length;order++){
 					ciclosEntidade[order]=ciclosEnt[order];
 					addCicloEntidadeRow("table-ciclos-entidade-edit");
 				}
-				return ciclos;
 			}
 	}
 	xmlhttp.open("GET","/loadCiclosByEntidadeId?entidadeId="+entidadeId,true);

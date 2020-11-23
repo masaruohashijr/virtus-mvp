@@ -119,8 +119,11 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 	sql := "SELECT " +
 		" a.id, " +
 		" a.entidade_id, " +
-		" a.nome," +
+		" coalesce(a.nome,'')," +
 		" coalesce(a.descricao,''), " +
+		" a.cnpb," +
+		" a.recurso_garantidor::float8::numeric::money," +
+		" a.modalidade_id," +
 		" a.author_id, " +
 		" coalesce(b.name,'') as author_name, " +
 		" coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em," +
@@ -141,6 +144,9 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 			&plano.EntidadeId,
 			&plano.Nome,
 			&plano.Descricao,
+			&plano.CNPB,
+			&plano.RecursoGarantidor,
+			&plano.Modalidade,
 			&plano.AuthorId,
 			&plano.AuthorName,
 			&plano.CriadoEm,
@@ -151,6 +157,7 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		planos = append(planos, plano)
 		log.Println(plano)
 	}
+	log.Println("PLANOS " + strconv.Itoa(len(planos)))
 	return planos
 }
 

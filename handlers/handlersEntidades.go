@@ -325,14 +325,14 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 		var page mdl.PageEntidades
 		sql := "SELECT " +
 			" a.id, " +
-			" a.nome, " +
-			" a.descricao, " +
-			" a.sigla, " +
-			" a.codigo, " +
-			" a.situacao, " +
+			" coalesce(a.sigla,''), " +
+			" coalesce(a.nome,''), " +
+			" coalesce(a.descricao,''), " +
+			" coalesce(a.codigo,''), " +
+			" coalesce(a.situacao,''), " +
 			" a.esi, " +
-			" a.municipio, " +
-			" a.sigla_uf, " +
+			" coalesce(a.municipio,''), " +
+			" coalesce(a.sigla_uf,''), " +
 			" a.author_id, " +
 			" coalesce(b.name,'') as author_name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
@@ -343,7 +343,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 			" ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
 			" order by a.nome asc"
-		log.Println(sql)
+		log.Println("sql: " + sql)
 		rows, _ := Db.Query(sql)
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
@@ -351,9 +351,9 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 		for rows.Next() {
 			rows.Scan(
 				&entidade.Id,
+				&entidade.Sigla,
 				&entidade.Nome,
 				&entidade.Descricao,
-				&entidade.Sigla,
 				&entidade.Codigo,
 				&entidade.Situacao,
 				&entidade.ESI,
@@ -367,6 +367,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 				&entidade.IdVersaoOrigem)
 			entidade.Order = i
 			i++
+			log.Println(entidade)
 			entidades = append(entidades, entidade)
 		}
 		page.Entidades = entidades

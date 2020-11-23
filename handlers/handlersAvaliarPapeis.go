@@ -344,6 +344,9 @@ func AtualizarPapeisHandler(entidadeId string, cicloId string, w http.ResponseWr
 	page.AppName = mdl.AppName
 	page.Title = "Avaliar Papéis"
 	page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
+	page.Inc = func(i int) int {
+		return i + 1
+	}
 	var tmpl = template.Must(template.ParseGlob("tiles/avaliarpapeis/*"))
 	tmpl.ParseGlob("tiles/*")
 	tmpl.ExecuteTemplate(w, "Main-Avaliar-Papeis", page)

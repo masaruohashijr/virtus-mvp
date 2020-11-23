@@ -1,12 +1,15 @@
 var plano_tobe_deleted;
 	
 class Plano {
-	constructor(order, id, entidadeId, nome, descricao, autorId, autorNome, criadoEm, status, cStatus) {
+	constructor(order, id, entidadeId, nome, descricao, cnpb, recursoGarantidor, modalidade, autorId, autorNome, criadoEm, status, cStatus) {
 		this.order = order;
 		this.id = id;
 		this.entidadeId = entidadeId;
 		this.nome = nome;
 		this.descricao = descricao;
+		this.cnpb = cnpb;
+		this.recursoGarantidor = recursoGarantidor;
+		this.modalidade = modalidade;
 		this.autorId = autorId;
 		this.autorNome = autorNome;
 		this.criadoEm = criadoEm;
@@ -44,7 +47,7 @@ function addPlanoRow(tableID) {
 	order = planos.length-1;
 	plano = planos[order];
 	let newCell = newRow.insertCell(0);
-	let newText = document.createTextNode(plano.nome);
+	let newText = document.createTextNode(plano.cnpb);
 	let json = JSON.stringify(plano);
 	json = json.split(',').join('#');
 	json = json.split('"').join('');
@@ -55,12 +58,16 @@ function addPlanoRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="entidadeId" value="'+plano.entidadeId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+plano.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
-	// descricao
+	// modalidade
 	newCell = newRow.insertCell(1);
-	newText = document.createTextNode(plano.descricao);
+	newText = document.createTextNode(plano.modalidade);
+	newCell.appendChild(newText);
+	// recurso garantidor
+	newCell = newRow.insertCell(2);
+	newText = document.createTextNode(plano.recursoGarantidor);
 	newCell.appendChild(newText);
 	// Botões
-	newCell = newRow.insertCell(2);
+	newCell = newRow.insertCell(3);
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";

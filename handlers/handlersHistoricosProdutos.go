@@ -227,7 +227,7 @@ func ListHistoricos(filtro mdl.Historico) []mdl.Historico {
 		"a.ciclo_id = " + filtro.CicloId + " AND " +
 		"a.pilar_id = " + filtro.PilarId + " AND " +
 		"a.componente_id = " + filtro.ComponenteId + " AND " +
-		"a.elemento_id = " + filtro.ElementoId
+		"a.elemento_id = " + filtro.ElementoId + " ORDER BY a.criado_em DESC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
 	var historicos []mdl.Historico

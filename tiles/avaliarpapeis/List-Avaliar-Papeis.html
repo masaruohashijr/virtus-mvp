@@ -34,7 +34,8 @@
 				<td style="width:20%">&nbsp;</td>
 				{{end}}
             </tr>
-			{{$linha := 1}}
+			{{$inc := .Inc}}
+			{{$linha := 0}}
 			{{$primeiraLinha := true}}
 			{{$auxPilar := ""}}
 			{{$auxComponente := ""}}
@@ -70,7 +71,7 @@
 			</script>
 			{{if $primeiraLinha}}
             <tr style="background-color: aliceblue">
-                <td style="border:1px solid #ddd;vertical-align:middle">{{$linha}}</td>
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">EFPC</td>
                 <td style="font-size:2em;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -84,7 +85,7 @@
 				{{end}}
             </tr>
             <tr style="background-color: white">
-                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Ciclo</td>
                 <td style="font-size:1.5em;vertical-align:middle;text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -133,7 +134,7 @@
 				{{end}}
             </tr>
             <tr>
-                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Pilar</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
 				&nbsp;&nbsp;&nbsp;{{$auxPilar = $produto.PilarNome}}
@@ -182,7 +183,7 @@
 				{{end}}
             </tr>
             <tr>
-                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
                 <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Componente</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
 					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}} 
@@ -231,7 +232,7 @@
 			{{end}}				
 			{{if or (ne $auxComponente $produto.ComponenteNome) (ne $auxTipoNota $produto.TipoNotaNome) }}
             <tr>
-                <td style="border:1px solid #ddd;vertical-align:middle">&nbsp;</td>
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Tipo de Nota</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.TipoNotaNome}} 
@@ -269,7 +270,7 @@
 			{{end}}				
 			{{if ne $auxElemento $produto.ElementoNome}}
             <tr>
-                <td style="border:1px solid #ddd;">&nbsp;</td>
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
                 <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Elemento</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 20px">
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}
@@ -335,7 +336,7 @@
             </tr>
 			{{end}}				
 			<tr>
-                <td style="border:1px solid #ddd;">{{$produto.Order}}</td>
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
                 <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Item</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 30px">
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}

@@ -312,19 +312,22 @@ type NullTime struct {
 }
 
 type Plano struct {
-	Order          int
-	Id             int64  `json:"id"`
-	Nome           string `json:"nome"`
-	Descricao      string `json:"descricao"`
-	EntidadeId     int64  `json:"entidadeId"`
-	EntidadeNome   string `json:"entidadeNome"`
-	AuthorId       int64  `json:"authorId"`
-	AuthorName     string `json:"authorName"`
-	CriadoEm       string `json:"criadoEm"`
-	C_CriadoEm     string `json:"c_criadoEm"`
-	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
-	StatusId       int64  `json:"statusId"`
-	CStatus        string `json:"cStatus"`
+	Order             int
+	Id                int64  `json:"id"`
+	Nome              string `json:"nome"`
+	Descricao         string `json:"descricao"`
+	EntidadeId        int64  `json:"entidadeId"`
+	EntidadeNome      string `json:"entidadeNome"`
+	CNPB              string `json:"cnpb"`
+	RecursoGarantidor string `json:"recursoGarantidor"`
+	Modalidade        string `json:"modalidade"`
+	AuthorId          int64  `json:"authorId"`
+	AuthorName        string `json:"authorName"`
+	CriadoEm          string `json:"criadoEm"`
+	C_CriadoEm        string `json:"c_criadoEm"`
+	IdVersaoOrigem    int64  `json:"idVersaoOrigem"`
+	StatusId          int64  `json:"statusId"`
+	CStatus           string `json:"cStatus"`
 }
 
 type Pilar struct {
@@ -760,6 +763,7 @@ type PageProdutosItens struct {
 	ErrMsg       string
 	AppName      string
 	Title        string
+	Inc          func(i int) int
 	Produtos     []ProdutoItem
 	Supervisores []User
 	Auditores    []User

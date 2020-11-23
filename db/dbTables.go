@@ -255,8 +255,13 @@ func createTable() {
 		" CREATE TABLE IF NOT EXISTS planos (" +
 			" id integer DEFAULT nextval('planos_id_seq'::regclass) NOT NULL," +
 			" entidade_id integer," +
-			" nome character varying(255) NOT NULL," +
+			" nome character varying(255)," +
 			" descricao character varying(4000)," +
+			" cnpb character varying(255)," +
+			" legislacao character varying(255)," +
+			" situacao character varying(255)," +
+			" recurso_garantidor double precision," +
+			" modalidade_id character(2)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
