@@ -775,6 +775,7 @@ type PageProdutosComponentes struct {
 	AppName      string
 	Title        string
 	Produtos     []ProdutoComponente
+	Planos       []Plano
 	Supervisores []User
 	Auditores    []User
 	LoggedUser   LoggedUser

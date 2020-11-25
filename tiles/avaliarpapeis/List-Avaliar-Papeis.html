@@ -19,35 +19,36 @@
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="tabela-avaliar-papeis">
             <tr>
-                <td style="border:1px solid #ddd;width:2%">Linha</td>
-				<td style="border:1px solid #ddd;width:4%;vertical-align:middle">Nível</td>
-                <td style="text-align:left; width:20%">Sumário</td>
-                <td style="width:12%">&nbsp;</td>
-                <td style="width:10%">&nbsp;</td>
-                <td style="width:9%">&nbsp;</td>
-                <td style="width:9%">&nbsp;</td>
-                <td style="width:4%">Método</td>
-                <td style="width:4%">Nota</td>
+                <td style="border:1px solid #ddd;width:5%;vertical-align:middle">Linha</td>
+				<td style="border:1px solid #ddd;width:5%;vertical-align:middle">Nível</td>
+                <td style="text-align:left; width:25%;vertical-align:middle">
+					<input type="text" value="" placeholder="Sumário" 
+					onkeyup="filtraPapeis(this, 'tabela-avaliar-papeis')">
+				</td>
+                <td style="width:12%;vertical-align:middle">Supervisor</td>
+                <td style="width:10%;vertical-align:middle">Auditor</td>
+                <td style="width:8%;vertical-align:middle">Tipo de Nota</td>
+                <td style="width:12%;vertical-align:middle">Peso (%)</td>
+                <td style="width:4%;vertical-align:middle">Método</td>
+                <td style="width:4%;vertical-align:middle">Nota</td>
 				{{if $allowed}}
-				<td style="width:20%">&nbsp;</td>
+				<td style="width:15%;vertical-align:middle">Ações</td>
 				{{end}}
             </tr>
 			{{$inc := .Inc}}
 			{{$linha := 0}}
 			{{$primeiraLinha := true}}
-			{{$auxPilar := ""}}
-			{{$auxComponente := ""}}
-			{{$auxTipoNota := ""}}
-			{{$auxElemento := ""}}
-			{{$auxItem := ""}}
+			{{$auxPilar := 0}}
+			{{$auxComponente := 0}}
+			{{$auxTipoNota := 0}}
+			{{$auxElemento := 0}}
 			{{$pesoPadraoEC := ""}}
 			{{$elementoNota := ""}}
 			{{$elementoPeso := ""}}
 			{{$tipoPontuacao := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
-			
 			<script type="text/javascript">
 				entidadesMap = new Map();
 				ciclosMap = new Map();
@@ -73,13 +74,7 @@
             <tr style="background-color: aliceblue">
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">EFPC</td>
-                <td style="font-size:2em;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
-                <td style="vertical-align:middle">&nbsp;</td>
-                <td style="vertical-align:middle">&nbsp;</td>
-                <td style="vertical-align:middle">&nbsp;</td>
-                <td style="vertical-align:middle">&nbsp;</td>
-                <td style="vertical-align:middle">&nbsp;</td>
-                <td style="vertical-align:middle">&nbsp;</td>
+                <td colspan="7" style="font-size:2em;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">&nbsp;</td>
 				{{end}}
@@ -87,7 +82,11 @@
             <tr style="background-color: white">
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Ciclo</td>
-                <td style="font-size:1.5em;vertical-align:middle;text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
+                <td style="font-size:1.3em;vertical-align:middle;text-align:left;padding-left: 0px">&nbsp;
+					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+						<i class="ion-android-arrow-dropright hoverbtn"></i>
+					</a>
+					{{$produto.CicloNome}}</td>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -118,26 +117,19 @@
             </tr>
 			{{$primeiraLinha = false}}
 			{{end}}
-			{{if ne $auxPilar $produto.PilarNome}}
-			<tr style="background-color: #f6faff">
-                <td style="border:1px solid #ddd;vertical-align:middle" >Linha</td>
-				<td style="border:1px solid #ddd;vertical-align:middle">Nível</td>
-                <td style="vertical-align:middle;text-align:left">Sumário</td>
-                <td style="vertical-align:middle" >&nbsp;</td>
-                <td >&nbsp;</td>
-                <td >&nbsp;</td>
-                <td style="vertical-align:middle">Peso (%)</td>
-                <td style="vertical-align:middle">Método</td>
-                <td style="vertical-align:middle">Nota</td>
-				{{if $allowed}}
-				<td style="vertical-align:middle">&nbsp;</td>
-				{{end}}
-            </tr>
+			{{if ne $auxPilar $produto.PilarId}}
             <tr>
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
-				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Pilar</td>
-                <td style="vertical-align:middle;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
-				&nbsp;&nbsp;&nbsp;{{$auxPilar = $produto.PilarNome}}
+				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
+					Pilar
+				</td>
+                <td style="font-size:1.2em;vertical-align:middle;text-align:left;padding-left: 30px">					
+					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+						<i class="ion-android-arrow-dropright hoverbtn"></i>
+					</a>
+					{{$produto.PilarNome}}
+				</td>
+				{{$auxPilar = $produto.PilarId}}
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -167,29 +159,19 @@
 				{{end}}
             </tr>
 			{{end}}
-			{{if ne $auxComponente $produto.ComponenteNome}}
-			<tr style="background-color: #f8fcff" >
-                <td style="border:1px solid #ddd;vertical-align:middle" >Linha</td>
-				<td style="border:1px solid #ddd;vertical-align:middle">Nível</td>
-                <td style="vertical-align:middle;text-align:left" >Sumário</td>
-                <td style="vertical-align:middle" >Supervisor</td>
-                <td style="vertical-align:middle" >Auditor</td>
-                <td style="vertical-align:middle" >Tipo de Nota</td>
-                <td style="vertical-align:middle" >Peso</td>
-                <td style="vertical-align:middle" >Método</td>
-                <td style="vertical-align:middle" >Nota</td>
-				{{if $allowed}}
-				<td style="vertical-align:middle" >Ações</td>
-				{{end}}
-            </tr>
+			{{if ne $auxComponente $produto.ComponenteId}}
             <tr>
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
-                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Componente</td>
-                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
-					&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}} 
+                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
+					Componente
 				</td>
-				{{$auxComponente = $produto.ComponenteNome}}
-				{{$auxTipoNota = ""}}
+                <td style="font-size:1.1em;vertical-align:middle;text-align:left;padding-left: 45px">
+					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+						<i class="ion-android-arrow-dropright hoverbtn"></i>
+					</a>
+					{{$produto.ComponenteNome}} 
+				</td>
+				<!-- apaguei auxtipo -->
 				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
                 <td style="vertical-align:middle">
 					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);motivarRemocao(this);"
@@ -229,15 +211,20 @@
                 </td>
 				{{end}}					
         	</tr>
-			{{end}}				
-			{{if or (ne $auxComponente $produto.ComponenteNome) (ne $auxTipoNota $produto.TipoNotaNome) }}
+			{{end}}
+			{{if or (ne $auxComponente $produto.ComponenteId) (ne $auxTipoNota $produto.TipoNotaId) }}
             <tr>
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
-				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Tipo de Nota</td>
-                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.TipoNotaNome}} 
+				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
+					Tipo de Nota
 				</td>
-				{{$auxTipoNota = $produto.TipoNotaNome}}
+                <td style="font-size:1.0em;vertical-align:middle;text-align:left;padding-left: 60px">
+					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+						<i class="ion-android-arrow-dropright hoverbtn"></i>
+					</a>{{$produto.TipoNotaNome}} 
+				</td>
+				{{$auxComponente = $produto.ComponenteId}}
+				{{$auxTipoNota = $produto.TipoNotaId}}
 				<td style="vertical-align:middle;text-align:center">&nbsp;</td>
                 <td style="vertical-align:middle">&nbsp;
 				</td>
@@ -267,15 +254,20 @@
                 </td>
 				{{end}}					
         	</tr>
-			{{end}}				
-			{{if ne $auxElemento $produto.ElementoNome}}
+			{{end}}
+			{{if ne $auxElemento $produto.ElementoId}}
             <tr>
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
-                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Elemento</td>
-                <td style="vertical-align:middle;text-align:left;padding-left: 20px">
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ElementoNome}}
+                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
+					Elemento
 				</td>
-				{{$auxElemento = $produto.ElementoNome}}
+                <td style="vertical-align:middle;text-align:left;padding-left: 75px">
+					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+						<i class="ion-android-arrow-dropright hoverbtn"></i>
+					</a>
+					{{$produto.ElementoNome}}
+				</td>
+				{{$auxElemento = $produto.ElementoId}}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
 				{{ $bgColor := (printf "%v%v" "#" $produto.TipoNotaCorLetra ) }}
@@ -338,8 +330,8 @@
 			<tr>
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
                 <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Item</td>
-                <td style="vertical-align:middle;text-align:left;padding-left: 30px">
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ItemNome}}
+                <td style="vertical-align:middle;text-align:left;padding-left: 90px">
+					{{$produto.ItemNome}}
 				</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -354,9 +346,14 @@
                 </td>
 				{{end}}
             </tr>
-       		{{end}}
+			{{end}}
         </table>
     </div>
 </div>
+<input type="hidden" name="AcionadoPor" id="AcionadoPor" value="">			
 </form>
+
+<script type="text/javascript">
+	reduzirTodasAsLinhas("tabela-avaliar-papeis");
+</script>
 {{end}}

@@ -11,6 +11,7 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+					{{$allowed := (call .LoggedUser.HasPermission "avaliarPapeis")}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>
@@ -20,73 +21,95 @@
 		<form action="/updateDistribuirPapeis" method="POST">
 	        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					style="border: 1px solid red">
-	            <thead>
-	            <tr>
-	                <th>Ord</th>
-	                <th style="text-align:left">Nível</th>
-	                <th style="text-align:left; width:60%">Sumário</th>
-	                <th>Equipe</th>
+				<script type="text/javascript">
+					entidadesMap = new Map();
+					ciclosMap = new Map();
+					pilaresMap = new Map();
+					componentesMap = new Map();
+				</script>
+	            <tr class="tabela">
+	                <td style="width: 5%">Ord</td>
+	                <td style="width: 5%">Nível</td>
+	                <td style="width: 50%">Sumário</td>
+	                <td style="width: 5%;text-align:center">Ações</td>
+	                <td style="width: 35%;">Equipe</td>
 	            </tr>
-	            </thead>
-	            <tbody>
 				{{$primeiraLinha := true}}
 				{{$auxSumario := ""}}
 				{{$currentUser := .LoggedUser.User.Id}}
 	            {{range $index, $produto := .Produtos}}
-					{{if $primeiraLinha}}
-			            <tr>
-			                <td>&nbsp;</td>
-			                <td style="text-align:left">Entidade</td>
-			                <td style="text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
-			                <td>Supervisor</td>
-			            </tr>
-			            <tr>
-			                <td>&nbsp;</td>
-							<td style="text-align:left">&nbsp;&nbsp;Ciclo</td>
-			                <td style="text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
-			                <th>
-								<input name="SupervisorComponenteId" type="hidden" value="{{$produto.SupervisorId}}">
-								<input class="w3-input" type="text" readOnly disabled value="{{$produto.SupervisorName}}">
-							</th>
-			            </tr>
-						{{$primeiraLinha = false}}
+				<script type="text/javascript">
+					entidadesMap.set("{{$produto.EntidadeId}}","{{$produto.EntidadeNome}}");
+					ciclosMap.set("{{$produto.CicloId}}","{{$produto.CicloNome}}");
+					pilaresMap.set("{{$produto.PilarId}}","{{$produto.PilarNome}}");
+					componentesMap.set("{{$produto.ComponenteId}}","{{$produto.ComponenteNome}}");
+				</script>
+				{{if $primeiraLinha}}
+	            <tr>
+	                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+	                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left">Entidade</td>
+	                <td style="vertical-align:middle; font-size: 1.3em;border:1px solid #ddd;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
+	                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+	                <td style="vertical-align:middle; border:1px solid #ddd;">Supervisor</td>
+	            </tr>
+	            <tr>
+	                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+					<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;Ciclo</td>
+	                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
+					<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+	                <td>
+						<input name="SupervisorComponenteId" type="hidden" value="{{$produto.SupervisorId}}">
+						<input class="w3-input" type="text" readOnly disabled value="{{$produto.SupervisorName}}">
+					</td>
+	            </tr>
+				{{$primeiraLinha = false}}
+				{{end}}
+				{{if ne $auxSumario $produto.PilarNome}}
+            	<tr>
+                	<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+					<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;&nbsp;Pilar</td>
+	                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
+					<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+					{{$auxSumario = $produto.PilarNome}}
+	                <td style="border:1px solid #ddd;">Auditores</td>
+            	</tr>
+				{{end}}
+	            <tr>
+					<td style="vertical-align:middle; border:1px solid #ddd;">{{$produto.Order}}</td>
+					<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;Componente</td>
+	                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 30px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
+					{{if $allowed}}
+	                <td style="border:1px solid #ddd;">
+						<input type="text" 
+							name="Planos_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
+							value="">
+	                    <button class="w3-btn w3-teal"
+							name="BtnPlanos_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
+							onclick="openConfigPlanos(this)">Planos</button>&nbsp;
+	                </td>
 					{{end}}
-					{{if ne $auxSumario $produto.PilarNome}}
-		            <tr>
-		                <td>&nbsp;</td>
-						<td style="text-align:left">&nbsp;&nbsp;&nbsp;Pilar</td>
-		                <td style="text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
-						{{$auxSumario = $produto.PilarNome}}
-		                <th>Auditores</th>
-		            </tr>
-					{{end}}
-		            <tr>
-						<td>{{$produto.Order}}</td>
-						<td style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;Componente</td>
-		                <td style="text-align:left;padding-left: 30px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
-		                <td>
-							<select class="w3-input" onchange="sinalizarAlteracao(this);"
-								{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
-								name="AuditorComponente{{$produto.ComponenteId}}">
-								<option value=""></option>
-								{{range $i, $auditor := $.Auditores }}
-					                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>
-										{{$auditor.Name}}
-									</option>
-					            {{end}}
-				            </select>
-							<input type="hidden" name="Entidade_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.EntidadeId}}"/>
-							<input type="hidden" name="Ciclo_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.CicloId}}"/>
-							<input type="hidden" name="Pilar_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.PilarId}}"/>
-						</td>
-		            </tr>
+	                <td style="border:1px solid #ddd;">
+						<select class="w3-input" onchange="sinalizarAlteracao(this);"
+						{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
+							name="AuditorComponente{{$produto.ComponenteId}}">
+							<option value=""></option>
+							{{range $i, $auditor := $.Auditores }}
+				                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>
+									{{$auditor.Name}}
+								</option>
+			            {{end}}
+		            	</select>
+						<input type="hidden" name="Entidade_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.EntidadeId}}"/>
+						<input type="hidden" name="Ciclo_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.CicloId}}"/>
+						<input type="hidden" name="Pilar_AuditorComponente{{$produto.ComponenteId}}" value="{{$produto.PilarId}}"/>
+					</td>
+	            </tr>
 	            {{end}}
 				<tr>
-					<td colspan="4" style="text-align: center">
+					<td colspan="5" style="text-align: center">
 						<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Salvar</button>
 					</td>
 				</tr>
-	            </tbody>
 	        </table>
 		</form>
     </div>

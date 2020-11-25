@@ -1,4 +1,61 @@
 var plano_tobe_deleted;
+
+function updateConfigPlanos(){
+	document.getElementById('config-planos-form').style.display='none';
+	let splitted = document.getElementById('ComponenteRefConfigPlanos').value.split('_');
+	let entidadeId = splitted[0];
+	let ciclo_id = splitted[1];
+	let pilarId = splitted[2];
+	let componenteId = splitted[3];
+	let planosSelecionados = document.getElementById('ConfigPlanos');
+	let selecionados = getSelectedOptions(planosSelecionados);
+	let valores = '';
+	for(n=0;n<selecionados.length;n++){
+		valores = selecionados[n].value+'_'+ valores;
+	}
+	document.getElementsByName("Planos_"+entidadeId+"_"+ciclo_id+"_"+pilarId+"_"+componenteId)[0].value = valores;
+}
+
+function getSelectedOptions(sel) {
+    var opts = [], opt;
+    for (var i=0, len=sel.options.length; i<len; i++) {
+        opt = sel.options[i];
+        if ( opt.selected ) {
+            opts.push(opt);
+        }
+    }
+    return opts;
+}
+
+function openConfigPlanos(btn){
+	btn.disabled = true;
+	let entidadeId = btn.name.split("_")[1];
+	let cicloId = btn.name.split("_")[2];
+	let pilarId = btn.name.split("_")[3];
+	let componenteId = btn.name.split("_")[4];
+	document.getElementById('EntidadeConfigPlanos').value = entidadesMap.get(entidadeId);
+	document.getElementById('CicloConfigPlanos').value = ciclosMap.get(cicloId);
+	document.getElementById('PilarConfigPlanos').value = pilaresMap.get(pilarId);
+	document.getElementById('ComponenteConfigPlanos').value = componentesMap.get(componenteId);
+	document.getElementById('ComponenteRefConfigPlanos').value = entidadeId+'_'+cicloId+'_'+pilarId+'_'+componenteId;
+	document.getElementById('config-planos-form').style.display='block';
+	loadConfigPlanos(entidadeId);
+}
+
+function loadConfigPlanos(entidadeId){
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				var planos = JSON.parse(xmlhttp.responseText);
+				return planos;
+			}
+	}
+	xmlhttp.open("GET","/loadConfigPlanos?entidadeId="+entidadeId,true);
+	xmlhttp.send();
+}
 	
 class Plano {
 	constructor(order, id, entidadeId, nome, descricao, cnpb, recursoGarantidor, modalidade, autorId, autorNome, criadoEm, status, cStatus) {

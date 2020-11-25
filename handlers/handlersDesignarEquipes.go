@@ -55,13 +55,14 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		sql = " SELECT " +
-			" b.usuario_id, coalesce(c.name,''), " +
+			" b.usuario_id, coalesce(c.name,'') AS nome_auditor, " +
 			" coalesce(d.name,'') as role_name " +
 			" FROM escritorios a " +
 			" LEFT JOIN membros b ON a.id = b.escritorio_id " +
 			" LEFT JOIN users c ON b.usuario_id = c.id " +
 			" LEFT JOIN roles d ON c.role_id = d.id " +
-			" WHERE a.chefe_id = $1 AND c.role_id in (2,3,4) "
+			" WHERE a.chefe_id = $1 AND c.role_id in (2,3,4) " +
+			" ORDER BY nome_auditor"
 		log.Println(sql)
 		rows, _ = Db.Query(sql, currentUser.Id)
 		var membros []mdl.Membro
@@ -72,13 +73,14 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 			membros = append(membros, membro)
 		}
 		sql = " SELECT " +
-			" b.usuario_id, coalesce(c.name,''), " +
+			" b.usuario_id, coalesce(c.name,'') AS nome_usuario, " +
 			" coalesce(d.name,'') as role_name " +
 			" FROM escritorios a " +
 			" LEFT JOIN membros b ON a.id = b.escritorio_id " +
 			" LEFT JOIN users c ON b.usuario_id = c.id " +
 			" LEFT JOIN roles d ON c.role_id = d.id " +
-			" WHERE a.chefe_id = $1 AND c.role_id in (3) "
+			" WHERE a.chefe_id = $1 AND c.role_id in (3) " +
+			" ORDER BY nome_usuario"
 		log.Println(sql)
 		rows, _ = Db.Query(sql, currentUser.Id)
 		var supervisores []mdl.User

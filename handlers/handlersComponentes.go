@@ -346,19 +346,9 @@ func LoadElementosByComponenteId(w http.ResponseWriter, r *http.Request) {
 func LoadTiposNotaByComponenteId(w http.ResponseWriter, r *http.Request) {
 	log.Println("Load Tipos Nota By Componente Id")
 	r.ParseForm()
-	var entidadeId = r.FormValue("entidadeId")
-	var cicloId = r.FormValue("cicloId")
-	var pilarId = r.FormValue("pilarId")
 	var componenteId = r.FormValue("componenteId")
-	var elementoId = r.FormValue("elementoId")
-	var historico mdl.Historico
-	historico.EntidadeId = entidadeId
-	historico.CicloId = cicloId
-	historico.PilarId = pilarId
-	historico.ComponenteId = componenteId
-	historico.ElementoId = elementoId
-	historicos := ListHistoricos(historico)
-	jsonHistoricos, _ := json.Marshal(historicos)
-	w.Write([]byte(jsonHistoricos))
-	log.Println("JSON Históricos")
+	tiposNotasComponentes := ListTiposNotaByComponenteId(componenteId)
+	jsonTiposNotasComponentes, _ := json.Marshal(tiposNotasComponentes)
+	w.Write([]byte(jsonTiposNotasComponentes))
+	log.Println("JSON Tipos Notas Componentes")
 }

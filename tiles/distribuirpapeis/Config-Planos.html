@@ -1,0 +1,37 @@
+{{define "Config-Planos"}}
+<!-- Config Planos -->
+<div class="w3-container">
+    <div id="config-planos-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Planos de Benefícios</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('config-planos-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-edit">
+                <input type="hidden" name="Id" id="ComponenteRefConfigPlanos">
+                <label class="w3-label">Entidade</label>
+                <input class="w3-input" type="text" id="EntidadeConfigPlanos" value="">
+                <label class="w3-label">Ciclo</label>
+                <input class="w3-input" type="text" id="CicloConfigPlanos" value="">
+                <label class="w3-label">Pilar</label>
+                <input class="w3-input" type="text" id="PilarConfigPlanos" value="">
+                <label class="w3-label">Componente</label>
+                <input class="w3-input" type="text" id="ComponenteConfigPlanos" value="">
+				<br>
+				<label class="w3-label">Planos</label>
+	            <select class="w3-input" name="" id="ConfigPlanos" multiple style="height:200px; width:100%">
+					{{range $index, $plano := .Planos }}
+		                <option value="{{$plano.Id}}">
+							{{$plano.Modalidade}} - {{$plano.CNPB}} - {{$plano.RecursoGarantidor}}
+						</option>
+		            {{end}}
+	            </select>
+			<br>
+			<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" onclick="updateConfigPlanos()" type="button">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

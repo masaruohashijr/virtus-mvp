@@ -132,7 +132,7 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		" FROM planos a LEFT JOIN users b ON a.author_id = b.id " +
 		" LEFT JOIN status c ON a.status_id = c.id " +
 		" WHERE a.entidade_id = $1 " +
-		" ORDER BY a.nome ASC"
+		" ORDER BY a.cnpb ASC"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, entidadeId)
 	var planos []mdl.Plano

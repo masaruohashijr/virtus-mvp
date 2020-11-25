@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	//"fmt"
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -20,7 +20,8 @@ import (
 func determineListenAddress() (string, error) {
 	port := os.Getenv("PORT")
 	if port == "" {
-		return "", fmt.Errorf("$PORT not set")
+		// return "", fmt.Errorf("$PORT not set")
+		port = "5000"
 	}
 	return ":" + port, nil
 }

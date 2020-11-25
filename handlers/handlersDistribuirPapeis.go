@@ -102,7 +102,6 @@ func UpdateDistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 func DistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Distribuir Papéis Handler")
 	if sec.IsAuthenticated(w, r) {
-		currentUser := GetUserInCookie(w, r)
 		entidadeId := r.FormValue("EntidadeId")
 		cicloId := r.FormValue("CicloId")
 		var page mdl.PageProdutosComponentes
@@ -148,38 +147,55 @@ func DistribuirPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			produtos = append(produtos, produto)
 		}
 		page.Produtos = produtos
-
+		orderable := ""
 		sql = " SELECT " +
-			" b.usuario_id, coalesce(c.name,'') " +
+			" b.usuario_id, coalesce(c.name,''), UPPER(coalesce(c.name,'')) AS supervisor_nome " +
 			" FROM escritorios a " +
 			" LEFT JOIN membros b ON a.id = b.escritorio_id " +
 			" LEFT JOIN users c ON b.usuario_id = c.id " +
-			" WHERE b.usuario_id = $1 AND c.role_id = 3 "
+			" WHERE c.role_id = 3 ORDER BY supervisor_nome "
 		log.Println(sql)
-		rows, _ = Db.Query(sql, currentUser.Id)
+		rows, _ = Db.Query(sql)
 		var supervisores []mdl.User
 		var supervisor mdl.User
 		i = 1
 		for rows.Next() {
-			rows.Scan(&supervisor.Id, &supervisor.Name)
+			rows.Scan(&supervisor.Id, &supervisor.Name, &orderable)
 			supervisores = append(supervisores, supervisor)
 		}
 		page.Supervisores = supervisores
 
-		sql = " SELECT  b.usuario_id, c.name " +
-			" FROM membros a " +
-			" LEFT JOIN membros b ON a.escritorio_id = b.escritorio_id " +
-			" LEFT JOIN users c ON b.usuario_id = c.id " +
-			" WHERE a.usuario_id = $1 AND c.role_id = 4"
+		sql = " SELECT " +
+			" a.usuario_id, " +
+			" coalesce(b.name,''), " +
+			" UPPER(coalesce(b.name,'')) AS orderable " +
+			" FROM integrantes a " +
+			" LEFT JOIN users b " +
+			" ON a.usuario_id = b.id " +
+			" WHERE " +
+			" a.entidade_id = " + entidadeId +
+			" AND a.ciclo_id = " + cicloId +
+			" AND b.role_id = 4 "
 		log.Println(sql)
-		rows, _ = Db.Query(sql, currentUser.Id)
+		rows, _ = Db.Query(sql)
 		var auditores []mdl.User
 		var auditor mdl.User
-		i = 1
 		for rows.Next() {
-			rows.Scan(&auditor.Id, &auditor.Name)
+			rows.Scan(&auditor.Id, &auditor.Name, &orderable)
 			auditores = append(auditores, auditor)
 		}
+
+		sql = " SELECT id, cnpb, modalidade_id, recurso_garantidor::NUMERIC::MONEY " +
+			" FROM planos WHERE entidade_id = $1 ORDER BY recurso_garantidor DESC "
+		log.Println(sql)
+		rows, _ = Db.Query(sql, entidadeId)
+		var planos []mdl.Plano
+		var plano mdl.Plano
+		for rows.Next() {
+			rows.Scan(&plano.Id, &plano.CNPB, &plano.Modalidade, &plano.RecursoGarantidor)
+			planos = append(planos, plano)
+		}
+		page.Planos = planos
 		page.Supervisores = supervisores
 		page.Auditores = auditores
 		page.AppName = mdl.AppName

@@ -13,6 +13,12 @@ body {
   transition: background-color .5s;
 }
 
+.tabela {
+	vertical-align:middle; 
+	border:1px solid #ddd;
+	text-align:left
+}
+
 .sidenav {
   height: 100%;
   width: 0;

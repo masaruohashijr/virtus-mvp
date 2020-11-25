@@ -17,6 +17,7 @@ function motivarNota(sel){
 	let elementoId = sel.name.split("_")[6];
 	let notaAnterior = sel.name.split("_")[7];
 	if(sel.value != notaAnterior){
+		document.getElementById("AcionadoPor").value = sel.name;
 		document.getElementById("motNota_callback").value = sel.name;
 		document.getElementById("motNotaEntidade").value = entidadesMap.get(entidadeId);
 		document.getElementById("motNotaCiclo").value = ciclosMap.get(cicloId);
@@ -40,6 +41,7 @@ function motivarPeso(sel){
 	let elementoId = sel.name.split("_")[6];
 	let pesoAnterior = sel.name.split("_")[7];
 	if(sel.value != pesoAnterior){
+		document.getElementById("AcionadoPor").value = sel.name;
 		document.getElementById("motPeso_callback").value = sel.name;
 		document.getElementById("motPesoEntidade").value = entidadesMap.get(entidadeId);
 		document.getElementById("motPesoCiclo").value = ciclosMap.get(cicloId);
@@ -61,6 +63,7 @@ function motivarRemocao(sel){
 	let componenteId = sel.name.split("_")[4];
 	let auditorAnterior = sel.name.split("_")[5];
 	if(sel.value != auditorAnterior){
+		document.getElementById("AcionadoPor").value = sel.name;
 		document.getElementById("motRem_callback").value = sel.name;
 		document.getElementById("motRemEntidade").value = entidadesMap.get(entidadeId);
 		document.getElementById("motRemCiclo").value = ciclosMap.get(cicloId);
@@ -151,4 +154,135 @@ function openDet(btn){
 	document.getElementById("detPeso").value = peso;
 	document.getElementById("detNota").value = nota;	
 	return false;
+}
+
+function reduzirTodasAsLinhas(tabelaNome){
+	let tb = document.getElementById(tabelaNome);
+	let rows = tb.childNodes[1].rows;
+	let nivel = '';
+	for(i=1;i<rows.length;i++){
+		nivel = rows[i].childNodes[3].innerText;
+		//console.log(nivel)
+		if(nivel == 'EFPC' || nivel == 'Ciclo'){
+			continue;
+		}
+		rows[i].style.display = 'none';
+	}
+}
+
+function expandirNivel(e, tabelaNome){
+	let tb = document.getElementById(tabelaNome);
+	let rows = tb.childNodes[1].rows;
+	let linhaNivelExpansao = parseInt(e.parentNode.parentNode.childNodes[1].innerText.trim());
+	let nivelSuperior = e.parentNode.parentNode.childNodes[3].innerText.trim();
+	if(nivelSuperior == "Ciclo"){
+		nivelExpansao = "Pilar";
+	} else if(nivelSuperior == "Pilar"){
+		nivelExpansao = "Componente";
+	} else if(nivelSuperior == "Componente"){
+		nivelExpansao = "Tipo de Nota";
+	} else if(nivelSuperior == "Tipo de Nota"){
+		nivelExpansao = "Elemento";
+	} else if(nivelSuperior == "Elemento"){
+		nivelExpansao = "Item";
+	}
+	for(i=0;rows.length;i++){
+		if(rows[i] != null){
+			numeroLinha = rows[i].childNodes[1].innerText.trim();
+		} else {
+			break;
+		}
+		if(!(/[a-zA-Z]/).test(numeroLinha) && numeroLinha > linhaNivelExpansao){
+			if(rows[i] == null){
+				break;
+			}
+			nivel = rows[i].childNodes[3].innerText.trim();
+			if(nivel == nivelExpansao){
+				rows[i].style.display = "table-row";
+			}
+			if(nivel == nivelSuperior){
+				break;
+			}
+		}
+	}
+}
+
+function reduzirNivel(e, tabelaNome){
+	let tb = document.getElementById(tabelaNome);
+	let rows = tb.childNodes[1].rows;
+	let linhaNivelReducao = parseInt(e.parentNode.parentNode.childNodes[1].innerText);
+	let nivelSuperior = e.parentNode.parentNode.childNodes[3].innerText;
+	if(nivelSuperior == "Ciclo"){
+		nivelReducao = "Pilar";
+	} else if(nivelSuperior == "Pilar"){
+		nivelReducao = "Componente";
+	} else if(nivelSuperior == "Componente"){
+		nivelReducao = "Tipo de Nota";
+	} else if(nivelSuperior == "Tipo de Nota"){
+		nivelReducao = "Elemento";
+	} else if(nivelSuperior == "Elemento"){
+		nivelReducao = "Item";
+	}
+	nivelHierarquicoReducao = parseInt(hierarquiaMap.get(nivelReducao));
+	for(i=linhaNivelReducao;rows.length;i++){
+		if(rows[i] != null){
+			numeroLinha = rows[i].childNodes[1].innerText.trim();
+		} else {
+			break;
+		}
+		if(!(/[a-zA-Z]/).test(numeroLinha) && parseInt(numeroLinha) > linhaNivelReducao){
+			if(rows[i] == null){
+				break;
+			}
+			nivel = rows[i].childNodes[3].innerText.trim();
+			if(parseInt(hierarquiaMap.get(nivel)) >= nivelHierarquicoReducao){
+				if(rows[i].childNodes[5].innerHTML.includes('dropdown')){
+					rows[i].childNodes[5].childNodes[1].innerHTML = '<i style="color: darkblue" class="ion-android-arrow-dropright hoverbtn"></i>';
+				}
+				rows[i].style.display = "none";
+			}
+			if(nivel == nivelSuperior){
+				break;
+			}
+		}
+	}
+}
+
+var hierarquiaMap = new Map();
+{
+	hierarquiaMap.set('Ciclo',1);
+	hierarquiaMap.set('Pilar',2);
+	hierarquiaMap.set('Componente',3);
+	hierarquiaMap.set('Tipo de Nota',4);
+	hierarquiaMap.set('Elemento',5);
+	hierarquiaMap.set('Item',6);
+}
+
+function expandir(e, tabelaNome){
+	if(e.innerHTML.includes('dropright')){
+		e.innerHTML = '<i style="color: orange" class="ion-android-arrow-dropdown hoverbtn"></i>';
+		expandirNivel(e, tabelaNome);
+	} else {
+		e.innerHTML = '<i style="color: darkblue" class="ion-android-arrow-dropright hoverbtn"></i>';
+		reduzirNivel(e, tabelaNome);
+	}
+}
+var temp = [];
+function filtraPapeis(input, tabelaNome){
+  var filter, table, tr, td, i, txtValue;
+  filter = input.value.toUpperCase();
+  table = document.getElementById(tabelaNome);
+  tr = table.getElementsByTagName("tr");
+  for (i = 3; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+	console.log(td.innerText);
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "table-row";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
 }

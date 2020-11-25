@@ -364,6 +364,25 @@ func createTable() {
 			" id_versao_origem integer," +
 			" status_id integer)")
 
+	// Table PRODUTOS_PLANOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS produtos_planos (" +
+			" id integer DEFAULT nextval('produtos_planos_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" plano_id integer," +
+			" componente_id integer," +
+			" tipo_pontuacao_id integer," +
+			" peso double precision," +
+			" nota double precision," +
+			" motivacao_peso character varying(4000)," +
+			" motivacao_nota character varying(4000)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table PRODUTOS_TIPOS_NOTAS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS produtos_tipos_notas (" +
@@ -423,7 +442,7 @@ func createTable() {
 			" id integer DEFAULT nextval('tipos_notas_componentes_id_seq'::regclass)," +
 			" componente_id integer," +
 			" tipo_nota_id integer," +
-			" peso_padrao integer," +
+			" peso_padrao double precision," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +

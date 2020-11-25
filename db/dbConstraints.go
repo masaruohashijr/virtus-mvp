@@ -24,7 +24,7 @@ func createUniqueKey() {
 	db.Exec(" ALTER TABLE ONLY componentes_pilares" +
 		" ADD CONSTRAINT componentes_pilares_unique_key UNIQUE (pilar_id, componente_id)")
 	db.Exec(" ALTER TABLE ONLY elementos_componentes" +
-		" ADD CONSTRAINT elementos_componentes_unique_key UNIQUE (componente_id, elemento_id)")
+		" ADD CONSTRAINT elementos_componentes_unique_key UNIQUE (componente_id, elemento_id, tipo_nota_id)")
 	db.Exec(" ALTER TABLE ONLY tipos_notas_componentes" +
 		" ADD CONSTRAINT tipos_notas_componentes_unique_key UNIQUE (componente_id, tipo_nota_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_ciclos" +
@@ -38,7 +38,7 @@ func createUniqueKey() {
 	db.Exec(" ALTER TABLE ONLY produtos_elementos" +
 		" ADD CONSTRAINT produtos_elementos_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, tipo_nota_id, elemento_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_itens" +
-		" ADD CONSTRAINT produtos_itens_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, elemento_id, item_id)")
+		" ADD CONSTRAINT produtos_itens_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, tipo_nota_id, elemento_id, item_id)")
 }
 
 func createFKey() {

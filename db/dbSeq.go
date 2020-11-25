@@ -164,6 +164,13 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
+	// Sequence PRODUTOS_PLANOS_ID_SEQ
+	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.produtos_planos_id_seq " +
+		" START WITH 1" +
+		" INCREMENT BY 1" +
+		" NO MINVALUE" +
+		" NO MAXVALUE" +
+		" CACHE 1")
 	// Sequence PRODUTOS_PILARES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.produtos_pilares_id_seq " +
 		" START WITH 1" +

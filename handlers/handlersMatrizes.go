@@ -18,10 +18,13 @@ func ListMatrizesHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		var page mdl.PageEntidadesCiclos
 		// Entidades da jurisdição do Escritório ao qual pertenço
-		sql := "SELECT a.entidade_id, b.nome FROM jurisdicoes a " +
-			" LEFT JOIN entidades b ON a.entidade_id = b.id " +
-			" LEFT JOIN membros c ON a.escritorio_id = c.escritorio_id " +
-			" WHERE c.usuario_id = $1"
+		sql := "SELECT b.entidade_id, d.nome " +
+			" FROM escritorios a " +
+			" LEFT JOIN jurisdicoes b ON a.id = b.escritorio_id " +
+			" LEFT JOIN membros c ON c.escritorio_id = b.escritorio_id " +
+			" LEFT JOIN entidades d ON d.id = b.entidade_id " +
+			" INNER JOIN ciclos_entidades e ON e.entidade_id = b.entidade_id " +
+			" WHERE c.usuario_id = $1 "
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id)
 		var entidades []mdl.Entidade

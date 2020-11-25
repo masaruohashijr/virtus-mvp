@@ -43,6 +43,7 @@ const sqlPapeis = " SELECT  " +
 	" a.entidade_id = o.entidade_id )" +
 	" INNER JOIN produtos_elementos n ON " +
 	" ( a.elemento_id = n.elemento_id AND " +
+	" a.tipo_nota_id = n.tipo_nota_id AND " +
 	" a.componente_id = n.componente_id AND " +
 	" a.pilar_id = n.pilar_id AND " +
 	" a.ciclo_id = n.ciclo_id AND " +
@@ -60,7 +61,7 @@ const sqlPapeis = " SELECT  " +
 	" ( a.ciclo_id = l.ciclo_id AND " +
 	"   a.entidade_id = l.entidade_id ) " +
 	" INNER JOIN elementos_componentes ec ON " +
-	" ( a.elemento_id = ec.elemento_id AND a.componente_id = ec.componente_id ) " +
+	" ( a.elemento_id = ec.elemento_id AND a.tipo_nota_id = ec.tipo_nota_id AND a.componente_id = ec.componente_id ) " +
 	" INNER JOIN componentes_pilares cp ON " +
 	" ( a.componente_id = cp.componente_id AND a.pilar_id = cp.pilar_id ) " +
 	" INNER JOIN pilares_ciclos pc ON " +
@@ -220,7 +221,7 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 			" WHERE " +
 			" a.entidade_id = " + entidadeId +
 			" AND a.ciclo_id = " + cicloId +
-			" AND b.role_id in (2,3,4) "
+			" AND b.role_id in (2,3,4) ORDER BY 2 "
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
 		var auditores []mdl.User
@@ -236,6 +237,9 @@ func AvaliarPapeisHandler(w http.ResponseWriter, r *http.Request) {
 		page.AppName = mdl.AppName
 		page.Title = "Avaliar Papéis"
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
+		page.Inc = func(i int) int {
+			return i + 1
+		}
 		var tmpl = template.Must(template.ParseGlob("tiles/avaliarpapeis/*"))
 		tmpl.ParseGlob("tiles/*")
 		tmpl.ExecuteTemplate(w, "Main-Avaliar-Papeis", page)
