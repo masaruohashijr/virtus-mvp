@@ -24,8 +24,12 @@
                 <td style="border:1px solid #ddd;width:5%;vertical-align:middle">Linha</td>
 				<td style="border:1px solid #ddd;width:5%;vertical-align:middle">Nível</td>
                 <td style="text-align:left; width:25%;vertical-align:middle">
-					<input type="text" value="" placeholder="Sumário" 
-					onkeyup="filtraPapeis(this, 'tabela-avaliar-papeis')">
+					<input 
+						type="text" 
+						value="" 
+						placeholder="Sumário" 
+						style="width:100%"
+						onkeyup="filtraPapeis(this, 'tabela-avaliar-papeis')">
 				</td>
                 <td style="width:12%;vertical-align:middle">Supervisor</td>
                 <td style="width:10%;vertical-align:middle">Auditor</td>
@@ -138,7 +142,7 @@
 						type="number"
 						name="PilarPeso_{{$produto.PilarId}}" 
 						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
-						onchange="sinalizarAlteracao(this);alert()" 
+						onchange="sinalizarAlteracao(this)" 
 						value="{{ $produto.PilarPeso }}">
 				</td>
                 <td style="vertical-align:middle">&nbsp;</td>
