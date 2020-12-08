@@ -17,7 +17,7 @@
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="Description" id="WorkflowDescriptionForInsert" rows="5" value=""></textarea>
                 <label class="w3-label">Entidade no Sistema</label>
-	            <select size="3" class="w3-input" name="EntityTypeForInsert" id="entity-type-create" style="width:100%">
+	            <select size="6" class="w3-input" name="EntityTypeForInsert" id="entity-type-create" style="width:100%">
 	                <option value="itemAAvaliar">Item A Avaliar</option>
 	                <option value="elemento">Elemento</option>
 	                <option value="componente">Componente</option>
@@ -28,17 +28,18 @@
 	            </select>
 				<br>
 		        <header class="w3-container w3-center w3-teal">
-		            <div class="w3-row">
-		                <div class="w3-half" style="text-align: center;z-index:0">
-		                    <h4 class="w3-right">Atividades</h4>
+					<div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
 		                </div>
-		                <div class="w3-half w3-text-right" style="text-align: right;margin-top: 6px;z-index:1">
-		                    <div class="w3-right">
-		                        <a href="#" onclick="contexto='insert';document.getElementById('create-activity-form').style.display='block'">
-		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
-		                        </a>
-		                    </div>
-		                </div>
+	                	<h4>Atividades</h4>
+						<div style="margin-top: 8px" id="create-form-plano-btn" >
+	                        <a href="#" onclick="contexto='insert';document.getElementById('create-activity-form').style.display='block'">
+	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+	                        </a>
+						</div>
 		            </div>
 		        </header>
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="table-activities-insert">
