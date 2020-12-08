@@ -11,7 +11,7 @@
             </div>
             <form class="w3-container" id="formulario-create" action="/createCiclo" method="POST">
                 <label class="w3-label">Nome</label>
-                <input class="w3-input" type="text" name="Nome" value="">
+                <input class="w3-input" type="text" name="Nome" id="NomeCicloForInsert" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="Descricao" rows="5" value=""></textarea>
 				<br>
@@ -36,13 +36,19 @@
 		                <th>Nome</th>
 		                <th>Tipo de Média</th>
 		                <th>Peso Padrão</th>
+		                <th>Autor</th>
+		                <th>Criado Em</th>
 						<th>Ações</th>
 		            </tr>
 		            </thead>
 		            <tbody>
 		            </tbody>
 		        </table>
-                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right"
+					onClick="validarPercentuais()"  
+					type="button">Criar
+				</button>
             </form>
         </div>
     </div>

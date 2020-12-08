@@ -1,16 +1,19 @@
-{{ define "Main-Avaliar-Papeis" }}
+{{ define "Main-Avaliar-Planos" }}
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
-{{ template "Error-Message" .ErrMsg }}
 {{ template "Motivar-Nota" . }}
 {{ template "Motivar-Peso" . }}
 {{ template "Motivar-Remocao" . }}
 {{ template "Detalhar-Elemento" . }}
 {{ template "Historico-Elemento" . }}
+{{ template "Historico-Componente" . }}
 {{ template "Motivo" . }}
+{{ template "Motivo-Remocao" . }}
 {{ template "Menu" . }}
-{{ template "List-Avaliar-Papeis" . }}
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Message" .Msg }}
+{{ template "List-Avaliar-Planos" . }}
 </body>
 </html>
 {{end}}

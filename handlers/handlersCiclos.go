@@ -117,7 +117,7 @@ func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			registrarProdutosCiclos(currentUser, entidadeId, cicloId)
 		}
-		http.Redirect(w, r, route.CiclosRoute, 301)
+		http.Redirect(w, r, route.CiclosRoute+"?msg=Ciclo iniciado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -158,15 +158,12 @@ func UpdateCicloHandler(w http.ResponseWriter, r *http.Request) {
 				tipoMediaId := strings.Split(array[5], ":")[1]
 				log.Println("tipoMediaId -------- " + tipoMediaId)
 				pilarCicloPage.TipoMediaId, _ = strconv.Atoi(tipoMediaId)
-
 				tipoMedia := strings.Split(array[6], ":")[1]
 				log.Println("tipoMedia -------- " + tipoMedia)
 				pilarCicloPage.TipoMedia = tipoMedia
-
 				pesoPadrao := strings.Split(array[7], ":")[1]
 				log.Println("pesoPadrao -------- " + pesoPadrao)
 				pilarCicloPage.PesoPadrao = pesoPadrao
-
 				authorId := strings.Split(array[8], ":")[1]
 				log.Println("authorId -------- " + authorId)
 				pilarCicloPage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)
@@ -270,6 +267,7 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Ciclos")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listCiclos") {
+		msg := r.FormValue("msg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
@@ -344,6 +342,9 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			entidades = append(entidades, entidade)
 		}
 		var page mdl.PageCiclos
+		if msg != "" {
+			page.Msg = msg
+		}
 		page.Pilares = pilares
 		page.Entidades = entidades
 		page.Ciclos = ciclos

@@ -24,12 +24,20 @@
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+			id="table-users">
             <thead>
             <tr>
                 <th>Ord</th>
                 <th>Id</th>
-                <th>Nome</th>
+                <th>
+					<input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'table-users', 1, 2)">
+				</th>
                 <th>Username</th>
                 <th>E-mail</th>
                 <th>Celular</th>

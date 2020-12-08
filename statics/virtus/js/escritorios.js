@@ -63,8 +63,10 @@ function deleteEscritorio(e) {
 }
 
 function resetDetalhesEscritorio(){
+	document.getElementById('formulario-jurisdicao-escritorio-edit').reset();
 	document.getElementById('formulario-jurisdicao-create').reset();
 	document.getElementById('formulario-jurisdicao-edit').reset();
+	document.getElementById('formulario-membro-escritorio-edit').reset();
 	document.getElementById('formulario-membro-create').reset();
 	document.getElementById('formulario-membro-edit').reset();
 }

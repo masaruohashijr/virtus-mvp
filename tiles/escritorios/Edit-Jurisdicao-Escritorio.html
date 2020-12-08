@@ -10,7 +10,7 @@
                       onclick="document.getElementById('edit-jurisdicao-escritorio-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/updateJurisdicao" method="POST">
+            <form class="w3-container" action="/updateJurisdicao" method="POST" id="formulario-jurisdicao-escritorio-edit">
                 <input type="hidden" name="Id" id="EscritorioIdJUForUpdate">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" name="Nome" id="EscritorioNomeJUForUpdate" value="">
@@ -50,7 +50,14 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					id="table-jurisdicoes-edit">
 		            <tr>
-		                <td style="width:50%">Nome</td>
+		                <td style="width:50%">
+							<input 
+								type="text" 
+								value="" 
+								placeholder="Nome" 
+								style="width:100%"
+								onkeyup="filtraTabela(this, 'table-jurisdicoes-edit', 1, 0)">
+						</td>
 		                <td>Inicia Em</td>
 		                <td>Termina Em</td>
 						<td>Ações</td>

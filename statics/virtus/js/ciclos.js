@@ -48,7 +48,8 @@ function salvarIniciarCiclo(){
 	let preenchidoIniciaEm = document.getElementById('IniciaEmForInsert').value != '';
 	let preenchidoTerminaEm = document.getElementById('TerminaEmForInsert').value != '';
 	if(!preenchidoTerminaEm || !preenchidoIniciaEm){
-		alert('Falta preencher o período.');
+		document.getElementById("Errors").innerText = 'Falta preencher o período.';
+		document.getElementById("error-message").style.display = 'block';
 		if(!preenchidoIniciaEm){
 			document.getElementById('IniciaEmForInsert').focus();
 		} else {
@@ -80,7 +81,7 @@ function loadPilaresByCicloId(cicloId){
 }
 
 function validarPercentuais(){
-	let tbl = document.getElementById("table-pilar-ciclo-edit");
+	let tbl = document.getElementById("table-pilar-ciclo-"+contexto);
 	let linhas = tbl.childNodes[1].childNodes;
 	let row = tbl.childNodes[0];
 	let total = 0;
@@ -95,10 +96,29 @@ function validarPercentuais(){
 			}
 		}
 	}
-	if(total != 100){
-		alert('Total diferente de 100%');
+	
+	let nomeVazio = true;
+	if(contexto == 'create'){
+		if (document.getElementById('NomeCicloForInsert').value != ''){
+			nomeVazio = false;
+		}
+	} else {
+		if (document.getElementById('NomeCicloForUpdate').value != ''){
+			nomeVazio = false;
+		}
+	}
+	if( nomeVazio || total != 100){
+		let msg = '';
+		if(nomeVazio){
+			msg = 'Você deve preencher um Nome.\n\n';
+		} 
+		if(total != 100) {
+			msg = msg+'A soma dos pesos deve ser 100%.';
+		}
+		document.getElementById("Errors").innerText = msg;
+		document.getElementById("error-message").style.display = 'block';
 		return;
 	}
-	document.getElementById('formulario-edit').submit();
+	document.getElementById('formulario-'+contexto).submit();
 	return;
 }

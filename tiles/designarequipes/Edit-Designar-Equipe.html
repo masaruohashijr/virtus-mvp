@@ -47,7 +47,14 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					id="table-integrantes-edit">
 		            <tr>
-		                <td>Nome</td>
+		                <td>
+							<input 
+								type="text" 
+								value="" 
+								placeholder="Nome" 
+								style="width:100%"
+								onkeyup="filtraTabela(this, 'table-integrantes-edit', 1, 0)">
+						</td>
 		                <td>Perfil</td>
 		                <td>Inicia Em</td>
 		                <td>Termina Em</td>

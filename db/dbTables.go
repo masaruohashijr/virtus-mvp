@@ -331,6 +331,7 @@ func createTable() {
 			" ciclo_id integer," +
 			" pilar_id integer," +
 			" componente_id integer," +
+			" plano_id integer," +
 			" tipo_nota_id integer," +
 			" elemento_id integer," +
 			" tipo_pontuacao_id integer," +
@@ -354,6 +355,7 @@ func createTable() {
 			" ciclo_id integer," +
 			" pilar_id integer," +
 			" componente_id integer," +
+			" plano_id integer," +
 			" tipo_nota_id integer," +
 			" elemento_id integer," +
 			" item_id integer," +
@@ -371,8 +373,8 @@ func createTable() {
 			" entidade_id integer," +
 			" ciclo_id integer," +
 			" pilar_id integer," +
-			" plano_id integer," +
 			" componente_id integer," +
+			" plano_id integer," +
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
@@ -391,6 +393,7 @@ func createTable() {
 			" ciclo_id integer," +
 			" pilar_id integer," +
 			" componente_id integer," +
+			" plano_id integer," +
 			" tipo_nota_id integer," +
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +

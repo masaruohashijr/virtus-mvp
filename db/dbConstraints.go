@@ -34,11 +34,11 @@ func createUniqueKey() {
 	db.Exec(" ALTER TABLE ONLY produtos_componentes" +
 		" ADD CONSTRAINT produtos_componentes_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_tipos_notas" +
-		" ADD CONSTRAINT produtos_tipos_notas_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, tipo_nota_id)")
+		" ADD CONSTRAINT produtos_tipos_notas_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, plano_id, tipo_nota_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_elementos" +
-		" ADD CONSTRAINT produtos_elementos_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, tipo_nota_id, elemento_id)")
+		" ADD CONSTRAINT produtos_elementos_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, plano_id, tipo_nota_id, elemento_id)")
 	db.Exec(" ALTER TABLE ONLY produtos_itens" +
-		" ADD CONSTRAINT produtos_itens_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, tipo_nota_id, elemento_id, item_id)")
+		" ADD CONSTRAINT produtos_itens_unique_key UNIQUE (entidade_id, ciclo_id, pilar_id, componente_id, plano_id, tipo_nota_id, elemento_id, item_id)")
 }
 
 func createFKey() {
@@ -771,6 +771,8 @@ func createPKey() {
 	db.Exec("ALTER TABLE ONLY produtos_ciclos ADD CONSTRAINT produtos_ciclos_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY produtos_pilares ADD CONSTRAINT produtos_pilares_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY produtos_componentes ADD CONSTRAINT produtos_componentes_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY produtos_tipos_notas ADD CONSTRAINT produtos_tipos_notas_pkey PRIMARY KEY (id)")
+	db.Exec("ALTER TABLE ONLY produtos_planos ADD CONSTRAINT produtos_planos_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY produtos_elementos ADD CONSTRAINT produtos_elementos_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY produtos_itens ADD CONSTRAINT produtos_itens_pkey PRIMARY KEY (id)")
 	db.Exec("ALTER TABLE ONLY produtos_ciclos_historicos ADD CONSTRAINT produtos_ciclos_historicos_pkey PRIMARY KEY (id)")

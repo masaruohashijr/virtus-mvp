@@ -10,6 +10,7 @@ var planos = [];
 var entidadesMap;
 var ciclosMap;
 var pilaresMap;
+var planosMap;
 var componentesMap;
 var tiposNotasMap;
 var elementosMap;

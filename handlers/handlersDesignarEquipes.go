@@ -17,8 +17,9 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "designarEquipes") {
 		log.Println("--------------")
+		errMsg := r.FormValue("errMsg")
 		var page mdl.PageEntidadesCiclos
-		sql := " SELECT b.entidade_id, c.nome " +
+		sql := " SELECT b.entidade_id, c.nome, c.codigo, a.abreviatura " +
 			" FROM escritorios a " +
 			" LEFT JOIN jurisdicoes b ON a.id = b.escritorio_id " +
 			" LEFT JOIN entidades c ON c.id = b.entidade_id " +
@@ -32,17 +33,23 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 		for rows.Next() {
 			rows.Scan(
 				&entidade.Id,
-				&entidade.Nome)
+				&entidade.Nome,
+				&entidade.Codigo,
+				&entidade.Escritorio)
 			entidade.Order = i
 			i++
+			entidades = append(entidades, entidade)
+		}
+		var entidadesCiclos []mdl.Entidade
+		for i, entidade := range entidades {
+			var ciclosEntidade []mdl.CicloEntidade
+			var cicloEntidade mdl.CicloEntidade
 			sql = "SELECT b.id, b.nome " +
 				" FROM ciclos_entidades a " +
 				" LEFT JOIN ciclos b ON a.ciclo_id = b.id " +
 				" WHERE a.entidade_id = $1 " +
 				" ORDER BY id asc"
 			rows, _ = Db.Query(sql, entidade.Id)
-			var ciclosEntidade []mdl.CicloEntidade
-			var cicloEntidade mdl.CicloEntidade
 			i = 1
 			for rows.Next() {
 				rows.Scan(&cicloEntidade.Id, &cicloEntidade.Nome)
@@ -51,7 +58,7 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 				ciclosEntidade = append(ciclosEntidade, cicloEntidade)
 			}
 			entidade.CiclosEntidade = ciclosEntidade
-			entidades = append(entidades, entidade)
+			entidadesCiclos = append(entidadesCiclos, entidade)
 		}
 
 		sql = " SELECT " +
@@ -90,9 +97,12 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 			rows.Scan(&supervisor.Id, &supervisor.Name, &supervisor.RoleName)
 			supervisores = append(supervisores, supervisor)
 		}
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.Supervisores = supervisores
 		page.Membros = membros
-		page.Entidades = entidades
+		page.Entidades = entidadesCiclos
 		page.AppName = mdl.AppName
 		page.Title = "Designar Equipes"
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
@@ -113,31 +123,17 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 		supervisorId := r.FormValue("SupervisorId")
 
 		if supervisorId != "" {
-			sqlStatement := "UPDATE ciclos_entidades SET supervisor_id=$1 WHERE entidade_id=$2 AND ciclo_id=$3 " +
-				" AND NOT EXISTS (SELECT 1 FROM ciclos_entidades WHERE supervisor_id=$4 AND entidade_id=$5 AND ciclo_id=$6)"
+			sqlStatement := "UPDATE ciclos_entidades SET supervisor_id=" + supervisorId +
+				" WHERE entidade_id=" + entidadeId + " AND ciclo_id=" + cicloId
 			log.Println(sqlStatement)
 			updtForm, _ := Db.Prepare(sqlStatement)
-			updtForm.Exec(supervisorId, entidadeId, cicloId, supervisorId, entidadeId, cicloId)
-			/*sqlStatement = "INSERT INTO integrantes ( " +
-				" entidade_id, " +
-				" ciclo_id, " +
-				" usuario_id, " +
-				" author_id, " +
-				" criado_em " +
-				" ) " +
-				" SELECT $1, $2, $3, $4, $5 WHERE NOT EXISTS " +
-				" (SELECT 1 FROM integrantes WHERE entidade_id = $6 AND ciclo_id = $7 AND usuario_id =$8)"
-			log.Println(sqlStatement)
-			Db.QueryRow(
-				sqlStatement,
-				entidadeId,
-				cicloId,
-				supervisorId,
-				GetUserInCookie(w, r).Id,
-				time.Now(),
-				entidadeId,
-				cicloId,
-				supervisorId)*/
+			sqlResult, err := updtForm.Exec()
+			log.Println(sqlResult.RowsAffected())
+			if err != nil {
+				log.Println(err.Error())
+			}
+		} else {
+			http.Redirect(w, r, "/listDesignarEquipes?errMsg=O supervisor da equipe não pode ser deixado em branco.", 301)
 		}
 		log.Println("UPDATE: EntidadeId: " + entidadeId + " | CicloId: " + cicloId + " | SupervisorId: " + supervisorId)
 

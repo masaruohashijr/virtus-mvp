@@ -13,8 +13,8 @@ func createFeatures() {
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 4, 'Criar Elemento', 'createElemento' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 4)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 5, 'Listar Usuários', 'listUsers' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 5)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 6, 'Criar Usuário', 'createUser' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 6)")
-	db.Exec("INSERT INTO public.features (id, name, code) SELECT 7, 'Listar Papéis', 'listRoles' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 7)")
-	db.Exec("INSERT INTO public.features (id, name, code) SELECT 8, 'Criar Papel', 'createRole' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 8)")
+	db.Exec("INSERT INTO public.features (id, name, code) SELECT 7, 'Listar Perfis', 'listRoles' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 7)")
+	db.Exec("INSERT INTO public.features (id, name, code) SELECT 8, 'Criar Perfil', 'createRole' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 8)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 9, 'Listar Status', 'listStatus' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 9)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 10, 'Criar Status', 'createStatus' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 10)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 11, 'Listar Funcionalidades', 'listFeatures' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 11)")
@@ -38,8 +38,8 @@ func createFeatures() {
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 29, 'Listar Tipos de Notas', 'listTiposNotas' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 29)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 30, 'Criar Tipo de Nota', 'createTipoNota' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 30)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 31, 'Designar Equipes', 'designarEquipes' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 31)")
-	db.Exec("INSERT INTO public.features (id, name, code) SELECT 32, 'Distribuir Papéis', 'distribuirPapeis' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 32)")
-	db.Exec("INSERT INTO public.features (id, name, code) SELECT 33, 'Avaliar Papéis', 'avaliarPapeis' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 33)")
+	db.Exec("INSERT INTO public.features (id, name, code) SELECT 32, 'Distribuir Atividades', 'distribuirAtividades' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 32)")
+	db.Exec("INSERT INTO public.features (id, name, code) SELECT 33, 'Avaliar Planos', 'avaliarPlanos' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 33)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 34, 'Visualizar Matriz', 'viewMatriz' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 34)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 35, 'Home Chefe', 'homeChefe' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 35)")
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 36, 'Home Supervisor', 'homeSupervisor' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 36)")
@@ -71,7 +71,7 @@ func createRoleFeatures() {
 		" SELECT 1  " +
 		" FROM features_roles b " +
 		" WHERE b.role_id = 2 AND b.feature_id = a.id) " +
-		" AND a.code IN ('designarEquipes','distribuirPapeis','avaliarPapeis','viewMatriz','listEntidades','createEntidade','homeSupervisor') "
+		" AND a.code IN ('designarEquipes','distribuirAtividades','avaliarPlanos','viewMatriz','listEntidades','createEntidade','homeSupervisor') "
 	//log.Println(stmt1)
 	db.Exec(stmt1)
 	stmt1 = " INSERT INTO features_roles (role_id, feature_id) " +
@@ -80,7 +80,7 @@ func createRoleFeatures() {
 		" SELECT 1  " +
 		" FROM features_roles b " +
 		" WHERE b.role_id = 3 AND b.feature_id = a.id) " +
-		" AND a.code IN ('distribuirPapeis','avaliarPapeis','viewMatriz','listEntidades','createEntidade','homeSupervisor') "
+		" AND a.code IN ('distribuirAtividades','avaliarPlanos','viewMatriz','listEntidades','createEntidade','homeSupervisor') "
 	//log.Println(stmt1)
 	db.Exec(stmt1)
 	stmt1 = " INSERT INTO features_roles (role_id, feature_id) " +
@@ -89,7 +89,7 @@ func createRoleFeatures() {
 		" SELECT 1  " +
 		" FROM features_roles b " +
 		" WHERE b.role_id = 4 AND b.feature_id = a.id) " +
-		" AND a.code IN ('avaliarPapeis','viewMatriz','listEntidades','createEntidade','homeAuditor') "
+		" AND a.code IN ('avaliarPlanos','viewMatriz','listEntidades','createEntidade','homeAuditor') "
 	//log.Println(stmt1)
 	db.Exec(stmt1)
 	stmt1 = " INSERT INTO features_roles (role_id, feature_id) " +

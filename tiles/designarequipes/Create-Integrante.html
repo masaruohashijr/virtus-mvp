@@ -16,7 +16,7 @@
 					<option value=""></option>
 					{{range $index, $membro := .Membros }}
 		                <option value="{{$membro.UsuarioId}}">
-							{{$membro.UsuarioNome}}
+							{{$membro.UsuarioNome}} [{{$membro.UsuarioPerfil}}]
 						</option>
 		            {{end}}
 	            </select>

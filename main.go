@@ -53,17 +53,17 @@ func main() {
 	r.HandleFunc("/login", hd.LoginHandler).Methods("POST")
 	r.HandleFunc("/logout", hd.LogoutHandler).Methods("GET")
 	// ----------------- AVALIAÇÕES
-	r.HandleFunc("/listAvaliarPapeis", hd.ListAvaliarPapeisHandler).Methods("GET")
-	r.HandleFunc("/avaliarPapeis", hd.AvaliarPapeisHandler).Methods("POST")
-	r.HandleFunc("/updateAvaliarPapeis", hd.UpdateAvaliarPapeisHandler).Methods("POST")
+	r.HandleFunc("/listAvaliarPlanos", hd.ListAvaliarPlanosHandler).Methods("GET")
+	r.HandleFunc("/avaliarPlanos", hd.AvaliarPlanosHandler).Methods("POST")
+	r.HandleFunc("/updateAvaliarPlanos", hd.UpdateAvaliarPlanosHandler).Methods("POST")
 	// ----------------- MATRIZES
 	r.HandleFunc("/listMatrizes", hd.ListMatrizesHandler).Methods("GET")
 	r.HandleFunc("/executarMatriz", hd.ExecutarMatrizHandler).Methods("POST")
 	r.HandleFunc("/updateMatriz", hd.UpdateMatrizHandler).Methods("POST")
 	// ----------------- EQUIPES
-	r.HandleFunc("/listDistribuirPapeis", hd.ListDistribuirPapeisHandler).Methods("GET")
-	r.HandleFunc("/distribuirPapeis", hd.DistribuirPapeisHandler).Methods("POST")
-	r.HandleFunc("/updateDistribuirPapeis", hd.UpdateDistribuirPapeisHandler).Methods("POST")
+	r.HandleFunc("/listDistribuirAtividades", hd.ListDistribuirAtividadesHandler).Methods("GET")
+	r.HandleFunc("/distribuirAtividades", hd.DistribuirAtividadesHandler).Methods("POST")
+	r.HandleFunc("/updateDistribuirAtividades", hd.UpdateDistribuirAtividadesHandler).Methods("POST")
 	// ----------------- ACTIONS
 	r.HandleFunc(route.ActionsRoute, hd.ListActionsHandler).Methods("GET")
 	r.HandleFunc("/createAction", hd.CreateActionHandler).Methods("POST")
@@ -138,7 +138,12 @@ func main() {
 	r.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler).Methods("POST")
 	r.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler).Methods("POST")
 	// ----------------- LOADS
-	r.HandleFunc("/loadHistoricos", hd.LoadHistoricos).Methods("GET")
+	r.HandleFunc("/salvarPesoElemento", hd.SalvarPesoElemento).Methods("GET")
+	r.HandleFunc("/salvarNotaElemento", hd.SalvarNotaElemento).Methods("GET")
+	r.HandleFunc("/salvarAuditorComponente", hd.SalvarAuditorComponente).Methods("GET")
+	r.HandleFunc("/loadConfigPlanos", hd.LoadConfigPlanos).Methods("GET")
+	r.HandleFunc("/loadHistoricosComponente", hd.LoadHistoricosComponente).Methods("GET")
+	r.HandleFunc("/loadHistoricosElemento", hd.LoadHistoricosElemento).Methods("GET")
 	r.HandleFunc("/loadTiposNotaByComponenteId", hd.LoadTiposNotaByComponenteId).Methods("GET")
 	r.HandleFunc("/loadSupervisorByEntidadeIdCicloId", hd.LoadSupervisorByEntidadeIdCicloId).Methods("GET")
 	r.HandleFunc("/loadIntegrantesByEntidadeIdCicloId", hd.LoadIntegrantesByEntidadeIdCicloId).Methods("GET")

@@ -1,67 +1,73 @@
-{{define "Motivar-Nota"}}
-<!-- Motivar Nota -->
+{{define "Motivar-Peso"}}
+<!-- Motivar Peso -->
 <div class="w3-container">
-    <div id="motivar-nota-form" class="w3-modal">
+    <div id="motivar-peso-form" class="w3-modal">
         <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
-                <h2>Motivar nota</h2>
+                <h2>Motivar Peso</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
-                      onclick="resetNota();resetFormAvaliarPapeis();document.getElementById('motivar-nota-form').style.display='none'">&times;</span>
+                      onclick="resetPeso();resetFormAvaliarPlanos();document.getElementById('motivar-peso-form').style.display='none'">&times;</span>
             </div>
 
             <form class="w3-container" id="formulario-edit">
-				<input type="hidden" id="motNota_callback" value="">	
+				<input type="hidden" id="motPeso_callback" value="">
 				<table width="100%">
 					<tr>
 						<td width="50%" colspan="2">
 							<label class="w3-label">EFPC</label>					
-	                		<input class="w3-input" type="text" name="Nome" id="motNotaEntidade" readonly="readonly" disabled="disabled" value="">
+	                		<input class="w3-input" type="text" name="Nome" id="motPesoEntidade" readonly="readonly" disabled="disabled" value="">
 						</td>
 						<td width="50%" rowspan="7" style="vertical-align: top;">
-							<label class="w3-label">Motivação Nota</label>
+							<label class="w3-label">Motivação Peso</label>
 							<br>
-							<textarea id="motNota_text" class="w3-input" rows="20" cols="55"></textarea>
+							<textarea id="motPeso_text" class="w3-input" rows="20" cols="55"></textarea>
 						</td>
 					</tr>	
 					<tr>
                 		<td colspan="2">
 							<label class="w3-label">Ciclo</label>
-							<input class="w3-input" type="text" name="Nome" id="motNotaCiclo" readonly="readonly" disabled="disabled" value="">
+							<input class="w3-input" type="text" name="Nome" id="motPesoCiclo" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
 					<tr>						
 						<td colspan="2">
 							<label class="w3-label">Pilar</label>
-                			<input class="w3-input" type="text" name="Pilar" id="motNotaPilar" readonly="readonly" disabled="disabled" value="">
+                			<input class="w3-input" type="text" name="Pilar" id="motPesoPilar" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Plano</label>
+                			<input class="w3-input" type="text" name="Plano" id="motPesoPlano" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
 					<tr>						
 						<td colspan="2">
 							<label class="w3-label">Componente</label>
-                			<input class="w3-input" type="text" name="Componente" id="motNotaComponente" readonly="readonly" disabled="disabled" value="">
+                			<input class="w3-input" type="text" name="Componente" id="motPesoComponente" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
 					<tr>
 						<td colspan="2">
 							<label class="w3-label">Tipo de Nota</label>
-                			<input class="w3-input" type="text" name="TipoNota" id="motNotaTipoNota" readonly="readonly" disabled="disabled" value="">
+                			<input class="w3-input" type="text" name="TipoNota" id="motPesoTipoNota" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
 					<tr>						
 						<td colspan="2">
 							<label class="w3-label">Elemento</label>
-                			<input class="w3-input" type="text" name="Elemento" id="motNotaElemento" readonly="readonly" disabled="disabled" value="">
+                			<input class="w3-input" type="text" name="Elemento" id="motPesoElemento" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>
 					<tr>						
 						<td>
-							<label class="w3-label">Nota Anterior</label>
-                			<input class="w3-input" type="text" name="NotaAnterior" id="motNotaNotaAnterior" readonly="readonly" disabled="disabled" value="">
+							<label class="w3-label">Peso Anterior</label>
+                			<input class="w3-input" type="text" name="PesoAnterior" id="motPesoPesoAnterior" readonly="readonly" disabled="disabled" value="">
 						</td>
 						<td>
-							<label class="w3-label">Nova Nota</label>
-                			<input class="w3-input" type="text" name="NovaNota" id="motNotaNovaNota" readonly="readonly" disabled="disabled" value="">
+							<label class="w3-label">Novo Peso</label>
+                			<input class="w3-input" type="text" name="NovoPeso" id="motPesoNovoPeso" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>
 				</table>	
@@ -83,7 +89,8 @@
 		            </tr>
 		        </table>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
-					onClick="salvarNota()" 
+					onClick="salvarPesoElemento()" 
+					id="btnSalvarPeso"
 					type="button">Salvar</button>
             </form>
         </div>

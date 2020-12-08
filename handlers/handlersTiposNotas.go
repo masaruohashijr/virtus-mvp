@@ -78,6 +78,7 @@ func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Tipos de Notas")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listTiposNotas") {
+		errMsg := r.FormValue("errMsg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
@@ -117,6 +118,9 @@ func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 			tiposNotas = append(tiposNotas, tipoNota)
 		}
 		var page mdl.PageTiposNotas
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.TiposNotas = tiposNotas
 		page.AppName = mdl.AppName
 		page.Title = "Tipos de Notas"

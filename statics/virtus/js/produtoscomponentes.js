@@ -1,3 +1,3 @@
 function  sinalizarAlteracao(e){
-	e.style = "width: 80px; text-align:center; border: 1px solid red";
+	e.style = "text-align:center; width: "+e.style.width+"; border: 1px solid red";
 }

@@ -78,7 +78,11 @@ func ListStatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Status")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listStatus") {
+		errMsg := r.FormValue("errMsg")
 		page := listStatus("")
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 		var tmpl = template.Must(template.ParseGlob("tiles/status/*"))
 		tmpl.ParseGlob("tiles/*")

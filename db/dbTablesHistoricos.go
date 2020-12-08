@@ -47,15 +47,18 @@ func createTablesHistoricos() {
 			" entidade_id integer," +
 			" ciclo_id integer," +
 			" pilar_id integer," +
+			" plano_id integer," +
 			" componente_id integer," +
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" tipo_alteracao character(1)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" justificativa character varying(4000)," +
 			" supervisor_id integer," +
 			" auditor_id integer," +
+			" auditor_anterior_id integer," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
@@ -68,6 +71,7 @@ func createTablesHistoricos() {
 			" entidade_id integer," +
 			" ciclo_id integer," +
 			" pilar_id integer," +
+			" plano_id integer," +
 			" componente_id integer," +
 			" tipo_nota_id integer," +
 			" elemento_id integer," +
@@ -92,6 +96,7 @@ func createTablesHistoricos() {
 			" entidade_id integer," +
 			" ciclo_id integer," +
 			" pilar_id integer," +
+			" plano_id integer," +
 			" componente_id integer," +
 			" tipo_nota_id integer," +
 			" elemento_id integer," +

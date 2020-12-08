@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
@@ -96,9 +97,16 @@ func DeleteEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.EscritoriosRoute, 301)
+		_, err = deleteForm.Exec(id)
+		if err != nil {
+			log.Println(err.Error())
+		}
+		if strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.EscritoriosRoute+"?errMsg=Escritório vinculado a Membro ou Jurisdicão não pode ser removido.", 301)
+		} else {
+			log.Println("DELETE: Id: " + id)
+			http.Redirect(w, r, route.EscritoriosRoute, 301)
+		}
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -108,7 +116,13 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Escritorios")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listEscritorios") {
-		page := listEscritorios("")
+		errMsg := r.FormValue("errMsg")
+		var page mdl.PageEscritorios
+		if errMsg != "" {
+			page = listEscritorios(errMsg)
+		} else {
+			page = listEscritorios("")
+		}
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 		var tmpl = template.Must(template.ParseGlob("tiles/escritorios/*"))
 		tmpl.ParseGlob("tiles/*")
@@ -185,13 +199,17 @@ func listEscritorios(errorMsg string) mdl.PageEscritorios {
 	var page mdl.PageEscritorios
 	page.Escritorios = escritorios
 
-	sql = "SELECT id, name, role_id FROM users ORDER BY name asc"
+	sql = "SELECT a.id, a.name, a.role_id, " +
+		" coalesce(b.name,'SEM PERFIL') as role_name " +
+		" FROM users a " +
+		" LEFT JOIN roles b ON a.role_id = b.id " +
+		" ORDER BY a.name asc"
 	rows, _ = Db.Query(sql)
 	var users []mdl.User
 	var user mdl.User
 	i = 1
 	for rows.Next() {
-		rows.Scan(&user.Id, &user.Name, &user.Role)
+		rows.Scan(&user.Id, &user.Name, &user.Role, &user.RoleName)
 		user.Order = i
 		i++
 		users = append(users, user)

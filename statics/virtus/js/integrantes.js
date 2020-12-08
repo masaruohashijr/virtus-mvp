@@ -25,10 +25,14 @@ function criarIntegrante(){
 	let campoSelect = document.getElementById('UsuarioForInsert');
 	let usuarioId = 0;
 	let usuarioNome = '';
+	let usuarioPerfil = '';
 	for(n=0;n<campoSelect.options.length;n++){
 		if(campoSelect.options[n].selected){
 			usuarioId = campoSelect.options[n].value;
-			usuarioNome = campoSelect.options[n].text;
+			text = campoSelect.options[n].text;
+			usuarioPerfil = text.split("[")[1].trim(); 
+			usuarioPerfil = usuarioPerfil.substr(0,usuarioPerfil.length-1);
+			usuarioNome = text.split("[")[0].trim();
 			break;
 		}
 	}
@@ -41,7 +45,7 @@ function criarIntegrante(){
 	let iniciaEm = formatarData(document.getElementById('IniciaEmForInsert').value);
 	let terminaEm = formatarData(document.getElementById('TerminaEmForInsert').value);
 	integranteId = getMaxId(integrantes);
-	integrante = new Integrante(0, integranteId, 0, 0, usuarioId, usuarioNome, '', iniciaEm, terminaEm, '', '', '', '', '', '', '');
+	integrante = new Integrante(0, integranteId, 0, 0, usuarioId, usuarioNome, usuarioPerfil, iniciaEm, terminaEm, '', '', '', '', '', '', '');
 	integrantes.push(integrante);
 	addIntegranteRow("table-integrantes-"+contexto);
 	limparCamposIntegranteForm();
@@ -112,9 +116,9 @@ function editEquipe(e) {
 	limparCamposIntegranteForm();
 	let editEquipeForm = document.getElementById('edit-designar-equipe-form');
 	editEquipeForm.style.display = 'block';
-	let entidadeId = e.parentNode.parentNode.childNodes[3].innerText;
+	let entidadeId = e.parentNode.parentNode.childNodes[3].childNodes[0].value;
 	let entidadeNome = e.parentNode.parentNode.childNodes[5].innerText;
-	let campoSelect = e.parentNode.parentNode.childNodes[7].childNodes[1];
+	let campoSelect = e.parentNode.parentNode.childNodes[9].childNodes[1];
 	let cicloId = campoSelect.options[campoSelect.selectedIndex].value;
 	let cicloNome = campoSelect.options[campoSelect.selectedIndex].text;
 	document.getElementById("EntidadeIdForUpdate").value = entidadeId;

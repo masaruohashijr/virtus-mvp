@@ -42,14 +42,21 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					id="table-iniciar-ciclo-edit">
 		            <tr>
-		                <td>&nbsp;</td>
-		                <td style="width:100px">Código</td>
-		                <td style="width:150px">Sigla</td>
-		                <td style="text-align:left;width:200px">Entidade</td>
+		                <td style="width:5%">&nbsp;</td>
+		                <td style="width:10%">Código</td>
+		                <td style="width:20%">Sigla</td>
+		                <td style="text-align:left;width:65%">
+						<input 
+							type="text" 
+							value="" 
+							placeholder="Nome da Entidade" 
+							style="width:100%"
+							onkeyup="filtraTabela(this, 'table-iniciar-ciclo-edit', 1, 2)">
+						</td>
 		            </tr>
 					{{range $index, $entidade := .Entidades}}
 		            <tr>
-		                <td><input class="w3-check" name="Entidades" type="checkbox" value="{{$entidade.Id}}"/></td>
+		                <td style="vertical-align:middle; bottom: 6px"><input class="w3-check" name="Entidades" type="checkbox" value="{{$entidade.Id}}"/></td>
 		                <td>{{$entidade.Codigo}}</td>
 		                <td>{{$entidade.Sigla}}</td>
 		                <td style="text-align:left">

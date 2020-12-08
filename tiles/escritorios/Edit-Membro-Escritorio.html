@@ -10,7 +10,7 @@
                       onclick="document.getElementById('edit-equipe-form').style.display='none'">&times;</span>
             </div>
 
-            <form class="w3-container" action="/updateMembrosEscritorio" method="POST">
+            <form class="w3-container" action="/updateMembrosEscritorio" method="POST" id="formulario-membro-escritorio-edit">
                 <input type="hidden" name="Id" id="EscritorioIdESForUpdate">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" id="EscritorioNomeESForUpdate" name="Nome" value="">
@@ -50,7 +50,14 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					id="table-membros-edit">
 		            <tr>
-		                <td style="width:40%">Nome</td>
+		                <td style="width:40%">
+							<input 
+								type="text" 
+								value="" 
+								placeholder="Nome" 
+								style="width:100%"
+								onkeyup="filtraTabela(this, 'table-membros-edit', 1, 0)">
+						</td>
 		                <td>Perfil</td>
 		                <td>Inicia Em</td>
 		                <td>Termina Em</td>

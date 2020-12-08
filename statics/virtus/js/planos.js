@@ -3,9 +3,6 @@ var plano_tobe_deleted;
 function updateConfigPlanos(){
 	document.getElementById('config-planos-form').style.display='none';
 	let splitted = document.getElementById('ComponenteRefConfigPlanos').value.split('_');
-	let entidadeId = splitted[0];
-	let ciclo_id = splitted[1];
-	let pilarId = splitted[2];
 	let componenteId = splitted[3];
 	let planosSelecionados = document.getElementById('ConfigPlanos');
 	let selecionados = getSelectedOptions(planosSelecionados);
@@ -13,7 +10,24 @@ function updateConfigPlanos(){
 	for(n=0;n<selecionados.length;n++){
 		valores = selecionados[n].value+'_'+ valores;
 	}
-	document.getElementsByName("Planos_"+entidadeId+"_"+ciclo_id+"_"+pilarId+"_"+componenteId)[0].value = valores;
+	document.getElementsByName("Planos_AuditorComponente"+componenteId)[0].value = valores;
+}
+
+function updateTodosConfigPlanos(){
+	document.getElementById('config-planos-form').style.display='none';
+	let planosSelecionados = document.getElementById('ConfigPlanos');
+	let selecionados = getSelectedOptions(planosSelecionados);
+	let valores = '';
+	for(n=0;n<selecionados.length;n++){
+		valores = selecionados[n].value+'_'+ valores;
+	}
+	let col = document.getElementsByTagName("input");
+	for(n=0;n<col.length;n++){
+		console.log(col[n].name);
+		if(col[n].name.startsWith("Planos_")){
+			col[n].value = valores;
+		}
+	}
 }
 
 function getSelectedOptions(sel) {
@@ -28,34 +42,61 @@ function getSelectedOptions(sel) {
 }
 
 function openConfigPlanos(btn){
-	btn.disabled = true;
+	//btn.disabled = true;
 	let entidadeId = btn.name.split("_")[1];
+	//console.log(entidadeId);
 	let cicloId = btn.name.split("_")[2];
+	//console.log(cicloId);
 	let pilarId = btn.name.split("_")[3];
+	//console.log(pilarId);
 	let componenteId = btn.name.split("_")[4];
+	//console.log(componenteId);
+	//console.log(document.getElementById('Planos_AuditorComponente'+componenteId));
 	document.getElementById('EntidadeConfigPlanos').value = entidadesMap.get(entidadeId);
 	document.getElementById('CicloConfigPlanos').value = ciclosMap.get(cicloId);
 	document.getElementById('PilarConfigPlanos').value = pilaresMap.get(pilarId);
 	document.getElementById('ComponenteConfigPlanos').value = componentesMap.get(componenteId);
 	document.getElementById('ComponenteRefConfigPlanos').value = entidadeId+'_'+cicloId+'_'+pilarId+'_'+componenteId;
 	document.getElementById('config-planos-form').style.display='block';
-	loadConfigPlanos(entidadeId);
+	loadConfigPlanos(entidadeId, cicloId, pilarId, componenteId);
 }
 
-function loadConfigPlanos(entidadeId){
+function loadConfigPlanos(entidadeId, cicloId, pilarId, componenteId){
 	var xmlhttp;
 	xmlhttp=new XMLHttpRequest();
 	xmlhttp.onreadystatechange=function()
 	{
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
-				var planos = JSON.parse(xmlhttp.responseText);
+				var configPlanos = JSON.parse(xmlhttp.responseText);
+				var cfg = document.getElementById('ConfigPlanos');
+				console.log(cfg);
+				console.log(configPlanos);
+				console.log(configPlanos.length);
+				console.log(cfg.options.length);
+				for(i=0;i<configPlanos.length;i++){
+					for(j=0;j<cfg.options.length;j++){
+						if(cfg.options[j].value == configPlanos[i].planoId){
+							cfg.options[j].selected = true; 
+							console.log(configPlanos[i]+' :: '+cfg.options[j].selected);
+						}
+					}
+				}
 				return planos;
 			}
 	}
-	xmlhttp.open("GET","/loadConfigPlanos?entidadeId="+entidadeId,true);
+		xmlhttp.open("GET","/loadConfigPlanos?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId,true);
 	xmlhttp.send();
 }
+
+class ConfigPlano {
+	constructor(id, entidadeId, planoId) {
+		this.id = id;
+		this.entidadeId = entidadeId;
+		this.planoId = planoId;
+	}
+}
+
 	
 class Plano {
 	constructor(order, id, entidadeId, nome, descricao, cnpb, recursoGarantidor, modalidade, autorId, autorNome, criadoEm, status, cStatus) {
@@ -254,5 +295,19 @@ function limparCamposPlanoForm(){
 	console.log('limparCamposPlanoForm');
 	document.getElementById('formulario-plano-create').reset()
 	document.getElementById('formulario-plano-edit').reset()
+}
+
+function validarPlanosSelecionados(){
+	let col = document.getElementsByTagName("input");
+	for(n=0;n<col.length;n++){
+		console.log(col[n].name);
+		if(col[n].name.startsWith("Planos_")){
+			if(col[n].value == ''){
+				document.getElementById("Errors").innerText = '';
+				document.getElementById("error-message").style.display = 'block';				
+				return false;
+			}
+		}
+	}
 }
 

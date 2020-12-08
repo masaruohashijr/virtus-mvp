@@ -215,6 +215,7 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Pilares")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listPilares") {
+		errMsg := r.FormValue("errMsg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
@@ -262,6 +263,9 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 			componentes = append(componentes, componente)
 		}
 		var page mdl.PagePilares
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.Pilares = pilares
 		page.Componentes = componentes
 		page.AppName = mdl.AppName

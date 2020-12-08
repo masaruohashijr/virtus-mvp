@@ -51,7 +51,7 @@ func createCicloCompleto() {
 	idTipoNotaComponente := 0
 	idElemento := 0
 	idItem := 0
-	pesoPadrao := 2
+	pesoPadrao := 1
 	//var ciclo CicloESI
 	cicloESI := montarCiclo()
 
@@ -107,7 +107,7 @@ func createCicloCompleto() {
 		db.QueryRow(stmt, nome, descricao, autor, criadoEm, statusZero).Scan(&idPilar)
 		log.Println("idPilar: " + strconv.Itoa(idPilar) + " - " + nome)
 		pesoPadrao = rand.Intn(max)
-		if j < qtdPilares {
+		if j < qtdPilares-1 {
 			max = max - pesoPadrao
 		} else {
 			pesoPadrao = max
@@ -180,7 +180,7 @@ func createCicloCompleto() {
 						idElemento = elementosSalvos[nome]
 					}
 					log.Println("idElemento: " + strconv.Itoa(idElemento) + " - " + nome)
-					pesoPadrao = int(math.Pow(2, float64(l-1)))
+					pesoPadrao = 1
 					stmt = " SELECT " + strconv.Itoa(idElemento) + ", " +
 						strconv.Itoa(idComponente) + ", " +
 						strconv.Itoa(idTipoNota) + ", " +

@@ -132,7 +132,7 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		" FROM planos a LEFT JOIN users b ON a.author_id = b.id " +
 		" LEFT JOIN status c ON a.status_id = c.id " +
 		" WHERE a.entidade_id = $1 " +
-		" ORDER BY a.cnpb ASC"
+		" ORDER BY a.recurso_garantidor DESC"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, entidadeId)
 	var planos []mdl.Plano
@@ -200,4 +200,32 @@ func removePlano(planos []mdl.Plano, planoToBeRemoved mdl.Plano) []mdl.Plano {
 		}
 	}
 	return newPlanos
+}
+
+// AJAX
+func ListConfigPlanos(entidadeId string, cicloId string, pilarId string, componenteId string) []mdl.ConfigPlano {
+	log.Println("entidadeId: " + entidadeId + " - cicloId: " + cicloId + " - pilar: " + pilarId + " - componenteId: " + componenteId)
+	log.Println("List Config Planos")
+	sql := "SELECT " +
+		" a.id, " +
+		" a.entidade_id, " +
+		" a.plano_id " +
+		" FROM produtos_planos a " +
+		" WHERE a.entidade_id = " + entidadeId +
+		" AND a.ciclo_id = " + cicloId +
+		" AND a.pilar_id = " + pilarId +
+		" AND a.componente_id = " + componenteId
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	var configurados []mdl.ConfigPlano
+	var configPlano mdl.ConfigPlano
+	for rows.Next() {
+		rows.Scan(
+			&configPlano.Id,
+			&configPlano.EntidadeId,
+			&configPlano.PlanoId)
+		configurados = append(configurados, configPlano)
+		log.Println(configPlano)
+	}
+	return configurados
 }

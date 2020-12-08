@@ -2,7 +2,7 @@ function editEntidade(e) {
 	resetEntidadeForms();
     var editForm = document.getElementById('edit-form');
     editForm.style.display = 'block';
-    var entidadeId = e.parentNode.parentNode.childNodes[3].innerText;
+    var entidadeId = e.parentNode.parentNode.childNodes[3].childNodes[0].value;
     var entidadeNome = e.parentNode.parentNode.childNodes[5].innerText;
     var entidadeDescricao = e.parentNode.parentNode.childNodes[5].childNodes[1].value;
     var entidadeSigla = e.parentNode.parentNode.childNodes[7].childNodes[1].value;

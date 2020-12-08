@@ -94,10 +94,24 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Users")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listUsers") {
-		sql := "SELECT " +
+		errMsg := r.FormValue("errMsg")
+		sql := " WITH esc AS (WITH TMP as ( " +
+			" SELECT a.id, " +
+			" COALESCE(c.abreviatura, '') AS abreviatura " +
+			" FROM users a " +
+			" LEFT JOIN membros b ON a.id = b.usuario_id " +
+			" LEFT JOIN escritorios c ON b.escritorio_id = c.id " +
+			" ORDER BY 1 ASC) " +
+			" SELECT u.id, " +
+			" string_agg(tmp.abreviatura, ', ') as jurisdicoes " +
+			" FROM TMP, users u " +
+			" WHERE u.id = tmp.id " +
+			" GROUP BY 1 " +
+			" ORDER BY 1 ASC) " +
+			" SELECT " +
 			" a.id, a.name, a.username, a.password, " +
 			" a.email, a.mobile, COALESCE(a.role_id, 0), COALESCE(b.name,'') as role_name, " +
-			" COALESCE(f.id, 0), COALESCE(f.abreviatura,'') as escritorio_nome, " +
+			" COALESCE(f.id, 0), COALESCE(f.jurisdicoes,'') as jurisdicoes, " +
 			" a.author_id, " +
 			" e.name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
@@ -106,9 +120,8 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 			" a.id_versao_origem " +
 			" FROM users a " +
 			" LEFT JOIN roles b ON a.role_id = b.id " +
-			" LEFT JOIN membros c ON a.id = c.usuario_id " +
-			" LEFT JOIN escritorios f ON c.escritorio_id = f.id " +
-			" LEFT JOIN status d ON a.status_id = c.id " +
+			" LEFT JOIN esc f ON a.id = f.id " +
+			" LEFT JOIN status d ON a.status_id = d.id " +
 			" LEFT JOIN users e ON a.author_id = e.id " +
 			" ORDER BY a.name ASC "
 		log.Println("SQL: " + sql)
@@ -164,6 +177,9 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 			escritorios = append(escritorios, escritorio)
 		}
 		var page mdl.PageUsers
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.Users = users
 		page.Roles = roles
 		page.Escritorios = escritorios

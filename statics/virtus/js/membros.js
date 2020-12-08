@@ -27,7 +27,10 @@ function criarMembro(){
 	for(n=0;n<campoSelect.options.length;n++){
 		if(campoSelect.options[n].selected){
 			usuarioId = campoSelect.options[n].value;
-			usuarioNome = campoSelect.options[n].text;
+			text = campoSelect.options[n].text;
+			usuarioPerfil = text.split("[")[1].trim(); 
+			usuarioPerfil = usuarioPerfil.substr(0,usuarioPerfil.length-1);
+			usuarioNome = text.split("[")[0].trim();
 			break;
 		}
 	}
@@ -40,7 +43,7 @@ function criarMembro(){
 	let iniciaEm = formatarData(document.getElementById('IniciaEmMEForInsert').value);
 	let terminaEm = formatarData(document.getElementById('TerminaEmMEForInsert').value);
 	membroId = getMaxId(membros);
-	membro = new Membro(0, membroId, 0, usuarioId, usuarioNome, '', iniciaEm, terminaEm, '', '', '', '', '', '');
+	membro = new Membro(0, membroId, 0, usuarioId, usuarioNome, usuarioPerfil, iniciaEm, terminaEm, '', '', '', '', '', '');
 	membros.push(membro);
 	addMembroRow("table-membros-"+contexto);
 	limparCamposMembroForm();

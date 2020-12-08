@@ -188,6 +188,7 @@ func ListJurisdicoesByEscritorioId(escritorioId string) []mdl.Jurisdicao {
 			&jurisdicao.StatusId,
 			&jurisdicao.CStatus)
 		jurisdicao.Order = i
+		jurisdicao.EntidadeNome = strings.ReplaceAll(jurisdicao.EntidadeNome, ",", " ")
 		i++
 		jurisdicoes = append(jurisdicoes, jurisdicao)
 		log.Println(jurisdicao)

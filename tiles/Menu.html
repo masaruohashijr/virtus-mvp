@@ -2,7 +2,7 @@
 <div id="mySidenav" class="sidenav">
   <div style="float: right;"><a href="javascript:void(0)" class="closebtn" onclick="navGadget()">&times;</a></div>
   <div sytle="position:absolute;top:0px;left:25px;z-index:1"><br>
-	    <img src="/statics/images/Banner_Previc.png" alt="Virtus" class="logo">
+	    <img src="/statics/images/Banner_Previc.png" alt="SRC" class="logo">
 	</div>
 	<br>
 	<br>
@@ -20,11 +20,11 @@
   {{if (call .LoggedUser.HasPermission "designarEquipes")}}
   <a href="/listDesignarEquipes">Designar Equipes</a>
   {{end}}
-  {{if (call .LoggedUser.HasPermission "distribuirPapeis")}}
-  <a href="/listDistribuirPapeis">Distribuir Papéis</a>
+  {{if (call .LoggedUser.HasPermission "distribuirAtividades")}}
+  <a href="/listDistribuirAtividades">Distribuir Atividades</a>
   {{end}}
-  {{if (call .LoggedUser.HasPermission "avaliarPapeis")}}
-  <a href="/listAvaliarPapeis">Avaliar Papéis</a>
+  {{if (call .LoggedUser.HasPermission "avaliarPlanos")}}
+  <a href="/listAvaliarPlanos">Avaliar Planos</a>
   {{end}}
   {{if (call .LoggedUser.HasPermission "viewMatriz")}}
   <a href="/listMatrizes">Matrizes</a>

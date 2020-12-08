@@ -1,55 +1,43 @@
-{{define "Historico-Elemento"}}
-<!-- Historico Elemento -->
+{{define "Historico-Componente"}}
+<!-- Historico Componente -->
 <div class="w3-container">
-    <div id="hist-elemento-form" class="w3-modal">
+    <div id="hist-componente-form" class="w3-modal">
         <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
             <!-- head -->
             <div class="w3-container w3-teal">
-                <h2>Histórico do Elemento</h2>
+                <h2>Histórico do Componente</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
-                      onclick="resetFormAvaliarPapeis();document.getElementById('hist-elemento-form').style.display='none'">&times;</span>
+                      onclick="resetFormAvaliarPlanos();document.getElementById('hist-componente-form').style.display='none'">&times;</span>
             </div>
 
             <form class="w3-container" id="formulario-edit">
                 <input type="hidden" name="Id" id="CicloIdForUpdate" value="">
-				<input type="hidden" id="motNota_callback" value="">	
+				<input type="hidden" id="motComponente_callback" value="">	
 				<table width="100%">
 					<tr>
 						<td>
 							<label class="w3-label">EFPC</label>					
-	                		<input class="w3-input" type="text" id="histEFPC" readonly="readonly" disabled="disabled" value="">
+	                		<input class="w3-input" type="text" id="histComponenteEFPC" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
 					<tr>
                 		<td>
 							<label class="w3-label">Ciclo</label>
-							<input class="w3-input" type="text" id="histCiclo" readonly="readonly" disabled="disabled" value="">
+							<input class="w3-input" type="text" id="histComponenteCiclo" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
 					<tr>						
 						<td>
 							<label class="w3-label">Pilar</label>
-                			<input class="w3-input" type="text" id="histPilar" readonly="readonly" disabled="disabled" value="">
+                			<input class="w3-input" type="text" id="histComponentePilar" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
 					<tr>						
 						<td>
 							<label class="w3-label">Componente</label>
-                			<input class="w3-input" type="text" id="histComponente" readonly="readonly" disabled="disabled" value="">
+                			<input class="w3-input" type="text" id="histComponenteComponente" readonly="readonly" disabled="disabled" value="">
 						</td>
 					</tr>	
-					<tr>
-						<td>
-							<label class="w3-label">Tipo de Nota</label>
-                			<input class="w3-input" type="text" id="histTipoNota" readonly="readonly" disabled="disabled" value="">
-						</td>
-					</tr>	
-					<tr>						
-						<td>
-							<label class="w3-label">Elemento</label>
-                			<input class="w3-input" type="text" id="histElemento" readonly="readonly" disabled="disabled" value="">
-						</td>
-					</tr>
 				</table>
 		        <header class="w3-container w3-center w3-teal">
 					<div class="aria">
@@ -66,19 +54,17 @@
 		            </div>
 		        </header>
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
-					id="table-historicos-edit">
+					id="table-historicos-componente-edit">
 		            <tr>
-						<td>Alterou</td>
-		                <td>Nota</td>
-		                <td>Método</td>
-		                <td>Peso</td>
+						<td>De</td>
+		                <td>Para</td>
 		                <td>Autor</td>
 		                <td>Em</td>
 						<td>Ações</td>
 		            </tr>
 		        </table>
 				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
-					onClick="resetFormAvaliarPapeis();document.getElementById('hist-elemento-form').style.display='none'" 
+					onClick="resetFormAvaliarPlanos();document.getElementById('hist-componente-form').style.display='none'" 
 					type="button">Fechar</button>
             </form>
         </div>

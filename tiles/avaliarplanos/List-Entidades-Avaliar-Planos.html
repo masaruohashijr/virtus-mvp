@@ -1,5 +1,5 @@
-{{define "List-Entidades-Avaliar-Papeis"}}
-<!-- List Avaliar Papéis-->
+{{define "List-Entidades-Avaliar-Planos"}}
+<!-- List Avaliar Planos -->
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
 		    <div class="aria">
@@ -11,7 +11,7 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
-					{{$allowed := (call .LoggedUser.HasPermission "avaliarPapeis")}}
+					{{$allowed := (call .LoggedUser.HasPermission "avaliarPlanos")}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>
@@ -24,7 +24,7 @@
                 <th style="width:5%">Ord</th>
                 <th style="width:5%">Id</th>
                 <th style="text-align:left; width:65%">Nome</th>
-                <th style="text-align:left; width:20%">Ciclos</th>
+                <th style="width:20%">Ciclos</th>
 				{{if $allowed}}
 				<th style="width:5%">Ações</th>
 				{{end}}
@@ -49,14 +49,14 @@
 				</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="submeterEntidadeCicloForm(this,'formulario-avaliar-papeis')">Avaliar Papéis</button>
+                    <button class="w3-btn w3-teal" onclick="submeterEntidadeCicloForm(this,'formulario-avaliar-planos')">Avaliar Planos</button>
                 </td>
 				{{end}}
             </tr>
             {{end}}
             </tbody>
         </table>
-		<form action="/avaliarPapeis" method="POST" id="formulario-avaliar-papeis">
+		<form action="/avaliarPlanos" method="POST" id="formulario-avaliar-planos">
 			<input type="hidden" id="EntidadeId" name="EntidadeId">
 			<input type="hidden" id="CicloId" name="CicloId">
 		</form>

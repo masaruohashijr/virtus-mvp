@@ -260,6 +260,7 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Componentes")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listCiclos") {
+		errMsg := r.FormValue("errMsg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
@@ -318,6 +319,9 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var page mdl.PageComponentes
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.TiposNota = tiposNota
 		page.Componentes = componentes
 		page.Elementos = elementos

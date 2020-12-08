@@ -1,6 +1,6 @@
-{{define "List-Avaliar-Papeis"}}
-<!-- List Avaliar Papeis -->
-<form action="/updateAvaliarPapeis" method="POST" id="form-avaliar-papeis">
+{{define "List-Avaliar-Planos"}}
+<!-- List Avaliar Planos -->
+<form action="/updateAvaliarPlanos" method="POST" id="form-avaliar-planos">
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
 		    <div class="aria">
@@ -12,14 +12,14 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
-					{{$allowed := (call .LoggedUser.HasPermission "avaliarPapeis")}}
+					{{$allowed := (call .LoggedUser.HasPermission "avaliarPlanos")}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="tabela-avaliar-papeis">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="tabela-avaliar-planos">
             <tr>
                 <td style="border:1px solid #ddd;width:5%;vertical-align:middle">Linha</td>
 				<td style="border:1px solid #ddd;width:5%;vertical-align:middle">Nível</td>
@@ -29,12 +29,12 @@
 						value="" 
 						placeholder="Sumário" 
 						style="width:100%"
-						onkeyup="filtraPapeis(this, 'tabela-avaliar-papeis')">
+						onkeyup="filtraTabela(this, 'tabela-avaliar-planos', 3, 2)">
 				</td>
                 <td style="width:12%;vertical-align:middle">Supervisor</td>
                 <td style="width:10%;vertical-align:middle">Auditor</td>
                 <td style="width:8%;vertical-align:middle">Tipo de Nota</td>
-                <td style="width:12%;vertical-align:middle">Peso (%)</td>
+                <td style="width:4%;vertical-align:middle">Peso (%)</td>
                 <td style="width:4%;vertical-align:middle">Método</td>
                 <td style="width:4%;vertical-align:middle">Nota</td>
 				{{if $allowed}}
@@ -46,6 +46,7 @@
 			{{$primeiraLinha := true}}
 			{{$auxPilar := 0}}
 			{{$auxComponente := 0}}
+			{{$auxPlano := 0}}
 			{{$auxTipoNota := 0}}
 			{{$auxElemento := 0}}
 			{{$pesoPadraoEC := ""}}
@@ -53,10 +54,12 @@
 			{{$elementoPeso := ""}}
 			{{$tipoPontuacao := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
+			{{$curUserRole := .LoggedUser.User.RoleName}}
 			<script type="text/javascript">
 				entidadesMap = new Map();
 				ciclosMap = new Map();
 				pilaresMap = new Map();
+				planosMap = new Map();
 				componentesMap = new Map();
 				tiposNotasMap = new Map();
 				elementosMap = new Map();
@@ -68,6 +71,7 @@
 				entidadesMap.set("{{$produto.EntidadeId}}","{{$produto.EntidadeNome}}");
 				ciclosMap.set("{{$produto.CicloId}}","{{$produto.CicloNome}}");
 				pilaresMap.set("{{$produto.PilarId}}","{{$produto.PilarNome}}");
+				planosMap.set("{{$produto.PlanoId}}","{{$produto.PlanoModalidade}} {{$produto.CNPB}} ({{$produto.RecursoGarantidor}})");
 				componentesMap.set("{{$produto.ComponenteId}}","{{$produto.ComponenteNome}}");
 				tiposNotasMap.set("{{$produto.TipoNotaId}}","{{$produto.TipoNotaNome}}");
 				elementosMap.set("{{$produto.ElementoId}}","{{$produto.ElementoNome}}");
@@ -87,7 +91,7 @@
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Ciclo</td>
                 <td style="font-size:1.3em;vertical-align:middle;text-align:left;padding-left: 0px">&nbsp;
-					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+					<a href="#AcionadoPor" onclick="expandir(this,'tabela-avaliar-planos')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
 						<i class="ion-android-arrow-dropright hoverbtn"></i>
 					</a>
 					{{$produto.CicloNome}}</td>
@@ -105,7 +109,8 @@
 				</td>
                 <td style="vertical-align:middle">
 					<input style="font-size:1.5em;width: 90px; text-align:center"
-						name="CicloNota{{$produto.ComponenteId}}" 
+						id="CicloNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}" 
+						name="CicloNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}" 
 						class="w3-input" 
 						readOnly disabled
 						type="number" 
@@ -122,13 +127,13 @@
 			{{$primeiraLinha = false}}
 			{{end}}
 			{{if ne $auxPilar $produto.PilarId}}
-            <tr>
+            <tr style="display: none;">
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
 					Pilar
 				</td>
-                <td style="font-size:1.2em;vertical-align:middle;text-align:left;padding-left: 30px">					
-					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+                <td style="font-size:1.2em;vertical-align:middle;text-align:left;padding-left: 20px">					
+					<a href="#AcionadoPor" onclick="expandir(this,'tabela-avaliar-planos')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
 						<i class="ion-android-arrow-dropright hoverbtn"></i>
 					</a>
 					{{$produto.PilarNome}}
@@ -140,8 +145,9 @@
                 <td style="vertical-align:middle">
 					<input style="width: 75px; text-align:center" class="w3-input" 
 						type="number"
-						name="PilarPeso_{{$produto.PilarId}}" 
-						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}} 
+						id="PilarPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}" 
+						name="PilarPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}" 
+						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe")}}readonly disabled{{end}} 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{ $produto.PilarPeso }}">
 				</td>
@@ -150,7 +156,8 @@
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
 						type="number" 
-						name="PilarNota{{$produto.PilarId}}" 
+						id="PilarNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}" 
+						name="PilarNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}" 
 						disabled 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.PilarNota}}">
@@ -164,13 +171,13 @@
             </tr>
 			{{end}}
 			{{if ne $auxComponente $produto.ComponenteId}}
-            <tr>
+            <tr style="display: none;">
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
                 <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
 					Componente
 				</td>
-                <td style="font-size:1.1em;vertical-align:middle;text-align:left;padding-left: 45px">
-					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+                <td style="font-size:1.1em;vertical-align:middle;text-align:left;padding-left: 30px">
+					<a href="#AcionadoPor" onclick="expandir(this,'tabela-avaliar-planos')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
 						<i class="ion-android-arrow-dropright hoverbtn"></i>
 					</a>
 					{{$produto.ComponenteNome}} 
@@ -178,8 +185,8 @@
 				<!-- apaguei auxtipo -->
 				<td style="vertical-align:middle;text-align:center">{{$produto.SupervisorName}}</td>
                 <td style="vertical-align:middle">
-					<select class="w3-input" readOnly onchange="sinalizarAlteracao(this);motivarRemocao(this);"
-						{{if or (eq $.LoggedUser.User.Role 4) (ne $produto.SupervisorId $currentUser) }}readOnly disabled{{end}} 
+					<select class="w3-input" onchange="sinalizarAlteracao(this);motivarRemocao(this);"
+						{{if and (ne $curUserRole "Chefe") (ne $produto.SupervisorId $currentUser) }}readOnly disabled{{end}} 
 						name="AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}">
 						<option value=""></option>
 						{{range $i, $auditor := $.Auditores }}
@@ -195,6 +202,8 @@
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
 						type="number" disabled 
+						id="ComponentePeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+						name="ComponentePeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.ComponentePeso}}">
 				</td>
@@ -203,27 +212,67 @@
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
 						type="number" 
-						name="ComponenteNota{{$produto.ComponenteId}}" 
+						id="ComponenteNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+						name="ComponenteNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
 						disabled 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.ComponenteNota}}">
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button-->
+                    <button type="button" 
+						class="w3-btn w3-deep-green" 
+						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+						onclick="openHistComponente(this)">Histórico</button>
                 </td>
 				{{end}}					
         	</tr>
 			{{end}}
+			{{if ne $auxPlano $produto.PlanoId}}
+			{{$auxPlano = $produto.PlanoId}}
+            <tr style="display: none;">
+                <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
+                <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
+					Plano
+				</td>
+                <td style="font-size:1.2em;vertical-align:middle;text-align:left;padding-left: 45px">
+					<a href="#AcionadoPor" onclick="expandir(this,'tabela-avaliar-planos')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+						<i class="ion-android-arrow-dropright hoverbtn"></i>
+					</a>
+					{{$produto.CNPB}} 
+				</td>
+				<td>&nbsp;</td>
+                <td>&nbsp;</td>
+				<td>&nbsp;</td>
+                <td style="vertical-align:middle">
+					{{ $combine := (printf "%v%v" $produto.PlanoPeso " %") }}
+					<input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="text" disabled 
+						id="PlanoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}" 
+						name="PlanoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}" 						
+						onchange="sinalizarAlteracao(this)" 
+						value="{{ $combine }}"></td>
+                <td>&nbsp;</td>
+                <td><input style="width: 75px; text-align:center" 
+						class="w3-input" 
+						type="number" 
+						id="PlanoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}" 
+						name="PlanoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}" 
+						disabled 
+						onchange="sinalizarAlteracao(this)" 
+						value="{{$produto.PlanoNota}}"></td>
+                <td>&nbsp;</td>
+        	</tr>
+			{{end}}
 			{{if or (ne $auxComponente $produto.ComponenteId) (ne $auxTipoNota $produto.TipoNotaId) }}
-            <tr>
+            <tr style="display: none;">
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
 				<td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
 					Tipo de Nota
 				</td>
                 <td style="font-size:1.0em;vertical-align:middle;text-align:left;padding-left: 60px">
-					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+					<a href="#AcionadoPor" onclick="expandir(this,'tabela-avaliar-planos')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
 						<i class="ion-android-arrow-dropright hoverbtn"></i>
 					</a>{{$produto.TipoNotaNome}} 
 				</td>
@@ -237,6 +286,8 @@
 					{{ $combine := (printf "%v%v" $produto.TipoNotaPeso " %") }}
 					<input style="width: 85px; text-align:center" 
 						class="w3-input" 
+						id="TipoNotaPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}" 
+						name="TipoNotaPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}" 
 						type="text" disabled 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{ $combine }}">
@@ -246,7 +297,8 @@
 					<input style="width: 75px; text-align:center" 
 						class="w3-input" 
 						type="number" 
-						name="TipoNotaNota{{$produto.TipoNotaId}}" 
+						name="TipoNotaNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}"
+						id="TipoNotaNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}" 
 						disabled 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.TipoNotaNota}}">
@@ -260,13 +312,13 @@
         	</tr>
 			{{end}}
 			{{if ne $auxElemento $produto.ElementoId}}
-            <tr>
+            <tr style="display: none;">
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
                 <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">
 					Elemento
 				</td>
                 <td style="vertical-align:middle;text-align:left;padding-left: 75px">
-					<a href="#" onclick="expandir(this,'tabela-avaliar-papeis')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
+					<a href="#AcionadoPor" onclick="expandir(this,'tabela-avaliar-planos')" style="vertical-align:middle;font-size:1.5em;color: darkblue">
 						<i class="ion-android-arrow-dropright hoverbtn"></i>
 					</a>
 					{{$produto.ElementoNome}}
@@ -284,10 +336,10 @@
 				{{$pesoPadraoEC = $produto.PesoPadraoEC}}
 				{{$elementoPeso = $produto.ElementoPeso}}
 					<select style="width: 75px; text-align:center" class="w3-input" 
-						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}"
-						{{if ne $produto.SupervisorId $currentUser}}disabled{{end}}
+						name="ElementoPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}"
+						{{if and (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe")}}disabled{{end}}
 						onchange="sinalizarAlteracao(this); motivarPeso(this);">
-						<option value="0" {{if eq $elementoPeso "1" }}selected{{end}}>N/A</option>
+						<option value="0" {{if eq $elementoPeso "0" }}selected{{end}}>N/A</option>
 						<option value="1" {{if eq $elementoPeso "1" }}selected{{end}}>1</option>
 						<option value="2" {{if eq $elementoPeso "2" }}selected{{end}}>2</option>
 						<option value="4" {{if eq $elementoPeso "4" }}selected{{end}}>4</option>
@@ -308,9 +360,10 @@
 					{{$elementoNota = $produto.ElementoNota}}
 					<select style="width: 75px; text-align:center" 
 						class="w3-input" 
-						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser)}}readonly disabled{{end}}
-						name="ElementoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}"
+						{{if or (and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe")) (eq $elementoPeso "0")}}readonly disabled{{end}}
+						name="ElementoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}"
 						onchange="sinalizarAlteracao(this); motivarNota(this);">
+						<option value="0" {{if eq $elementoNota "0" }}selected{{end}}>N/A</option>
 						<option value="1" {{if eq $elementoNota "1" }}selected{{end}}>1</option>
 						<option value="2" {{if eq $elementoNota "2" }}selected{{end}}>2</option>
 						<option value="3" {{if eq $elementoNota "3" }}selected{{end}}>3</option>
@@ -322,19 +375,19 @@
 				{{if $allowed}}
                 <td>
                     <button class="w3-btn w3-teal"
-						name="DetalheElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}_{{$elementoNota}}" 
+						name="DetalheElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}_{{$elementoNota}}" 
 						onclick="openDet(this)">Detalhar</button>&nbsp;
                     <button class="w3-btn w3-dark-green"
-						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}" 
+						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.PlanoId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}" 
 						onclick="openHistElemento(this)">Histórico</button>
                 </td>
 				{{end}}
             </tr>
 			{{end}}				
-			<tr>
+			<tr style="display: none;">
                 <td style="border:1px solid #ddd;font-size: 0.7em;vertical-align:middle">{{$linha = call $inc $linha}}{{$linha}}</td>
                 <td style="border:1px solid #ddd;vertical-align:middle;font-size: 0.7em;">Item</td>
-                <td style="vertical-align:middle;text-align:left;padding-left: 90px">
+                <td style="vertical-align:middle;text-align:left;padding-left: 110px">
 					{{$produto.ItemNome}}
 				</td>
                 <td>&nbsp;</td>
@@ -356,8 +409,4 @@
 </div>
 <input type="hidden" name="AcionadoPor" id="AcionadoPor" value="">			
 </form>
-
-<script type="text/javascript">
-	reduzirTodasAsLinhas("tabela-avaliar-papeis");
-</script>
 {{end}}

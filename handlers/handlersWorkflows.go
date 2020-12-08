@@ -268,13 +268,13 @@ func DeleteWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 			" SELECT id FROM activities WHERE workflow_id = $1)"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sqlStatement = "DELETE FROM activities WHERE workflow_id = $1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sqlStatement = "DELETE FROM workflows WHERE id=$1"
@@ -295,6 +295,7 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Workflows")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listWorkflows") {
+		errMsg := r.FormValue("errMsg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.name, " +
@@ -393,6 +394,9 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var page mdl.PageWorkflows
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.Actions = actions
 		page.Features = features
 		page.Roles = roles

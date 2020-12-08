@@ -2,12 +2,13 @@
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
-{{ template "Error-Message" .ErrMsg }}
 {{ template "Menu" . }}
 {{ template "Edit-Designar-Equipe" . }}
 {{ template "Delete-Integrante" . }}
 {{ template "Edit-Integrante" . }}
 {{ template "Create-Integrante" . }}
+{{ template "Message" .Msg }}
+{{ template "Error-Message" .ErrMsg }}
 {{ template "List-Designar-Equipes" . }}
 </body>
 </html>

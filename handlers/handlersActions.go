@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
@@ -174,16 +175,30 @@ func DeleteActionHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM actions_status WHERE action_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
+		if err != nil {
+			log.Println(err.Error())
+		}
 		sqlStatement = "DELETE FROM actions WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
 			panic(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
+		if err != nil {
+			panic(err.Error())
+		}
+		if err != nil {
+			log.Println(err.Error())
+		}
+		if strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.ActionsRoute+"?errMsg=A Ação não pôde ser removida pois está sendo utilizada.", 301)
+		} else {
+			log.Println("DELETE: Id: " + id)
+			http.Redirect(w, r, route.ActionsRoute, 301)
+		}
 		log.Println("DELETE: Id: " + id)
 		http.Redirect(w, r, route.ActionsRoute, 301)
 	} else {
@@ -195,6 +210,7 @@ func ListActionsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Actions")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listActions") {
+		errMsg := r.FormValue("errMsg")
 		sql := " SELECT " +
 			" a.id, " +
 			" a.name, " +
@@ -254,6 +270,9 @@ func ListActionsHandler(w http.ResponseWriter, r *http.Request) {
 			statuss = append(statuss, status)
 		}
 		var page mdl.PageActions
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.Statuss = statuss
 		page.Actions = actions
 		page.AppName = mdl.AppName

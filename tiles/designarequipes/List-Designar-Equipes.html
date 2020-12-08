@@ -22,8 +22,9 @@
             <thead>
             <tr>
                 <th style="width:5%">Ord</th>
-                <th style="width:5%">Id</th>
-                <th style="text-align:left; width:65%">Nome</th>
+                <th style="width:5%">Código</th>
+                <th style="text-align:left; width:50%">Nome</th>
+                <th style="text-align:left; width:15%">Escritório</th>
                 <th style="text-align:left; width:20%">Ciclos</th>
 				{{if $allowed}}
 				<th style="width:5%">Ações</th>
@@ -33,12 +34,16 @@
             <tbody>
             {{range $index, $entidade := .Entidades}}
             <tr>
-                <td>#{{$entidade.Order}}</td>
-                <td>{{$entidade.Id}}</td>
-                <td style="text-align:left">
+                <td style="vertical-align: middle;">#{{$entidade.Order}}</td>
+                <td style="vertical-align: middle;"><input type="hidden" value="{{$entidade.Id}}">{{$entidade.Codigo}}
+				</td>
+                <td style="vertical-align: middle;text-align:left">
 					{{$entidade.Nome}}
 				</td>
-                <td>
+                <td style="vertical-align: middle;text-align:left">
+					{{$entidade.Escritorio}}
+				</td>
+                <td style="vertical-align: middle;">
 					<select class="w3-input" id="CicloEntidade_{{$entidade.Id}}">
 						{{range $i, $cicloEntidade := $entidade.CiclosEntidade }}
 			                <option value="{{$cicloEntidade.Id}}">
@@ -48,8 +53,11 @@
 		            </select>
 				</td>
 				{{if $allowed}}
-                <td>
-                    <button class="w3-btn w3-teal" onclick="if(validarDesignarEquipe(this)){contexto='edit';editEquipe(this);}">Equipe</button>
+                <td style="vertical-align: middle;">
+                    <button class="w3-btn w3-teal" 
+						onclick="if(validarDesignarEquipe(this)){contexto='edit';editEquipe(this);}">
+							Equipe
+					</button>
                 </td>
 				{{end}}
             </tr>

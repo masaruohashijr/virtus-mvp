@@ -2,19 +2,18 @@
 <!-- Error-Message -->
 <div class="w3-container">
     <div id="error-message" class="w3-modal">
-        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
-            <!-- head -->
-            <div class="w3-container w3-deep-orange">
-                <h2>Mensagem de Erro</h2>
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 400px;">
+            <div class="w3-container w3-vermelho-extintor">
+                <h2>Erro</h2>
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('error-message').style.display='none'">&times;</span>
             </div>
-                <div class="w3-center">
-					<h4>{{.}}</h4>
-                    <button type="button" class="w3-btn w3-deep-orange w3-margin-top w3-margin-bottom"
-                            onclick="document.getElementById('error-message').style.display='none'">OK
-                    </button>
-                </div>
+            <div class="w3-center">
+				<h4 id="Errors">{{.}}</h4>
+                <button type="button" class="w3-btn w3-vermelho-extintor w3-margin-top w3-margin-bottom"
+                        onclick="document.getElementById('error-message').style.display='none'">OK
+                </button>
+            </div>
         </div>
     </div>
 </div>

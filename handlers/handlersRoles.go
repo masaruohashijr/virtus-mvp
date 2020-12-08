@@ -143,6 +143,7 @@ func ListPerfisHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Perfis")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listRoles") {
+		errMsg := r.FormValue("errMsg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.name, " +
@@ -188,6 +189,9 @@ func ListPerfisHandler(w http.ResponseWriter, r *http.Request) {
 			features = append(features, feature)
 		}
 		var page mdl.PageRoles
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.Roles = roles
 		page.Features = features
 		page.AppName = mdl.AppName

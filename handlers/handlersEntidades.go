@@ -322,6 +322,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Entidades")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listEntidades") {
+		errMsg := r.FormValue("errMsg")
 		var page mdl.PageEntidades
 		sql := "SELECT " +
 			" a.id, " +
@@ -342,7 +343,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 			" FROM entidades a LEFT JOIN users b " +
 			" ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
-			" order by a.nome asc"
+			" order by a.nome asc "
 		log.Println("sql: " + sql)
 		rows, _ := Db.Query(sql)
 		var entidades []mdl.Entidade
@@ -367,10 +368,13 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 				&entidade.IdVersaoOrigem)
 			entidade.Order = i
 			i++
-			log.Println(entidade)
+			//log.Println(entidade)
 			entidades = append(entidades, entidade)
 		}
 		page.Entidades = entidades
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		sql = "SELECT id, nome FROM ciclos ORDER BY id asc"
 		rows, _ = Db.Query(sql)
 		var ciclos []mdl.Ciclo

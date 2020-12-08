@@ -1,5 +1,5 @@
-{{define "List-Entidades-Distribuir-Papeis"}}
-<!-- List Distribuir Papéis-->
+{{define "List-Entidades-Distribuir-Atividades"}}
+<!-- List Distribuir Atividades-->
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
 		    <div class="aria">
@@ -11,7 +11,7 @@
 				    <h3>{{.Title}}</h3>
 				<div style="margin-top: 10px;">
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
-					{{$allowed := (call .LoggedUser.HasPermission "distribuirPapeis")}}
+					{{$allowed := (call .LoggedUser.HasPermission "distribuirAtividades")}}
 				    <a style="margin-top: 6px" href="/logout">
 						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
 					</a>
@@ -22,9 +22,10 @@
             <thead>
             <tr>
                 <th style="width:5%">Ord</th>
-                <th style="width:5%">Id</th>
-                <th style="text-align:left; width:65%">Nome</th>
-                <th style="text-align:left; width:20%">Ciclos</th>
+                <th style="width:5%">Código</th>
+                <th style="text-align:left; width:45%">Nome</th>
+                <th style="width:20%">Ciclos</th>
+                <th style="width:20%">Jurisdição</th>
 				{{if $allowed}}
 				<th style="width:5%">Ações</th>
 				{{end}}
@@ -33,12 +34,12 @@
             <tbody>
             {{range $index, $entidade := .Entidades}}
             <tr>
-                <td>#{{$entidade.Order}}</td>
-                <td>{{$entidade.Id}}</td>
-                <td style="text-align:left">
+                <td style="vertical-align: middle;">#{{$entidade.Order}}</td>
+                <td style="vertical-align: middle;"><input type="hidden" value="{{$entidade.Id}}">{{$entidade.Codigo}}</td>
+                <td style="text-align:left;vertical-align: middle;">
 					{{$entidade.Nome}}
 				</td>
-                <td>
+                <td style="vertical-align: middle;">
 					<select class="w3-input">
 						{{range $i, $cicloEntidade := $entidade.CiclosEntidade }}
 			                <option value="{{$cicloEntidade.Id}}">
@@ -47,16 +48,21 @@
 			            {{end}}
 		            </select>
 				</td>
+                <td style="vertical-align: middle;">{{$entidade.Escritorio}}</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal" onclick="if(validarDistribuirPapeis(this)){submeterDistribuirPapeisForm(this);}">Distribuir Papéis</button>
+                    <button 
+						class="w3-btn w3-teal" 
+						onclick="if(validarDistribuirAtividades(this)){submeterDistribuirAtividadesForm(this);}">
+						Distribuir Atividades
+					</button>
                 </td>
 				{{end}}
             </tr>
             {{end}}
             </tbody>
         </table>
-		<form action="/distribuirPapeis" method="POST" id="formulario-distribuir-papeis">
+		<form action="/distribuirAtividades" method="POST" id="formulario-distribuir-atividades">
 			<input type="hidden" id="EntidadeId" name="EntidadeId">
 			<input type="hidden" id="CicloId" name="CicloId">
 		</form>

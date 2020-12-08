@@ -184,6 +184,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Elementos")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listElementos") {
+		errMsg := r.FormValue("errMsg")
 		query := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
@@ -219,6 +220,9 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 			elementos = append(elementos, elemento)
 		}
 		var page mdl.PageElementos
+		if errMsg != "" {
+			page.ErrMsg = errMsg
+		}
 		page.Elementos = elementos
 		page.AppName = mdl.AppName
 		page.Title = "Elementos"
