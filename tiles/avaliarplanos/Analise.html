@@ -1,0 +1,75 @@
+{{define "Analise"}}
+<!-- Analise -->
+<div class="w3-container">
+    <div id="analise-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Análise</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('analise-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-edit">
+				<table width="100%">
+					<tr>
+						<td width="50%" colspan="2">
+							<label class="w3-label">EFPC</label>					
+	                		<input class="w3-input" type="text" name="Nome" id="analiseEntidade" readonly="readonly" disabled="disabled" value="">
+						</td>
+						<td width="50%" rowspan="8" style="vertical-align: top;">
+							<label class="w3-label">Análise</label>
+							<br>
+							<textarea id="analise_text" class="w3-input" rows="22" cols="55"></textarea>
+						</td>
+					</tr>	
+					<tr>
+                		<td colspan="2">
+							<label class="w3-label">Ciclo</label>
+							<input class="w3-input" type="text" name="Nome" id="analiseCiclo" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Pilar</label>
+                			<input class="w3-input" type="text" name="Pilar" id="analisePilar" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Componente</label>
+                			<input class="w3-input" type="text" name="Componente" id="analiseComponente" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Plano</label>
+                			<input class="w3-input" type="text" name="Plano" id="analisePlano" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>
+						<td colspan="2">
+							<label class="w3-label">Tipo de Nota</label>
+                			<input class="w3-input" type="text" name="TipoNota" id="analiseTipoNota" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Elemento</label>
+                			<input class="w3-input" type="text" name="Elemento" id="analiseElemento" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Item</label>
+                			<input class="w3-input" type="text" name="Item" id="analiseItem" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>
+				</table>	
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					onClick="salvarAnalise()" 
+					type="button">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

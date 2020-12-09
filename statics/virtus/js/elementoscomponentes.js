@@ -75,6 +75,7 @@ function addElementoComponenteRow(tableID) {
 	elementoComponente = elementosComponente[order];
 	let newCell = newRow.insertCell(0);
 	let newText = document.createTextNode(elementoComponente.elementoNome);
+	elementoComponente.elementoNome = elementoComponente.elementoNome.replaceAll(',','|');
 	let json = JSON.stringify(elementoComponente);
 	json = json.split(',').join('#');
 	json = json.split('"').join('');

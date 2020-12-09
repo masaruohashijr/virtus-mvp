@@ -33,12 +33,12 @@
             <tbody>
             {{range $index, $entidade := .Entidades}}
             <tr>
-                <td>#{{$entidade.Order}}</td>
-                <td>{{$entidade.Id}}</td>
-                <td style="text-align:left">
+                <td style="vertical-align: middle;">#{{$entidade.Order}}</td>
+                <td style="vertical-align: middle;">{{$entidade.Id}}</td>
+                <td style="vertical-align: middle;text-align:left">
 					{{$entidade.Nome}}
 				</td>
-                <td>
+                <td style="vertical-align: middle;">
 					<select class="w3-input">
 						{{range $i, $cicloEntidade := $entidade.CiclosEntidade }}
 			                <option value="{{$cicloEntidade.Id}}">
@@ -48,7 +48,7 @@
 		            </select>
 				</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align: middle;">
                     <button class="w3-btn w3-teal" onclick="submeterEntidadeCicloForm(this,'formulario-executar-matriz')">Executar</button>
                 </td>
 				{{end}}

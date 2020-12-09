@@ -107,8 +107,8 @@ func registrarHistoricoNotaElemento(produto mdl.ProdutoElemento, currentUser mdl
 		"	elemento_id = " + strconv.FormatInt(produto.ElementoId, 10) +
 		" RETURNING id"
 	log.Println(sqlStatement)
-	historicoProdutoComponenteId := 0
-	err := Db.QueryRow(sqlStatement).Scan(&historicoProdutoComponenteId)
+	historicoProdutoElementoId := 0
+	err := Db.QueryRow(sqlStatement).Scan(&historicoProdutoElementoId)
 	if err != nil {
 		log.Println(err)
 	}
@@ -163,9 +163,9 @@ func registrarHistoricoPesoElemento(produto mdl.ProdutoElemento, currentUser mdl
 		"	elemento_id = " + strconv.FormatInt(produto.ElementoId, 10) +
 		" RETURNING id"
 	log.Println(sqlStatement)
-	historicoProdutoComponenteId := 0
+	historicoProdutoElementoId := 0
 	err := Db.QueryRow(
-		sqlStatement).Scan(&historicoProdutoComponenteId)
+		sqlStatement).Scan(&historicoProdutoElementoId)
 	if err != nil {
 		panic(err)
 	}
@@ -317,6 +317,122 @@ func ListHistoricosComponente(filtro mdl.Historico) []mdl.Historico {
 			&historico.SupervisorId,
 			&historico.AuditorNovoId,
 			&historico.AuditorAnteriorId,
+			&historico.AutorId,
+			&historico.AutorNome,
+			&historico.AlteradoEm,
+			&historico.Motivacao)
+		switch historico.Metodo {
+		case "1":
+			historico.Metodo = "Manual"
+		case "2":
+			historico.Metodo = "Calculada"
+		case "3":
+			historico.Metodo = "Ajustada"
+		}
+		historicos = append(historicos, historico)
+		log.Println(historico)
+	}
+	return historicos
+}
+
+func registrarHistoricoPesoPilar(produto mdl.ProdutoPilar, currentUser mdl.User) {
+	log.Println("========== registrarHistoricoPesoPilar ===========")
+	sqlStatement := "INSERT INTO produtos_pilares_historicos( " +
+		"	entidade_id,  " +
+		"	ciclo_id,  " +
+		"	pilar_id,  " +
+		"	tipo_pontuacao_id,  " +
+		"	peso,  " +
+		"	nota,  " +
+		"	tipo_alteracao,  " +
+		"	motivacao_peso,  " +
+		"	supervisor_id,  " +
+		"	auditor_id,  " +
+		"	author_id,  " +
+		"	criado_em,  " +
+		"	id_versao_origem,  " +
+		"	status_id) " +
+		"SELECT  " +
+		"	entidade_id,  " +
+		"	ciclo_id,  " +
+		"	pilar_id,  " +
+		"	tipo_pontuacao_id,  " +
+		"	peso,  " +
+		"	nota,  " +
+		"	'P',  " +
+		"	motivacao_peso,  " +
+		"	supervisor_id,  " +
+		"	auditor_id,  " +
+		"	" + strconv.FormatInt(currentUser.Id, 10) + ",  " +
+		"	now()::timestamp,  " +
+		"	id,  " +
+		"	status_id " +
+		"	FROM produtos_pilares " +
+		"	WHERE entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) + " AND " +
+		"	ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) + " AND " +
+		"	pilar_id = " + strconv.FormatInt(produto.PilarId, 10) +
+		" RETURNING id"
+	log.Println(sqlStatement)
+	historicoProdutoPilarId := 0
+	err := Db.QueryRow(
+		sqlStatement).Scan(&historicoProdutoPilarId)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func LoadHistoricosPilar(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Historicos do Pilar")
+	r.ParseForm()
+	var entidadeId = r.FormValue("entidadeId")
+	var cicloId = r.FormValue("cicloId")
+	var pilarId = r.FormValue("pilarId")
+	var filtro mdl.Historico
+	filtro.EntidadeId = entidadeId
+	filtro.CicloId = cicloId
+	filtro.PilarId = pilarId
+	historicos := ListHistoricosPilar(filtro)
+	jsonHistoricos, _ := json.Marshal(historicos)
+	w.Write([]byte(jsonHistoricos))
+	log.Println("JSON Históricos do Pilar")
+}
+
+func ListHistoricosPilar(filtro mdl.Historico) []mdl.Historico {
+	log.Println("List Históricos do Pilar")
+	sql :=
+		"SELECT  " +
+			"	a.id,  " +
+			"	entidade_id,  " +
+			"	ciclo_id,  " +
+			"	pilar_id,  " +
+			"	coalesce(peso,0),  " +
+			"	tipo_pontuacao_id,  " +
+			"	coalesce(nota,0),  " +
+			"	tipo_alteracao,  " +
+			"	a.author_id,  " +
+			"	coalesce(b.name,'') as author_name, " +
+			"	coalesce(to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS')) as alterado_em,  " +
+			"	motivacao_peso  " +
+			"	FROM produtos_pilares_historicos a " +
+			"	LEFT JOIN users b ON a.author_id = b.id " +
+			"	WHERE a.entidade_id = " + filtro.EntidadeId + " AND " +
+			"   a.ciclo_id = " + filtro.CicloId + " AND " +
+			"	a.pilar_id = " + filtro.PilarId +
+			" 	ORDER BY a.criado_em DESC "
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	var historicos []mdl.Historico
+	var historico mdl.Historico
+	for rows.Next() {
+		rows.Scan(
+			&historico.Id,
+			&historico.EntidadeId,
+			&historico.CicloId,
+			&historico.PilarId,
+			&historico.Peso,
+			&historico.Metodo,
+			&historico.Nota,
+			&historico.TipoAlteracao,
 			&historico.AutorId,
 			&historico.AutorNome,
 			&historico.AlteradoEm,

@@ -137,11 +137,16 @@ func main() {
 	r.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler).Methods("POST")
 	r.HandleFunc("/updateWorkflow", hd.UpdateWorkflowHandler).Methods("POST")
 	r.HandleFunc("/deleteWorkflow", hd.DeleteWorkflowHandler).Methods("POST")
-	// ----------------- LOADS
+	// ----------------- AJAX
+	r.HandleFunc("/salvarAnalise", hd.SalvarAnalise).Methods("GET")
+	r.HandleFunc("/salvarPesoPilar", hd.SalvarPesoPilar).Methods("GET")
 	r.HandleFunc("/salvarPesoElemento", hd.SalvarPesoElemento).Methods("GET")
 	r.HandleFunc("/salvarNotaElemento", hd.SalvarNotaElemento).Methods("GET")
 	r.HandleFunc("/salvarAuditorComponente", hd.SalvarAuditorComponente).Methods("GET")
 	r.HandleFunc("/loadConfigPlanos", hd.LoadConfigPlanos).Methods("GET")
+	r.HandleFunc("/loadAnalise", hd.LoadAnalise).Methods("GET")
+	r.HandleFunc("/loadDescricao", hd.LoadDescricao).Methods("GET")
+	r.HandleFunc("/loadHistoricosPilar", hd.LoadHistoricosPilar).Methods("GET")
 	r.HandleFunc("/loadHistoricosComponente", hd.LoadHistoricosComponente).Methods("GET")
 	r.HandleFunc("/loadHistoricosElemento", hd.LoadHistoricosElemento).Methods("GET")
 	r.HandleFunc("/loadTiposNotaByComponenteId", hd.LoadTiposNotaByComponenteId).Methods("GET")

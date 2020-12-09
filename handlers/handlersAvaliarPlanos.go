@@ -88,7 +88,7 @@ const sqlAvaliarPlanos = " SELECT a.entidade_id, " +
 	" ORDER BY a.ciclo_id, " +
 	"          a.pilar_id, " +
 	"          a.componente_id, " +
-	"          a.plano_id, " +
+	"          j.recurso_garantidor DESC, " +
 	"          a.tipo_nota_id, " +
 	"          a.elemento_id, " +
 	"          a.item_id "
@@ -565,4 +565,53 @@ func SalvarAuditorComponente(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonOK)
 	log.Println("----------")
 
+}
+
+func SalvarPesoPilar(w http.ResponseWriter, r *http.Request) {
+	log.Println("Salvar Peso Pilar")
+	r.ParseForm()
+	var entidadeId = r.FormValue("entidadeId")
+	var cicloId = r.FormValue("cicloId")
+	var pilarId = r.FormValue("pilarId")
+	motivacaoPeso := r.FormValue("motivacao")
+	peso := r.FormValue("peso")
+	var produtoPilar mdl.ProdutoPilar
+	produtoPilar.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
+	produtoPilar.CicloId, _ = strconv.ParseInt(cicloId, 10, 64)
+	produtoPilar.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
+	produtoPilar.Peso, _ = strconv.ParseFloat(peso, 64)
+	produtoPilar.Motivacao = motivacaoPeso
+	currentUser := GetUserInCookie(w, r)
+	registrarPesoPilar(produtoPilar)
+	registrarHistoricoPesoPilar(produtoPilar, currentUser)
+	w.Write([]byte("OK"))
+	log.Println("----------")
+}
+
+func LoadAnalise(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Analise")
+	r.ParseForm()
+	var rota = r.FormValue("btn")
+	analise := getAnalise(rota)
+	w.Write([]byte(analise))
+	log.Println("Fim Load Analise")
+}
+
+func SalvarAnalise(w http.ResponseWriter, r *http.Request) {
+	log.Println("Salvar Analise")
+	r.ParseForm()
+	var rota = r.FormValue("acionadoPor")
+	var analise = r.FormValue("analise")
+	retorno := setAnalise(rota, analise)
+	w.Write([]byte(retorno))
+	log.Println("----------")
+}
+
+func LoadDescricao(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Descrição")
+	r.ParseForm()
+	var rota = r.FormValue("btn")
+	descricao := getDescricao(rota)
+	w.Write([]byte(descricao))
+	log.Println("Fim Load Descrição")
 }

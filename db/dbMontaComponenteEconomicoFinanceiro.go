@@ -14,7 +14,7 @@ func initEconomicoFinanceiro(nome string) ComponenteESI {
 	elemento.Nome = "Avaliação"
 	elementos = append(elementos, elemento)
 
-	tipoNota.Nome = "Nota"
+	tipoNota.Nome = "Avaliação"
 	tipoNota.Elementos = elementos
 	tiposNotas = append(tiposNotas, tipoNota)
 

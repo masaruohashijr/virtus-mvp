@@ -142,6 +142,19 @@ function openHistElemento(btn){
 	return false;
 }
 
+function openHistPilar(btn){
+	//btn.disabled = true;
+	let entidadeId = btn.name.split("_")[1];
+	let cicloId = btn.name.split("_")[2];
+	let pilarId = btn.name.split("_")[3];
+	document.getElementById('hist-pilar-form').style.display='block';
+	document.getElementById("histPilarEFPC").value = entidadesMap.get(entidadeId);
+	document.getElementById("histPilarCiclo").value = ciclosMap.get(cicloId);
+	document.getElementById("histPilarPilar").value = pilaresMap.get(pilarId);
+	loadHistoricosPilar(btn);
+	return false;
+}
+
 function openHistComponente(btn){
 	//btn.disabled = true;
 	let entidadeId = btn.name.split("_")[1];
@@ -210,3 +223,26 @@ function loadHistoricosComponente(btn){
 	xmlhttp.send();
 }
 
+function loadHistoricosPilar(btn){
+	var xmlhttp;
+	let valores = btn.name.split("_");
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				var historicosJson = JSON.parse(xmlhttp.responseText);
+				wipeRows("table-historicos-pilar-edit")
+				historicos = [];
+				for(i = 0;historicosJson != null && i<historicosJson.length;i++){
+					historicos[i]=historicosJson[i];
+					addHistoricoRow("table-historicos-pilar-edit");
+				}
+			}
+	}
+	let entidadeId = valores[1];
+	let cicloId = valores[2];
+	let pilarId = valores[3];
+	xmlhttp.open("GET","/loadHistoricosPilar?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId,true);
+	xmlhttp.send();
+}

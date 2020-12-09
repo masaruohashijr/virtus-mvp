@@ -29,7 +29,7 @@
                 <th>Ord</th>
                 <th>Id</th>
                 <th>Nome</th>
-                <th>Descrição</th>
+                <th style="display:none">Descrição</th>
                 <th>Autor</th>
                 <th>Criado Em</th>
                 <th>Status</th>
@@ -44,7 +44,7 @@
                 <td>#{{$elemento.Order}}</td>
                 <td>{{$elemento.Id}}</td>
                 <td>{{$elemento.Nome}}</td>
-                <td>{{$elemento.Descricao}}</td>
+                <td style="display:none">{{$elemento.Descricao}}</td>
                 <td>{{$elemento.AuthorName}}</td>
                 <td>{{$elemento.C_CriadoEm}}</td>
                 <td>{{$elemento.CStatus}}<input type="hidden" id="ElementoStatusId" value="{{$elemento.StatusId}}"></td>

@@ -21,8 +21,8 @@
 		</header>
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="tabela-avaliar-planos">
             <tr>
-                <td style="border:1px solid #ddd;width:5%;vertical-align:middle">Linha</td>
-				<td style="border:1px solid #ddd;width:5%;vertical-align:middle">Nível</td>
+                <td style="border:1px solid #ddd;width:4%;vertical-align:middle">Linha</td>
+				<td style="border:1px solid #ddd;width:4%;vertical-align:middle">Nível</td>
                 <td style="text-align:left; width:25%;vertical-align:middle">
 					<input 
 						type="text" 
@@ -31,14 +31,14 @@
 						style="width:100%"
 						onkeyup="filtraTabela(this, 'tabela-avaliar-planos', 3, 2)">
 				</td>
-                <td style="width:12%;vertical-align:middle">Supervisor</td>
-                <td style="width:10%;vertical-align:middle">Auditor</td>
-                <td style="width:8%;vertical-align:middle">Tipo de Nota</td>
+                <td style="width:8%;vertical-align:middle">Supervisor</td>
+                <td style="width:8%;vertical-align:middle">Auditor</td>
+                <td style="width:6%;vertical-align:middle">Tipo de Nota</td>
                 <td style="width:4%;vertical-align:middle">Peso (%)</td>
                 <td style="width:4%;vertical-align:middle">Método</td>
                 <td style="width:4%;vertical-align:middle">Nota</td>
 				{{if $allowed}}
-				<td style="width:15%;vertical-align:middle">Ações</td>
+				<td style="width:25%;vertical-align:middle">Ações</td>
 				{{end}}
             </tr>
 			{{$inc := .Inc}}
@@ -119,8 +119,12 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-black" onclick="openHist(this)">Histórico</button-->
+                    <button type="button" 
+						name="Analise_Ciclo_{{$produto.EntidadeId}}_{{$produto.CicloId}}" 
+						class="w3-btn w3-teal" onclick="openAnalise(this)">Análise</button>
+                    <button type="button"
+						name="Descricao_Ciclo_{{$produto.EntidadeId}}_{{$produto.CicloId}}" 
+						class="w3-btn w3-green" onclick="openDescricao(this)">Descrição</button>
                 </td>
 				{{end}}
             </tr>
@@ -145,10 +149,11 @@
                 <td style="vertical-align:middle">
 					<input style="width: 75px; text-align:center" class="w3-input" 
 						type="number"
-						id="PilarPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}" 
-						name="PilarPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}" 
+						id="PilarPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.PilarPeso}}" 
+						name="PilarPeso_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.PilarPeso}}" 
 						{{if and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe")}}readonly disabled{{end}} 
-						onchange="sinalizarAlteracao(this)" 
+						onchange="sinalizarAlteracao(this)"
+						onblur="motivarPesoPilar(this)" 
 						value="{{ $produto.PilarPeso }}">
 				</td>
                 <td style="vertical-align:middle">&nbsp;</td>
@@ -164,8 +169,18 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <!--button class="w3-btn w3-teal" onclick="openDet()">Detalhar</button>
-                    <button class="w3-btn w3-brown" onclick="openHist()">Histórico</button-->
+                    <button type="button" 
+						class="w3-btn w3-teal"
+						name="Analise_Pilar_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}"  
+						onclick="openAnalise(this)">Análise</button>
+					<button type="button" 
+						class="w3-btn w3-green" 
+						name="Descricao_Pilar_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}"
+						onclick="openDescricao(this)">Descrição</button>
+                    <button type="button" 
+						class="w3-btn w3-brown" 
+						name="HistoricoPilar_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}"
+						onclick="openHistPilar(this)">Histórico</button>
                 </td>
 				{{end}}
             </tr>
@@ -220,9 +235,17 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
+					<button type="button" 
+						class="w3-btn w3-teal" 
+						name="Analise_Componente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
+						onclick="openAnalise(this)">Análise</button>
+					<button type="button" 
+						class="w3-btn w3-green" 
+						name="Descricao_Componente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
+						onclick="openDescricao(this)">Descrição</button>
                     <button type="button" 
-						class="w3-btn w3-deep-green" 
-						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+						class="w3-btn w3-brown" 
+						name="HistoricoComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
 						onclick="openHistComponente(this)">Histórico</button>
                 </td>
 				{{end}}					
@@ -262,7 +285,15 @@
 						disabled 
 						onchange="sinalizarAlteracao(this)" 
 						value="{{$produto.PlanoNota}}"></td>
-                <td>&nbsp;</td>
+                <td><button type="button" 
+						class="w3-btn w3-teal"
+						name="Analise_Plano_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}" 
+						onclick="openAnalise(this)">Análise</button>
+					<button type="button" 
+						class="w3-btn w3-green"
+						name="Descricao_Plano_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}" 
+						onclick="openDescricao(this)">Descrição</button>
+				</td>
         	</tr>
 			{{end}}
 			{{if or (ne $auxComponente $produto.ComponenteId) (ne $auxTipoNota $produto.TipoNotaId) }}
@@ -279,8 +310,7 @@
 				{{$auxComponente = $produto.ComponenteId}}
 				{{$auxTipoNota = $produto.TipoNotaId}}
 				<td style="vertical-align:middle;text-align:center">&nbsp;</td>
-                <td style="vertical-align:middle">&nbsp;
-				</td>
+                <td style="vertical-align:middle">&nbsp;</td>
 				<td style="vertical-align:middle">&nbsp;</td>
                 <td style="vertical-align:middle">
 					{{ $combine := (printf "%v%v" $produto.TipoNotaPeso " %") }}
@@ -305,8 +335,14 @@
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
-                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-deep-green" onclick="openHist(this)">Histórico</button-->
+					<button type="button" 
+						class="w3-btn w3-teal" 
+						name="Analise_TipoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}"
+						onclick="openAnalise(this)">Análise</button>
+                    <button type="button" 
+						class="w3-btn w3-green" 
+						name="Descricao_TipoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}"
+						onclick="openDescricao(this)">Descrição</button>
                 </td>
 				{{end}}					
         	</tr>
@@ -374,10 +410,15 @@
 				</td>
 				{{if $allowed}}
                 <td>
-                    <button class="w3-btn w3-teal"
-						name="DetalheElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}_{{$elementoNota}}" 
-						onclick="openDet(this)">Detalhar</button>&nbsp;
-                    <button class="w3-btn w3-dark-green"
+					<button type="button" 
+						class="w3-btn w3-teal"
+						name="Analise_Elemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}" 
+						onclick="openAnalise(this)">Análise</button>	
+                    <button type="button"
+						class="w3-btn w3-green"
+						name="Descricao_Elemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoPeso}}_{{$elementoNota}}" 
+						onclick="openDescricao(this)">Descrição</button>&nbsp;
+                    <button class="w3-btn w3-brown"
 						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.PlanoId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}" 
 						onclick="openHistElemento(this)">Histórico</button>
                 </td>
@@ -397,9 +438,17 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
 				{{if $allowed}}
-                <td>
-                    <!--button class="w3-btn w3-teal" onclick="openDet(this)">Detalhar</button>
-                    <button class="w3-btn w3-green" onclick="openHist(this)">Histórico</button-->
+                <td style="vertical-align: middle">
+                    <button 
+						type="button" 
+						class="w3-btn w3-teal"
+						name="Analise_Item_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$produto.ItemId}}" 
+						onclick="openAnalise(this)">Análise</button>
+                    <button 
+						type="button" 
+						class="w3-btn w3-green"
+						name="Descricao_Item_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$produto.ItemId}}" 
+						onclick="openDescricao(this)">Descricao</button>
                 </td>
 				{{end}}
             </tr>

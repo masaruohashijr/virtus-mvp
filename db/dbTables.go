@@ -49,6 +49,7 @@ func createTable() {
 			" id integer DEFAULT nextval('ciclos_id_seq'::regclass) NOT NULL," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
+			" referencia character varying(500)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
@@ -75,6 +76,7 @@ func createTable() {
 			" id integer DEFAULT nextval('componentes_id_seq'::regclass) NOT NULL," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
+			" referencia character varying(500)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
@@ -100,6 +102,7 @@ func createTable() {
 			" id integer DEFAULT nextval('elementos_id_seq'::regclass) NOT NULL," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
+			" referencia character varying(500)," +
 			" peso integer DEFAULT 1 NOT NULL," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
@@ -196,6 +199,7 @@ func createTable() {
 			" elemento_id integer," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
+			" referencia character varying(500)," +
 			" criado_em timestamp without time zone," +
 			" author_id integer," +
 			" status_id integer)")
@@ -232,6 +236,7 @@ func createTable() {
 			" id integer DEFAULT nextval('pilares_id_seq'::regclass) NOT NULL," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
+			" referencia character varying(500)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
@@ -257,6 +262,7 @@ func createTable() {
 			" entidade_id integer," +
 			" nome character varying(255)," +
 			" descricao character varying(4000)," +
+			" referencia character varying(500)," +
 			" cnpb character varying(255)," +
 			" legislacao character varying(255)," +
 			" situacao character varying(255)," +
@@ -275,6 +281,7 @@ func createTable() {
 			" ciclo_id integer," +
 			" tipo_pontuacao_id integer," +
 			" nota double precision," +
+			" analise character varying(4000)," +
 			" motivacao character varying(4000)," +
 			" supervisor_id integer," +
 			" auditor_id integer," +
@@ -293,6 +300,7 @@ func createTable() {
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" analise character varying(4000)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" supervisor_id integer," +
@@ -313,6 +321,7 @@ func createTable() {
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" analise character varying(4000)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" justificativa character varying(4000)," +
@@ -337,6 +346,7 @@ func createTable() {
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" analise character varying(4000)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" justificativa character varying(4000)," +
@@ -359,7 +369,7 @@ func createTable() {
 			" tipo_nota_id integer," +
 			" elemento_id integer," +
 			" item_id integer," +
-			" avaliacao character varying(4000)," +
+			" analise character varying(4000)," +
 			" anexo character varying(4000)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
@@ -378,6 +388,7 @@ func createTable() {
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" analise character varying(4000)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" author_id integer," +
@@ -398,6 +409,7 @@ func createTable() {
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" analise character varying(4000)," +
 			" anexo character varying(4000)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
@@ -432,6 +444,7 @@ func createTable() {
 			" id integer DEFAULT nextval('tipos_notas_id_seq'::regclass) NOT NULL," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(255)," +
+			" referencia character varying(500)," +
 			" letra character(1) NOT NULL," +
 			" cor_letra character(6)," +
 			" author_id integer," +

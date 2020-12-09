@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 )
@@ -824,4 +825,122 @@ func loadPesosAtuais(produto mdl.ProdutoElemento) mdl.PesosAtuais {
 			&pesosAtuais.PilarPeso)
 	}
 	return pesosAtuais
+}
+
+func registrarPesoPilar(produto mdl.ProdutoPilar) {
+	// PESOS PILARES
+	sqlStatement := "UPDATE produtos_pilares SET peso = $1, motivacao_peso = $2 " +
+		" WHERE entidade_id = $3 AND " +
+		" ciclo_id = $4 AND " +
+		" pilar_id = $5 "
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	updtForm.Exec(produto.Peso,
+		produto.Motivacao,
+		produto.EntidadeId,
+		produto.CicloId,
+		produto.PilarId)
+}
+
+func getAnalise(rota string) string {
+	valores := strings.Split(rota, "_")
+	sql := " SELECT 'analise' "
+	if valores[1] == "Ciclo" {
+		sql = " SELECT analise FROM produtos_ciclos WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3]
+	} else if valores[1] == "Pilar" {
+		sql = " SELECT analise FROM produtos_pilares WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4]
+	} else if valores[1] == "Componente" {
+		sql = " SELECT analise FROM produtos_componentes WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5]
+	} else if valores[1] == "Plano" {
+		sql = " SELECT analise FROM produtos_planos WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6]
+	} else if valores[1] == "TipoNota" {
+		sql = " SELECT analise FROM produtos_tipos_notas WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6] +
+			" AND tipo_nota_id = " + valores[7]
+	} else if valores[1] == "Elemento" {
+		sql = " SELECT analise FROM produtos_elementos WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6] +
+			" AND tipo_nota_id = " + valores[7] + " AND elemento_id = " + valores[8]
+	} else if valores[1] == "Item" {
+		sql = " SELECT analise FROM produtos_itens WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6] +
+			" AND tipo_nota_id = " + valores[7] + " AND elemento_id = " + valores[8] + " AND item_id = " + valores[9]
+	}
+
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	retorno := ""
+	if rows.Next() {
+		rows.Scan(&retorno)
+	}
+	return retorno
+}
+
+func setAnalise(rota string, analise string) string {
+	valores := strings.Split(rota, "_")
+	sqlStatement := " SELECT 'analise' "
+	if valores[1] == "Ciclo" {
+		sqlStatement = " UPDATE produtos_ciclos SET analise = '" + analise + "' WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3]
+	} else if valores[1] == "Pilar" {
+		sqlStatement = " UPDATE produtos_pilares SET analise = '" + analise + "' WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4]
+	} else if valores[1] == "Componente" {
+		sqlStatement = " UPDATE produtos_componentes SET analise = '" + analise + "' WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5]
+	} else if valores[1] == "Plano" {
+		sqlStatement = " UPDATE produtos_planos SET analise = '" + analise + "' WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6]
+	} else if valores[1] == "TipoNota" {
+		sqlStatement = " UPDATE produtos_tipos_notas SET analise = '" + analise + "' WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6] +
+			" AND tipo_nota_id = " + valores[7]
+	} else if valores[1] == "Elemento" {
+		sqlStatement = " UPDATE produtos_elementos SET analise = '" + analise + "' WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6] +
+			" AND tipo_nota_id = " + valores[7] + " AND elemento_id = " + valores[8]
+	} else if valores[1] == "Item" {
+		sqlStatement = " UPDATE produtos_itens SET analise = '" + analise + "' WHERE entidade_id = " + valores[2] + " AND ciclo_id = " + valores[3] +
+			" AND pilar_id = " + valores[4] + " AND componente_id = " + valores[5] + " AND plano_id = " + valores[6] +
+			" AND tipo_nota_id = " + valores[7] + " AND elemento_id = " + valores[8] + " AND item_id = " + valores[9]
+	}
+	log.Println(sqlStatement)
+	updtForm, _ := Db.Prepare(sqlStatement)
+	_, err := updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	return "OK"
+}
+
+func getDescricao(rota string) string {
+	valores := strings.Split(rota, "_")
+	sql := " SELECT 'descricao' "
+	if valores[1] == "Ciclo" {
+		sql = " SELECT descricao FROM ciclos WHERE id = " + valores[3]
+	} else if valores[1] == "Pilar" {
+		sql = " SELECT descricao FROM pilares WHERE id = " + valores[4]
+	} else if valores[1] == "Componente" {
+		sql = " SELECT descricao FROM componentes WHERE id = " + valores[5]
+	} else if valores[1] == "Plano" {
+		sql = " SELECT descricao FROM planos WHERE id = " + valores[6]
+	} else if valores[1] == "TipoNota" {
+		sql = " SELECT descricao FROM tipos_notas WHERE id = " + valores[7]
+	} else if valores[1] == "Elemento" {
+		sql = " SELECT descricao FROM elementos WHERE id = " + valores[8]
+	} else if valores[1] == "Item" {
+		sql = " SELECT descricao FROM itens WHERE id = " + valores[9]
+	}
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	retorno := ""
+	if rows.Next() {
+		rows.Scan(&retorno)
+	}
+	return retorno
 }

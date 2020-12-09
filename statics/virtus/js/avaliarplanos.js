@@ -24,7 +24,7 @@ function resetFormAvaliarPlanos(){
 	}
 	let inputs = document.getElementById('form-avaliar-planos').elements;
 	for (i = 0; i < inputs.length; i++) {
-		console.log(inputs[i].name + " - " + inputs[i].type);
+		// console.log(inputs[i].name + " - " + inputs[i].type);
 		if(inputs[i].type == "submit"){
 			inputs[i].removeAttribute("disabled");
 		}
@@ -143,7 +143,7 @@ function salvarNotaElemento(){
 					document.getElementById("messageText").innerText = messageText;
 					document.getElementById("message").style.display="block";
 					let sel = document.getElementsByName(acionadoPor)[0];
-					atualizarSelectName(sel, novaNota); 
+					atualizarFieldName(sel, novaNota); 
 				}
 		}
 		let entidadeId = valores[1];
@@ -207,7 +207,7 @@ function salvarPesoElemento(){
 					document.getElementById("message").style.display="block";
 					let sel = document.getElementsByName(acionadoPor)[0];
 					habilitarNotaElementoSelect(sel);
-					atualizarSelectName(sel, novoPeso); 
+					atualizarFieldName(sel, novoPeso); 
 				}
 		}
 		let entidadeId = valores[1];
@@ -240,10 +240,16 @@ function atualizarPesos(pesosAtuaisJson, valores){
 	let componenteId = valores[4];
 	let planoId = valores[5];
 	let tipoNotaId = valores[6];
-	document.getElementById('PilarPeso_'+entidadeId+'_'+cicloId+'_'+pilarId).value = pilarPeso;
+	let campos = document.getElementsByTagName("INPUT");
+	for(i=0;i<campos.length;i++){
+		if(campos[i].name.startsWith('PilarPeso_'+entidadeId+'_'+cicloId+'_'+pilarId)){
+			campos[i] = pilarPeso;
+			break;
+		}	
+	}
 	document.getElementById('ComponentePeso_'+entidadeId+'_'+cicloId+'_'+pilarId+"_"+componenteId).value = componentePeso;
-	document.getElementById('PlanoPeso_'+entidadeId+'_'+cicloId+'_'+pilarId+"_"+componenteId+"_"+planoId).value = planoPeso;
-	document.getElementById('TipoNotaPeso_'+entidadeId+'_'+cicloId+'_'+pilarId+"_"+componenteId+"_"+planoId+"_"+tipoNotaId).value = tipoNotaPeso;
+	document.getElementById('PlanoPeso_'+entidadeId+'_'+cicloId+'_'+pilarId+"_"+componenteId+"_"+planoId).value = planoPeso + " %";
+	document.getElementById('TipoNotaPeso_'+entidadeId+'_'+cicloId+'_'+pilarId+"_"+componenteId+"_"+planoId+"_"+tipoNotaId).value = tipoNotaPeso + " %";
 }
 
 
@@ -257,12 +263,12 @@ function habilitarNotaElementoSelect(selPeso){
 	selNota.readOnly = desabilita;
 }
 
-function atualizarSelectName(sel, novo){
-	let nameSel = sel.name;
-	let lastUnderscorePos = nameSel.lastIndexOf('_');
-	let newName = nameSel.substr(0,lastUnderscorePos);
+function atualizarFieldName(field, novo){
+	let nameField = field.name;
+	let lastUnderscorePos = nameField.lastIndexOf('_');
+	let newName = nameField.substr(0,lastUnderscorePos);
 	newName = newName + "_"+novo;
-	sel.name = newName;
+	field.name = newName;
 }
 
 function salvarRemocao(){
@@ -285,7 +291,7 @@ function salvarRemocao(){
 						" para "+auditoresMap.get(auditorNovo)+".";
 					document.getElementById("messageText").innerText = messageText;
 					document.getElementById("message").style.display="block";
-					atualizarSelectName(sel, auditorNovo); 
+					atualizarFieldName(sel, auditorNovo); 
 				}
 		}
 		let entidadeId = valores[1];
@@ -314,8 +320,8 @@ function openDet(btn){
 	let componenteId = btn.name.split("_")[4];
 	let tipoNotaId = btn.name.split("_")[6];
 	let elementoId = btn.name.split("_")[7];
-	let peso = btn.name.split("_")[8];
-	let nota = btn.name.split("_")[9];	
+	let peso = btn.parentNode.parentNode.childNodes[12].childNodes[1].value;
+	let nota = btn.parentNode.parentNode.childNodes[16].childNodes[1].value;
 	document.getElementById('det-elemento-form').style.display='block';
 	document.getElementById("detEntidade").value = entidadesMap.get(entidadeId);
 	document.getElementById("detCiclo").value = ciclosMap.get(cicloId);
@@ -462,4 +468,234 @@ function filtraTabela(input, tabelaNome, offset, colnum){
       }
     }       
   }
+}
+
+function openAnalise(btn){
+	let entidadeId = btn.name.split("_")[2];
+	let cicloId = btn.name.split("_")[3];
+	let pilarId = btn.name.split("_")[4];
+	let componenteId = btn.name.split("_")[5];
+	let planoId = btn.name.split("_")[6];
+	let tipoNotaId = btn.name.split("_")[7];
+	let elementoId = btn.name.split("_")[8];
+	let itemId = btn.name.split("_")[9];
+	document.getElementById('analise-form').style.display='block';
+	document.getElementById("AcionadoPor").value = btn.name;
+	document.getElementById("analiseEntidade").value = entidadesMap.get(entidadeId);
+	document.getElementById("analiseCiclo").value = ciclosMap.get(cicloId);
+	let pilarName = '';
+	if(pilarId)	{
+		pilarName = pilaresMap.get(pilarId);
+	}
+	document.getElementById("analisePilar").value = pilarName;
+	let componenteName = '';	
+	if(componenteId){
+		componenteName = componentesMap.get(componenteId);
+	}	
+	document.getElementById("analiseComponente").value = componenteName;
+	let planoName = ''; 
+	if(planoId)	{
+		planoName = planosMap.get(planoId);
+	}
+	document.getElementById("analisePlano").value = planoName;
+	let tipoNotaName = ''; 
+	if(tipoNotaId)	{
+		tipoNotaName = tiposNotasMap.get(tipoNotaId);
+	}
+	document.getElementById("analiseTipoNota").value = tipoNotaName;
+	let elementoName = ''; 
+	if(elementoId)	{
+		elementoName = elementosMap.get(elementoId);
+	}
+	document.getElementById("analiseElemento").value = elementoName;
+	let itemName = '';
+	if(itemId)	{
+		itemName = itensMap.get(itemId);
+	}
+	document.getElementById("analiseItem").value = itemName;
+	loadAnalise(btn.name);	
+}
+
+function loadAnalise(btn){
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				document.getElementById("analise_text").value = xmlhttp.responseText;
+				document.getElementById('analise_text').focus();
+			}
+	}
+	xmlhttp.open("GET","/loadAnalise?btn="+btn,true);
+	xmlhttp.send();
+}
+
+function salvarAnalise(){
+	document.getElementById('analise-form').style.display='none';
+	let analise = document.getElementById('analise_text').value;
+	let xmlhttp;
+	let acionadoPor = document.getElementById('AcionadoPor').value;
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				let messageText = "Análise atualizada com sucesso.";
+				document.getElementById("messageText").innerText = messageText;
+				document.getElementById("message").style.display="block";				
+			}
+	}
+	xmlhttp.open("GET","/salvarAnalise?acionadoPor="+acionadoPor+"&analise="+analise,true);
+	xmlhttp.send();
+}
+
+function openDescricao(btn){
+	let entidadeId = btn.name.split("_")[2];
+	let cicloId = btn.name.split("_")[3];
+	let pilarId = btn.name.split("_")[4];
+	let componenteId = btn.name.split("_")[5];
+	let planoId = btn.name.split("_")[6];
+	let tipoNotaId = btn.name.split("_")[7];
+	let elementoId = btn.name.split("_")[8];
+	let itemId = btn.name.split("_")[9];
+	document.getElementById('descricao-form').style.display='block';
+	document.getElementById("AcionadoPor").value = btn.name;
+	document.getElementById("descricaoEntidade").value = entidadesMap.get(entidadeId);
+	document.getElementById("descricaoCiclo").value = ciclosMap.get(cicloId);
+	let pilarName = '';
+	if(pilarId)	{
+		pilarName = pilaresMap.get(pilarId);
+	}
+	document.getElementById("descricaoPilar").value = pilarName;
+	let componenteName = '';	
+	if(componenteId){
+		componenteName = componentesMap.get(componenteId);
+	}	
+	document.getElementById("descricaoComponente").value = componenteName;
+	let planoName = ''; 
+	if(planoId)	{
+		planoName = planosMap.get(planoId);
+	}
+	document.getElementById("descricaoPlano").value = planoName;
+	let tipoNotaName = ''; 
+	if(tipoNotaId)	{
+		tipoNotaName = tiposNotasMap.get(tipoNotaId);
+	}
+	document.getElementById("descricaoTipoNota").value = tipoNotaName;
+	let elementoName = ''; 
+	if(elementoId)	{
+		elementoName = elementosMap.get(elementoId);
+	}
+	document.getElementById("descricaoElemento").value = elementoName;
+	let itemName = '';
+	if(itemId)	{
+		itemName = itensMap.get(itemId);
+	}
+	document.getElementById("descricaoItem").value = itemName;
+	loadDescricao(btn.name);	
+}
+
+function loadDescricao(btn){
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				document.getElementById("descricao_text").value = xmlhttp.responseText;
+			}
+	}
+	xmlhttp.open("GET","/loadDescricao?btn="+btn,true);
+	xmlhttp.send();
+}
+
+function motivarPesoPilar(field){
+	let entidadeId = field.name.split("_")[1];
+	let cicloId = field.name.split("_")[2];
+	let pilarId = field.name.split("_")[3];
+	let pesoAnterior = field.name.split("_")[4];
+	if(field.value != pesoAnterior){
+		document.getElementById("AcionadoPor").value = field.name;
+		document.getElementById("motPesoPilar_callback").value = field.name;
+		document.getElementById("motPesoPilarEntidade").value = entidadesMap.get(entidadeId);
+		document.getElementById("motPesoPilarCiclo").value = ciclosMap.get(cicloId);
+		document.getElementById("motPesoPilarPilar").value = pilaresMap.get(pilarId);
+		document.getElementById("motPesoPilarPesoAnterior").value = pesoAnterior;
+		document.getElementById("motPesoPilarNovoPeso").value = field.value;
+		document.getElementById('motivar-peso-pilar-form').style.display='block';
+		// document.getElementById("motPesoPilar_text").value = '';
+		document.getElementById("motPesoPilar_text").focus();
+	}
+}
+
+function salvarPesoPilar(){
+	let motivacao = document.getElementById('motPesoPilar_text').value;
+	if(motivacao.length>3){
+		resetFormAvaliarPlanos();
+		document.getElementsByName('MotivacaoPeso')[0].value=motivacao;
+		document.getElementById('motivar-peso-pilar-form').style.display='none';
+		let xmlhttp;
+		let acionadoPor = document.getElementById('AcionadoPor').value;
+		let valores = acionadoPor.split("_");
+		xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange=function()
+		{
+				if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					let pesoAnterior = document.getElementById('motPesoPilarPesoAnterior').value;
+					let novoPeso = document.getElementById('motPesoPilarNovoPeso').value;
+					let messageText = "O peso foi atualizado com sucesso de "+pesoAnterior +" para "+novoPeso+".";
+					document.getElementById("messageText").innerText = messageText;
+					document.getElementById("message").style.display="block";
+					let field = document.getElementsByName(acionadoPor)[0];
+					atualizarFieldName(field, novoPeso);
+					resetPesoPilar(); 
+				}
+		}
+		let entidadeId = valores[1];
+		let cicloId = valores[2];
+		let pilarId = valores[3];
+		let pesoNovo = document.getElementById('motPesoPilarNovoPeso').value;
+		if(!somaPesosPilaresAcima100()){
+			xmlhttp.open("GET","/salvarPesoPilar?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&motivacao="+motivacao+"&peso="+pesoNovo,true);
+			xmlhttp.send();
+		} else {
+			let errorMsg = "A soma dos pesos dos pilares não deve superar 100%.";
+			document.getElementById("Errors").innerText = errorMsg;
+			document.getElementById("error-message").style.display="block";
+			resetPesoPilar(); 
+		}
+	} else {
+		let errorMsg = "Falta preencher a motivação do peso do pilar.";
+		document.getElementById("Errors").innerText = errorMsg;
+		document.getElementById("error-message").style.display="block";
+		motivacao.focus();
+		return;		
+	}
+}
+
+function resetPesoPilar(){
+	console.log('resetPesoPilar');
+	let campoPesoPilar = document.getElementById("motPesoPilar_callback").value;
+	document.getElementsByName(campoPesoPilar)[0].value = campoPesoPilar.split("_")[4];
+}
+
+function somaPesosPilaresAcima100(){
+	console.log('------------------------');
+	console.log('somaPesosPilaresAcima100');
+	let fields = document.getElementsByTagName("INPUT");
+	let soma = 0;
+	for(n=0;n<fields.length;n++){
+		if(fields[n].name.startsWith('PilarPeso')){
+			console.log("nome: "+fields[n].name+" - valor: "+fields[n].value);
+			soma = soma + parseInt(fields[n].value);
+		}
+	}
+	console.log('soma: '+soma);
+	if(soma>100){
+		console.log('deu mais de 100%');
+		return true;
+	}
+	return false;
 }

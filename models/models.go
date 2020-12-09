@@ -421,6 +421,7 @@ type ProdutoPilar struct {
 	PilarNome       string  `json:"pilarNome"`
 	TipoPontuacaoId int     `json:"tipoPontuacaoId"`
 	TipoPontuacao   string  `json:"tipoPontuacao"`
+	Peso            float64 `json:"peso"`
 	Nota            float64 `json:"nota"`
 	Motivacao       string  `json:"motivacao"`
 	AuditorId       int64   `json:"auditorId"`

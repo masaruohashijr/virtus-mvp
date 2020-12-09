@@ -2,15 +2,19 @@ var plano_tobe_deleted;
 
 function updateConfigPlanos(){
 	document.getElementById('config-planos-form').style.display='none';
-	let splitted = document.getElementById('ComponenteRefConfigPlanos').value.split('_');
-	let componenteId = splitted[3];
+	let splitted = document.getElementById('AcionadoPor').value.split('_');
+	let entidadeId = splitted[1];
+	let cicloId = splitted[2];
+	let pilarId = splitted[3];
+	let componenteId = splitted[4];
 	let planosSelecionados = document.getElementById('ConfigPlanos');
 	let selecionados = getSelectedOptions(planosSelecionados);
 	let valores = '';
 	for(n=0;n<selecionados.length;n++){
 		valores = selecionados[n].value+'_'+ valores;
 	}
-	document.getElementsByName("Planos_AuditorComponente"+componenteId)[0].value = valores;
+	console.log("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId);
+	document.getElementsByName("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId)[0].value = valores;
 }
 
 function updateTodosConfigPlanos(){
@@ -42,6 +46,7 @@ function getSelectedOptions(sel) {
 }
 
 function openConfigPlanos(btn){
+	document.getElementById("AcionadoPor").value = btn.name;
 	//btn.disabled = true;
 	let entidadeId = btn.name.split("_")[1];
 	//console.log(entidadeId);

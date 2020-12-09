@@ -31,8 +31,9 @@
 		            <tr class="tabela">
 		                <td style="width: 5%">Ord</td>
 		                <td style="width: 5%">Nível</td>
-		                <td style="width: 50%">Sumário</td>
-		                <td style="width: 25%;">Equipe</td>
+		                <td style="width: 35%">Sumário</td>
+		                <td style="width: 15%">Cronograma</td>
+		                <td style="width: 25%">Equipe</td>
 		                <td style="width: 15%;text-align:center">Ações</td>
 		            </tr>
 					{{$primeiraLinha := true}}
@@ -56,6 +57,8 @@
 		                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left">Entidade</td>
 		                <td style="vertical-align:middle; font-size: 1.3em;border:1px solid #ddd;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
+						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;						
+						</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;">Supervisor</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		            </tr>
@@ -63,17 +66,10 @@
 		                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;Ciclo</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 10px">&nbsp;&nbsp;{{$produto.CicloNome}}</td>
+						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		                <td>
 							<input name="SupervisorComponenteId" type="hidden" value="{{$produto.SupervisorId}}">
 							<input class="w3-input" type="text" readOnly disabled value="{{$produto.SupervisorName}}">
-				            <select class="w3-input">
-					            <option value=""></option>
-								{{range $index, $super := $.Supervisores }}
-					                <option value="{{$super.Id}}">
-										{{$super.Name}}
-									</option>
-					            {{end}}
-				            </select>	
 						</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		            </tr>
@@ -84,7 +80,15 @@
 	                	<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;&nbsp;Pilar</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
-		                <td style="border:1px solid #ddd;">Auditores</td>
+						<td style="vertical-align:middle; border:1px solid #ddd;">
+							<table width="100%">
+								<tr>
+									<td>Inicia Em</td>
+									<td>Termina Em</td>
+								</tr>
+							</table>						
+						</td>
+		                <td style="border:1px solid #ddd;vertical-align:middle;">Auditores</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 						{{$auxSumario = $produto.PilarNome}}
 	            	</tr>
@@ -93,7 +97,19 @@
 						<td style="vertical-align:middle; border:1px solid #ddd;">{{$produto.Order}}</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;Componente</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 30px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
-		                <td style="border:1px solid #ddd;">
+						<td style="vertical-align:middle; border:1px solid #ddd;">
+							<table width="100%">
+								<tr>
+									<td>
+										<input class="w3-input" type="date" id="InicioAvaliacao" name="InicioAvaliacao" value="">
+									</td>
+									<td>
+										<input class="w3-input" type="date" id="TerminoAvaliacao" name="TerminoAvaliacao" value="">
+									</td>
+								</tr>
+							</table>
+						</td>
+		                <td style="border:1px solid #ddd;vertical-align: middle">
 							<select class="w3-input" onchange="sinalizarAlteracao(this);motivarRemocao(this);"
 							{{if and (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe") }}disabled{{end}}
 								name="AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}">
@@ -111,9 +127,9 @@
 							<input type="hidden" name="Componente_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.ComponenteId}}"/>
 						</td>
 						{{if $allowed}}
-		                <td style="border:1px solid #ddd;">
+		                <td style="border:1px solid #ddd;vertical-align:middle; ">
 							<!-- PLANOS -->
-							<input type="text" 
+							<input type="hidden" 
 								id="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								name="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								value="">
@@ -130,7 +146,7 @@
 		            </tr>
 		            {{end}}
 					<tr>
-						<td colspan="5" style="text-align: center">
+						<td colspan="6" style="text-align: center">
 							<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom"
 								onclick="validarPlanosSelecionados()">
 								Salvar
