@@ -166,27 +166,30 @@ type ElementoComponente struct {
 }
 
 type Entidade struct {
-	Order          int
-	Id             int64           `json:"id"`
-	Nome           string          `json:"nome"`
-	Descricao      string          `json:"descricao"`
-	Sigla          string          `json:"sigla"`
-	Codigo         string          `json:"codigo"`
-	Situacao       string          `json:"situacao"`
-	ESI            bool            `json:"esi"`
-	Municipio      string          `json:"municipio"`
-	SiglaUF        string          `json:"siglaUF"`
-	ChefeId        int64           `json:"chefeId"`
-	ChefeName      string          `json:"chefeName"`
-	Escritorio     string          `json:"escritorio"`
-	AuthorId       int64           `json:"authorId"`
-	AuthorName     string          `json:"authorName"`
-	CriadoEm       string          `json:"criadoEm"`
-	C_CriadoEm     string          `json:"c_criadoEm"`
-	IdVersaoOrigem int64           `json:"idVersaoOrigem"`
-	StatusId       int64           `json:"statusId"`
-	CStatus        string          `json:"cStatus"`
-	CiclosEntidade []CicloEntidade `json:"ciclos"`
+	Order                 int
+	Id                    int64           `json:"id"`
+	Nome                  string          `json:"nome"`
+	Descricao             string          `json:"descricao"`
+	Sigla                 string          `json:"sigla"`
+	Codigo                string          `json:"codigo"`
+	Situacao              string          `json:"situacao"`
+	ESI                   bool            `json:"esi"`
+	Municipio             string          `json:"municipio"`
+	SiglaUF               string          `json:"siglaUF"`
+	EscritorioId          int64           `json:"escritorioId"`
+	EscritorioAbreviatura string          `json:"escritorioAbreviatura"`
+	CicloNome             string          `json:"cicloNome"`
+	ChefeId               int64           `json:"chefeId"`
+	ChefeName             string          `json:"chefeName"`
+	Escritorio            string          `json:"escritorio"`
+	AuthorId              int64           `json:"authorId"`
+	AuthorName            string          `json:"authorName"`
+	CriadoEm              string          `json:"criadoEm"`
+	C_CriadoEm            string          `json:"c_criadoEm"`
+	IdVersaoOrigem        int64           `json:"idVersaoOrigem"`
+	StatusId              int64           `json:"statusId"`
+	CStatus               string          `json:"cStatus"`
+	CiclosEntidade        []CicloEntidade `json:"ciclos"`
 }
 
 type Escritorio struct {

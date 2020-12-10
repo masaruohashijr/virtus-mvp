@@ -343,6 +343,8 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 			" a.esi, " +
 			" coalesce(a.municipio,''), " +
 			" coalesce(a.sigla_uf,''), " +
+			" coalesce(e.abreviatura,''), " +
+			" coalesce(g.nome, '') as ciclo_nome, " +
 			" a.author_id, " +
 			" coalesce(b.name,'') as author_name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
@@ -352,7 +354,11 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 			" FROM entidades a LEFT JOIN users b " +
 			" ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
-			" order by a.nome asc "
+			" LEFT JOIN jurisdicoes d ON d.entidade_id = a.id " +
+			" LEFT JOIN escritorios e ON d.escritorio_id = e.id " +
+			" LEFT JOIN ciclos_entidades f ON a.id = f.id " +
+			" LEFT JOIN ciclos g ON f.ciclo_id = g.id " +
+			" ORDER BY a.nome asc "
 		log.Println("sql: " + sql)
 		rows, _ := Db.Query(sql)
 		defer rows.Close()
@@ -370,6 +376,8 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 				&entidade.ESI,
 				&entidade.Municipio,
 				&entidade.SiglaUF,
+				&entidade.EscritorioAbreviatura,
+				&entidade.CicloNome,
 				&entidade.AuthorId,
 				&entidade.AuthorName,
 				&entidade.C_CriadoEm,
