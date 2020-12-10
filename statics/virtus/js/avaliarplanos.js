@@ -603,7 +603,9 @@ function loadDescricao(btn){
 	{
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
-				document.getElementById("descricao_text").value = xmlhttp.responseText;
+				var desc = JSON.parse(xmlhttp.responseText);
+				document.getElementById("descricao_text").value = desc.texto;
+				document.getElementById("link").value = desc.link;
 			}
 	}
 	xmlhttp.open("GET","/loadDescricao?btn="+btn,true);

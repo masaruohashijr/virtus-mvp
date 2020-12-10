@@ -132,6 +132,11 @@ type ComponentePilar struct {
 	CStatus        string `json:"cStatus"`
 }
 
+type Descricao struct {
+	Texto float64 `json:"texto"`
+	Link  float64 `json:"link"`
+}
+
 type Elemento struct {
 	Order          int
 	Id             int64  `json:"id"`

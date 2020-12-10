@@ -921,30 +921,30 @@ func setAnalise(rota string, analise string) string {
 	return "OK"
 }
 
-func getDescricao(rota string) string {
+func getDescricao(rota string) mdl.Descricao {
 	valores := strings.Split(rota, "_")
 	sql := " SELECT 'descricao' "
 	if valores[1] == "Ciclo" {
-		sql = " SELECT descricao FROM ciclos WHERE id = " + valores[3]
+		sql = " SELECT descricao, referencia FROM ciclos WHERE id = " + valores[3]
 	} else if valores[1] == "Pilar" {
-		sql = " SELECT descricao FROM pilares WHERE id = " + valores[4]
+		sql = " SELECT descricao, referencia FROM pilares WHERE id = " + valores[4]
 	} else if valores[1] == "Componente" {
-		sql = " SELECT descricao FROM componentes WHERE id = " + valores[5]
+		sql = " SELECT descricao, referencia FROM componentes WHERE id = " + valores[5]
 	} else if valores[1] == "Plano" {
-		sql = " SELECT descricao FROM planos WHERE id = " + valores[6]
+		sql = " SELECT descricao, referencia FROM planos WHERE id = " + valores[6]
 	} else if valores[1] == "TipoNota" {
-		sql = " SELECT descricao FROM tipos_notas WHERE id = " + valores[7]
+		sql = " SELECT descricao, referencia FROM tipos_notas WHERE id = " + valores[7]
 	} else if valores[1] == "Elemento" {
-		sql = " SELECT descricao FROM elementos WHERE id = " + valores[8]
+		sql = " SELECT descricao, referencia FROM elementos WHERE id = " + valores[8]
 	} else if valores[1] == "Item" {
-		sql = " SELECT descricao FROM itens WHERE id = " + valores[9]
+		sql = " SELECT descricao, referencia FROM itens WHERE id = " + valores[9]
 	}
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
 	defer rows.Close()
-	retorno := ""
+	var retorno mdl.Descricao
 	if rows.Next() {
-		rows.Scan(&retorno)
+		rows.Scan(&retorno.Texto, &retorno.Link)
 	}
 	return retorno
 }

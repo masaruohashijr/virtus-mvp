@@ -620,6 +620,7 @@ func LoadDescricao(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	var rota = r.FormValue("btn")
 	descricao := getDescricao(rota)
-	w.Write([]byte(descricao))
-	log.Println("Fim Load Descrição")
+	jsonDescricao, _ := json.Marshal(descricao)
+	w.Write([]byte(jsonDescricao))
+	log.Println("JSON Descrição")
 }

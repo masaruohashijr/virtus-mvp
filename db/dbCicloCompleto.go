@@ -89,6 +89,12 @@ func createCicloCompleto() {
 	descricao := "Descricao do " + nome
 	stmt := " INSERT INTO ciclos(nome, descricao, author_id, criado_em, status_id) " +
 		" SELECT $1, $2, $3, $4, $5 WHERE NOT EXISTS (SELECT id FROM ciclos WHERE nome = '" + nome + "' ) RETURNING id"
+	log.Println(stmt)
+	log.Println(nome)
+	log.Println(descricao)
+	log.Println(autor)
+	log.Println(criadoEm)
+	log.Println(statusZero)
 	db.QueryRow(stmt, nome, descricao, autor, criadoEm, statusZero).Scan(&idCiclo)
 
 	if idCiclo == 0 {
