@@ -21,7 +21,12 @@
                 <label class="w3-label">Situação</label>
                 <input class="w3-input" type="text" id="EntidadeSituacaoForInsert" name="Situacao" value="">
                 <label class="w3-label">ESI</label>
-                <input class="w3-input" type="text" id="EntidadeESIForInsert" name="ESI" value="">
+                <select class="w3-input" 
+					id="EntidadeESIForInsert" 
+					name="ESI">
+					<option value="true">Sim</option>
+					<option value="false">Não</option>
+                </select>
                 <label class="w3-label">Município</label>
                 <input class="w3-input" type="text" id="EntidadeMunicipioForInsert" name="Municipio" value="">
                 <label class="w3-label">SiglaUF</label>
@@ -51,6 +56,7 @@
 						<th>Ações</th>
 		            </tr>
 		        </table>
+				<br>
 				<header class="w3-container w3-center w3-teal">
 		            <div class="aria">
 						<div style="margin-top: 6px;text-align: left;z-index:1">
@@ -67,10 +73,11 @@
 		            </div>
 		        </header>
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
-					id="table-planos-create">
+						id="table-planos-create">
 		            <tr>
-		                <th>Nome</th>
-		                <th>Descrição</th>
+		                <th>CNPB</th>
+		                <th>Modalidade</th>
+		                <th>Recurso Garantidor</th>
 						<th>Ações</th>
 		            </tr>
 		        </table>

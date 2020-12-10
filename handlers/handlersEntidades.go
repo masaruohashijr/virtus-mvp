@@ -94,7 +94,7 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, route.EntidadesRoute, 301)
+		http.Redirect(w, r, route.EntidadesRoute+"?msg=Entidade criada com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -112,7 +112,7 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		situacao := r.FormValue("Situacao")
 		esi := r.FormValue("ESI")
 		municipio := r.FormValue("Municipio")
-		siglaUF := r.FormValue("SigaUF")
+		siglaUF := r.FormValue("SiglaUF")
 		sqlStatement := "UPDATE entidades SET nome=$1, descricao=$2, sigla=$3, codigo=$4, situacao=$5, esi=$6, municipio=$7, sigla_uf=$8 WHERE id=$9"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
@@ -133,12 +133,21 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				log.Println("Id -------- " + id)
 				planoPage.Id, _ = strconv.ParseInt(id, 10, 64)
 				planoPage.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
-				nome := strings.Split(array[3], ":")[1]
+				nome := strings.Split(array[2], ":")[1]
 				log.Println("nome -------- " + nome)
 				planoPage.Nome = nome
-				descricao := strings.Split(array[4], ":")[1]
+				descricao := strings.Split(array[3], ":")[1]
 				log.Println("descricao -------- " + descricao)
 				planoPage.Descricao = descricao
+				cnpb := strings.Split(array[5], ":")[1]
+				log.Println("cnpb -------- " + cnpb)
+				planoPage.CNPB = cnpb
+				recursoGarantidor := strings.Split(array[7], ":")[1]
+				log.Println("recursoGarantidor -------- " + recursoGarantidor)
+				planoPage.RecursoGarantidor = recursoGarantidor
+				modalidade := strings.Split(array[8], ":")[1]
+				log.Println("modalidade -------- " + modalidade)
+				planoPage.Modalidade = modalidade
 				planosPage = append(planosPage, planoPage)
 			}
 		}
@@ -282,7 +291,7 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		UpdateCiclosEntidadeHandler(ciclosEntidadePage, ciclosEntidadeDB)
-		http.Redirect(w, r, route.EntidadesRoute, 301)
+		http.Redirect(w, r, route.EntidadesRoute+"?msg=Entidade atualizada com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -311,7 +320,7 @@ func DeleteEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.EntidadesRoute, 301)
+		http.Redirect(w, r, route.EntidadesRoute+"?msg=Entidade removida com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -321,6 +330,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Entidades")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listEntidades") {
+		msg := r.FormValue("msg")
 		errMsg := r.FormValue("errMsg")
 		var page mdl.PageEntidades
 		sql := "SELECT " +
@@ -374,6 +384,9 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 		page.Entidades = entidades
 		if errMsg != "" {
 			page.ErrMsg = errMsg
+		}
+		if msg != "" {
+			page.Msg = msg
 		}
 		sql = "SELECT id, nome FROM ciclos ORDER BY id asc"
 		rows, _ = Db.Query(sql)

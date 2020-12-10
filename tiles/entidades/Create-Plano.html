@@ -10,8 +10,14 @@
                       onclick="document.getElementById('create-plano-form').style.display='none'">&times;</span>
             </div>
             <form class="w3-container" id="formulario-plano-create">
+                <label class="w3-label">CNPB</label>
+				<input class="w3-input" type="number" id="CNPBPlanoForInsert" name="CNPBPlanoForInsert" value="">
                 <label class="w3-label">Nome</label>
 				<input class="w3-input" type="text" id="NomePlanoForInsert" name="NomePlanoForInsert" value="">
+                <label class="w3-label">Modalidade</label>
+				<input class="w3-input" type="text" maxlength="2" id="ModalidadePlanoForInsert" name="ModalidadePlanoForInsert" value="">
+                <label class="w3-label">Recurso Garantidor</label>
+				<input class="w3-input" type="number" id="RecursoGarantidorPlanoForInsert" name="RecursoGarantidorPlanoForInsert" value="">
                 <label class="w3-label">Descrição</label>
 				<textarea rows="4" class="w3-input" type="text" id="DescricaoPlanoForInsert" name="DescricaoPlanoForInsert" value=""></textarea>
 				<br>	

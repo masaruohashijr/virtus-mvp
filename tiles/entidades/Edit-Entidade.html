@@ -22,7 +22,12 @@
                 <label class="w3-label">Situação</label>
                 <input class="w3-input" type="text" id="EntidadeSituacaoForUpdate" name="Situacao" value="">
                 <label class="w3-label">ESI</label>
-                <input class="w3-input" type="text" id="EntidadeESIForUpdate" name="ESI" value="">
+                <select class="w3-input" 
+					id="EntidadeESIForUpdate" 
+					name="ESI">
+					<option value="false">Não</option>
+					<option value="true">Sim</option>
+                </select>
                 <label class="w3-label">Município</label>
                 <input class="w3-input" type="text" id="EntidadeMunicipioForUpdate" name="Municipio" value="">
                 <label class="w3-label">SiglaUF</label>
@@ -75,6 +80,8 @@
 		                <th>CNPB</th>
 		                <th>Modalidade</th>
 		                <th>Recurso Garantidor</th>
+		                <th style="display:none">Nome</th>
+		                <th style="display:none">Descrição</th>
 						<th>Ações</th>
 		            </tr>
 		        </table>

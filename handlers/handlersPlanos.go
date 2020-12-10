@@ -32,12 +32,16 @@ func UpdatePlanoHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
 		nome := r.FormValue("Nome")
-		sqlStatement := "UPDATE planos SET nome=$1 WHERE id=$2"
+		descricao := r.FormValue("Descricao")
+		cnpb := r.FormValue("CNPB")
+		recursoGarantidor := r.FormValue("RecursoGarantidor")
+		modalidade := r.FormValue("Modalidade")
+		sqlStatement := "UPDATE planos SET nome=$1, descricao=$2, cnpb=$3, recurso_garantidor=$4, modalidade=$5 WHERE id=$6"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		updtForm.Exec(nome, id)
+		updtForm.Exec(nome, descricao, cnpb, recursoGarantidor, modalidade, id)
 		log.Println("UPDATE: Id: " + id + " | Nome: " + nome)
 		http.Redirect(w, r, route.PlanosRoute, 301)
 	} else {
@@ -67,11 +71,15 @@ func UpdatePlanosHandler(planosPage []mdl.Plano, planosDB []mdl.Plano) {
 }
 
 func hasSomeFieldChangedPlano(planoPage mdl.Plano, planoDB mdl.Plano) bool {
-	log.Println("planoPage.Nome: " + planoPage.Nome)
-	log.Println("planoDB.Nome: " + planoDB.Nome)
 	if planoPage.Nome != planoDB.Nome {
 		return true
 	} else if planoPage.Descricao != planoDB.Descricao {
+		return true
+	} else if planoPage.CNPB != planoDB.CNPB {
+		return true
+	} else if planoPage.RecursoGarantidor != planoDB.RecursoGarantidor {
+		return true
+	} else if planoPage.Modalidade != planoDB.Modalidade {
 		return true
 	} else {
 		return false
@@ -80,13 +88,14 @@ func hasSomeFieldChangedPlano(planoPage mdl.Plano, planoDB mdl.Plano) bool {
 
 func updatePlanoHandler(p mdl.Plano, planoDB mdl.Plano) {
 	sqlStatement := "UPDATE planos SET " +
-		"nome=$1, descricao=$2 WHERE id=$3"
+		"nome='" + p.Nome + "', descricao='" + p.Descricao + "', modalidade_id='" + p.Modalidade +
+		"', recurso_garantidor=" +
+		p.RecursoGarantidor +
+		", cnpb='" + p.CNPB +
+		"' WHERE id=" + strconv.FormatInt(p.Id, 10)
 	log.Println(sqlStatement)
 	updtForm, _ := Db.Prepare(sqlStatement)
-	log.Println(p.Nome)
-	log.Println(p.Descricao)
-	log.Println(p.Id)
-	_, err := updtForm.Exec(p.Nome, p.Descricao, p.Id)
+	_, err := updtForm.Exec()
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -120,7 +129,8 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		" coalesce(a.nome,'')," +
 		" coalesce(a.descricao,''), " +
 		" a.cnpb," +
-		" CASE WHEN a.recurso_garantidor < 1000000000 THEN a.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE a.recurso_garantidor::numeric::MONEY/1000000000||' bi' END' mi'," +
+		" CASE WHEN a.recurso_garantidor < 1000000000 THEN a.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE a.recurso_garantidor::numeric::MONEY/1000000000||' bi' END," +
+		" cast(a.recurso_garantidor as numeric), " +
 		" a.modalidade_id," +
 		" a.author_id, " +
 		" coalesce(b.name,'') as author_name, " +
@@ -132,7 +142,8 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		" WHERE a.entidade_id = $1 " +
 		" ORDER BY a.recurso_garantidor DESC"
 	log.Println(sql)
-	rows, _ := Db.Query(sql, entidadeId)
+	rows, err := Db.Query(sql, entidadeId)
+	log.Println(err)
 	defer rows.Close()
 	var planos []mdl.Plano
 	var plano mdl.Plano
@@ -144,6 +155,7 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 			&plano.Nome,
 			&plano.Descricao,
 			&plano.CNPB,
+			&plano.C_RecursoGarantidor,
 			&plano.RecursoGarantidor,
 			&plano.Modalidade,
 			&plano.AuthorId,

@@ -104,13 +104,14 @@ class ConfigPlano {
 
 	
 class Plano {
-	constructor(order, id, entidadeId, nome, descricao, cnpb, recursoGarantidor, modalidade, autorId, autorNome, criadoEm, status, cStatus) {
+	constructor(order, id, entidadeId, nome, descricao, cnpb, c_recursoGarantidor, recursoGarantidor, modalidade, autorId, autorNome, criadoEm, status, cStatus) {
 		this.order = order;
 		this.id = id;
 		this.entidadeId = entidadeId;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.cnpb = cnpb;
+		this.c_recursoGarantidor = c_recursoGarantidor;
 		this.recursoGarantidor = recursoGarantidor;
 		this.modalidade = modalidade;
 		this.autorId = autorId;
@@ -123,19 +124,20 @@ class Plano {
 
 function criarPlano(){
 	console.log('criarPlano');
+	var cnpb = document.getElementById('CNPBPlanoForInsert').value;
 	var nome = document.getElementById('NomePlanoForInsert').value;
+	var modalidade = document.getElementById('ModalidadePlanoForInsert').value;
+	var recursoGarantidor = document.getElementById('RecursoGarantidorPlanoForInsert').value;
 	var descricao = document.getElementById('DescricaoPlanoForInsert').value;
 	var erros = '';
-	if(nome==''){
-		erros += 'Falta preencher o título.\n';
+	if(cnpb==''){
+		erros += 'Falta preencher o CNPB.\n';
 		alert(erros);
 		return;
 	}
 	planoId = getMaxId(planos);
-	plano = new Plano(0, planoId, 0, nome, descricao, '', '', '', '', '');
-	console.log(plano)
+	plano = new Plano(0, planoId, 0, nome, descricao, cnpb, '', recursoGarantidor, modalidade,'','','','','');
 	planos.push(plano);
-	console.log(planos);
 	console.log('contexto: '+contexto);
 	//console.log("table-planos-"+contexto);
 	addPlanoRow("table-planos-"+contexto);
@@ -167,10 +169,28 @@ function addPlanoRow(tableID) {
 	newCell.appendChild(newText);
 	// recurso garantidor
 	newCell = newRow.insertCell(2);
+	if(plano.c_recursoGarantidor == ''){
+		plano.c_recursoGarantidor = plano.recursoGarantidor;
+	}
+	newText = document.createTextNode(plano.c_recursoGarantidor);
+	newCell.appendChild(newText);
+	// nome
+	newCell = newRow.insertCell(3);
+	newText = document.createTextNode(plano.nome);
+	newCell.appendChild(newText);
+	newCell.style = 'display:none';
+	// descricao
+	newCell = newRow.insertCell(4);
+	newText = document.createTextNode(plano.descricao);
+	newCell.appendChild(newText);
+	newCell.style = 'display:none';
+	// recursoGarantidor NUMERO
+	newCell = newRow.insertCell(5);
 	newText = document.createTextNode(plano.recursoGarantidor);
 	newCell.appendChild(newText);
+	newCell.style = 'display:none';
 	// Botões
-	newCell = newRow.insertCell(3);
+	newCell = newRow.insertCell(6);
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";
@@ -195,13 +215,19 @@ function editPlano(e) {
 	var order = e.parentNode.parentNode.childNodes[0].childNodes[0].value;
 	var id = e.parentNode.parentNode.childNodes[0].childNodes[1].value;
 	var entidadeId = e.parentNode.parentNode.childNodes[0].childNodes[2].value;
-	var nome = e.parentNode.parentNode.childNodes[0].innerText;
-	var descricao = e.parentNode.parentNode.childNodes[1].innerText;
+	var cnpb = e.parentNode.parentNode.childNodes[0].innerText;
+	var modalidade = e.parentNode.parentNode.childNodes[1].innerText;
+	var recursoGarantidor = e.parentNode.parentNode.childNodes[5].innerText;
+	var nome = e.parentNode.parentNode.childNodes[3].innerText;
+	var descricao = e.parentNode.parentNode.childNodes[4].innerText;
 	// Atribuindo os valores de edit-item-form
 	document.getElementById('id-edit').value=id;
 	document.getElementById('order-edit').value=order;
 	document.getElementById('entidadeId-edit').value=entidadeId;
 	document.getElementById('NomePlanoForUpdate').value=nome;
+	document.getElementById('CNPBPlanoForUpdate').value=cnpb;
+	document.getElementById('RecursoGarantidorPlanoForUpdate').value=recursoGarantidor;
+	document.getElementById('ModalidadePlanoForUpdate').value=modalidade;
 	document.getElementById('DescricaoPlanoForUpdate').value=descricao;
 }
 
@@ -210,15 +236,18 @@ function updatePlano() {
 	var id = document.getElementById('id-edit').value;
 	var order = document.getElementById('order-edit').value;
 	var entidadeId = document.getElementById('entidadeId-edit').value;
+	var cnpb = document.getElementById('CNPBPlanoForUpdate').value;
 	var nome = document.getElementById('NomePlanoForUpdate').value;
+	var modalidade = document.getElementById('ModalidadePlanoForUpdate').value;
+	var recursoGarantidor = document.getElementById('RecursoGarantidorPlanoForUpdate').value;
 	var descricao = document.getElementById('DescricaoPlanoForUpdate').value;
 	var erros = '';
-	if(nome==''){
-		erros += 'Falta preencher o título.\n';
+	if(cnpb==''){
+		erros += 'Falta preencher o CNPB.\n';
 		alert(erros);
 		return;
 	}
-	plano = new Plano(order, id, entidadeId, nome, descricao, '', '', '', '','');
+	plano = new Plano(order, id, entidadeId, nome, descricao, cnpb, '', recursoGarantidor, modalidade,'','','','','');
 	planos[order] = plano;
 	console.log("table-planos-"+contexto);
 	console.log('order: '+order);
@@ -244,7 +273,7 @@ function updatePlanoRow(tableID, order){
 		}
 	}
 	let celula = row.childNodes[0];
-	celula.innerText = planos[order].nome;
+	celula.innerText = planos[order].cnpb;
 	var json = JSON.stringify(planos[order]);
 	json = json.split(',').join('#');
 	json = json.split('"').join('');
@@ -254,7 +283,14 @@ function updatePlanoRow(tableID, order){
 	celula.innerHTML = '<input type="hidden" name="entidadeId" value="'+plano.entidadeId+'"/>'+celula.innerHTML;
 	celula.innerHTML = '<input type="hidden" name="id" value="'+planos[order].id+'"/>'+celula.innerHTML;
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
-	row.childNodes[1].innerText = planos[order].descricao;
+	row.childNodes[1].innerText = planos[order].modalidade;
+	if(planos[order].c_recursoGarantidor == ''){
+		plano.c_recursoGarantidor = plano.recursoGarantidor;
+	}
+	row.childNodes[2].innerText = planos[order].c_recursoGarantidor;
+	row.childNodes[3].innerText = planos[order].nome;
+	row.childNodes[4].innerText = planos[order].descricao;
+	row.childNodes[5].innerText = planos[order].recursoGarantidor;
 }
 
 function showDeletePlanoForm(e){

@@ -2,7 +2,6 @@
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
-{{ template "Error-Message" .ErrMsg }}
 {{ template "Menu" . }}
 {{ template "Delete-Entidade" . }}
 {{ template "Edit-Entidade" . }}
@@ -13,6 +12,8 @@
 {{ template "Delete-Ciclo-Entidade" . }}
 {{ template "Edit-Ciclo-Entidade" . }}
 {{ template "Create-Ciclo-Entidade" . }}
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Message" .Msg }}
 {{ template "List-Entidades" . }}
 </body>
 </html>

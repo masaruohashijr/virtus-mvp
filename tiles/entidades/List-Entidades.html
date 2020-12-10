@@ -26,9 +26,9 @@
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="tabela-entidades">
             <thead>
             <tr>
-                <th style="width: 5%">Ord</th>
-                <th style="width: 5%">Código</th>
-                <th style="width: 45%;text-align:left">
+                <th style="vertical-align:middle;width: 5%">Ord</th>
+                <th style="vertical-align:middle;width: 5%">Código</th>
+                <th style="vertical-align:middle;width: 45%;text-align:left">
 					<input 
 						type="text" 
 						value="" 
@@ -36,31 +36,31 @@
 						style="width:100%"
 						onkeyup="filtraTabela(this, 'tabela-entidades', 1, 2)">
 				</th>
-                <th style="width: 25%">Ciclo Atual</th>
+                <th style="vertical-align:middle;width: 25%">Ciclo Atual</th>
 				{{if $allowed}}
-				<th style="width: 20%">Ações</th>
+				<th style="vertical-align:middle;width: 20%">Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
             {{range $index, $entidade := .Entidades}}
             <tr>
-                <td>#{{$entidade.Order}}</td>
-                <td><input type="hidden" value="{{$entidade.Id}}">{{$entidade.Codigo}}</td>
-                <td style="text-align:left">
+                <td style="vertical-align:middle">#{{$entidade.Order}}</td>
+                <td style="vertical-align:middle"><input type="hidden" value="{{$entidade.Id}}">{{$entidade.Codigo}}</td>
+                <td style="vertical-align:middle;text-align:left">
 					{{$entidade.Nome}}
 					<input type="hidden" value="{{$entidade.Descricao}}">
 				</td>
-				<td>
+				<td style="vertical-align:middle">
 					<input type="hidden" value="{{$entidade.Sigla}}">
 					<input type="hidden" value="{{$entidade.Codigo}}">
 					<input type="hidden" value="{{$entidade.Situacao}}">
-					<input type="hidden" value="{{if eq $entidade.ESI true }}Sim{{else}}Não{{end}}">
+					<input type="hidden" value="{{$entidade.ESI}}">
 					<input type="hidden" value="{{$entidade.Municipio}}">
 					<input type="hidden" value="{{$entidade.SiglaUF}}">
 				</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
                     <!--button class="w3-btn w3-teal" onclick="contexto='edit';iniciarCiclo(this);">Ciclos</button-->
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editEntidade(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteEntidade(this)">Apagar</button>
