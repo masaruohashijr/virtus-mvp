@@ -32,20 +32,28 @@
 						placeholder="Código" 
 						style="width:100%"
 						onkeyup="filtraTabela(this, 'tabela-entidades', 1, 1)"></td>
-                <td style="vertical-align:middle;width: 50%;text-align:left">
+                <td style="vertical-align:middle;width: 10%;text-align:left">
+					<input 
+						type="text" 
+						value="" 
+						placeholder="Sigla" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-entidades', 1, 2)">
+				</td>
+                <td style="vertical-align:middle;width: 40%;text-align:left">
 					<input 
 						type="text" 
 						value="" 
 						placeholder="Nome da Entidade" 
 						style="width:100%"
-						onkeyup="filtraTabela(this, 'tabela-entidades', 1, 2)">
+						onkeyup="filtraTabela(this, 'tabela-entidades', 1, 3)">
 				</td>
                 <td style="vertical-align:middle;width: 10%"><input 
 						type="text" 
 						value="" 
 						placeholder="Ciclo Atual" 
 						style="width:100%"
-						onkeyup="filtraTabela(this, 'tabela-entidades', 1, 3)"></td>
+						onkeyup="filtraTabela(this, 'tabela-entidades', 1, 4)"></td>
 				{{if $allowed}}
 				<td style="vertical-align:middle;width: 25%">Ações</td>
 				{{end}}
@@ -53,19 +61,20 @@
             {{range $index, $entidade := .Entidades}}
             <tr>
                 <td style="vertical-align:middle">#{{$entidade.Order}}</td>
-                <td style="vertical-align:middle"><input type="hidden" value="{{$entidade.Id}}">{{$entidade.Codigo}}</td>
+                <td style="vertical-align:middle"><input type="text" value="{{$entidade.Id}}">{{$entidade.Codigo}}</td>
+                <td style="vertical-align:middle;text-align:left">
+					{{$entidade.Sigla}}
+				</td>
                 <td style="vertical-align:middle;text-align:left">
 					{{$entidade.Nome}}
-					<input type="hidden" value="{{$entidade.Descricao}}">
+					<input type="text" value="{{$entidade.Descricao}}">
 				</td>
                 <td style="vertical-align:middle;text-align:left">
 					{{$entidade.CicloNome}}
-					<input type="hidden" value="{{$entidade.Sigla}}">
-					<input type="hidden" value="{{$entidade.Codigo}}">
-					<input type="hidden" value="{{$entidade.Situacao}}">
-					<input type="hidden" value="{{$entidade.ESI}}">
-					<input type="hidden" value="{{$entidade.Municipio}}">
-					<input type="hidden" value="{{$entidade.SiglaUF}}">
+					<input type="text" value="{{$entidade.Situacao}}">
+					<input type="text" value="{{$entidade.ESI}}">
+					<input type="text" value="{{$entidade.Municipio}}">
+					<input type="text" value="{{$entidade.SiglaUF}}">
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">

@@ -612,6 +612,14 @@ function loadDescricao(btn){
 	xmlhttp.send();
 }
 
+class Descricao {
+	constructor(texto, link) {
+		this.texto = texto;
+		this.link = link;
+	}
+}
+
+
 function motivarPesoPilar(field){
 	let entidadeId = field.name.split("_")[1];
 	let cicloId = field.name.split("_")[2];

@@ -133,8 +133,8 @@ type ComponentePilar struct {
 }
 
 type Descricao struct {
-	Texto float64 `json:"texto"`
-	Link  float64 `json:"link"`
+	Texto string `json:"texto"`
+	Link  string `json:"link"`
 }
 
 type Elemento struct {

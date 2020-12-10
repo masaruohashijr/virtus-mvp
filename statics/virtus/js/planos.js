@@ -153,6 +153,8 @@ function addPlanoRow(tableID) {
 	plano = planos[order];
 	let newCell = newRow.insertCell(0);
 	let newText = document.createTextNode(plano.cnpb);
+	let rg = plano.c_recursoGarantidor;
+	plano.c_recursoGarantidor = '';
 	let json = JSON.stringify(plano);
 	json = json.split(',').join('#');
 	json = json.split('"').join('');
@@ -172,7 +174,7 @@ function addPlanoRow(tableID) {
 	if(plano.c_recursoGarantidor == ''){
 		plano.c_recursoGarantidor = plano.recursoGarantidor;
 	}
-	newText = document.createTextNode(plano.c_recursoGarantidor);
+	newText = document.createTextNode(rg);
 	newCell.appendChild(newText);
 	// nome
 	newCell = newRow.insertCell(3);

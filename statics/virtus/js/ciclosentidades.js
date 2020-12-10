@@ -50,6 +50,18 @@ function criarCicloEntidade(){
 	}
 	let iniciaEm = document.getElementById('IniciaEmForInsert').value;
 	let terminaEm = document.getElementById('TerminaEmForInsert').value;
+	let preenchidoIniciaEm = document.getElementById('IniciaEmForInsert').value != '';
+	let preenchidoTerminaEm = document.getElementById('TerminaEmForInsert').value != '';
+	if(!preenchidoTerminaEm || !preenchidoIniciaEm){
+		document.getElementById("Errors").innerText = 'Falta preencher o período.';
+		document.getElementById("error-message").style.display = 'block';
+		if(!preenchidoIniciaEm){
+			document.getElementById('IniciaEmForInsert').focus();
+		} else {
+			document.getElementById('TerminaEmForInsert').focus();
+		}
+		return;
+	} 
 	cicloEntidadeId = getMaxId(ciclosEntidade);
 	cicloEntidade = new CicloEntidade(0, cicloEntidadeId, 0, cicloId, nome, tipoMediaId, tipoMedia, iniciaEm, terminaEm, '', '', '', '', '', '', '');
 	ciclosEntidade.push(cicloEntidade);
@@ -84,11 +96,11 @@ function addCicloEntidadeRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" value="'+cicloEntidade.tipoMediaId+'"/>'+newCell.innerHTML;
 	// Inicio Em
 	newCell = newRow.insertCell(2);
-	newText = document.createTextNode(cicloEntidade.iniciaEm);
+	newText = document.createTextNode(formatarData(cicloEntidade.iniciaEm));
 	newCell.appendChild(newText);
 	// Termina Em
 	newCell = newRow.insertCell(3);
-	newText = document.createTextNode(cicloEntidade.terminaEm);
+	newText = document.createTextNode(formatarData(cicloEntidade.terminaEm));
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+cicloEntidade.autorId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" value="'+cicloEntidade.criadoEm+'"/>'+newCell.innerHTML;

@@ -103,6 +103,7 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Entidade")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		msg := ""
 		currentUser := GetUserInCookie(w, r)
 		entidadeId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
@@ -139,13 +140,13 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				descricao := strings.Split(array[3], ":")[1]
 				log.Println("descricao -------- " + descricao)
 				planoPage.Descricao = descricao
-				cnpb := strings.Split(array[5], ":")[1]
+				cnpb := strings.Split(array[6], ":")[1]
 				log.Println("cnpb -------- " + cnpb)
 				planoPage.CNPB = cnpb
-				recursoGarantidor := strings.Split(array[7], ":")[1]
+				recursoGarantidor := strings.Split(array[8], ":")[1]
 				log.Println("recursoGarantidor -------- " + recursoGarantidor)
 				planoPage.RecursoGarantidor = recursoGarantidor
-				modalidade := strings.Split(array[8], ":")[1]
+				modalidade := strings.Split(array[9], ":")[1]
 				log.Println("modalidade -------- " + modalidade)
 				planoPage.Modalidade = modalidade
 				planosPage = append(planosPage, planoPage)
@@ -177,7 +178,7 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 			for i := range diffPage {
 				plano = diffPage[i]
 				log.Println("Entidade Id: " + strconv.FormatInt(plano.EntidadeId, 10))
-				sqlStatement := "INSERT INTO public.planos( " +
+				sqlStatement := "INSERT INTO planos( " +
 					" entidade_id, nome, descricao, author_id, criado_em ) " +
 					" VALUES ($1, $2, $3, $4, $5) RETURNING id"
 				log.Println(sqlStatement)
@@ -229,7 +230,7 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
 				cicloEntidadePage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
 				statusId := strings.Split(array[13], ":")[1]
-				log.Println("idVersaoOrigem -------- " + statusId)
+				log.Println("statusId -------- " + statusId)
 				cicloEntidadePage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
 				cStatus := strings.Split(array[14], ":")[1]
 				log.Println("cStatus -------- " + cStatus)
@@ -273,7 +274,7 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 					snippet1 = snippet1 + ", termina_em "
 					snippet2 = snippet2 + ", $7"
 				}
-				sqlStatement := "INSERT INTO public.ciclos_entidades ( " +
+				sqlStatement := "INSERT INTO ciclos_entidades ( " +
 					" entidade_id, " +
 					" ciclo_id, " +
 					" tipo_media, " +
@@ -288,10 +289,19 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				} else {
 					err = Db.QueryRow(sqlStatement, entidadeId, cicloEntidade.CicloId, cicloEntidade.TipoMediaId, currentUser.Id, time.Now()).Scan(&cicloEntidadeId)
 				}
+				if err != nil {
+					log.Println(err.Error())
+				}
+				cicloId := strconv.FormatInt(cicloEntidade.CicloId, 10)
+				registrarProdutosCiclos(currentUser, entidadeId, cicloId)
+				msg = "Ciclo iniciado com sucesso."
 			}
 		}
 		UpdateCiclosEntidadeHandler(ciclosEntidadePage, ciclosEntidadeDB)
-		http.Redirect(w, r, route.EntidadesRoute+"?msg=Entidade atualizada com sucesso.", 301)
+		if msg == "" {
+			msg = "Entidade atualizada com sucesso."
+		}
+		http.Redirect(w, r, route.EntidadesRoute+"?msg="+msg, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -356,7 +366,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 			" LEFT JOIN status c ON a.status_id = c.id " +
 			" LEFT JOIN jurisdicoes d ON d.entidade_id = a.id " +
 			" LEFT JOIN escritorios e ON d.escritorio_id = e.id " +
-			" LEFT JOIN ciclos_entidades f ON a.id = f.id " +
+			" LEFT JOIN ciclos_entidades f ON a.id = f.entidade_id " +
 			" LEFT JOIN ciclos g ON f.ciclo_id = g.id " +
 			" ORDER BY a.nome asc "
 		log.Println("sql: " + sql)

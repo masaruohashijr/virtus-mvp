@@ -462,7 +462,7 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 		log.Println(err)
 	}
 
-	sqlStatement = "INSERT INTO public.produtos_componentes ( " +
+	sqlStatement = "INSERT INTO produtos_componentes ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
 		" pilar_id, " +

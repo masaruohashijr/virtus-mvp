@@ -71,15 +71,13 @@ func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
 		cicloId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		referencia := r.FormValue("Referencia")
 		iniciaEm := r.FormValue("IniciaEm")
 		terminaEm := r.FormValue("TerminaEm")
 		sqlStatement := "UPDATE ciclos SET nome = $1, " +
 			" descricao = $2 " +
-			" descricao = $3 " +
-			" WHERE id = $4 "
+			" WHERE id = $3 "
 		updtForm, _ := Db.Prepare(sqlStatement)
-		updtForm.Exec(nome, descricao, referencia, cicloId)
+		updtForm.Exec(nome, descricao, cicloId)
 		log.Println("UPDATE: Id: " + cicloId + " | Nome: " + nome + " | Descrição: " + descricao)
 		log.Println(len(entidades))
 		for _, entidadeId := range entidades {
