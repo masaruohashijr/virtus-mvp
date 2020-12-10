@@ -2,7 +2,6 @@
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
-{{ template "Error-Message" .ErrMsg }}
 {{ template "Menu" . }}
 {{ template "Delete-Componente" . }}
 {{ template "Edit-Componente" . }}
@@ -10,6 +9,8 @@
 {{ template "Delete-Elemento-Componente" . }}
 {{ template "Edit-Elemento-Componente" . }}
 {{ template "Create-Elemento-Componente" . }}
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Message" .Msg }}
 {{ template "List-Componentes" . }}
 </body>
 </html>

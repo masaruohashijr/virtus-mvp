@@ -12,9 +12,11 @@
 
             <form class="w3-container" action="/createComponente" method="POST" id="formulario-componente-create">
                 <label class="w3-label">Nome</label>
-                <input class="w3-input" type="text" name="Nome" value="">
+                <input class="w3-input" type="text" id="NomeComponenteForInsert" name="Nome" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="Descricao" rows="5" value=""></textarea>
+                <label class="w3-label">Referência</label>
+                <input class="w3-input" type="text" name="Referencia" id="Referencia" value="">
 				<br>
 		        <header class="w3-container w3-center w3-teal">
 					<div class="aria">
@@ -69,11 +71,16 @@
 					id="table-elementos-componente-create">
 		            <thead>
 		            <tr>
-		                <th>Nome</th>
-		                <th>Peso Padrão</th>
-		                <th>Autor</th>
-		                <th>Criado Em</th>
-						<th>Ações</th>
+		                <th style="vertical-align:middle;width: 45%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'table-elementos-componente-create', 1, 1)"></th>
+		                <th style="vertical-align:middle;width: 10%;">Peso Padrão</th>
+		                <th style="vertical-align:middle;width: 10%;">Autor</th>
+		                <th style="vertical-align:middle;width: 10%;">Criado Em</th>
+						<th style="vertical-align:middle;width: 25%;">Ações</th>
 		            </tr>
 		            </thead>
 		            <tbody>

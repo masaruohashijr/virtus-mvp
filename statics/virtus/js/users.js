@@ -13,6 +13,7 @@ function editUser(e) {
 	document.getElementById('userEmail').value = userEmail;
 	document.getElementById('userMobile').value = userMobile;
 	document.getElementById('RoleForUpdate').value = userRole;
+	document.getElementById('userName').focus();
 }
 
 function deleteUser(e) {
@@ -20,4 +21,9 @@ function deleteUser(e) {
 	deleteForm.style.display = 'block';
 	var userId = e.parentNode.parentNode.childNodes[3].innerText;
 	document.getElementById('userIdToDelete').value = userId;
+}
+
+function openCreateUser(){
+	document.getElementById('create-form').style.display='block';
+	document.getElementById('NameUserForInsert').focus();
 }

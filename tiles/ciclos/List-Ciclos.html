@@ -13,7 +13,7 @@
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createCiclo")}}
 					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="resetCicloForms();document.getElementById('create-form').style.display='block'">
+					    <a style="margin-top: 6px" href="#" onclick="openCreateCiclo()">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
 					{{end}}
@@ -23,33 +23,41 @@
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-ciclos">
             <thead>
             <tr>
-                <th>Ord</th>
-                <th>Id</th>
-                <th>Nome</th>
+                <th style="vertical-align:middle;width: 5%;">Ord</th>
+                <th style="vertical-align:middle;width: 5%;">Id</th>
+                <th style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-ciclos', 1, 2)"></th>
 				<th style="display:none">Descrição</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-				<th>Status</th>
+				<th style="display:none">Referência</th>
+                <th style="vertical-align:middle;width: 15%;">Autor</th>
+                <th style="vertical-align:middle;width: 15%;">Criado Em</th>
+				<th style="vertical-align:middle;width: 10%;">Status</th>
 				{{if $allowed}}
-				<th>Ações</th>
+				<th style="vertical-align:middle;width: 25%;">Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
             {{range $index, $ciclo := .Ciclos}}
             <tr>
-                <td>#{{$ciclo.Order}}</td>
-                <td>{{$ciclo.Id}}</td>
-                <td>{{$ciclo.Nome}}</td>
+                <td style="vertical-align:middle">#{{$ciclo.Order}}</td>
+                <td style="vertical-align:middle">{{$ciclo.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$ciclo.Nome}}</td>
 				<td style="display:none">{{$ciclo.Descricao}}</td>
-                <td>{{$ciclo.AuthorName}}</td>
-                <td>{{$ciclo.C_CriadoEm}}</td>
-				<td>{{$ciclo.CStatus}}</td>
+				<td style="display:none">{{$ciclo.Referencia}}</td>
+                <td style="vertical-align:middle">{{$ciclo.AuthorName}}</td>
+                <td style="vertical-align:middle">{{$ciclo.C_CriadoEm}}</td>
+				<td style="vertical-align:middle">{{$ciclo.CStatus}}</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
                     <button class="w3-btn w3-teal" onclick="contexto='edit';iniciarCiclo(this)">Iniciar</button>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editCiclo(this)">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteCiclo(this)">Apagar</button>

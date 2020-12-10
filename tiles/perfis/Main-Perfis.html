@@ -2,11 +2,12 @@
 <html lang="pt">
 	{{ template "Header" .Title }}
 <body>
-{{ template "Error-Message" .ErrMsg }}
 {{ template "Menu" . }}
 {{ template "Delete-Perfil" }}
 {{ template "Edit-Perfil" . }}
 {{ template "Create-Perfil" . }}
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Message" .Msg }}
 {{ template "List-Perfis" . }}
 </body>
 </html>

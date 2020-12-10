@@ -14,6 +14,8 @@
                 <input class="w3-input" type="text" name="Nome" id="NomeCicloForInsert" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="Descricao" rows="5" value=""></textarea>
+                <label class="w3-label">Referência</label>
+                <input class="w3-input" type="text" name="Referencia" id="ReferenciaElementoForInsert" value="">
 				<br>
 		        <header class="w3-container w3-center w3-teal">
 		            <div class="w3-row">
@@ -33,12 +35,17 @@
 					id="table-pilar-ciclo-create">
 		            <thead>
 		            <tr>
-		                <th>Nome</th>
-		                <th>Tipo de Média</th>
-		                <th>Peso Padrão</th>
-		                <th>Autor</th>
-		                <th>Criado Em</th>
-						<th>Ações</th>
+		                <th style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'table-pilar-ciclo-create', 1, 0)"></th>
+		                <th style="vertical-align:middle;width: 10%;">Tipo de Média</th>
+		                <th style="vertical-align:middle;width: 10%;">Peso Padrão</th>
+		                <th style="vertical-align:middle;width: 5%;">Autor</th>
+		                <th style="vertical-align:middle;width: 10%;">Criado Em</th>
+						<th style="vertical-align:middle;width: 25%;">Ações</th>
 		            </tr>
 		            </thead>
 		            <tbody>

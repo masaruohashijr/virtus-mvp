@@ -80,6 +80,7 @@ function addComponentePilarRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="pilarId" value="'+componentePilar.pilarId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+componentePilar.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
+	newCell.style="text-align:left"; 
 	// Tipo de Média
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(componentePilar.tipoMedia);

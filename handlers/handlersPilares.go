@@ -19,9 +19,10 @@ func CreatePilarHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		sqlStatement := "INSERT INTO pilares(nome, descricao, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
+		referencia := r.FormValue("Referencia")
+		sqlStatement := "INSERT INTO pilares(nome, descricao, referencia, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
 		idPilar := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&idPilar)
+		err := Db.QueryRow(sqlStatement, nome, descricao, referencia, currentUser.Id, time.Now()).Scan(&idPilar)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -61,7 +62,7 @@ func CreatePilarHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, route.PilaresRoute, 301)
+		http.Redirect(w, r, route.PilaresRoute+"?msg=Pilar criado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -74,12 +75,13 @@ func UpdatePilarHandler(w http.ResponseWriter, r *http.Request) {
 		pilarId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		sqlStatement := "UPDATE pilares SET nome=$1, descricao=$2 WHERE id=$3"
+		referencia := r.FormValue("Referencia")
+		sqlStatement := "UPDATE pilares SET nome=$1, descricao=$2, referencia=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		updtForm.Exec(nome, descricao, pilarId)
+		updtForm.Exec(nome, descricao, referencia, pilarId)
 		log.Println("UPDATE: Id: " + pilarId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Componentes Pilares
@@ -181,7 +183,7 @@ func UpdatePilarHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		UpdateComponentesPilarHandler(componentesPilarPage, componentesPilarDB)
 
-		http.Redirect(w, r, route.PilaresRoute, 301)
+		http.Redirect(w, r, route.PilaresRoute+"?msg=Pilar atualizado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -205,7 +207,7 @@ func DeletePilarHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.PilaresRoute, 301)
+		http.Redirect(w, r, route.PilaresRoute+"?msg=Pilar removido com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -216,12 +218,14 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listPilares") {
 		errMsg := r.FormValue("errMsg")
+		msg := r.FormValue("msg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
-			" a.descricao, " +
+			" coalesce(a.descricao,''), " +
+			" coalesce(a.referencia,''), " +
 			" a.author_id, " +
-			" b.name, " +
+			" coalesce(b.name,''), " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
 			" coalesce(c.name,'') as cstatus, " +
 			" a.status_id, " +
@@ -241,6 +245,7 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 				&pilar.Id,
 				&pilar.Nome,
 				&pilar.Descricao,
+				&pilar.Referencia,
 				&pilar.AuthorId,
 				&pilar.AuthorName,
 				&pilar.C_CriadoEm,
@@ -249,6 +254,7 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 				&pilar.IdVersaoOrigem)
 			pilar.Order = i
 			i++
+			log.Println(pilar)
 			pilares = append(pilares, pilar)
 		}
 		sql = "SELECT id, nome FROM componentes ORDER BY id asc"
@@ -265,6 +271,9 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 			componentes = append(componentes, componente)
 		}
 		var page mdl.PagePilares
+		if msg != "" {
+			page.Msg = msg
+		}
 		if errMsg != "" {
 			page.ErrMsg = errMsg
 		}

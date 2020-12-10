@@ -25,7 +25,7 @@ func Initialize() {
 	createPlanos()
 	createJurisdicoes()
 	updateRoles()
-	//updateFeatures()
+	updateFeatures()
 	createPKey()
 	createFKey()
 	createUniqueKey()

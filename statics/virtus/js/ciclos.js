@@ -27,13 +27,16 @@ function editCiclo(e) {
     var cicloId = e.parentNode.parentNode.childNodes[3].innerText;
     var cicloNome = e.parentNode.parentNode.childNodes[5].innerText;
     var cicloDescricao = e.parentNode.parentNode.childNodes[7].innerText;
-    var cicloAutor = e.parentNode.parentNode.childNodes[9].innerText;
-    var cicloCriadoEm = e.parentNode.parentNode.childNodes[11].innerText;
+    var cicloReferencia = e.parentNode.parentNode.childNodes[9].innerText;
+    var cicloAutor = e.parentNode.parentNode.childNodes[11].innerText;
+    var cicloCriadoEm = e.parentNode.parentNode.childNodes[13].innerText;
 	document.getElementById('CicloIdForUpdate').value = cicloId;
     document.getElementById('NomeCicloForUpdate').value = cicloNome;
     document.getElementById('DescricaoCicloForUpdate').value = cicloDescricao;
+    document.getElementById('ReferenciaCicloForUpdate').value = cicloReferencia;
 	document.getElementById('AuthorNameForUpdate').value = cicloAutor;
     document.getElementById('CriadoEmForUpdate').value = cicloCriadoEm;
+    document.getElementById('NomeCicloForUpdate').focus();
 	loadPilaresByCicloId(cicloId);
 }
 
@@ -121,4 +124,10 @@ function validarPercentuais(){
 	}
 	document.getElementById('formulario-'+contexto).submit();
 	return;
+}
+
+function openCreateCiclo(){
+	resetCicloForms();
+	document.getElementById('create-form').style.display='block';
+	document.getElementById('NomeCicloForInsert').focus();
 }

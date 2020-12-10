@@ -13,7 +13,7 @@
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createComponente")}}
 					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
+					    <a style="margin-top: 6px" href="#" onclick="openCreateComponente()">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
 					{{end}}
@@ -23,33 +23,43 @@
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-componentes">
             <thead>
             <tr>
-                <th>Ord</th>
-                <th>Id</th>
-                <th>Nome</th>
+                <th style="vertical-align:middle;width: 5%;">Ord</th>
+                <th style="vertical-align:middle;width: 5%;">Id</th>
+                <th style="vertical-align:middle;width: 30%;text-align:left">
+					<input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-componentes', 1, 2)">
+				</th>
                 <th style="display:none">Descrição</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-                <th>Status</th>
+				<th style="display:none">Referência</th>
+                <th style="vertical-align:middle;width: 15%;">Autor</th>
+                <th style="vertical-align:middle;width: 15%;">Criado Em</th>
+                <th style="vertical-align:middle;width: 10%;">Status</th>
 				{{if $allowed}}
-				<th>Ações</th>
+				<th style="vertical-align:middle;width: 20%;">Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
             {{range $index, $componente := .Componentes}}
             <tr>
-                <td>#{{$componente.Order}}</td>
-                <td>{{$componente.Id}}</td>
-                <td>{{$componente.Nome}}</td>
+                <td style="vertical-align:middle">#{{$componente.Order}}</td>
+                <td style="vertical-align:middle">{{$componente.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$componente.Nome}}</td>
                 <td style="display:none">{{$componente.Descricao}}</td>
-                <td>{{$componente.AuthorName}}</td>
-                <td>{{$componente.C_CriadoEm}}</td>
-                <td>{{$componente.CStatus}}</td>
+                <td style="display:none">{{$componente.Referencia}}</td>
+                <td style="vertical-align:middle">{{$componente.AuthorName}}</td>
+                <td style="vertical-align:middle">{{$componente.C_CriadoEm}}</td>
+                <td style="vertical-align:middle">{{$componente.CStatus}}</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editComponente(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteComponente(this)">Apagar</button>
                 </td>

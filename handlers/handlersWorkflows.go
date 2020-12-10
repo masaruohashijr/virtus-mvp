@@ -284,7 +284,6 @@ func DeleteWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
 		http.Redirect(w, r, route.WorkflowsRoute, 301)
 	} else {

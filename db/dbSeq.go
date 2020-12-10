@@ -26,7 +26,7 @@ func createSeq() {
 		" CACHE 1")
 	// Sequence ACTIVITIES_ROLES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.activities_roles_id_seq " +
-		" START WITH 1" +
+		" START WITH 6" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
@@ -208,7 +208,7 @@ func createSeq() {
 		" CACHE 1")
 	// Sequence ROLES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.roles_id_seq " +
-		" START WITH 2" +
+		" START WITH 6" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
@@ -222,21 +222,21 @@ func createSeq() {
 		" CACHE 1")
 	// Sequence TIPOS_NOTAS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.tipos_notas_id_seq " +
-		" START WITH 1" +
+		" START WITH 4" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
 	// Sequence TIPOS_NOTAS_COMPONENTES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.tipos_notas_componentes_id_seq " +
-		" START WITH 1" +
+		" START WITH 16" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
 	// Sequence USERS_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS public.users_id_seq " +
-		" START WITH 1" +
+		" START WITH 112" +
 		" INCREMENT BY 1" +
 		" NO MINVALUE" +
 		" NO MAXVALUE" +

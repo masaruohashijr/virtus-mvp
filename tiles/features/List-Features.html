@@ -13,7 +13,7 @@
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createFeature")}}
 					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
+					    <a style="margin-top: 6px" href="#" onclick="openCreateFeature()">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
 					{{end}}
@@ -26,30 +26,35 @@
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
             <thead>
             <tr>
-                <th>Ord</th>
-                <th>Id</th>
-                <th>Nome</th>
-                <th>Código</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-                <th>Status</th>
+                <th style="vertical-align:middle;width: 5%;">Ord</th>
+                <th style="vertical-align:middle;width: 5%;">Id</th>
+                <th style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-ciclos', 1, 2)"></th>
+                <th style="vertical-align:middle;width: 10%;">Código</th>
+                <th style="vertical-align:middle;width: 10%;">Autor</th>
+                <th style="vertical-align:middle;width: 15%;">Criado Em</th>
+                <th style="vertical-align:middle;width: 5%;">Status</th>
 				{{if $allowed}}
-				<th>Ações</th>
+				<th style="vertical-align:middle;width: 35%;">Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
             {{range $index, $feature := .Features}}
             <tr>
-                <td>#{{$feature.Order}}</td>
-                <td>{{$feature.Id}}</td>
-                <td>{{$feature.Name}}<input type="hidden" value="{{$feature.Description}}"></td>
-                <td>{{$feature.Code}}</td>
-                <td>{{$feature.AuthorName}}</td>
-                <td>{{$feature.C_CreatedAt}}</td>
-                <td>{{$feature.CStatus}}</td>
+                <td style="vertical-align:middle;">#{{$feature.Order}}</td>
+                <td style="vertical-align:middle;">{{$feature.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$feature.Name}}<input type="hidden" value="{{$feature.Description}}"></td>
+                <td style="vertical-align:middle;">{{$feature.Code}}</td>
+                <td style="vertical-align:middle;">{{$feature.AuthorName}}</td>
+                <td style="vertical-align:middle;">{{$feature.C_CreatedAt}}</td>
+                <td style="vertical-align:middle;">{{$feature.CStatus}}</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle;">
                     <button class="w3-btn w3-teal" onclick="editFeature(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteFeature(this)">Apagar</button>
                 </td>

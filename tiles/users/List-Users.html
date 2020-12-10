@@ -14,7 +14,7 @@
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createUser")}}
 					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
+					    <a style="margin-top: 6px" href="#" onclick="openCreateUser()">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
 					{{end}}
@@ -28,9 +28,9 @@
 			id="table-users">
             <thead>
             <tr>
-                <th>Ord</th>
-                <th>Id</th>
-                <th>
+                <th style="vertical-align:middle;width: 5%;">Ord</th>
+                <th style="vertical-align:middle;width: 5%;">Id</th>
+                <th style="vertical-align:middle;width: 30%;">
 					<input 
 						type="text" 
 						value="" 
@@ -38,41 +38,41 @@
 						style="width:100%"
 						onkeyup="filtraTabela(this, 'table-users', 1, 2)">
 				</th>
-                <th>Username</th>
-                <th>E-mail</th>
-                <th>Celular</th>
-                <th>Escritório</th>
-                <th>Perfil</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-                <th>Status</th>
+                <th style="vertical-align:middle;width: 5%;text-align:left">Username</th>
+                <th style="vertical-align:middle;width: 5%;display:none">E-mail</th>
+                <th style="vertical-align:middle;width: 5%;display:none">Celular</th>
+                <th style="vertical-align:middle;width: 5%;">Escritório</th>
+                <th style="vertical-align:middle;width: 5%;">Perfil</th>
+                <th style="vertical-align:middle;width: 5%;display:none">Autor</th>
+                <th style="vertical-align:middle;width: 5%;">Criado Em</th>
+                <th style="vertical-align:middle;width: 5%;">Status</th>
 				{{if $allowed}}
-				<th>Ações</th>
+				<th style="vertical-align:middle;width: 20%;">Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
             {{range $index, $user := .Users }}
             <tr>
-                <td>#{{$user.Order}}</td>
-                <td>{{$user.Id}}</td>
-                <td>{{$user.Name}}</td>
-                <td>{{$user.Username}}</td>
-                <td>{{$user.Email}}</td>
-                <td>{{$user.Mobile}}</td>
-                <td>
+                <td style="vertical-align:middle">#{{$user.Order}}</td>
+                <td style="vertical-align:middle">{{$user.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$user.Name}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$user.Username}}</td>
+                <td style="display:none">{{$user.Email}}</td>
+                <td style="display:none">{{$user.Mobile}}</td>
+                <td style="vertical-align:middle">
 					<input type="hidden" value="{{$user.Escritorio}}">
 					{{$user.EscritorioNome}}
 				</td>
-                <td>
+                <td style="vertical-align:middle">
 					<input type="hidden" value="{{$user.Role}}">
 					{{$user.RoleName}}
 				</td>
-				<td>{{$user.AuthorName}}</td>
-				<td>{{$user.C_CriadoEm}}</td>
-				<td>{{$user.CStatus}}</td>
+				<td style="display:none">{{$user.AuthorName}}</td>
+				<td style="vertical-align:middle">{{$user.C_CriadoEm}}</td>
+				<td style="vertical-align:middle">{{$user.CStatus}}</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
                     <button class="w3-btn w3-teal" onclick="editUser(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteUser(this)">Apagar</button>
                 </td>

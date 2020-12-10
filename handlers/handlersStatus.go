@@ -44,11 +44,9 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request) {
 		stereotype := r.FormValue("Stereotype")
 		sqlStatement := "UPDATE status SET name=$1, description=$2, stereotype=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(name, description, stereotype, id)
 		log.Println("UPDATE: Id: " + id + " | Name: " + name + " | Descricao: " + description + " | Stereotype: " + stereotype)
 		http.Redirect(w, r, route.StatusRoute, 301)

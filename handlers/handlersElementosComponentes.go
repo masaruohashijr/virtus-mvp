@@ -21,7 +21,7 @@ func ListElementosByComponenteId(componenteId string) []mdl.ElementoComponente {
 		"a.peso_padrao, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
-		"coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em, " +
+		"coalesce(to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS')) as criado_em, " +
 		"a.status_id, " +
 		"coalesce(c.name,'') as status_name " +
 		"FROM elementos_componentes a " +
@@ -53,7 +53,7 @@ func ListElementosByComponenteId(componenteId string) []mdl.ElementoComponente {
 		elementoComponente.Order = i
 		i++
 		elementosComponente = append(elementosComponente, elementoComponente)
-		log.Println(elementoComponente)
+		//log.Println(elementoComponente)
 	}
 	return elementosComponente
 }

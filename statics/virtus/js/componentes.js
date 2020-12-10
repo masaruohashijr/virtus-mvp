@@ -6,9 +6,12 @@ function editComponente(e) {
     var componenteId = e.parentNode.parentNode.childNodes[3].innerText;
     var componenteNome = e.parentNode.parentNode.childNodes[5].innerText;
     var componenteDescricao = e.parentNode.parentNode.childNodes[7].innerText;
+    var componenteReferencia = e.parentNode.parentNode.childNodes[9].innerText;
 	document.getElementById('ComponenteIdForUpdate').value = componenteId;
     document.getElementById('ComponenteNomeForUpdate').value = componenteNome;
     document.getElementById('ComponenteDescricaoForUpdate').value = componenteDescricao;
+    document.getElementById('ComponenteReferenciaForUpdate').value = componenteReferencia;
+	document.getElementById('ComponenteNomeForUpdate').focus();
 	loadElementosByComponenteId(componenteId);
 	loadTiposNotaByComponenteId(componenteId);
 }
@@ -62,4 +65,9 @@ function loadTiposNotaByComponenteId(componenteId){
 	}
 	xmlhttp.open("GET","/loadTiposNotaByComponenteId?componenteId="+componenteId,true);
 	xmlhttp.send(); 
+}
+
+function openCreateComponente(){
+	document.getElementById('create-form').style.display='block'; 
+	document.getElementById('NomeComponenteForInsert').focus();
 }

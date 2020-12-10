@@ -26,9 +26,9 @@
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="tabela-elementos">
             <thead>
             <tr>
-                <th>Ord</th>
-                <th>Id</th>
-                <th>
+                <th style="vertical-align:middle;width: 5%;">Ord</th>
+                <th style="vertical-align:middle;width: 5%;">Id</th>
+                <th style="vertical-align:middle;width: 30%;">
 					<input 
 						type="text" 
 						value="" 
@@ -38,27 +38,27 @@
 				</th>
                 <th style="display:none">Descrição</th>
                 <th style="display:none">Referência</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-                <th>Status</th>
+                <th style="vertical-align:middle;width: 15%;">Autor</th>
+                <th style="vertical-align:middle;width: 15%;">Criado Em</th>
+                <th style="vertical-align:middle;width: 10%;">Status</th>
 				{{if $allowed}}
-				<th>Ações</th>
+				<th style="vertical-align:middle;width: 20%;">Ações</th>
 				{{end}}
             </tr>
             </thead>
             <tbody>
             {{range $index, $elemento := .Elementos}}
             <tr>
-                <td>#{{$elemento.Order}}</td>
-                <td>{{$elemento.Id}}</td>
-                <td style="text-align:left">{{$elemento.Nome}}</td>
+                <td style="vertical-align:middle">#{{$elemento.Order}}</td>
+                <td style="vertical-align:middle">{{$elemento.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$elemento.Nome}}</td>
                 <td style="display:none">{{$elemento.Descricao}}</td>
                 <td style="display:none">{{$elemento.Referencia}}</td>
-                <td>{{$elemento.AuthorName}}</td>
-                <td>{{$elemento.C_CriadoEm}}</td>
-                <td>{{$elemento.CStatus}}<input type="hidden" id="ElementoStatusId" value="{{$elemento.StatusId}}"></td>
+                <td style="vertical-align:middle">{{$elemento.AuthorName}}</td>
+                <td style="vertical-align:middle">{{$elemento.C_CriadoEm}}</td>
+                <td style="vertical-align:middle">{{$elemento.CStatus}}<input type="hidden" id="ElementoStatusId" value="{{$elemento.StatusId}}"></td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editElemento(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteElemento(this)">Apagar</button>
                 </td>

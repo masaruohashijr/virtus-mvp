@@ -9,6 +9,7 @@ function editRole(e) {
 	document.getElementById('RoleIdForUpdate').value = roleId;
     document.getElementById('RoleNameForUpdate').value = roleName;
     document.getElementById('RoleDescriptionForUpdate').value = roleDescription;
+    document.getElementById('RoleNameForUpdate').focus();
 	// carregar as features do papel
 	loadFeaturesByRoleId(roleId);
 }
@@ -49,4 +50,9 @@ function selectOptionsRolesForUpdate(rolesEdit){
 			}
 		}
 	}
+}
+
+function openCreatePerfil(){
+	document.getElementById('create-form').style.display='block';
+	document.getElementById('RoleNameForInsert').focus();
 }

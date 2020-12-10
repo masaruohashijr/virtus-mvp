@@ -118,7 +118,6 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(nome, descricao, sigla, codigo, situacao, esi, municipio, siglaUF, entidadeId)
 		log.Println("UPDATE: Id: " + entidadeId + " | Nome: " + nome + " | Descrição: " + descricao + " | SiglaUF: " + siglaUF)
 

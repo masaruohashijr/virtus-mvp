@@ -51,7 +51,7 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 					log.Println(err.Error())
 				}
 			}
-			http.Redirect(w, r, route.ElementosRoute, 301)
+			http.Redirect(w, r, route.ElementosRoute+"?msg=Elemento criado com sucesso.", 301)
 		}
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -147,7 +147,7 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		UpdateItensHandler(itensPage, itensDB) // TODO
-		http.Redirect(w, r, route.ElementosRoute, 301)
+		http.Redirect(w, r, route.ElementosRoute+"?msg=Elemento atualizado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -182,9 +182,8 @@ func DeleteElementoHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.ElementosRoute, 301)
+		http.Redirect(w, r, route.ElementosRoute+"?msg=Elemento removido com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -195,6 +194,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listElementos") {
 		errMsg := r.FormValue("errMsg")
+		msg := r.FormValue("msg")
 		query := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
@@ -227,11 +227,14 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 				&elemento.CStatus,
 				&elemento.StatusId)
 			elemento.Order = i
-			log.Println(elemento)
+			//log.Println(elemento)
 			i++
 			elementos = append(elementos, elemento)
 		}
 		var page mdl.PageElementos
+		if msg != "" {
+			page.Msg = msg
+		}
 		if errMsg != "" {
 			page.ErrMsg = errMsg
 		}

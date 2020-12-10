@@ -12,7 +12,7 @@
 
             <form class="w3-container" action="/createRole" method="post">
                 <label class="w3-label">Nome</label>
-                <input class="w3-input" type="text" name="Name" value="">
+                <input class="w3-input" type="text" name="Name" id="RoleNameForInsert" value="">
                 <label class="w3-label">Funcionalidades</label>
 	            <select class="w3-input" name="FeaturesForInsert" id="FeaturesForInsert" multiple style="width:100%">
 					{{range $index, $feature := .Features }}

@@ -79,6 +79,7 @@ function addPilarCicloRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="cicloId" value="'+pilarCiclo.cicloId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+pilarCiclo.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
+	newCell.style = "vertical-align: middle; text-align: left";
 	// Tipo de Média
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(pilarCiclo.tipoMedia);

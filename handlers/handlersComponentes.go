@@ -19,10 +19,11 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
+		referencia := r.FormValue("Referencia")
 		statusComponenteId := GetStartStatus("componente")
-		sqlStatement := "INSERT INTO componentes(nome, descricao, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		sqlStatement := "INSERT INTO componentes(nome, descricao, referencia, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 		idComponente := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now(), statusComponenteId).Scan(&idComponente)
+		err := Db.QueryRow(sqlStatement, nome, descricao, referencia, currentUser.Id, time.Now(), statusComponenteId).Scan(&idComponente)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -89,7 +90,7 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, route.ComponentesRoute, 301)
+		http.Redirect(w, r, route.ComponentesRoute+"?msg=Componente criado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -102,12 +103,13 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		componenteId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		sqlStatement := "UPDATE componentes SET nome=$1, descricao=$2 WHERE id=$3"
+		referencia := r.FormValue("Referencia")
+		sqlStatement := "UPDATE componentes SET nome=$1, descricao=$2, referencia=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		updtForm.Exec(nome, descricao, componenteId)
+		updtForm.Exec(nome, descricao, referencia, componenteId)
 		log.Println("UPDATE: Id: " + componenteId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Elementos Componentes
@@ -223,7 +225,7 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		UpdateElementosComponenteHandler(elementosComponentePage, elementosComponenteDB)
 	}
-	http.Redirect(w, r, route.ComponentesRoute, 301)
+	http.Redirect(w, r, route.ComponentesRoute+"?msg=Componente atualizado com sucesso.", 301)
 }
 
 func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
@@ -250,10 +252,9 @@ func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
 	}
-	http.Redirect(w, r, route.ComponentesRoute, 301)
+	http.Redirect(w, r, route.ComponentesRoute+"?msg=Componente removido com sucesso.", 301)
 }
 
 func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
@@ -261,10 +262,12 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listCiclos") {
 		errMsg := r.FormValue("errMsg")
+		msg := r.FormValue("msg")
 		sql := "SELECT " +
 			" a.id, " +
 			" a.nome, " +
-			" a.descricao, " +
+			" coalesce(a.descricao,''), " +
+			" coalesce(a.referencia,''), " +
 			" a.author_id, " +
 			" b.name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
@@ -286,6 +289,7 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 				&componente.Id,
 				&componente.Nome,
 				&componente.Descricao,
+				&componente.Referencia,
 				&componente.AuthorId,
 				&componente.AuthorName,
 				&componente.C_CriadoEm,
@@ -322,6 +326,9 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var page mdl.PageComponentes
+		if msg != "" {
+			page.Msg = msg
+		}
 		if errMsg != "" {
 			page.ErrMsg = errMsg
 		}

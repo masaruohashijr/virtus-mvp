@@ -28,17 +28,20 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 			" VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"
 		id := 0
 		err = Db.QueryRow(sqlStatement, name, username, hash, email, mobile, role, currentUser.Id, time.Now()).Scan(&id)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			log.Println(err.Error())
+			errMsg := "Erro ao criar Usuário."
+			if role == "" {
+				errMsg = errMsg + " Faltou informar o Perfil do Usuário."
+			}
+			http.Redirect(w, r, route.UsersRoute+"?errMsg="+errMsg, 301)
 		}
-		sec.CheckInternalServerError(err, w)
 		log.Println("INSERT: Id: " + strconv.Itoa(id) +
 			" | Name: " + name + " | Username: " + username +
 			" | Password: " + password + " | Email: " + email +
 			" | Mobile: " + mobile + " | Role: " + role)
 	}
-	http.Redirect(w, r, route.UsersRoute, 301)
+	http.Redirect(w, r, route.UsersRoute+"?msg=Usuário criado com sucesso.", 301)
 }
 
 func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +70,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 			email + " | Mobile: " +
 			mobile + " | Role: " +
 			role)
-		http.Redirect(w, r, route.UsersRoute, 301)
+		http.Redirect(w, r, route.UsersRoute+"?msg=Usuário atualizado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -84,16 +87,16 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
 	}
-	http.Redirect(w, r, route.UsersRoute, 301)
+	http.Redirect(w, r, route.UsersRoute+"?msg=Usuário removido com sucesso.", 301)
 }
 
 func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Users")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listUsers") {
+		msg := r.FormValue("msg")
 		errMsg := r.FormValue("errMsg")
 		sql := " WITH esc AS (WITH TMP as ( " +
 			" SELECT a.id, " +
@@ -182,6 +185,9 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 		var page mdl.PageUsers
 		if errMsg != "" {
 			page.ErrMsg = errMsg
+		}
+		if msg != "" {
+			page.Msg = msg
 		}
 		page.Users = users
 		page.Roles = roles

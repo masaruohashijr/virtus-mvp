@@ -71,6 +71,7 @@ type Ciclo struct {
 	Id             int64  `json:"id"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
 	AuthorId       int64  `json:"authorId"`
 	AuthorName     string `json:"authorName"`
 	CriadoEm       string `json:"criadoEm"`
@@ -103,6 +104,7 @@ type Componente struct {
 	Id             int64  `json:"id"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
 	AuthorId       int64  `json:"authorId"`
 	AuthorName     string `json:"authorName"`
 	CriadoEm       string `json:"criadoEm"`
@@ -364,6 +366,7 @@ type Pilar struct {
 	Id             int64  `json:"id"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
 	AuthorId       int64  `json:"authorId"`
 	AuthorName     string `json:"authorName"`
 	CriadoEm       string `json:"criadoEm"`

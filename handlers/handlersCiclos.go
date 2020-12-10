@@ -19,9 +19,10 @@ func CreateCicloHandler(w http.ResponseWriter, r *http.Request) {
 		currentUser := GetUserInCookie(w, r)
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
-		sqlStatement := "INSERT INTO ciclos(nome, descricao, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
+		referencia := r.FormValue("Referencia")
+		sqlStatement := "INSERT INTO ciclos(nome, descricao, referencia, author_id, criado_em) VALUES ($1, $2, $3, $4) RETURNING id"
 		idCiclo := 0
-		Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&idCiclo)
+		Db.QueryRow(sqlStatement, nome, descricao, referencia, currentUser.Id, time.Now()).Scan(&idCiclo)
 		log.Println(sqlStatement + " - " + nome)
 		log.Println("INSERT: Id: " + strconv.Itoa(idCiclo) + " - Nome: " + nome)
 		for key, value := range r.Form {
@@ -55,7 +56,7 @@ func CreateCicloHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, route.CiclosRoute, 301)
+		http.Redirect(w, r, route.CiclosRoute+"?msg=Ciclo criado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -70,13 +71,15 @@ func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
 		cicloId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
+		referencia := r.FormValue("Referencia")
 		iniciaEm := r.FormValue("IniciaEm")
 		terminaEm := r.FormValue("TerminaEm")
 		sqlStatement := "UPDATE ciclos SET nome = $1, " +
 			" descricao = $2 " +
-			" WHERE id = $3 "
+			" descricao = $3 " +
+			" WHERE id = $4 "
 		updtForm, _ := Db.Prepare(sqlStatement)
-		updtForm.Exec(nome, descricao, cicloId)
+		updtForm.Exec(nome, descricao, referencia, cicloId)
 		log.Println("UPDATE: Id: " + cicloId + " | Nome: " + nome + " | Descrição: " + descricao)
 		log.Println(len(entidades))
 		for _, entidadeId := range entidades {
@@ -130,11 +133,13 @@ func UpdateCicloHandler(w http.ResponseWriter, r *http.Request) {
 		cicloId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
+		referencia := r.FormValue("Referencia")
 		sqlStatement := "UPDATE ciclos SET nome = $1, " +
-			" descricao = $2 " +
-			" WHERE id = $3 "
+			" descricao = $2, " +
+			" referencia = $3 " +
+			" WHERE id = $4 "
 		updtForm, _ := Db.Prepare(sqlStatement)
-		updtForm.Exec(nome, descricao, cicloId)
+		updtForm.Exec(nome, descricao, referencia, cicloId)
 		log.Println("UPDATE: Id: " + cicloId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Pilares Ciclos
@@ -233,7 +238,7 @@ func UpdateCicloHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		UpdatePilaresCicloHandler(pilaresCicloPage, pilaresCicloDB)
 
-		http.Redirect(w, r, route.CiclosRoute, 301)
+		http.Redirect(w, r, route.CiclosRoute+"?msg=Ciclo atualizado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -257,7 +262,7 @@ func DeleteCicloHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.CiclosRoute, 301)
+		http.Redirect(w, r, route.CiclosRoute+"?msg=Ciclo removido com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -272,6 +277,7 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			" a.id, " +
 			" a.nome, " +
 			" a.descricao, " +
+			" a.referencia, " +
 			" a.author_id, " +
 			" b.name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
@@ -293,6 +299,7 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 				&ciclo.Id,
 				&ciclo.Nome,
 				&ciclo.Descricao,
+				&ciclo.Referencia,
 				&ciclo.AuthorId,
 				&ciclo.AuthorName,
 				&ciclo.C_CriadoEm,

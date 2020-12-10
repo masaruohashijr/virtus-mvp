@@ -43,7 +43,7 @@ func UpdateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 		referencia := r.FormValue("Referencia")
 		letra := r.FormValue("Letra")
 		corLetra := r.FormValue("CorLetra")
-		sqlStatement := "UPDATE tipos_notas SET nome=$1, descricao=$2, descricao=$3, letra=$4, cor_letra=$5 WHERE id=$6"
+		sqlStatement := "UPDATE tipos_notas SET nome=$1, descricao=$2, referencia=$3, letra=$4, cor_letra=$5 WHERE id=$6"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			log.Println(err.Error())

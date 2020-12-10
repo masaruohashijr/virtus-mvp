@@ -9,6 +9,7 @@ function editFeature(e) {
     document.getElementById('FeatureNameForUpdate').value = featureName;
     document.getElementById('FeatureDescriptionForUpdate').value = featureDescription;
     document.getElementById('FeatureCodeForUpdate').value = featureCode;
+    document.getElementById('FeatureNameForUpdate').focus();
 }
 
 function deleteFeature(e) {
@@ -45,3 +46,7 @@ function selectOptionsFeaturesForUpdate(featuresEdit){
 	}
 }
 
+function openCreateFeature(){
+	document.getElementById('create-form').style.display='block';
+	document.getElementById('NameFeatureForInsert').focus();
+}

@@ -20,7 +20,7 @@ func ListPilaresByCicloId(cicloId string) []mdl.PilarCiclo {
 		"a.tipo_media, " +
 		"a.author_id, " +
 		"coalesce(b.name,'') as author_name, " +
-		"coalesce(to_char(a.criado_em,'DD/MM/YYYY')) as criado_em, " +
+		"coalesce(to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS')) as criado_em, " +
 		"a.status_id, " +
 		"coalesce(c.name,'') as status_name " +
 		"FROM pilares_ciclos a " +

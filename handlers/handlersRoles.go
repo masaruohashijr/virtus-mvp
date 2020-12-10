@@ -23,20 +23,16 @@ func CreateRoleHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "INSERT INTO roles(name, description, author_id, created_at) VALUES ($1, $2, $3, $4) RETURNING id"
 		roleId := 0
 		err := Db.QueryRow(sqlStatement, name, description, currentUser.Id, time.Now()).Scan(&roleId)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		for _, featureId := range features {
 			sqlStatement := "INSERT INTO features_roles(feature_id,role_id) VALUES ($1,$2) RETURNING id"
 			featureRoleId := 0
 			err = Db.QueryRow(sqlStatement, featureId, roleId).Scan(&featureRoleId)
-			sec.CheckInternalServerError(err, w)
 			if err != nil {
 				log.Println(err.Error())
 			}
-			sec.CheckInternalServerError(err, w)
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(roleId) + " | Name: " + name)
 	}
@@ -133,7 +129,6 @@ func DeleteRoleHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
 	}
 	http.Redirect(w, r, route.RolesRoute, 301)

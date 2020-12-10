@@ -16,6 +16,8 @@
                 <input class="w3-input" type="text" name="Nome" id="NomeCicloForUpdate" value="">
                 <label class="w3-label">Descrição</label>
                 <textarea class="w3-input" name="Descricao" id="DescricaoCicloForUpdate" rows="5" value=""></textarea>
+                <label class="w3-label">Referência</label>
+                <input class="w3-input" type="text" name="Referencia" id="ReferenciaCicloForUpdate" value="">
 				<label class="w3-label">Autor</label>
                 <input class="w3-input" type="text" name="AuthorNameForUpdate" id="AuthorNameForUpdate" readonly="readonly" disabled="disabled" value="">
 				<label class="w3-label">Criado Em</label>
@@ -37,12 +39,17 @@
 		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
 					id="table-pilar-ciclo-edit">
 		            <tr>
-		                <th>Nome</th>
-		                <th>Tipo de Média</th>
-		                <th>Peso Padrão</th>
-		                <th>Autor</th>
-		                <th>Criado Em</th>
-						<th>Ações</th>
+		                <th style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'table-pilar-ciclo-edit', 1, 0)"></th>
+		                <th style="vertical-align:middle;width: 10%;">Tipo de Média</th>
+		                <th style="vertical-align:middle;width: 10%;">Peso Padrão</th>
+		                <th style="vertical-align:middle;width: 5%;">Autor</th>
+		                <th style="vertical-align:middle;width: 10%;">Criado Em</th>
+						<th style="vertical-align:middle;width: 25%;">Ações</th>
 		            </tr>
 		        </table>
 				<button 

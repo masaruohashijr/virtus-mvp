@@ -34,11 +34,9 @@ func UpdatePlanoHandler(w http.ResponseWriter, r *http.Request) {
 		nome := r.FormValue("Nome")
 		sqlStatement := "UPDATE planos SET nome=$1 WHERE id=$2"
 		updtForm, err := Db.Prepare(sqlStatement)
-		sec.CheckInternalServerError(err, w)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(nome, id)
 		log.Println("UPDATE: Id: " + id + " | Nome: " + nome)
 		http.Redirect(w, r, route.PlanosRoute, 301)

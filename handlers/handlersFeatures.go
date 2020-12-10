@@ -66,7 +66,6 @@ func DeleteFeatureHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
-		sec.CheckInternalServerError(err, w)
 		log.Println("DELETE: Id: " + id)
 		http.Redirect(w, r, route.FeaturesRoute, 301)
 	} else {
@@ -113,11 +112,11 @@ func ListFeaturesHandler(w http.ResponseWriter, r *http.Request) {
 func listFeatures(errorMsg string) mdl.PageFeatures {
 	sql := "SELECT " +
 		" a.id, " +
-		" a.name, " +
-		" a.code, " +
+		" coalesce(a.name,''), " +
+		" coalesce(a.code,''), " +
 		" coalesce(a.description,'') as dsc, " +
 		" a.author_id, " +
-		" b.name, " +
+		" coalesce(b.name,''), " +
 		" to_char(a.created_at,'DD/MM/YYYY HH24:MI:SS'), " +
 		" coalesce(c.name,'') as cstatus, " +
 		" a.status_id, " +
@@ -144,7 +143,7 @@ func listFeatures(errorMsg string) mdl.PageFeatures {
 			&feature.CStatus,
 			&feature.StatusId,
 			&feature.IdVersaoOrigem)
-		log.Println(feature.AuthorName)
+		//log.Println(feature.AuthorName)
 		feature.Order = i
 		i++
 		features = append(features, feature)

@@ -4,9 +4,12 @@ function editPilar(e) {
     var pilarId = e.parentNode.parentNode.childNodes[3].innerText;
     var pilarNome = e.parentNode.parentNode.childNodes[5].innerText;
     var pilarDescricao = e.parentNode.parentNode.childNodes[7].innerText;
+    var pilarReferencia = e.parentNode.parentNode.childNodes[9].innerText;
 	document.getElementById('PilarIdForUpdate').value = pilarId;
     document.getElementById('PilarNomeForUpdate').value = pilarNome;
     document.getElementById('PilarDescricaoForUpdate').value = pilarDescricao;
+    document.getElementById('PilarReferenciaForUpdate').value = pilarReferencia;
+document.getElementById('PilarNomeForUpdate').focus();
 	loadComponentesByPilarId(pilarId);
 }
 
@@ -35,4 +38,9 @@ function loadComponentesByPilarId(pilarId){
 	}
 	xmlhttp.open("GET","/loadComponentesByPilarId?pilarId="+pilarId,true);
 	xmlhttp.send(); 
+}
+
+function openCreatePilar(){
+	document.getElementById('create-form').style.display='block';
+	document.getElementById('NomePilarForInsert').focus();
 }

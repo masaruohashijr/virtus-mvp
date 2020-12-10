@@ -87,6 +87,7 @@ function addElementoComponenteRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="elementoId" value="'+elementoComponente.elementoId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+elementoComponente.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
+	newCell.style = "vertical-align: middle;text-align:left;";
 	// Tipo de Nota
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(elementoComponente.tipoNotaNome);
@@ -96,17 +97,21 @@ function addElementoComponenteRow(tableID) {
 	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(elementoComponente.pesoPadrao);
 	newCell.appendChild(newText);
+	newCell.style = "vertical-align: middle";
 	// Criado Em
 	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(elementoComponente.autorNome);
 	newCell.appendChild(newText);
+	newCell.style = "vertical-align: middle";
 	// Autor
 	newCell = newRow.insertCell(4);
 	newText = document.createTextNode(elementoComponente.criadoEm);
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+elementoComponente.autorId+'"/>'+newCell.innerHTML;
+	newCell.style = "vertical-align: middle";
 	// Botões
 	newCell = newRow.insertCell(5);
+	newCell.style = "vertical-align: middle";
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";

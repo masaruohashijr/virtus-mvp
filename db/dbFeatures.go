@@ -46,13 +46,13 @@ func createFeatures() {
 	db.Exec("INSERT INTO public.features (id, name, code) SELECT 37, 'Home Auditor', 'homeAuditor' WHERE NOT EXISTS (SELECT 1 FROM features WHERE id = 37)")
 }
 
-/*
 func updateFeatures() {
-	query := " UPDATE features SET author_id = 1 WHERE id <= 34"
-	//log.Println(query)
+	query := " UPDATE features SET author_id = 1, created_at = now()::timestamp, status_id = 0 " +
+		" WHERE id <= 37 AND EXISTS (SELECT 1 FROM features a WHERE a.author_id IS NULL)"
 	db.Exec(query)
+	//log.Println(query)
 }
-*/
+
 func createRoleFeatures() {
 	stmt1 := " INSERT INTO features_roles (role_id, feature_id) "
 	stmt2 := ""
