@@ -46,7 +46,7 @@ func UpdateFeatureHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE features SET name=$1, code=$2, description=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(name, code, id)
 		log.Println("UPDATE: Id: " + id + " | Name: " + name + " | Code: " + code + " | Description: " + description)
@@ -63,7 +63,7 @@ func DeleteFeatureHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM features WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
@@ -78,7 +78,7 @@ func DeleteFeaturesByRoleHandler(roleId string) {
 	sqlStatement := "DELETE FROM features_roles WHERE role_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(roleId)
 	log.Println("DELETE features_roles in Role Id: " + roleId)
@@ -88,7 +88,7 @@ func DeleteFeaturesHandler(diffDB []mdl.Feature) {
 	sqlStatement := "DELETE FROM features_roles WHERE feature_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
@@ -128,6 +128,7 @@ func listFeatures(errorMsg string) mdl.PageFeatures {
 		" order by a.id asc"
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var features []mdl.Feature
 	var feature mdl.Feature
 	var i = 1
@@ -165,6 +166,7 @@ func ListFeaturesByRoleIdHandler(roleId string) []mdl.Feature {
 		" FROM features_roles WHERE role_id= $1"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, roleId)
+	defer rows.Close()
 	var features []mdl.Feature
 	var feature mdl.Feature
 	for rows.Next() {
@@ -193,6 +195,7 @@ func LoadAvailableFeatures(w http.ResponseWriter, r *http.Request) {
 		" AND a.id in ( SELECT feature_id from features_roles where role_id = $3 ) "
 	log.Println("Query Available Features: " + sql)
 	rows, _ := Db.Query(sql, entityType, statusId, savedUser.Role)
+	defer rows.Close()
 	var features []mdl.Feature
 	var feature mdl.Feature
 	for rows.Next() {

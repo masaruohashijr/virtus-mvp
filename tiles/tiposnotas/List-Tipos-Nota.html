@@ -13,7 +13,7 @@
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createTipoNota")}}
 					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="document.getElementById('create-form').style.display='block'">
+					    <a style="margin-top: 6px" href="#" onclick="openCreateTipoNota()">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
 					{{end}}
@@ -30,6 +30,7 @@
                 <th>Id</th>
                 <th>Nome</th>
                 <th>Descrição</th>
+                <th>Referência</th>
                 <th>Letra</th>
                 <th>Cor da Letra</th>
 				{{if $allowed}}
@@ -44,6 +45,7 @@
                 <td>{{$tipo.Id}}</td>
                 <td>{{$tipo.Nome}}</td>
                 <td>{{$tipo.Descricao}}</td>
+                <td>{{$tipo.Referencia}}</td>
                 <td>{{$tipo.Letra}}</td>
                 <td>{{$tipo.CorLetra}}</td>
 				{{if $allowed}}

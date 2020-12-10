@@ -33,7 +33,7 @@ const sqlAvaliarPlanos = " SELECT a.entidade_id, " +
 	" 	   pc.tipo_media, pc.peso_padrao, " +
 	" 	   a.item_id, coalesce(l.nome,'') as item_nome, " +
 	"      a.plano_id, " +
-	"	   j.cnpb, j.recurso_garantidor::NUMERIC::MONEY, j.modalidade_id, " +
+	"	   j.cnpb, CASE WHEN j.recurso_garantidor < 1000000000 THEN j.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE j.recurso_garantidor::numeric::MONEY/1000000000||' bi' END, j.modalidade_id, " +
 	" 	   coalesce(p.peso,0) as plano_peso, coalesce(p.nota,0) as plano_nota " +
 	" FROM produtos_itens a " +
 	" INNER JOIN entidades b ON a.entidade_id = b.id " +
@@ -110,6 +110,7 @@ func ListAvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 			" WHERE (c.usuario_id = $1 AND u.role_id in (3,4)) OR (a.chefe_id = $2)"
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id, currentUser.Id)
+		defer rows.Close()
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		var i = 1
@@ -133,6 +134,7 @@ func ListAvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 				" WHERE a.entidade_id = $1 " +
 				" ORDER BY id asc"
 			rows, _ = Db.Query(sql, entidade.Id)
+			defer rows.Close()
 			i = 1
 			for rows.Next() {
 				rows.Scan(&cicloEntidade.Id, &cicloEntidade.Nome)
@@ -163,6 +165,7 @@ func AvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 		var page mdl.PageProdutosItens
 		log.Println(sqlAvaliarPlanos)
 		rows, _ := Db.Query(sqlAvaliarPlanos, entidadeId, cicloId)
+		defer rows.Close()
 		var produtos []mdl.ProdutoItem
 		var produto mdl.ProdutoItem
 		var i = 1
@@ -228,6 +231,7 @@ func AvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 			" AND b.role_id = 3 "
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var supervisores []mdl.User
 		var supervisor mdl.User
 		i = 1
@@ -249,6 +253,7 @@ func AvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 			" AND b.role_id in (2,3,4) ORDER BY 2 "
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var auditores []mdl.User
 		var auditor mdl.User
 		i = 1
@@ -278,6 +283,7 @@ func AtualizarPlanosHandler(entidadeId string, cicloId string, w http.ResponseWr
 	var page mdl.PageProdutosItens
 	log.Println(sqlAvaliarPlanos)
 	rows, _ := Db.Query(sqlAvaliarPlanos, entidadeId, cicloId)
+	defer rows.Close()
 	var produtos []mdl.ProdutoItem
 	var produto mdl.ProdutoItem
 	var i = 1
@@ -343,6 +349,7 @@ func AtualizarPlanosHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" AND b.role_id = 3 "
 	log.Println(sql)
 	rows, _ = Db.Query(sql)
+	defer rows.Close()
 	var supervisores []mdl.User
 	var supervisor mdl.User
 	i = 1
@@ -364,6 +371,7 @@ func AtualizarPlanosHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" AND b.role_id in (2,3,4) "
 	log.Println(sql)
 	rows, _ = Db.Query(sql)
+	defer rows.Close()
 	var auditores []mdl.User
 	var auditor mdl.User
 	i = 1

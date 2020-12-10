@@ -32,6 +32,7 @@ func ListComponentesByPilarId(pilarId string) []mdl.ComponentePilar {
 		" ORDER BY c.nome ASC"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, pilarId)
+	defer rows.Close()
 	var componentesPilar []mdl.ComponentePilar
 	var componentePilar mdl.ComponentePilar
 	var i = 1
@@ -105,7 +106,7 @@ func updateComponentePilarHandler(componentePilarPage mdl.ComponentePilar, compo
 	updtForm, _ := Db.Prepare(sqlStatement)
 	_, err := updtForm.Exec(componentePilarPage.TipoMediaId, componentePilarPage.PesoPadrao, componentePilarPage.Sonda, componentePilarPage.Id)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	log.Println("Statement: " + sqlStatement)
 }
@@ -114,7 +115,7 @@ func DeleteComponentesPilarByPilarId(pilarId string) {
 	sqlStatement := "DELETE FROM componentes_pilares WHERE pilar_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(pilarId)
 	log.Println("DELETE componentes_pilares in Order Id: " + pilarId)
@@ -124,7 +125,7 @@ func DeleteComponentesPilarHandler(diffDB []mdl.ComponentePilar) {
 	sqlStatement := "DELETE FROM componentes_pilares WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))

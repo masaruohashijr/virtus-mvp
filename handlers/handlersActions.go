@@ -37,7 +37,7 @@ func ExecuteActionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(actionId, id)
 	log.Println("UPDATE: Id: " + actionId)
@@ -45,6 +45,7 @@ func ExecuteActionHandler(w http.ResponseWriter, r *http.Request) {
 	sqlStatement = "SELECT a.status_id, b.name FROM " + tableName + " a LEFT JOIN status b ON a.status_id = b.id WHERE a.id = $1"
 	log.Println("Query: " + sqlStatement)
 	rows, _ := Db.Query(sqlStatement, id)
+	defer rows.Close()
 	var status mdl.Status
 	for rows.Next() {
 		err = rows.Scan(&status.Id, &status.Name)
@@ -83,12 +84,12 @@ func CreateActionHandler(w http.ResponseWriter, r *http.Request) {
 			currentUser.Id,
 			time.Now()).Scan(&actionId)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		sqlStatement = "INSERT INTO actions_status(action_id,origin_status_id,destination_status_id) VALUES ($1,$2,$3)"
 		Db.QueryRow(sqlStatement, actionId, originStatus[0], destinationStatus[0])
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(actionId) + " | Name: " + name)
 		http.Redirect(w, r, route.ActionsRoute, 301)
@@ -116,6 +117,7 @@ func UpdateActionHandler(w http.ResponseWriter, r *http.Request) {
 		query := "SELECT origin_status_id, destination_status_id FROM actions_status WHERE action_id = $1 "
 		log.Println("List Action -> Query: " + query)
 		rows, _ := Db.Query(query, actionId)
+		defer rows.Close()
 		originStatusDB := ""
 		destinationStatusDB := ""
 		for rows.Next() {
@@ -126,7 +128,7 @@ func UpdateActionHandler(w http.ResponseWriter, r *http.Request) {
 			sqlStatement := "DELETE FROM actions_status WHERE action_id=$1"
 			deleteForm, err := Db.Prepare(sqlStatement)
 			if err != nil {
-				panic(err.Error())
+				log.Println(err.Error())
 			}
 			deleteForm.Exec(actionId)
 			log.Println("DELETE Action_Status: Id: " + actionId)
@@ -134,14 +136,14 @@ func UpdateActionHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE actions SET name=$1, origin_status_id=$2, destination_status_id=$3, other_than=$4, description=$5 WHERE id=$6"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(name, originStatus[0], destinationStatus[0], otherThan, description, actionId)
 		log.Println("UPDATE: Id: " + actionId + " | Name: " + name)
 		sqlStatement = "INSERT INTO actions_status(action_id,origin_status_id,destination_status_id) VALUES ($1,$2,$3)"
 		Db.QueryRow(sqlStatement, actionId, originStatus[0], destinationStatus[0])
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		http.Redirect(w, r, route.ActionsRoute, 301)
 	} else {
@@ -184,11 +186,11 @@ func DeleteActionHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement = "DELETE FROM actions WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		if err != nil {
 			log.Println(err.Error())
@@ -234,6 +236,7 @@ func ListActionsHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY a.id asc "
 		log.Println("List Action -> SQL: " + sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var actions []mdl.Action
 		var action mdl.Action
 		var i = 1
@@ -260,6 +263,7 @@ func ListActionsHandler(w http.ResponseWriter, r *http.Request) {
 		sql = "SELECT id, name, stereotype FROM status ORDER BY name asc"
 		log.Println("List Action -> Query: " + sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var statuss []mdl.Status
 		var status mdl.Status
 		i = 1
@@ -318,6 +322,7 @@ func LoadAllowedActions(w http.ResponseWriter, r *http.Request) {
 		" order by other_than asc "
 	log.Println("Query: " + sql)
 	rows, _ := Db.Query(sql, statusId, entityType, roleId, statusId, entityType)
+	defer rows.Close()
 	var actions []mdl.Action
 	var action mdl.Action
 	for rows.Next() {

@@ -51,7 +51,7 @@ func CreateCicloHandler(w http.ResponseWriter, r *http.Request) {
 					currentUser.Id,
 					time.Now()).Scan(&pilarCicloId)
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 			}
 		}
@@ -113,7 +113,7 @@ func IniciarCicloHandler(w http.ResponseWriter, r *http.Request) {
 				err = Db.QueryRow(sqlStatement, entidadeId, cicloId, currentUser.Id, time.Now()).Scan(&cicloEntidadeId)
 			}
 			if err != nil {
-				panic(err.Error())
+				log.Println(err.Error())
 			}
 			registrarProdutosCiclos(currentUser, entidadeId, cicloId)
 		}
@@ -246,14 +246,14 @@ func DeleteCicloHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM pilares_ciclos WHERE ciclo_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 
 		sqlStatement = "DELETE FROM ciclos WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
@@ -284,6 +284,7 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			" order by a.id asc"
 		log.Println(sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var ciclos []mdl.Ciclo
 		var ciclo mdl.Ciclo
 		var i = 1
@@ -309,6 +310,7 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			" order by a.id asc"
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var pilares []mdl.Pilar
 		var pilar mdl.Pilar
 		i = 1
@@ -328,6 +330,7 @@ func ListCiclosHandler(w http.ResponseWriter, r *http.Request) {
 			"ORDER BY a.sigla"
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		i = 1

@@ -13,7 +13,7 @@
                     <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
 					{{$allowed := (call .LoggedUser.HasPermission "createElemento")}}
 					{{if $allowed}}
-					    <a style="margin-top: 6px" href="#" onclick="limparCamposItemForm('create'); document.getElementById('create-form').style.display='block'">
+					    <a style="margin-top: 6px" href="#" onclick="openCreateElemento()">
 							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
 						</a>&nbsp;
 					{{end}}
@@ -23,13 +23,21 @@
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" id="tabela-elementos">
             <thead>
             <tr>
                 <th>Ord</th>
                 <th>Id</th>
-                <th>Nome</th>
+                <th>
+					<input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-elementos', 1, 2)">
+				</th>
                 <th style="display:none">Descrição</th>
+                <th style="display:none">Referência</th>
                 <th>Autor</th>
                 <th>Criado Em</th>
                 <th>Status</th>
@@ -43,8 +51,9 @@
             <tr>
                 <td>#{{$elemento.Order}}</td>
                 <td>{{$elemento.Id}}</td>
-                <td>{{$elemento.Nome}}</td>
+                <td style="text-align:left">{{$elemento.Nome}}</td>
                 <td style="display:none">{{$elemento.Descricao}}</td>
+                <td style="display:none">{{$elemento.Referencia}}</td>
                 <td>{{$elemento.AuthorName}}</td>
                 <td>{{$elemento.C_CriadoEm}}</td>
                 <td>{{$elemento.CStatus}}<input type="hidden" id="ElementoStatusId" value="{{$elemento.StatusId}}"></td>

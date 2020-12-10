@@ -32,6 +32,7 @@ func ListIntegrantesByEntidadeIdByCicloId(entidadeId string, cicloId string) []m
 		"WHERE a.entidade_id = $1 AND a.ciclo_id = $2 ORDER BY d.name ASC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, entidadeId, cicloId)
+	defer rows.Close()
 	var integrantes []mdl.Integrante
 	var integrante mdl.Integrante
 	var i = 1

@@ -27,6 +27,7 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 			" WHERE a.chefe_id = $1"
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id)
+		defer rows.Close()
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		var i = 1
@@ -50,6 +51,7 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 				" WHERE a.entidade_id = $1 " +
 				" ORDER BY id asc"
 			rows, _ = Db.Query(sql, entidade.Id)
+			defer rows.Close()
 			i = 1
 			for rows.Next() {
 				rows.Scan(&cicloEntidade.Id, &cicloEntidade.Nome)
@@ -72,6 +74,7 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY nome_auditor"
 		log.Println(sql)
 		rows, _ = Db.Query(sql, currentUser.Id)
+		defer rows.Close()
 		var membros []mdl.Membro
 		var membro mdl.Membro
 		i = 1
@@ -90,6 +93,7 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY nome_usuario"
 		log.Println(sql)
 		rows, _ = Db.Query(sql, currentUser.Id)
+		defer rows.Close()
 		var supervisores []mdl.User
 		var supervisor mdl.User
 		i = 1
@@ -285,7 +289,7 @@ func DeleteIntegrantesByEntidadeCicloId(entidadeId string, cicloId string) {
 	sqlStatement := "DELETE FROM integrantes WHERE entidade_id=$1 AND ciclo_id = $2"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(entidadeId, cicloId)
 	log.Println("DELETE integrantes in Entidade Id: " + entidadeId + " - " + cicloId)
@@ -295,7 +299,7 @@ func DeleteIntegrantesHandler(diffDB []mdl.Integrante) {
 	sqlStatement := "DELETE FROM integrantes WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
@@ -386,6 +390,7 @@ func LoadSupervisorByEntidadeIdCicloId(w http.ResponseWriter, r *http.Request) {
 		"WHERE a.entidade_id = $1 AND a.ciclo_id = $2 "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, entidadeId, cicloId)
+	defer rows.Close()
 	var supervisor mdl.User
 	if rows.Next() {
 		rows.Scan(

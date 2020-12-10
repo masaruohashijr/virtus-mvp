@@ -30,7 +30,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 		err = Db.QueryRow(sqlStatement, name, username, hash, email, mobile, role, currentUser.Id, time.Now()).Scan(&id)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
 		log.Println("INSERT: Id: " + strconv.Itoa(id) +
@@ -57,7 +57,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(sqlStatement)
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(name, username, email, mobile, role, id)
 		log.Println("UPDATE: Id: " +
@@ -81,7 +81,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM Users WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
@@ -126,6 +126,7 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY a.name ASC "
 		log.Println("SQL: " + sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var users []mdl.User
 		var user mdl.User
 		var i = 1
@@ -153,6 +154,7 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 		sql = "SELECT id, name FROM roles ORDER BY name asc"
 		log.Println("SQL Roles: " + sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var roles []mdl.Role
 		var role mdl.Role
 		i = 1
@@ -166,6 +168,7 @@ func ListUsersHandler(w http.ResponseWriter, r *http.Request) {
 		sql = "SELECT id, nome FROM escritorios ORDER BY nome asc"
 		log.Println("SQL Escritorios: " + sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var escritorios []mdl.Escritorio
 		var escritorio mdl.Escritorio
 		i = 1

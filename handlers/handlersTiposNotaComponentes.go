@@ -12,6 +12,7 @@ func ListTiposNotaByComponenteId(componenteId string) []mdl.TipoNota {
 		" FROM tipos_notas_componentes WHERE componente_id = $1 "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, componenteId)
+	defer rows.Close()
 	var tipos []mdl.TipoNota
 	var tipo mdl.TipoNota
 	for rows.Next() {

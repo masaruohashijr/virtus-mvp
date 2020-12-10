@@ -29,7 +29,7 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		idEntidade := 0
 		err := Db.QueryRow(sqlStatement, nome, descricao, sigla, codigo, situacao, esi, municipio, siglaUF, currentUser.Id, time.Now()).Scan(&idEntidade)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(idEntidade) + " | Nome: " + nome + " | Descrição: " + descricao)
 		for key, value := range r.Form {
@@ -45,7 +45,7 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 				log.Println(sqlStatement)
 				err = Db.QueryRow(sqlStatement, idEntidade, nomePlano, descricaoPlano, currentUser.Id, time.Now()).Scan(&planoId)
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 			}
 		}
@@ -90,7 +90,7 @@ func CreateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 					err = Db.QueryRow(sqlStatement, idEntidade, cicloId, tipoMediaId, currentUser.Id, time.Now()).Scan(&cicloEntidadeId)
 				}
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 			}
 		}
@@ -116,7 +116,7 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE entidades SET nome=$1, descricao=$2, sigla=$3, codigo=$4, situacao=$5, esi=$6, municipio=$7, sigla_uf=$8 WHERE id=$9"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(nome, descricao, sigla, codigo, situacao, esi, municipio, siglaUF, entidadeId)
@@ -296,19 +296,19 @@ func DeleteEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM planos WHERE entidade_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sqlStatement = "DELETE FROM ciclos_entidades WHERE entidade_id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sqlStatement = "DELETE FROM entidades WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
@@ -346,6 +346,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 			" order by a.nome asc "
 		log.Println("sql: " + sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		var i = 1
@@ -377,6 +378,7 @@ func ListEntidadesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		sql = "SELECT id, nome FROM ciclos ORDER BY id asc"
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var ciclos []mdl.Ciclo
 		var ciclo mdl.Ciclo
 		i = 1

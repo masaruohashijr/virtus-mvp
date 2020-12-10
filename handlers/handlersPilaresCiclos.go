@@ -30,6 +30,7 @@ func ListPilaresByCicloId(cicloId string) []mdl.PilarCiclo {
 		"WHERE a.ciclo_id = $1 ORDER BY d.nome ASC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, cicloId)
+	defer rows.Close()
 	var pilaresCiclo []mdl.PilarCiclo
 	var pilarCiclo mdl.PilarCiclo
 	var i = 1
@@ -100,7 +101,7 @@ func updatePilarCicloHandler(ce mdl.PilarCiclo, pilarCicloDB mdl.PilarCiclo) {
 	updtForm, _ := Db.Prepare(sqlStatement)
 	_, err := updtForm.Exec(ce.TipoMediaId, ce.PesoPadrao, ce.Id)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	log.Println("Statement: " + sqlStatement)
 }
@@ -109,7 +110,7 @@ func DeletePilaresCicloByCicloId(cicloId string) {
 	sqlStatement := "DELETE FROM pilares_ciclos WHERE ciclo_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(cicloId)
 	log.Println("DELETE pilares_ciclos in Order Id: " + cicloId)
@@ -119,7 +120,7 @@ func DeletePilaresCicloHandler(diffDB []mdl.PilarCiclo) {
 	sqlStatement := "DELETE FROM pilares_ciclos WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))

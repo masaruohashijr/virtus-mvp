@@ -237,11 +237,11 @@ func createCicloCompleto() {
 	log.Println("stmt UPDATE tipos notas componentes: " + stmt)
 	//updtForm, err := db.Prepare(stmt)
 	//	if err != nil {
-	//		panic(err.Error())
+	//		log.Println(err.Error())
 	//	}
 	//	_, err = updtForm.Exec()
 	//	if err != nil {
-	//		panic(err.Error())
+	//		log.Println(err.Error())
 	//	}
 }
 

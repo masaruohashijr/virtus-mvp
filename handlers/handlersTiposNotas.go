@@ -18,13 +18,14 @@ func CreateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
+		referencia := r.FormValue("Referencia")
 		letra := r.FormValue("Letra")
 		corLetra := r.FormValue("CorLetra")
-		sqlStatement := "INSERT INTO tipos_notas(nome, descricao, letra, cor_letra, author_id, criado_em) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+		sqlStatement := "INSERT INTO tipos_notas(nome, descricao, referencia, letra, cor_letra, author_id, criado_em) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
 		tipoNotaId := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, letra, corLetra, currentUser.Id, time.Now()).Scan(&tipoNotaId)
+		err := Db.QueryRow(sqlStatement, nome, descricao, referencia, letra, corLetra, currentUser.Id, time.Now()).Scan(&tipoNotaId)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(tipoNotaId) + " | Nome: " + nome)
 		http.Redirect(w, r, route.RolesRoute, 301)
@@ -39,16 +40,17 @@ func UpdateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 		tipoNotaId := r.FormValue("Id")
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
+		referencia := r.FormValue("Referencia")
 		letra := r.FormValue("Letra")
 		corLetra := r.FormValue("CorLetra")
-		sqlStatement := "UPDATE tipos_notas SET nome=$1, descricao=$2 , letra=$3 , cor_letra=$4 WHERE id=$5"
+		sqlStatement := "UPDATE tipos_notas SET nome=$1, descricao=$2, descricao=$3, letra=$4, cor_letra=$5 WHERE id=$6"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
-		_, err = updtForm.Exec(nome, descricao, letra, corLetra, tipoNotaId)
+		_, err = updtForm.Exec(nome, descricao, referencia, letra, corLetra, tipoNotaId)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("UPDATE: Id: " + tipoNotaId + " | Nome: " + nome + " | Descrição: " + descricao + " | Cor Letra: " + corLetra)
 		http.Redirect(w, r, route.TiposNotasRoute, 301)
@@ -64,7 +66,7 @@ func DeleteTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM tipos_notas WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
@@ -83,6 +85,7 @@ func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 			" a.id, " +
 			" a.nome, " +
 			" a.descricao, " +
+			" a.referencia, " +
 			" a.letra, " +
 			" a.cor_letra, " +
 			" a.author_id, " +
@@ -97,6 +100,7 @@ func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 			" order by id asc"
 		log.Println("sql: " + sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var tiposNotas []mdl.TipoNota
 		var tipoNota mdl.TipoNota
 		var i = 1
@@ -105,6 +109,7 @@ func ListTiposNotasHandler(w http.ResponseWriter, r *http.Request) {
 				&tipoNota.Id,
 				&tipoNota.Nome,
 				&tipoNota.Descricao,
+				&tipoNota.Referencia,
 				&tipoNota.Letra,
 				&tipoNota.CorLetra,
 				&tipoNota.AuthorId,

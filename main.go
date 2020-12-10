@@ -39,6 +39,7 @@ func dbConn() *sql.DB {
 	dbase.SetMaxOpenConns(20)
 	dbase.SetMaxIdleConns(20)
 	dbase.SetConnMaxLifetime(10 * time.Second)
+	//defer dbase.Close()
 	return dbase
 }
 
@@ -177,7 +178,7 @@ func main() {
 	}
 	log.Printf("Listening on %s...\n", addr)
 	if err := http.ListenAndServe(addr, nil); err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	defer hd.Db.Close()
 }

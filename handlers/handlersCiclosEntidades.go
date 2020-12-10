@@ -31,6 +31,7 @@ func ListCiclosEntidadeByEntidadeId(entidadeId string) []mdl.CicloEntidade {
 		"WHERE a.entidade_id = $1 "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, entidadeId)
+	defer rows.Close()
 	var ciclosEntidade []mdl.CicloEntidade
 	var cicloEntidade mdl.CicloEntidade
 	var i = 1
@@ -106,7 +107,7 @@ func updateCicloEntidadeHandler(ce mdl.CicloEntidade, cicloEntidadeDB mdl.CicloE
 	log.Println("ce.TerminaEm: " + ce.TerminaEm)
 	_, err := updtForm.Exec(ce.TipoMediaId, ce.IniciaEm, ce.TerminaEm, ce.Id)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	log.Println("Statement: " + sqlStatement)
 }
@@ -115,7 +116,7 @@ func DeleteCiclosEntidadeByEntidadeId(entidadeId string) {
 	sqlStatement := "DELETE FROM ciclos_entidades WHERE entidade_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(entidadeId)
 	log.Println("DELETE ciclos_entidades in Order Id: " + entidadeId)
@@ -125,7 +126,7 @@ func DeleteCiclosEntidadeHandler(diffDB []mdl.CicloEntidade) {
 	sqlStatement := "DELETE FROM ciclos_entidades WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))

@@ -135,6 +135,7 @@ type Elemento struct {
 	Id             int64  `json:"id"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
 	AuthorId       int64  `json:"authorId"`
 	AuthorName     string `json:"authorName"`
 	Peso           int    `json:"weight"`
@@ -247,6 +248,7 @@ type Item struct {
 	ElementoId     int64  `json:"elementoId"`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
 	AuthorId       int64  `json:"autorId"`
 	AuthorName     string `json:"autorNome"`
 	CriadoEm       string `json:"criadoEm"`
@@ -458,6 +460,8 @@ type ProdutoComponente struct {
 	AuditorAnteriorId int64   `json:"auditorAnteriorId"`
 	SupervisorId      int64   `json:"supervisorId"`
 	SupervisorName    string  `json:"supervisorName"`
+	IniciaEm          string  `json:"iniciaEm"`
+	TerminaEm         string  `json:"terminaEm"`
 	AuthorId          int64   `json:"autorId"`
 	AuthorName        string  `json:"autorNome"`
 	CriadoEm          string  `json:"criadoEm"`
@@ -689,6 +693,7 @@ type TipoNota struct {
 	ComponenteId   string `json:"componenteId"'`
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
 	Letra          string `json:"letra"`
 	CorLetra       string `json:"corLetra"`
 	PesoPadrao     string `json:"pesoPadrao"'`

@@ -16,6 +16,8 @@ func ListDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "distribuirAtividades") {
 		log.Println("--------------")
+		msg := r.FormValue("msg")
+		log.Println("msg: " + msg)
 		errMsg := r.FormValue("errMsg")
 		var page mdl.PageEntidadesCiclos
 		sql := "SELECT DISTINCT d.codigo, b.entidade_id, d.nome, a.abreviatura " +
@@ -28,6 +30,7 @@ func ListDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" WHERE (c.usuario_id = $1 AND u.role_id in (3,4)) OR (a.chefe_id = $2)"
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id, currentUser.Id)
+		defer rows.Close()
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		var i = 1
@@ -51,6 +54,7 @@ func ListDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 				" WHERE a.entidade_id = $1 " +
 				" ORDER BY id asc"
 			rows, _ = Db.Query(sql, entidade.Id)
+			defer rows.Close()
 			i = 1
 			for rows.Next() {
 				rows.Scan(&cicloEntidade.Id, &cicloEntidade.Nome)
@@ -63,6 +67,9 @@ func ListDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if errMsg != "" {
 			page.ErrMsg = errMsg
+		}
+		if msg != "" {
+			page.Msg = msg
 		}
 		page.Entidades = entidadesCiclos
 		page.AppName = mdl.AppName
@@ -106,7 +113,7 @@ func UpdateDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 					updtForm, _ := Db.Prepare(sqlStatement)
 					_, err := updtForm.Exec()
 					if err != nil {
-						panic(err.Error())
+						log.Println(err.Error())
 					}
 				}
 				planos := strings.ReplaceAll(planosIds, "_", ",")
@@ -123,7 +130,7 @@ func UpdateDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		http.Redirect(w, r, "/listDistribuirAtividades", 301)
+		http.Redirect(w, r, "/listDistribuirAtividades"+"?msg=Os demais produtos dos níveis do ciclo foram criados com Sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -141,7 +148,9 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" a.componente_id, e.nome as componente_nome, " +
 			" coalesce(b.nome,''), a.entidade_id, " +
 			" coalesce(h.supervisor_id,0) as super_id, coalesce(f.name,'') as supervisor_nome, " +
-			" coalesce(a.auditor_id,0) as audit_id, coalesce(g.name,'') as auditor_nome  " +
+			" coalesce(a.auditor_id,0) as audit_id, coalesce(g.name,'') as auditor_nome,  " +
+			" to_char(a.inicia_em,'DD/MM/YYYY HH24:MI:SS') as inicia_em, " +
+			" to_char(a.termina_em,'DD/MM/YYYY HH24:MI:SS') as termina_em " +
 			" FROM produtos_componentes a " +
 			" LEFT JOIN entidades b ON a.entidade_id = b.id " +
 			" LEFT JOIN ciclos c ON a.ciclo_id = c.id " +
@@ -154,6 +163,7 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY d.nome, e.nome "
 		log.Println(sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var produtos []mdl.ProdutoComponente
 		var produto mdl.ProdutoComponente
 		var i = 1
@@ -170,7 +180,9 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.SupervisorId,
 				&produto.SupervisorName,
 				&produto.AuditorId,
-				&produto.AuditorName)
+				&produto.AuditorName,
+				&produto.IniciaEm,
+				&produto.TerminaEm)
 			produto.Order = i
 			i++
 			// log.Println(produto)
@@ -186,6 +198,7 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" WHERE c.role_id = 3 ORDER BY supervisor_nome "
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var supervisores []mdl.User
 		var supervisor mdl.User
 		i = 1
@@ -208,6 +221,7 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" AND b.role_id = 4 "
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var auditores []mdl.User
 		var auditor mdl.User
 		for rows.Next() {
@@ -215,10 +229,11 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			auditores = append(auditores, auditor)
 		}
 
-		sql = " SELECT id, cnpb, modalidade_id, recurso_garantidor::NUMERIC::MONEY " +
+		sql = " SELECT id, cnpb, modalidade_id, CASE WHEN recurso_garantidor < 1000000000 THEN recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE recurso_garantidor::numeric::MONEY/1000000000||' bi' END " +
 			" FROM planos WHERE entidade_id = $1 ORDER BY recurso_garantidor DESC "
 		log.Println(sql)
 		rows, _ = Db.Query(sql, entidadeId)
+		defer rows.Close()
 		var planos []mdl.Plano
 		var plano mdl.Plano
 		for rows.Next() {

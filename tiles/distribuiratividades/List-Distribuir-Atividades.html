@@ -101,10 +101,18 @@
 							<table width="100%">
 								<tr>
 									<td>
-										<input class="w3-input" type="date" id="InicioAvaliacao" name="InicioAvaliacao" value="">
+										<input 
+											class="w3-input" 
+											type="date" 
+											name="Inicio_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+											value="{{$produto.IniciaEm}}">
 									</td>
 									<td>
-										<input class="w3-input" type="date" id="TerminoAvaliacao" name="TerminoAvaliacao" value="">
+										<input 
+											class="w3-input" 
+											type="date" 
+											name="Termino_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+											value="{{$produto.TerminaEm}}">
 									</td>
 								</tr>
 							</table>

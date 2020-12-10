@@ -24,7 +24,7 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		idComponente := 0
 		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now(), statusComponenteId).Scan(&idComponente)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(idComponente) + " | Nome: " + nome + " | Descrição: " + descricao)
 		for key, value := range r.Form {
@@ -57,7 +57,7 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 					time.Now(),
 					statusElementoId).Scan(&elementoComponenteId)
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 			}
 			if strings.HasPrefix(key, "TipoNota_") {
@@ -85,7 +85,7 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 					time.Now(),
 					statusTipoNotaId).Scan(&tipoNotaComponenteId)
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 			}
 		}
@@ -105,7 +105,7 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE componentes SET nome=$1, descricao=$2 WHERE id=$3"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(nome, descricao, componenteId)
 		log.Println("UPDATE: Id: " + componenteId + " | Nome: " + nome + " | Descrição: " + descricao)
@@ -169,7 +169,7 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 				sqlStatement = "UPDATE tipos_notas_componentes SET peso_padrao=$1 WHERE tipo_nota_id=$2 AND componente_id = $3"
 				updtForm, err = Db.Prepare(sqlStatement)
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 				updtForm.Exec(value[0], tipoNotaId, componenteId)
 				log.Println("UPDATE: Tipo Nota PESO: " + tipoNotaPeso + " - Id: " + tipoNotaId)
@@ -233,21 +233,21 @@ func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM tipos_notas_componentes WHERE componente_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 
 		sqlStatement = "DELETE FROM elementos_componentes WHERE componente_id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 
 		sqlStatement = "DELETE FROM componentes WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
@@ -277,6 +277,7 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 			" order by id asc"
 		log.Println(sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var componentes []mdl.Componente
 		var componente mdl.Componente
 		var i = 1
@@ -297,6 +298,7 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		sql = "SELECT id, nome FROM elementos ORDER BY id asc"
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var elementos []mdl.Elemento
 		var elemento mdl.Elemento
 		i = 1
@@ -310,6 +312,7 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 		sql = "SELECT id, nome FROM tipos_notas ORDER BY nome desc"
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var tiposNota []mdl.TipoNota
 		var tipoNota mdl.TipoNota
 		i = 1

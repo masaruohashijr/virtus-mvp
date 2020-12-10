@@ -24,6 +24,7 @@ func ListActivitiesHandler(idWF string) []mdl.Activity {
 		" WHERE a.workflow_id = $1"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, idWF)
+	defer rows.Close()
 	var activities []mdl.Activity
 	var activity mdl.Activity
 	for rows.Next() {
@@ -63,6 +64,7 @@ func assembleFeatures(activity mdl.Activity) mdl.Activity {
 		" LEFT OUTER JOIN features b ON a.feature_id = b.id WHERE a.activity_id = $1"
 	log.Println(sql + string(activity.Id))
 	rows, _ := Db.Query(sql, activity.Id)
+	defer rows.Close()
 	featureId := 0
 	featureName := "\""
 	c_features := ""
@@ -88,6 +90,7 @@ func assembleRoles(activity mdl.Activity) mdl.Activity {
 		" LEFT OUTER JOIN roles b ON a.role_id = b.id WHERE a.activity_id = $1"
 	log.Println(sql + string(activity.Id))
 	rows, _ := Db.Query(sql, activity.Id)
+	defer rows.Close()
 	roleId := 0
 	roleName := "\""
 	c_roles := ""
@@ -110,14 +113,14 @@ func DeleteActivitiesByWorkflowIdHandler(wId string) {
 	sqlStatement := "DELETE FROM activities_roles WHERE activity_id IN ( SELECT id FROM activities WHERE workflow_id = $1 )"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(wId)
 	log.Println("DELETE Activities_Roles in Workflow Id: " + wId)
 	sqlStatement = "DELETE FROM Activities WHERE workflow_id=$1"
 	deleteForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(wId)
 	log.Println("DELETE Activities in Workflow Id: " + wId)
@@ -127,7 +130,7 @@ func DeleteActivitiesHandler(diffDB []mdl.Activity) {
 	sqlStatement := "DELETE FROM activities_roles WHERE activity_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
@@ -136,7 +139,7 @@ func DeleteActivitiesHandler(diffDB []mdl.Activity) {
 	sqlStatement = "DELETE FROM activities WHERE id=$1"
 	deleteForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
@@ -196,7 +199,7 @@ func updateActivityHandler(activityPage mdl.Activity, activityDB mdl.Activity) {
 		sqlStatement := "DELETE FROM activities_roles WHERE activity_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(strconv.FormatInt(int64(activityPage.Id), 10))
 		// 2. Insere tudo de novo
@@ -214,7 +217,7 @@ func updateActivityHandler(activityPage mdl.Activity, activityDB mdl.Activity) {
 		sqlStatement := "DELETE FROM features_activities WHERE activity_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(strconv.FormatInt(int64(activityPage.Id), 10))
 		// 2. Insere tudo de novo

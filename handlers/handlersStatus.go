@@ -46,7 +46,7 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request) {
 		updtForm, err := Db.Prepare(sqlStatement)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(name, description, stereotype, id)
@@ -65,7 +65,7 @@ func DeleteStatusHandler(w http.ResponseWriter, r *http.Request) {
 		deleteForm, err := Db.Prepare(sqlStatement)
 		_, err = deleteForm.Exec(id)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("DELETE: Id: " + id)
 		http.Redirect(w, r, route.StatusRoute, 301)
@@ -110,6 +110,7 @@ func listStatus(errorMsg string) mdl.PageStatus {
 		" order by id asc"
 	log.Println("sql: " + sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var statuss []mdl.Status
 	var status mdl.Status
 	var i = 1

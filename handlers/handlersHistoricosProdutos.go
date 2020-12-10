@@ -167,7 +167,7 @@ func registrarHistoricoPesoElemento(produto mdl.ProdutoElemento, currentUser mdl
 	err := Db.QueryRow(
 		sqlStatement).Scan(&historicoProdutoElementoId)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 }
 
@@ -221,6 +221,7 @@ func ListHistoricosElemento(filtro mdl.Historico) []mdl.Historico {
 		"a.elemento_id = " + filtro.ElementoId + " ORDER BY a.criado_em DESC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var historicos []mdl.Historico
 	var historico mdl.Historico
 	for rows.Next() {
@@ -301,6 +302,7 @@ func ListHistoricosComponente(filtro mdl.Historico) []mdl.Historico {
 			" 	ORDER BY a.criado_em DESC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var historicos []mdl.Historico
 	var historico mdl.Historico
 	for rows.Next() {
@@ -377,7 +379,7 @@ func registrarHistoricoPesoPilar(produto mdl.ProdutoPilar, currentUser mdl.User)
 	err := Db.QueryRow(
 		sqlStatement).Scan(&historicoProdutoPilarId)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 }
 
@@ -421,6 +423,7 @@ func ListHistoricosPilar(filtro mdl.Historico) []mdl.Historico {
 			" 	ORDER BY a.criado_em DESC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var historicos []mdl.Historico
 	var historico mdl.Historico
 	for rows.Next() {

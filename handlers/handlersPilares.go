@@ -23,7 +23,7 @@ func CreatePilarHandler(w http.ResponseWriter, r *http.Request) {
 		idPilar := 0
 		err := Db.QueryRow(sqlStatement, nome, descricao, currentUser.Id, time.Now()).Scan(&idPilar)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 
 		log.Println("INSERT: Id: " + strconv.Itoa(idPilar) + " | Nome: " + nome + " | Descrição: " + descricao)
@@ -57,7 +57,7 @@ func CreatePilarHandler(w http.ResponseWriter, r *http.Request) {
 					currentUser.Id,
 					time.Now()).Scan(&componentePilarId)
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 			}
 		}
@@ -77,7 +77,7 @@ func UpdatePilarHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE pilares SET nome=$1, descricao=$2 WHERE id=$3"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(nome, descricao, pilarId)
 		log.Println("UPDATE: Id: " + pilarId + " | Nome: " + nome + " | Descrição: " + descricao)
@@ -194,14 +194,14 @@ func DeletePilarHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM componentes_pilares WHERE pilar_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 
 		sqlStatement = "DELETE FROM pilares WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
@@ -232,6 +232,7 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 			" order by a.id asc"
 		log.Println(sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var pilares []mdl.Pilar
 		var pilar mdl.Pilar
 		var i = 1
@@ -253,6 +254,7 @@ func ListPilaresHandler(w http.ResponseWriter, r *http.Request) {
 		sql = "SELECT id, nome FROM componentes ORDER BY id asc"
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var componentes []mdl.Componente
 		var componente mdl.Componente
 		i = 1

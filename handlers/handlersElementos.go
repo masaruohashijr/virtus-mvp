@@ -20,13 +20,14 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 		statusElementoId := GetStartStatus("elemento")
 		nome := r.FormValue("NomeElementoForInsert")
 		descricao := r.FormValue("DescricaoElementoForInsert")
-		sqlStatement := "INSERT INTO elementos(nome, descricao, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		referencia := r.FormValue("ReferenciaElementoForInsert")
+		sqlStatement := "INSERT INTO elementos(nome, descricao, referencia, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
 		elementoId := 0
 		authorId := strconv.FormatInt(GetUserInCookie(w, r).Id, 10)
-		err := Db.QueryRow(sqlStatement, nome, descricao, authorId, time.Now(), statusElementoId).Scan(&elementoId)
+		err := Db.QueryRow(sqlStatement, nome, descricao, referencia, authorId, time.Now(), statusElementoId).Scan(&elementoId)
 		log.Println(sqlStatement + " :: " + nome)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(elementoId) + " | Nome: " + nome)
 		statusItemId := GetStartStatus("itemAAvaliar")
@@ -37,16 +38,17 @@ func CreateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				itemId := 0
 				nomeItem := strings.Split(array[3], ":")[1]
 				descricaoItem := strings.Split(array[4], ":")[1]
+				referenciaItem := strings.Split(array[5], ":")[1]
 				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				sqlStatement := "INSERT INTO public.itens( " +
-					" elemento_id, nome, descricao, criado_em, author_id, status_id ) " +
+					" elemento_id, nome, descricao, referencia, criado_em, author_id, status_id ) " +
 					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
 				//				log.Println("elementoId: " + strconv.Itoa(elementoId))
-				err = Db.QueryRow(sqlStatement, elementoId, nomeItem, descricaoItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				err = Db.QueryRow(sqlStatement, elementoId, nomeItem, descricaoItem, referenciaItem, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
 				//				log.Println("itemId: " + strconv.Itoa(itemId))
 				if err != nil {
-					panic(err.Error())
+					log.Println(err.Error())
 				}
 			}
 			http.Redirect(w, r, route.ElementosRoute, 301)
@@ -63,12 +65,13 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 		elementoId := r.FormValue("ElementoIdForUpdate")
 		nome := r.FormValue("ElementoNomeForUpdate")
 		descricao := r.FormValue("ElementoDescricaoForUpdate")
-		sqlStatement := "UPDATE elementos SET nome=$1, descricao=$2 WHERE id=$3"
+		referencia := r.FormValue("ElementoReferenciaForUpdate")
+		sqlStatement := "UPDATE elementos SET nome=$1, descricao=$2, referencia=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
-		updtForm.Exec(nome, descricao, elementoId)
+		updtForm.Exec(nome, descricao, referencia, elementoId)
 		log.Println("UPDATE: Id: " + elementoId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Itens
@@ -94,6 +97,9 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				descricao := strings.Split(array[4], ":")[1]
 				log.Println("descricao -------- " + descricao)
 				itemPage.Descricao = descricao
+				referencia := strings.Split(array[5], ":")[1]
+				log.Println("referencia -------- " + referencia)
+				itemPage.Referencia = referencia
 				itensPage = append(itensPage, itemPage)
 			}
 		}
@@ -130,10 +136,14 @@ func UpdateElementoHandler(w http.ResponseWriter, r *http.Request) {
 				item = diffPage[i]
 				log.Println("Elemento Id: " + strconv.FormatInt(item.ElementoId, 10))
 				sqlStatement := "INSERT INTO " +
-					"itens(elemento_id, nome, descricao, criado_em, author_id, status_id) " +
+					"itens(elemento_id, nome, descricao, referencia, criado_em, author_id, status_id) " +
 					"VALUES ($1,$2,$3,$4,TO_TIMESTAMP($5, 'YYYY-MM-DD HH24:MI:SS'),$6,$7) RETURNING id"
 				log.Println(sqlStatement)
-				Db.QueryRow(sqlStatement, elementoId, item.Nome, item.Descricao, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				err := Db.QueryRow(sqlStatement, elementoId, item.Nome, item.Descricao, item.Referencia, time.Now(), currentUser.Id, statusItemId).Scan(&itemId)
+				log.Println("itemId cadastrado: " + strconv.Itoa(itemId))
+				if err != nil {
+					log.Println(err.Error())
+				}
 			}
 		}
 		UpdateItensHandler(itensPage, itensDB) // TODO
@@ -169,7 +179,7 @@ func DeleteElementoHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM elementos WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
@@ -189,6 +199,7 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 			" a.id, " +
 			" a.nome, " +
 			" coalesce(a.descricao,''), " +
+			" coalesce(a.referencia,''), " +
 			" coalesce(b.name,'') as author_name, " +
 			" coalesce(to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'),'') as criado_em, " +
 			" a.peso, " +
@@ -198,24 +209,25 @@ func ListElementosHandler(w http.ResponseWriter, r *http.Request) {
 			" LEFT JOIN users b ON a.author_id = b.id " +
 			" LEFT JOIN status c ON a.status_id = c.id " +
 			" order by a.id asc "
-		rows, err := Db.Query(query)
+		rows, _ := Db.Query(query)
+		defer rows.Close()
 		log.Println(query)
-		sec.CheckInternalServerError(err, w)
 		var elementos []mdl.Elemento
 		var elemento mdl.Elemento
 		var i = 1
 		for rows.Next() {
-			err = rows.Scan(
+			rows.Scan(
 				&elemento.Id,
 				&elemento.Nome,
 				&elemento.Descricao,
+				&elemento.Referencia,
 				&elemento.AuthorName,
 				&elemento.C_CriadoEm,
 				&elemento.Peso,
 				&elemento.CStatus,
 				&elemento.StatusId)
-			sec.CheckInternalServerError(err, w)
 			elemento.Order = i
+			log.Println(elemento)
 			i++
 			elementos = append(elementos, elemento)
 		}

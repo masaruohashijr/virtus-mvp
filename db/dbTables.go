@@ -328,6 +328,8 @@ func createTable() {
 			" supervisor_id integer," +
 			" auditor_id integer," +
 			" author_id integer," +
+			" inicia_em timestamp without time zone," +
+			" termina_em timestamp without time zone," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
 			" status_id integer)")

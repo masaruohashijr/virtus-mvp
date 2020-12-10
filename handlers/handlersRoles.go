@@ -25,7 +25,7 @@ func CreateRoleHandler(w http.ResponseWriter, r *http.Request) {
 		err := Db.QueryRow(sqlStatement, name, description, currentUser.Id, time.Now()).Scan(&roleId)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
 		for _, featureId := range features {
@@ -34,7 +34,7 @@ func CreateRoleHandler(w http.ResponseWriter, r *http.Request) {
 			err = Db.QueryRow(sqlStatement, featureId, roleId).Scan(&featureRoleId)
 			sec.CheckInternalServerError(err, w)
 			if err != nil {
-				panic(err.Error())
+				log.Println(err.Error())
 			}
 			sec.CheckInternalServerError(err, w)
 		}
@@ -52,7 +52,7 @@ func UpdateRoleHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE roles SET name=$1, description=$2 WHERE id=$3"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(name, description, roleId)
 		log.Println("UPDATE: Id: " + roleId + " | Name: " + name + " | Description: " + description)
@@ -124,13 +124,13 @@ func DeleteRoleHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM features_roles WHERE role_id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sqlStatement = "DELETE FROM roles WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
@@ -160,6 +160,7 @@ func ListPerfisHandler(w http.ResponseWriter, r *http.Request) {
 			" order by id asc"
 		log.Println("sql: " + sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var roles []mdl.Role
 		var role mdl.Role
 		var i = 1
@@ -179,6 +180,7 @@ func ListPerfisHandler(w http.ResponseWriter, r *http.Request) {
 			roles = append(roles, role)
 		}
 		rows, _ = Db.Query("SELECT id, name FROM features order by name asc")
+		defer rows.Close()
 		var features []mdl.Feature
 		var feature mdl.Feature
 		i = 1
@@ -223,6 +225,7 @@ func ListPerfisByActionIdHandler(actionId string) []mdl.Role {
 		" FROM actions_roles WHERE action_id= $1"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, actionId)
+	defer rows.Close()
 	var roles []mdl.Role
 	var role mdl.Role
 	for rows.Next() {
@@ -236,7 +239,7 @@ func DeletePerfisByActionHandler(actionId string) {
 	sqlStatement := "DELETE FROM actions_roles WHERE action_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(actionId)
 	log.Println("DELETE actions_roles in Action Id: " + actionId)
@@ -246,7 +249,7 @@ func DeletePerfisHandler(diffDB []mdl.Role) {
 	sqlStatement := "DELETE FROM actions_roles WHERE role_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))

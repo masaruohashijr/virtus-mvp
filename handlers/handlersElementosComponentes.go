@@ -32,6 +32,7 @@ func ListElementosByComponenteId(componenteId string) []mdl.ElementoComponente {
 		"WHERE a.componente_id = $1 ORDER BY elemento_nome"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, componenteId)
+	defer rows.Close()
 	var elementosComponente []mdl.ElementoComponente
 	var elementoComponente mdl.ElementoComponente
 	var i = 1
@@ -96,7 +97,7 @@ func updateElementoComponenteHandler(elementoComponente mdl.ElementoComponente, 
 	updtForm, _ := Db.Prepare(sqlStatement)
 	_, err := updtForm.Exec(elementoComponente.PesoPadrao, elementoComponente.Id)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	log.Println("Statement: " + sqlStatement)
 	sqlStatement = "UPDATE componentes_pilares a " +
@@ -113,7 +114,7 @@ func updateElementoComponenteHandler(elementoComponente mdl.ElementoComponente, 
 	updtForm, _ = Db.Prepare(sqlStatement)
 	_, err = updtForm.Exec(elementoComponente.ComponenteId)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	log.Println("Statement: " + sqlStatement)
 }
@@ -122,7 +123,7 @@ func DeleteElementosComponenteByComponenteId(componenteId string) {
 	sqlStatement := "DELETE FROM elementos_componentes WHERE componente_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(componenteId)
 	log.Println("DELETE elementos_componentes in Order Id: " + componenteId)
@@ -132,7 +133,7 @@ func DeleteElementosComponenteHandler(diffDB []mdl.ElementoComponente) {
 	sqlStatement := "DELETE FROM elementos_componentes WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))

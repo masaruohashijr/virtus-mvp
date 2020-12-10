@@ -28,6 +28,7 @@ func ListMatrizesHandler(w http.ResponseWriter, r *http.Request) {
 			" GROUP BY 1,2"
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id, currentUser.Id)
+		defer rows.Close()
 		var entidades []mdl.Entidade
 		var entidade mdl.Entidade
 		var i = 1
@@ -43,6 +44,7 @@ func ListMatrizesHandler(w http.ResponseWriter, r *http.Request) {
 				" WHERE a.entidade_id = $1 " +
 				" ORDER BY id asc"
 			rows, _ = Db.Query(sql, entidade.Id)
+			defer rows.Close()
 			var ciclosEntidade []mdl.CicloEntidade
 			var cicloEntidade mdl.CicloEntidade
 			i = 1
@@ -102,7 +104,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" 	   a.entidade_id, coalesce(b.nome,'') as entidade_nome, " +
 			" 	   a.plano_id, " +
 			" 	   z.cnpb, " +
-			" 	   z.recurso_garantidor::NUMERIC::MONEY, " +
+			" 	   CASE WHEN z.recurso_garantidor < 1000000000 THEN z.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE z.recurso_garantidor::numeric::MONEY/1000000000||' bi' END, " +
 			" 	   z.modalidade_id, " +
 			" 	   (SELECT count(1) FROM (SELECT DISTINCT plano_id FROM produtos_itens GROUP BY plano_id) R) as EntidadeQtdPlanos " +
 			" FROM produtos_itens a " +
@@ -159,6 +161,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" a.item_id "
 		log.Println(sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var elementosMatriz []mdl.ElementoDaMatriz
 		var elementoMatriz mdl.ElementoDaMatriz
 		var i = 1
@@ -227,6 +230,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" AND b.role_id = 3 "
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var supervisores []mdl.User
 		var supervisor mdl.User
 		i = 1
@@ -248,6 +252,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			" AND b.role_id = 4 "
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var auditores []mdl.User
 		var auditor mdl.User
 		i = 1
@@ -287,6 +292,7 @@ func calcularColspan(tipo string, identificador int64) int {
 		" WHERE " + tipo + "_id = $1) R "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, identificador)
+	defer rows.Close()
 	resultado := 0
 	if rows.Next() {
 		rows.Scan(&resultado)
@@ -358,6 +364,7 @@ func AtualizarMatrizHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" a.item_id "
 	// log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var produtos []mdl.ProdutoItem
 	var produto mdl.ProdutoItem
 	var i = 1
@@ -416,6 +423,7 @@ func AtualizarMatrizHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" AND b.role_id = 3 "
 	log.Println(sql)
 	rows, _ = Db.Query(sql)
+	defer rows.Close()
 	var supervisores []mdl.User
 	var supervisor mdl.User
 	i = 1
@@ -437,6 +445,7 @@ func AtualizarMatrizHandler(entidadeId string, cicloId string, w http.ResponseWr
 		" AND b.role_id = 4 "
 	log.Println(sql)
 	rows, _ = Db.Query(sql)
+	defer rows.Close()
 	var auditores []mdl.User
 	var auditor mdl.User
 	i = 1
@@ -549,6 +558,7 @@ func preencherColspans(elementosMatriz []mdl.ElementoDaMatriz, cicloId string) [
 		" GROUP BY 1, 2, 3 " +
 		" ORDER BY 1, 2, 3 "
 	rows, _ := Db.Query(sql, cicloId, cicloId, cicloId)
+	defer rows.Close()
 	log.Println(sql)
 	var cols []mdl.ColSpan
 	var col mdl.ColSpan

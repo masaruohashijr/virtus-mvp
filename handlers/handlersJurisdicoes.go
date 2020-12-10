@@ -23,7 +23,7 @@ func UpdateJurisdicaoHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE escritorios SET nome=$1, descricao=$2, chefe_id=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(nome, descricao, chefe, escritorioId)
 		log.Println("UPDATE: Id: " + escritorioId + " | Nome: " + nome + " | Descrição: " + descricao + " | Chefe: " + chefe)
@@ -171,6 +171,7 @@ func ListJurisdicoesByEscritorioId(escritorioId string) []mdl.Jurisdicao {
 		"WHERE a.escritorio_id = $1 ORDER BY d.nome ASC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, escritorioId)
+	defer rows.Close()
 	var jurisdicoes []mdl.Jurisdicao
 	var jurisdicao mdl.Jurisdicao
 	var i = 1
@@ -263,7 +264,7 @@ func DeleteJurisdicoesByEscritorioId(escritorioId string) {
 	sqlStatement := "DELETE FROM jurisdicoes WHERE escritorio_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(escritorioId)
 	log.Println("DELETE jurisdicoes do Escritorio Id: " + escritorioId)
@@ -273,7 +274,7 @@ func DeleteJurisdicoesHandler(diffDB []mdl.Jurisdicao) {
 	sqlStatement := "DELETE FROM jurisdicoes WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))

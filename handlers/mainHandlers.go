@@ -122,6 +122,7 @@ func BuildLoggedUser(user mdl.User) mdl.LoggedUser {
 			"A.feature_id, B.code FROM features_roles A, features B " +
 			"WHERE A.feature_id = B.id AND A.role_id = $1"
 		rows, _ := Db.Query(query, user.Role)
+		defer rows.Close()
 		var features []mdl.Feature
 		var feature mdl.Feature
 		for rows.Next() {
@@ -146,6 +147,7 @@ func HasPermission(currentUser mdl.User, permission string) bool {
 		"A.feature_id, B.code FROM features_roles A, features B " +
 		"WHERE A.feature_id = B.id AND A.role_id = $1"
 	rows, _ := Db.Query(query, currentUser.Role)
+	defer rows.Close()
 	var featuresCurrentUser []mdl.Feature
 	var feature mdl.Feature
 	for rows.Next() {

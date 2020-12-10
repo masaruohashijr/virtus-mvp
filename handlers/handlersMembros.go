@@ -23,7 +23,7 @@ func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE escritorios SET nome=$1, descricao=$2, chefe_id=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(nome, descricao, chefe, escritorioId)
 		log.Println("UPDATE: Id: " + escritorioId + " | Nome: " + nome + " | Descrição: " + descricao + " | Chefe: " + chefe)
@@ -176,6 +176,7 @@ func ListMembrosByEscritorioId(escritorioId string) []mdl.Membro {
 		"WHERE a.escritorio_id = $1 ORDER BY d.name ASC "
 	log.Println(sql)
 	rows, _ := Db.Query(sql, escritorioId)
+	defer rows.Close()
 	var membros []mdl.Membro
 	var membro mdl.Membro
 	var i = 1
@@ -207,7 +208,7 @@ func DeleteMembrosByEscritorioId(escritorioId string) {
 	sqlStatement := "DELETE FROM membros WHERE escritorio_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(escritorioId)
 	log.Println("DELETE membros in Escritorio Id: " + escritorioId)
@@ -217,7 +218,7 @@ func DeleteMembrosHandler(diffDB []mdl.Membro) {
 	sqlStatement := "DELETE FROM membros WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))

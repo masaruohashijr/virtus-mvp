@@ -95,7 +95,7 @@ func DeleteEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM escritorios WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		_, err = deleteForm.Exec(id)
 		if err != nil {
@@ -175,6 +175,7 @@ func listEscritorios(errorMsg string) mdl.PageEscritorios {
 		" order by a.id asc"
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var escritorios []mdl.Escritorio
 	var escritorio mdl.Escritorio
 	var i = 1
@@ -205,6 +206,7 @@ func listEscritorios(errorMsg string) mdl.PageEscritorios {
 		" LEFT JOIN roles b ON a.role_id = b.id " +
 		" ORDER BY a.name asc"
 	rows, _ = Db.Query(sql)
+	defer rows.Close()
 	var users []mdl.User
 	var user mdl.User
 	i = 1
@@ -219,6 +221,7 @@ func listEscritorios(errorMsg string) mdl.PageEscritorios {
 	sql = "SELECT id, nome FROM entidades ORDER BY nome asc"
 	log.Println(sql)
 	rows, _ = Db.Query(sql)
+	defer rows.Close()
 	var entidades []mdl.Entidade
 	var entidade mdl.Entidade
 	i = 1

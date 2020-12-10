@@ -18,7 +18,7 @@ func CreatePlanoHandler(w http.ResponseWriter, r *http.Request) {
 		err := Db.QueryRow(sqlStatement, nome).Scan(&id)
 		log.Println(sqlStatement + " :: " + nome)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(id) + " | Nome: " + nome)
 		http.Redirect(w, r, route.PlanosRoute, 301)
@@ -36,7 +36,7 @@ func UpdatePlanoHandler(w http.ResponseWriter, r *http.Request) {
 		updtForm, err := Db.Prepare(sqlStatement)
 		sec.CheckInternalServerError(err, w)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		sec.CheckInternalServerError(err, w)
 		updtForm.Exec(nome, id)
@@ -90,7 +90,7 @@ func updatePlanoHandler(p mdl.Plano, planoDB mdl.Plano) {
 	log.Println(p.Id)
 	_, err := updtForm.Exec(p.Nome, p.Descricao, p.Id)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	log.Println("Statement: " + sqlStatement)
 }
@@ -102,7 +102,7 @@ func DeletePlanoHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "DELETE FROM planos WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		log.Println("DELETE: Id: " + id)
@@ -122,7 +122,7 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		" coalesce(a.nome,'')," +
 		" coalesce(a.descricao,''), " +
 		" a.cnpb," +
-		" a.recurso_garantidor::float8::numeric::money," +
+		" CASE WHEN a.recurso_garantidor < 1000000000 THEN a.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE a.recurso_garantidor::numeric::MONEY/1000000000||' bi' END' mi'," +
 		" a.modalidade_id," +
 		" a.author_id, " +
 		" coalesce(b.name,'') as author_name, " +
@@ -135,6 +135,7 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		" ORDER BY a.recurso_garantidor DESC"
 	log.Println(sql)
 	rows, _ := Db.Query(sql, entidadeId)
+	defer rows.Close()
 	var planos []mdl.Plano
 	var plano mdl.Plano
 	var i = 1
@@ -165,7 +166,7 @@ func DeletePlanosByEntidadeId(entidadeId string) {
 	sqlStatement := "DELETE FROM Planos WHERE entidade_id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	deleteForm.Exec(entidadeId)
 	log.Println("DELETE Planos in Order Id: " + entidadeId)
@@ -175,7 +176,7 @@ func DeletePlanosHandler(diffDB []mdl.Plano) {
 	sqlStatement := "DELETE FROM Planos WHERE id=$1"
 	deleteForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
@@ -217,6 +218,7 @@ func ListConfigPlanos(entidadeId string, cicloId string, pilarId string, compone
 		" AND a.componente_id = " + componenteId
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	var configurados []mdl.ConfigPlano
 	var configPlano mdl.ConfigPlano
 	for rows.Next() {

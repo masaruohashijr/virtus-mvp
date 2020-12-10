@@ -22,6 +22,7 @@ func GetStartStatus(entityType string) int {
 	log.Println("List WF -> Query: " + query)
 	log.Println("entityType: " + entityType)
 	rows, _ := Db.Query(query, entityType)
+	defer rows.Close()
 	startStatusId := 0
 	log.Println("startStatusId: " + strconv.Itoa(startStatusId))
 	for rows.Next() {
@@ -41,7 +42,7 @@ func CreateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE workflows SET end_at = $1 WHERE entity_type = $2"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(time.Now(), entityType)
 		sqlStatement = "INSERT INTO " +
@@ -57,7 +58,7 @@ func CreateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 			currentUser.Id,
 			time.Now()).Scan(&wId)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		log.Println("INSERT: Id: " + strconv.Itoa(wId) + " | Name: " + name + " | Entitity: " + entityType)
 		for key, value := range r.Form {
@@ -116,7 +117,7 @@ func UpdateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement := "UPDATE workflows SET name=$1, entity_type=$2, description=$3 WHERE id=$4"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		updtForm.Exec(name, entity, description, wId)
 		log.Println("UPDATE: Id: " + wId + " | Name: " + name + " | Entity: " + entity + " | Description: " + description)
@@ -213,13 +214,13 @@ func UpdateWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 					log.Println("entrei aqui")
 					err := Db.QueryRow(sqlStatement, wId, act.ActionId, act.CStartAt, act.CEndAt, act.ExpirationTimeDays, nil).Scan(&activityId)
 					if err != nil {
-						panic(err.Error())
+						log.Println(err.Error())
 					}
 				} else {
 					log.Println("entrei acolá")
 					err := Db.QueryRow(sqlStatement, wId, act.ActionId, act.CStartAt, act.CEndAt, act.ExpirationTimeDays, act.ExpirationActionId).Scan(&activityId)
 					if err != nil {
-						panic(err.Error())
+						log.Println(err.Error())
 					}
 				}
 				log.Println("Papel: " + act.CRoles)
@@ -280,7 +281,7 @@ func DeleteWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 		sqlStatement = "DELETE FROM workflows WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
 		if err != nil {
-			panic(err.Error())
+			log.Println(err.Error())
 		}
 		deleteForm.Exec(id)
 		sec.CheckInternalServerError(err, w)
@@ -317,6 +318,7 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 
 		log.Println("List WF -> SQL: " + sql)
 		rows, _ := Db.Query(sql)
+		defer rows.Close()
 		var workflows []mdl.Workflow
 		var workflow mdl.Workflow
 		var i = 1
@@ -353,6 +355,7 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 			" ORDER BY a.id asc"
 		log.Println("List WF -> sql: " + sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var actions []mdl.Action
 		var action mdl.Action
 		i = 1
@@ -372,6 +375,7 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 		sql = "SELECT id, name FROM roles order by name asc"
 		log.Println("List WF -> Query: " + sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var roles []mdl.Role
 		var role mdl.Role
 		i = 1
@@ -386,6 +390,7 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 			" FROM features order by id desc"
 		log.Println(sql)
 		rows, _ = Db.Query(sql)
+		defer rows.Close()
 		var features []mdl.Feature
 		var feature mdl.Feature
 		for rows.Next() {

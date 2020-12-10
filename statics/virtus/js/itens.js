@@ -2,12 +2,13 @@
 var item_tobe_deleted;
 	
 class Item {
-	constructor(order, id, elementoId, nome, descricao, autorId, autorNome, c_criadoEm, status, cStatus) {
+	constructor(order, id, elementoId, nome, descricao, referencia, autorId, autorNome, c_criadoEm, status, cStatus) {
 		this.order = order;
 		this.id = id;
 		this.elementoId = elementoId;
 		this.nome = nome;
 		this.descricao = descricao;
+		this.referencia = referencia;
 		this.autorId = autorId;
 		this.autorNome = autorNome;
 		this.c_criadoEm = c_criadoEm;
@@ -19,6 +20,7 @@ class Item {
 function criarItem(){
 	var nome = document.getElementById('NomeItemForInsert').value;
 	var descricao = document.getElementById('DescricaoItemForInsert').value;
+	var referencia = document.getElementById('ReferenciaItemForInsert').value;
 	var erros = '';
 	if(nome==''){
 		erros += 'Falta preencher o nome.\n';
@@ -26,7 +28,7 @@ function criarItem(){
 		return;
 	}
 	itemId = getMaxId(itens);
-	item = new Item(0, itemId, 0, nome, descricao, '', '', '', '', '');
+	item = new Item(0, itemId, 0, nome, descricao, referencia, '', '', '', '', '');
 	itens.push(item);
 	addItemRow("table-itens-"+contexto);
 	limparCamposItemForm();
@@ -49,13 +51,14 @@ function updateItem(){
 	var elementoId = document.getElementById('elementoId-edit').value;
 	var titulo = document.getElementById('NomeItemForUpdate').value;
 	var descricao = document.getElementById('DescricaoItemForUpdate').value;
+	var referencia = document.getElementById('ReferenciaItemForUpdate').value;
 	var erros = '';
 	if(titulo==''){
 		erros += 'Falta preencher o título.\n';
 		alert(erros);
 		return;
 	}
-	item = new Item(order, id, elementoId, titulo, descricao, '', '', '', '','');
+	item = new Item(order, id, elementoId, titulo, descricao, referencia, '', '', '', '','');
 	itens[order] = item;
 	updateItemRow("table-itens-"+contexto,order);
 	limparCamposItemForm();
@@ -98,12 +101,15 @@ function editItem(e) {
 	var elementoId = e.parentNode.parentNode.childNodes[0].childNodes[2].value;
 	var nome = e.parentNode.parentNode.childNodes[0].innerText;
 	var descricao = e.parentNode.parentNode.childNodes[1].innerText;
+	var referencia = e.parentNode.parentNode.childNodes[2].innerText;
 	// Atribuindo os valores de edit-item-form
 	document.getElementById('id-edit').value=id;
 	document.getElementById('order-edit').value=order;
 	document.getElementById('elementoId-edit').value=elementoId;
 	document.getElementById('NomeItemForUpdate').value=nome;
 	document.getElementById('DescricaoItemForUpdate').value=descricao;
+	document.getElementById('ReferenciaItemForUpdate').value=referencia;
+	document.getElementById('NomeItemForUpdate').focus();
 }	
 
 function loadItensByElementoId(elementoId){
@@ -137,6 +143,7 @@ function addItemRow(tableID) {
 	item = itens[order];
 	let newCell = newRow.insertCell(0);
 	let newText = document.createTextNode(item.nome);
+	newCell.style = "text-align: left";
 	var jsonItem = JSON.stringify(item);
 	jsonItem = jsonItem.split(',').join('#');
 	jsonItem = jsonItem.split('"').join('');
@@ -151,21 +158,27 @@ function addItemRow(tableID) {
 	// descricao
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(item.descricao);
+	newCell.style = "display:none";
+	newCell.appendChild(newText);
+	// descricao
+	newCell = newRow.insertCell(2);
+	newText = document.createTextNode(item.referencia);
+	newCell.style = "display:none";
 	newCell.appendChild(newText);
 	// status
-	newCell = newRow.insertCell(2);
+	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(item.autorNome);
 	newCell.appendChild(newText);
 	// autor
-	newCell = newRow.insertCell(3);
+	newCell = newRow.insertCell(4);
 	newText = document.createTextNode(item.c_criadoEm);
 	newCell.appendChild(newText);
 	// criado em
-	newCell = newRow.insertCell(4);
+	newCell = newRow.insertCell(5);
 	newText = document.createTextNode(item.cStatus);
 	newCell.appendChild(newText);
 	// Botões
-	newCell = newRow.insertCell(5);
+	newCell = newRow.insertCell(6);
 	// Botão Editar
 	var btnEditar = document.createElement('input');
 	btnEditar.type = "button";
@@ -216,4 +229,9 @@ function updateItemRow(tableID, order){
 	celula.innerHTML = '<input type="hidden" name="id" value="'+itens[order].id+'"/>'+celula.innerHTML;
 	celula.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+celula.innerHTML;
 	row.childNodes[1].innerText = itens[order].descricao;
+}
+
+function openCreateItem(){
+	document.getElementById('create-item-form').style.display='block';
+	document.getElementById('NomeItemForInsert').focus();
 }

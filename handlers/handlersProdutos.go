@@ -19,7 +19,7 @@ func registrarAuditorComponente(produto mdl.ProdutoComponente, currentUser mdl.U
 	updtForm, _ := Db.Prepare(sqlStatement)
 	_, err := updtForm.Exec()
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 }
 
@@ -44,7 +44,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(produto.Motivacao)
 	// PRODUTOS_TIPOS_NOTAS
@@ -75,7 +75,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec()
 	// PRODUTOS_PLANOS
@@ -103,7 +103,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec()
 	// PRODUTOS_COMPONENTES
@@ -129,7 +129,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(produto.EntidadeId, produto.CicloId)
 	// PRODUTOS_PILARES
@@ -150,7 +150,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(produto.EntidadeId, produto.CicloId)
 	// PRODUTOS_CICLOS
@@ -169,7 +169,7 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(produto.EntidadeId, produto.CicloId)
 	// NOTAS ATUAIS
@@ -189,7 +189,7 @@ func registrarTiposPontuacao(produto mdl.ProdutoElemento, currentUser mdl.User) 
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(
 		currentUser.Id,
@@ -208,7 +208,7 @@ func registrarTiposPontuacao(produto mdl.ProdutoElemento, currentUser mdl.User) 
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(
 		currentUser.Id,
@@ -225,7 +225,7 @@ func registrarTiposPontuacao(produto mdl.ProdutoElemento, currentUser mdl.User) 
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(
 		currentUser.Id,
@@ -240,7 +240,7 @@ func registrarTiposPontuacao(produto mdl.ProdutoElemento, currentUser mdl.User) 
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(
 		currentUser.Id,
@@ -260,7 +260,7 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(produto.Peso,
 		produto.Motivacao,
@@ -328,7 +328,7 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec()
 	// PESOS PLANOS
@@ -369,7 +369,7 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec()
 
@@ -389,7 +389,7 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(
 		produto.EntidadeId,
@@ -725,7 +725,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(strconv.FormatInt(param.EntidadeId, 10), strconv.FormatInt(param.CicloId, 10))
 
@@ -751,7 +751,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 	log.Println(sqlStatement)
 	updtForm, err = Db.Prepare(sqlStatement)
 	if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	}
 	updtForm.Exec(strconv.FormatInt(param.EntidadeId, 10), strconv.FormatInt(param.CicloId, 10))
 }
@@ -782,6 +782,7 @@ func loadNotasAtuais(produto mdl.ProdutoElemento) mdl.NotasAtuais {
 		"      AND a.tipo_nota_id = " + strconv.FormatInt(produto.TipoNotaId, 10)
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	if rows.Next() {
 		rows.Scan(
 			&notasAtuais.TipoNotaNota,
@@ -817,6 +818,7 @@ func loadPesosAtuais(produto mdl.ProdutoElemento) mdl.PesosAtuais {
 		"      AND a.tipo_nota_id = " + strconv.FormatInt(produto.TipoNotaId, 10)
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	if rows.Next() {
 		rows.Scan(
 			&pesosAtuais.TipoNotaPeso,
@@ -875,6 +877,7 @@ func getAnalise(rota string) string {
 
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	retorno := ""
 	if rows.Next() {
 		rows.Scan(&retorno)
@@ -938,6 +941,7 @@ func getDescricao(rota string) string {
 	}
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
+	defer rows.Close()
 	retorno := ""
 	if rows.Next() {
 		rows.Scan(&retorno)

@@ -4,15 +4,18 @@ function editElemento(e) {
     var elementoId = e.parentNode.parentNode.childNodes[3].innerText;
     var elementoNome = e.parentNode.parentNode.childNodes[5].innerText;
     var elementoDescricao = e.parentNode.parentNode.childNodes[7].innerText;
-    var elementoAutor = e.parentNode.parentNode.childNodes[9].innerText;
-    var elementoCriadoEm = e.parentNode.parentNode.childNodes[11].innerText;
-    var elementoStatus = e.parentNode.parentNode.childNodes[13].innerText;
+    var elementoReferencia = e.parentNode.parentNode.childNodes[9].innerText;
+    var elementoAutor = e.parentNode.parentNode.childNodes[11].innerText;
+    var elementoCriadoEm = e.parentNode.parentNode.childNodes[13].innerText;
+    var elementoStatus = e.parentNode.parentNode.childNodes[15].innerText;
 	document.getElementById('ElementoIdForUpdate').value = elementoId;
     document.getElementById('ElementoNomeForUpdate').value = elementoNome;
     document.getElementById('ElementoDescricaoForUpdate').value = elementoDescricao;
+    document.getElementById('ElementoReferenciaForUpdate').value = elementoReferencia;
     document.getElementById('ElementoAutorForUpdate').value = elementoAutor;
     document.getElementById('ElementoCriadoEmForUpdate').value = elementoCriadoEm;
     document.getElementById('ElementoStatusForUpdate').value = elementoStatus;
+	document.getElementById('ElementoNomeForUpdate').focus();
 	// AJAX 
 	//var statusId = document.getElementById('ElementoStatusId').value;
 	loadItensByElementoId(elementoId);
@@ -87,7 +90,6 @@ function loadAllowedActions(statusId){
 						btnAction.onclick = function() {executeAction(elementoId, this.documentId)};
 						formulario.appendChild(btnAction);
 						loadAvailableFeatures('edit',statusId);
-						alert("Botão "+btnAction.value+" criado! "+btnAction.isAction);
 					}
 				}
 			}
@@ -119,4 +121,10 @@ function removeActions(formulario){
 			formulario.removeChild(nodes[i]);
 		}
 	}
+}
+
+function openCreateElemento(){
+	limparCamposItemForm('create'); 
+	document.getElementById('create-form').style.display='block';
+	document.getElementById('NomeElementoForInsert').focus();
 }
