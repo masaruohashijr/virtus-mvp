@@ -42,9 +42,12 @@
 		                </div>
 	                	<h4>Ciclos da Entidade</h4>
 						<div style="margin-top: 8px" id="create-form-ciclo-btn" >
+							{{$allowed := (call .LoggedUser.HasPermission "createCiclo")}}
+							{{if $allowed}}
 						    <a href="#" onclick="document.getElementById('create-ciclo-entidade-form').style.display='block'">
 	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
 	                        </a>
+							{{end}}
 						</div>
 		            </div>
 		        </header>

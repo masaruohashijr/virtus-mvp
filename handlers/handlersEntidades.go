@@ -174,7 +174,6 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			var plano mdl.Plano
 			planoId := 0
-			// statusItemId := GetStartStatus("plano")
 			for i := range diffPage {
 				plano = diffPage[i]
 				log.Println("Entidade Id: " + strconv.FormatInt(plano.EntidadeId, 10))
@@ -260,7 +259,6 @@ func UpdateEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			var cicloEntidade mdl.CicloEntidade
 			cicloEntidadeId := 0
-			// statusItemId := GetStartStatus("plano")
 			for i := range diffPage {
 				cicloEntidade = diffPage[i]
 				log.Println("Entidade Id: " + entidadeId)

@@ -32,9 +32,10 @@
 		                <td style="width: 5%">Ord</td>
 		                <td style="width: 5%">Nível</td>
 		                <td style="width: 35%">Sumário</td>
-		                <td style="width: 15%">Cronograma</td>
+		                <td style="width: 10%">Planos</td>
 		                <td style="width: 25%">Equipe</td>
-		                <td style="width: 15%;text-align:center">Ações</td>
+		                <td style="width: 10%">Cronograma</td>
+		                <td style="width: 10%;text-align:center">Ações</td>
 		            </tr>
 					{{$primeiraLinha := true}}
 					{{$auxSumario := ""}}
@@ -56,10 +57,12 @@
 		            <tr>
 		                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left">Entidade</td>
-		                <td style="vertical-align:middle; font-size: 1.3em;border:1px solid #ddd;text-align:left;padding-left: 5px">{{$produto.EntidadeNome}}</td>
+		                <td style="vertical-align:middle; font-size: 1.3em;border:1px solid #ddd;text-align:left;padding-left: 5px">
+							{{$produto.EntidadeNome}}</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;						
 						</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;">Supervisor</td>
+		                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		            </tr>
 		            <tr>
@@ -72,6 +75,7 @@
 							<input class="w3-input" type="text" readOnly disabled value="{{$produto.SupervisorName}}">
 						</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+		                <td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 		            </tr>
 					{{$primeiraLinha = false}}
 					{{end}}
@@ -95,8 +99,37 @@
 					{{end}}
 		            <tr>
 						<td style="vertical-align:middle; border:1px solid #ddd;">{{$produto.Order}}</td>
-						<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;Componente</td>
-		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 30px">&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
+						<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">
+							&nbsp;&nbsp;&nbsp;&nbsp;Componente</td>
+		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 30px">
+							&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
+						<td><!-- PLANOS -->
+							<input type="hidden" 
+								id="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
+								name="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
+								value="">
+		                    <button class="w3-btn w3-teal"
+								type="button"
+								name="BtnPlanos_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
+								onclick="openConfigPlanos(this)">Planos</button>&nbsp;								
+						</td>
+		                <td style="border:1px solid #ddd;vertical-align: middle">
+							<select class="w3-input" onchange="sinalizarAlteracao(this);motivarRemocao(this);"
+							{{if and (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe") }}disabled{{end}}
+								name="AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}">
+								<option value=""></option>
+								{{range $i, $auditor := $.Auditores }}
+					                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>
+										{{$auditor.Name}}
+									</option>
+				           		{{end}}
+			            	</select>
+							<input type="hidden" name="MotivacaoRemocao" value="">
+							<input type="hidden" name="Entidade_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.EntidadeId}}"/>
+							<input type="hidden" name="Ciclo_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.CicloId}}"/>
+							<input type="hidden" name="Pilar_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.PilarId}}"/>
+							<input type="hidden" name="Componente_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.ComponenteId}}"/>
+						</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">
 							<table width="100%">
 								<tr>
@@ -117,34 +150,8 @@
 								</tr>
 							</table>
 						</td>
-		                <td style="border:1px solid #ddd;vertical-align: middle">
-							<select class="w3-input" onchange="sinalizarAlteracao(this);motivarRemocao(this);"
-							{{if and (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe") }}disabled{{end}}
-								name="AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}">
-								<option value=""></option>
-								{{range $i, $auditor := $.Auditores }}
-					                <option value="{{$auditor.Id}}" {{if eq $produto.AuditorId $auditor.Id}}selected{{end}}>
-										{{$auditor.Name}}
-									</option>
-				           		{{end}}
-			            	</select>
-							<input type="hidden" name="MotivacaoRemocao" value="">
-							<input type="hidden" name="Entidade_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.EntidadeId}}"/>
-							<input type="hidden" name="Ciclo_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.CicloId}}"/>
-							<input type="hidden" name="Pilar_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.PilarId}}"/>
-							<input type="hidden" name="Componente_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.ComponenteId}}"/>
-						</td>
 						{{if $allowed}}
 		                <td style="border:1px solid #ddd;vertical-align:middle; ">
-							<!-- PLANOS -->
-							<input type="hidden" 
-								id="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
-								name="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
-								value="">
-		                    <button class="w3-btn w3-teal"
-								type="button"
-								name="BtnPlanos_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
-								onclick="openConfigPlanos(this)">Planos</button>&nbsp;
 							<button type="button" 
 								class="w3-btn w3-deep-green" 
 								name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
@@ -154,7 +161,7 @@
 		            </tr>
 		            {{end}}
 					<tr>
-						<td colspan="6" style="text-align: center">
+						<td colspan="7" style="text-align: center">
 							<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom"
 								onclick="validarPlanosSelecionados()">
 								Salvar

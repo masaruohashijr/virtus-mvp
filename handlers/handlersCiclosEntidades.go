@@ -3,7 +3,7 @@ package handlers
 import (
 	"log"
 	"strconv"
-	//	"time"
+	"strings"
 	mdl "virtus/models"
 )
 
@@ -122,16 +122,19 @@ func DeleteCiclosEntidadeByEntidadeId(entidadeId string) {
 	log.Println("DELETE ciclos_entidades in Order Id: " + entidadeId)
 }
 
-func DeleteCiclosEntidadeHandler(diffDB []mdl.CicloEntidade) {
+func DeleteCiclosEntidadeHandler(diffDB []mdl.CicloEntidade) string {
 	sqlStatement := "DELETE FROM ciclos_entidades WHERE id=$1"
-	deleteForm, err := Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
+	deleteForm, _ := Db.Prepare(sqlStatement)
 	for n := range diffDB {
-		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
+		errMsg := ""
+		_, err := deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
 		log.Println("DELETE: Ciclo Entidade Id: " + strconv.FormatInt(int64(diffDB[n].Id), 10))
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			errMsg = "Ciclo está associada a um registro e não pôde ser removida."
+			return errMsg
+		}
 	}
+	return ""
 }
 
 func containsCicloEntidade(ciclosEntidade []mdl.CicloEntidade, cicloEntidadeCompared mdl.CicloEntidade) bool {
