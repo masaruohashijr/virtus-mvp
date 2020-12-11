@@ -15,6 +15,10 @@ function updateConfigPlanos(){
 	}
 	console.log("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId);
 	document.getElementsByName("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId)[0].value = valores;
+	if(selecionados.length>0){
+		let acionadoPor = document.getElementById("AcionadoPor").value;
+		document.getElementById(acionadoPor).value;
+	}
 }
 
 function updateTodosConfigPlanos(){

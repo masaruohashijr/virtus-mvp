@@ -66,6 +66,7 @@ function addIntegranteRow(tableID) {
 	json = json.split('{').join('');
 	json = json.split('}').join('');
 	newCell.appendChild(newText);
+	newCell.style = "text-align: left";
 	newCell.innerHTML = '<input type="hidden" name="integrante'+integrante.id+'" value="'+json+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="usuarioId" value="'+integrante.usuarioId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="entidadeId" value="'+integrante.entidadeId+'"/>'+newCell.innerHTML;

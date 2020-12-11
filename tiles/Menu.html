@@ -7,7 +7,7 @@
 	<br>
 	<br>
   
-  <a href="#">Sobre</a>
+  <a href="/about">Sobre</a>
   {{if (call .LoggedUser.HasPermission "homeChefe")}}
   <a href="/homeChefe">Home Chefe</a>
   {{end}}
@@ -67,6 +67,10 @@
   {{end}}
   {{if (call .LoggedUser.HasPermission "listWorkflows")}}
   <a href="/workflows">Workflows</a>
+  {{end}}
+  {{if (call .LoggedUser.HasPermission "listMondai")}}
+  <a href="/mondai">
+</a>
   {{end}}
 </div>
 {{end}}

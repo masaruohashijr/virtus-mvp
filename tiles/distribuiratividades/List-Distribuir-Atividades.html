@@ -84,6 +84,8 @@
 	                	<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;text-align:left">&nbsp;&nbsp;&nbsp;Pilar</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 20px">&nbsp;&nbsp;&nbsp;{{$produto.PilarNome}}</td>
+						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
+		                <td style="border:1px solid #ddd;vertical-align:middle;">Auditores</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">
 							<table width="100%">
 								<tr>
@@ -92,7 +94,6 @@
 								</tr>
 							</table>						
 						</td>
-		                <td style="border:1px solid #ddd;vertical-align:middle;">Auditores</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">&nbsp;</td>
 						{{$auxSumario = $produto.PilarNome}}
 	            	</tr>
@@ -103,12 +104,12 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;Componente</td>
 		                <td style="vertical-align:middle; border:1px solid #ddd;text-align:left;padding-left: 30px">
 							&nbsp;&nbsp;&nbsp;&nbsp;{{$produto.ComponenteNome}}</td>
-						<td><!-- PLANOS -->
+						<td style="border:1px solid #ddd;vertical-align:middle; "><!-- PLANOS -->
 							<input type="hidden" 
 								id="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								name="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								value="">
-		                    <button class="w3-btn w3-teal"
+		                    <button class="w3-btn w3-red"
 								type="button"
 								name="BtnPlanos_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
 								onclick="openConfigPlanos(this)">Planos</button>&nbsp;								
@@ -153,7 +154,7 @@
 						{{if $allowed}}
 		                <td style="border:1px solid #ddd;vertical-align:middle; ">
 							<button type="button" 
-								class="w3-btn w3-deep-green" 
+								class="w3-btn w3-brown" 
 								name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
 								onclick="openHistComponente(this)">Histórico</button>
 		                </td>
