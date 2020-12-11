@@ -47,7 +47,7 @@ function resetEntidadeForms(){
 function deleteEntidade(e) {
     var deleteForm = document.getElementById('delete-form');
     deleteForm.style.display = 'block';
-    var entidadeId = e.parentNode.parentNode.childNodes[3].innerText;
+    var entidadeId = e.parentNode.parentNode.childNodes[3].childNodes[0].value;
     document.getElementById('EntidadeIdToDelete').value = entidadeId;
 }
 

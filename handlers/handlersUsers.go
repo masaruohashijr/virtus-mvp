@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
@@ -80,16 +81,17 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	sec.IsAuthenticated(w, r)
 	log.Println("Delete User")
 	if r.Method == "POST" {
+		errMsg := "Usuário vinculado a registro não pode ser removido."
 		id := r.FormValue("Id")
 		sqlStatement := "DELETE FROM Users WHERE id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.UsersRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.UsersRoute+"?msg=Usuário removido com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
 	}
-	http.Redirect(w, r, route.UsersRoute+"?msg=Usuário removido com sucesso.", 301)
 }
 
 func ListUsersHandler(w http.ResponseWriter, r *http.Request) {

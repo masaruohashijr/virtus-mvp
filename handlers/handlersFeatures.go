@@ -59,15 +59,16 @@ func UpdateFeatureHandler(w http.ResponseWriter, r *http.Request) {
 func DeleteFeatureHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Feature")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		errMsg := "Funcionalidade vinculada a registro não pode ser removida."
 		id := r.FormValue("Id")
 		sqlStatement := "DELETE FROM features WHERE id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.FeaturesRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.FeaturesRoute+"?msg=Funcionalidade removida com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.FeaturesRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

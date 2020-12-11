@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
@@ -60,17 +61,18 @@ func UpdateTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteTipoNotaHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Delete Perfil")
+	log.Println("Delete Tipo de Nota")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
+		errMsg := "Tipo de Nota vinculado a registro não pode ser removido."
 		sqlStatement := "DELETE FROM tipos_notas WHERE id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.TiposNotasRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.TiposNotasRoute+"?msg=Tipo de Nota removido com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.TiposNotasRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

@@ -161,6 +161,7 @@ function addPlanoRow(tableID) {
 	json = json.split('{').join('');
 	json = json.split('}').join('');
 	newCell.appendChild(newText);
+	newCell.style = 'vertical-align:middle';
 	newCell.innerHTML = '<input type="hidden" name="plano'+plano.id+'" value="'+json+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="entidadeId" value="'+plano.entidadeId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+plano.id+'"/>'+newCell.innerHTML;
@@ -169,6 +170,7 @@ function addPlanoRow(tableID) {
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(plano.modalidade);
 	newCell.appendChild(newText);
+	newCell.style = 'vertical-align:middle';
 	// recurso garantidor
 	newCell = newRow.insertCell(2);
 	if(plano.c_recursoGarantidor == ''){
@@ -176,6 +178,7 @@ function addPlanoRow(tableID) {
 	}
 	newText = document.createTextNode(rg);
 	newCell.appendChild(newText);
+	newCell.style = 'vertical-align:middle';
 	// nome
 	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(plano.nome);
@@ -193,6 +196,7 @@ function addPlanoRow(tableID) {
 	newCell.style = 'display:none';
 	// Botões
 	newCell = newRow.insertCell(6);
+	newCell.style = 'vertical-align:middle';
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";

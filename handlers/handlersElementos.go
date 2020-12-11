@@ -175,15 +175,16 @@ func removeItem(itens []mdl.Item, itemToBeRemoved mdl.Item) []mdl.Item {
 func DeleteElementoHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Elemento")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		errMsg := "O Elemento está associado a um registro e não pôde ser removido."
 		id := r.FormValue("Id")
 		sqlStatement := "DELETE FROM elementos WHERE id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.ElementosRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.ElementosRoute+"?msg=Elemento removido com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.ElementosRoute+"?msg=Elemento removido com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

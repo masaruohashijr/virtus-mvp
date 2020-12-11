@@ -18,7 +18,7 @@ function deleteRole(e) {
     var deleteForm = document.getElementById('delete-form');
     deleteForm.style.display = 'block';
     var roleId = e.parentNode.parentNode.childNodes[3].innerText;
-    document.getElementById('roleIdToDelete').value = roleId;
+    document.getElementById('perfilIdToDelete').value = roleId;
 }
 
 function resetRolesEditForm(){

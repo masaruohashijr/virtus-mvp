@@ -126,11 +126,13 @@ func UpdateActionHandler(w http.ResponseWriter, r *http.Request) {
 
 		if originStatus[0] != originStatusDB || destinationStatus[0] != destinationStatusDB {
 			sqlStatement := "DELETE FROM actions_status WHERE action_id=$1"
-			deleteForm, err := Db.Prepare(sqlStatement)
-			if err != nil {
-				log.Println(err.Error())
+			deleteForm, _ := Db.Prepare(sqlStatement)
+			_, err := deleteForm.Exec(actionId)
+			if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+				http.Redirect(w, r, route.ActionsRoute+"?errMsg=Action está vinculada e não foi removida.", 301)
+			} else {
+				http.Redirect(w, r, route.ActionsRoute+"?msg=Action removida com sucesso.", 301)
 			}
-			deleteForm.Exec(actionId)
 			log.Println("DELETE Action_Status: Id: " + actionId)
 		}
 		sqlStatement := "UPDATE actions SET name=$1, origin_status_id=$2, destination_status_id=$3, other_than=$4, description=$5 WHERE id=$6"
@@ -175,34 +177,21 @@ func DeleteActionHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
 		sqlStatement := "DELETE FROM actions_status WHERE action_id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		deleteForm.Exec(id)
-		if err != nil {
-			log.Println(err.Error())
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.ActionsRoute+"?errMsg=A Ação está vinculada e não foi removida.", 301)
+		} else {
+			http.Redirect(w, r, route.ActionsRoute+"?msg=Ação removida com sucesso.", 301)
 		}
 		sqlStatement = "DELETE FROM actions WHERE id=$1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
+		deleteForm, _ = Db.Prepare(sqlStatement)
 		deleteForm.Exec(id)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		if err != nil {
-			log.Println(err.Error())
-		}
-		if strings.Contains(err.Error(), "violates foreign key") {
-			http.Redirect(w, r, route.ActionsRoute+"?errMsg=A Ação não pôde ser removida pois está sendo utilizada.", 301)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.ActionsRoute+"?errMsg=A Ação está vinculada e não foi removida.", 301)
 		} else {
-			log.Println("DELETE: Id: " + id)
 			http.Redirect(w, r, route.ActionsRoute, 301)
 		}
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.ActionsRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

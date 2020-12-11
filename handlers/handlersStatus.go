@@ -59,14 +59,15 @@ func DeleteStatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Status")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
+		errMsg := "Status vinculado a registro não pode ser removido."
 		sqlStatement := "DELETE FROM status WHERE id=$1"
 		deleteForm, err := Db.Prepare(sqlStatement)
 		_, err = deleteForm.Exec(id)
-		if err != nil {
-			log.Println(err.Error())
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.StatusRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.StatusRoute+"?msg=Status removido com sucesso.", 301)
 		}
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.StatusRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

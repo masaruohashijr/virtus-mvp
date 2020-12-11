@@ -311,26 +311,27 @@ func DeleteEntidadeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Entidade")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
+		log.Println("Deletando o id " + id)
 		sqlStatement := "DELETE FROM planos WHERE entidade_id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.EntidadesRoute+"?errMsg=Um plano está associado a um registro e não pôde ser removido.", 301)
 		}
-		deleteForm.Exec(id)
 		sqlStatement = "DELETE FROM ciclos_entidades WHERE entidade_id=$1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		deleteForm, _ = Db.Prepare(sqlStatement)
+		_, err = deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.EntidadesRoute+"?errMsg=Um ciclo está associado a um registro e não pôde ser removido.", 301)
 		}
-		deleteForm.Exec(id)
 		sqlStatement = "DELETE FROM entidades WHERE id=$1"
 		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		_, err = deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.EntidadesRoute+"?errMsg=Entidade está associada a um registro e não pôde ser removida.", 301)
+		} else {
+			http.Redirect(w, r, route.EntidadesRoute+"?msg=Entidade removida com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.EntidadesRoute+"?msg=Entidade removida com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

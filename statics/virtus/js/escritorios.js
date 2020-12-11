@@ -3,9 +3,9 @@ function editEscritorio(e) {
     var editForm = document.getElementById('edit-form');
     editForm.style.display = 'block';
     var escritorioId = e.parentNode.parentNode.childNodes[3].innerText;
-    var escritorioNome = e.parentNode.parentNode.childNodes[5].innerText;
-    var escritorioDescricao = e.parentNode.parentNode.childNodes[7].innerText;
-    var escritorioAbreviatura = e.parentNode.parentNode.childNodes[9].innerText;
+    var escritorioAbreviatura = e.parentNode.parentNode.childNodes[5].innerText;
+    var escritorioNome = e.parentNode.parentNode.childNodes[7].innerText;
+    var escritorioDescricao = e.parentNode.parentNode.childNodes[9].innerText;
 	if(e.parentNode.parentNode.childNodes[11].childNodes.length > 1){
 	    var escritorioChefeId = e.parentNode.parentNode.childNodes[11].childNodes[1].value;
 	    document.getElementById('EscritorioChefeForUpdate').value = escritorioChefeId;
@@ -21,9 +21,9 @@ function editJurisdicaoEscritorio(e) {
     var editForm = document.getElementById('edit-jurisdicao-escritorio-form');
     editForm.style.display = 'block';
     var escritorioId = e.parentNode.parentNode.childNodes[3].innerText;
-    var escritorioNome = e.parentNode.parentNode.childNodes[5].innerText;
-    var escritorioDescricao = e.parentNode.parentNode.childNodes[7].innerText;
-	var escritorioAbreviatura = e.parentNode.parentNode.childNodes[9].innerText;
+	var escritorioAbreviatura = e.parentNode.parentNode.childNodes[5].innerText;
+    var escritorioNome = e.parentNode.parentNode.childNodes[7].innerText;
+    var escritorioDescricao = e.parentNode.parentNode.childNodes[9].innerText;
 	// Verifica se há campo 'hidden' para seu valor ser lido.
 	if(e.parentNode.parentNode.childNodes[11].childNodes.length > 1){
 	    var escritorioChefeId = e.parentNode.parentNode.childNodes[11].childNodes[1].value;
@@ -41,9 +41,9 @@ function editMembrosEscritorio(e) {
     var editForm = document.getElementById('edit-equipe-form');
     editForm.style.display = 'block';
     var escritorioId = e.parentNode.parentNode.childNodes[3].innerText;
-    var escritorioNome = e.parentNode.parentNode.childNodes[5].innerText;
-    var escritorioDescricao = e.parentNode.parentNode.childNodes[7].innerText;
-	var escritorioAbreviatura = e.parentNode.parentNode.childNodes[9].innerText;
+	var escritorioAbreviatura = e.parentNode.parentNode.childNodes[5].innerText;
+    var escritorioNome = e.parentNode.parentNode.childNodes[7].innerText;
+    var escritorioDescricao = e.parentNode.parentNode.childNodes[9].innerText;
 	if(e.parentNode.parentNode.childNodes[11].childNodes.length > 1){
 	    var escritorioChefeId = e.parentNode.parentNode.childNodes[11].childNodes[1].value;
 	    document.getElementById('EscritorioChefeESForUpdate').value = escritorioChefeId;

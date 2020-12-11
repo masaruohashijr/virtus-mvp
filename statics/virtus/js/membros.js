@@ -64,6 +64,7 @@ function addMembroRow(tableID) {
 	json = json.split('{').join('');
 	json = json.split('}').join('');
 	newCell.appendChild(newText);
+	newCell.style="vertical-align:middle;text-align:left";
 	newCell.innerHTML = '<input type="hidden" name="membro'+membro.id+'" value="'+json+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="usuarioId" value="'+membro.usuarioId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="escritorioId" value="'+membro.escritorioId+'"/>'+newCell.innerHTML;
@@ -73,18 +74,22 @@ function addMembroRow(tableID) {
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(membro.usuarioPerfil);
 	newCell.appendChild(newText);
+	newCell.style="vertical-align:middle;";
 	// Inicio Em
 	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(membro.iniciaEm);
 	newCell.appendChild(newText);
+	newCell.style="vertical-align:middle;";
 	// Termina Em
 	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(membro.terminaEm);
 	newCell.appendChild(newText);
+	newCell.style="vertical-align:middle;";
 	newCell.innerHTML = '<input type="hidden" value="'+membro.autorId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" value="'+membro.criadoEm+'"/>'+newCell.innerHTML;
 	// Botões
 	newCell = newRow.insertCell(4);
+	newCell.style="vertical-align:middle;";
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";

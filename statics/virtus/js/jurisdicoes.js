@@ -60,6 +60,7 @@ function addJurisdicaoRow(tableID) {
 	json = json.split('{').join('');
 	json = json.split('}').join('');
 	newCell.appendChild(newText);
+	newCell.style="vertical-align:middle;text-align:left";
 	newCell.innerHTML = '<input type="hidden" name="jurisdicao'+jurisdicao.id+'" value="'+json+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="escritorioId" value="'+jurisdicao.escritorioId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="entidadeId" value="'+jurisdicao.entidadeId+'"/>'+newCell.innerHTML;
@@ -69,14 +70,17 @@ function addJurisdicaoRow(tableID) {
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(jurisdicao.iniciaEm);
 	newCell.appendChild(newText);
+	newCell.style="vertical-align:middle";
 	// Termina Em
 	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(jurisdicao.terminaEm);
 	newCell.appendChild(newText);
+	newCell.style="vertical-align:middle";
 	newCell.innerHTML = '<input type="hidden" value="'+jurisdicao.autorId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" value="'+jurisdicao.criadoEm+'"/>'+newCell.innerHTML;
 	// Botões
 	newCell = newRow.insertCell(3);
+	newCell.style="vertical-align:middle";
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";

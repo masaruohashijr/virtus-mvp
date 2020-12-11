@@ -84,6 +84,7 @@ function addCicloEntidadeRow(tableID) {
 	json = json.split('{').join('');
 	json = json.split('}').join('');
 	newCell.appendChild(newText);
+	newCell.style = 'vertical-align:middle';
 	newCell.innerHTML = '<input type="hidden" name="cicloEntidade'+cicloEntidade.id+'" value="'+json+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="cicloId" value="'+cicloEntidade.cicloId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="entidadeId" value="'+cicloEntidade.entidadeId+'"/>'+newCell.innerHTML;
@@ -94,18 +95,22 @@ function addCicloEntidadeRow(tableID) {
 	newText = document.createTextNode(cicloEntidade.tipoMedia);
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+cicloEntidade.tipoMediaId+'"/>'+newCell.innerHTML;
+	newCell.style = 'vertical-align:middle';
 	// Inicio Em
 	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(formatarData(cicloEntidade.iniciaEm));
 	newCell.appendChild(newText);
+	newCell.style = 'vertical-align:middle';
 	// Termina Em
 	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(formatarData(cicloEntidade.terminaEm));
 	newCell.appendChild(newText);
+	newCell.style = 'vertical-align:middle';
 	newCell.innerHTML = '<input type="hidden" value="'+cicloEntidade.autorId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" value="'+cicloEntidade.criadoEm+'"/>'+newCell.innerHTML;
 	// Botões
 	newCell = newRow.insertCell(4);
+	newCell.style = 'vertical-align:middle';
 	// Botão Editar
 	let btnEditar = document.createElement('input');
 	btnEditar.type = "button";

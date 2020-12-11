@@ -23,31 +23,44 @@
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
-            <thead>
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-escritorios">
             <tr>
-                <th>Ord</th>
-                <th>Id</th>
-                <th>Nome</th>
-				<th>Descrição</th>
-				<th>Abreviatura</th>
-                <th>Chefe</th>
+                <td style="vertical-align:middle;width: 5%;">Ord</td>
+                <td style="vertical-align:middle;width: 5%;">Id</td>
+				<td style="vertical-align:middle;width: 10%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Abreviatura" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-escritorios', 1, 2)"></td>
+                <td style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-escritorios', 1, 3)"></td>
+				<td style="display: none;">Descrição</td>
+                <td style="vertical-align:middle;width: 25%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Chefe" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-escritorios', 1, 4)"></td>
 				{{if $allowed}}
-				<th>Ações</th>
+				<td style="vertical-align:middle;width: 25%;">Ações</td>
 				{{end}}
             </tr>
-            </thead>
-            <tbody>
             {{range $index, $escritorio := .Escritorios}}
             <tr>
-                <td>#{{$escritorio.Order}}</td>
-                <td>{{$escritorio.Id}}</td>
-                <td>{{$escritorio.Nome}}</td>
-				<td>{{$escritorio.Descricao}}</td>
-				<td>{{$escritorio.Abreviatura}}</td>
-                <td>{{$escritorio.ChefeNome}}<input type="hidden" value="{{$escritorio.ChefeId}}"></td>
+                <td style="vertical-align:middle">#{{$escritorio.Order}}</td>
+                <td style="vertical-align:middle">{{$escritorio.Id}}</td>
+				<td style="vertical-align:middle;text-align:left">{{$escritorio.Abreviatura}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$escritorio.Nome}}</td>
+				<td style="display: none;">{{$escritorio.Descricao}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$escritorio.ChefeNome}}<input type="hidden" value="{{$escritorio.ChefeId}}"></td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editEscritorio(this)">Editar</button>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editJurisdicaoEscritorio(this)">Jurisdição</button>
                     <button class="w3-btn w3-teal" onclick="contexto='edit';editMembrosEscritorio(this)">Membros</button>
@@ -56,7 +69,6 @@
 				{{end}}
             </tr>
             {{end}}
-            </tbody>
         </table>
     </div>
 </div>

@@ -111,36 +111,24 @@ func assembleRoles(activity mdl.Activity) mdl.Activity {
 
 func DeleteActivitiesByWorkflowIdHandler(wId string) {
 	sqlStatement := "DELETE FROM activities_roles WHERE activity_id IN ( SELECT id FROM activities WHERE workflow_id = $1 )"
-	deleteForm, err := Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
+	deleteForm, _ := Db.Prepare(sqlStatement)
 	deleteForm.Exec(wId)
 	log.Println("DELETE Activities_Roles in Workflow Id: " + wId)
 	sqlStatement = "DELETE FROM Activities WHERE workflow_id=$1"
-	deleteForm, err = Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
+	deleteForm, _ = Db.Prepare(sqlStatement)
 	deleteForm.Exec(wId)
 	log.Println("DELETE Activities in Workflow Id: " + wId)
 }
 
 func DeleteActivitiesHandler(diffDB []mdl.Activity) {
 	sqlStatement := "DELETE FROM activities_roles WHERE activity_id=$1"
-	deleteForm, err := Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
+	deleteForm, _ := Db.Prepare(sqlStatement)
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
 		log.Println("DELETE: Activity Role Id: " + strconv.FormatInt(int64(diffDB[n].Id), 10))
 	}
 	sqlStatement = "DELETE FROM activities WHERE id=$1"
-	deleteForm, err = Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
+	deleteForm, _ = Db.Prepare(sqlStatement)
 	for n := range diffDB {
 		deleteForm.Exec(strconv.FormatInt(int64(diffDB[n].Id), 10))
 		log.Println("DELETE: Activity Id: " + strconv.FormatInt(int64(diffDB[n].Id), 10))

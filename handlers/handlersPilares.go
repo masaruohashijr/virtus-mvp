@@ -193,21 +193,15 @@ func DeletePilarHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Pilar")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM componentes_pilares WHERE pilar_id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		errMsg := "Pilar vinculado a registro não pode ser removido."
+		sqlStatement := "DELETE FROM pilares WHERE id=$1"
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.PilaresRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.PilaresRoute+"?msg=Pilar removido com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-
-		sqlStatement = "DELETE FROM pilares WHERE id=$1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.PilaresRoute+"?msg=Pilar removido com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

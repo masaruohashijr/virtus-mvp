@@ -23,40 +23,47 @@
 				</div>
 		    </div>
 		</header>
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
-            <thead>
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-status">
             <tr>
-                <th>Ord</th>
-                <th>Id</th>
-                <th>Nome</th>
-                <th>Estereótipo</th>
-                <th>Autor</th>
-                <th>Criado Em</th>
-                <th>Status</th>
+                <td style="vertical-align:middle;width: 5%;">Ord</td>
+                <td style="vertical-align:middle;width: 5%;">Id</td>
+                <td style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-status', 1, 2)"></td>
+                <td style="vertical-align:middle;width: 5%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Estereótipo" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-status', 1, 3)"></td>
+                <td style="vertical-align:middle;width: 10%;">Autor</td>
+                <td style="vertical-align:middle;width: 10%;">Criado Em</td>
+                <td style="vertical-align:middle;width: 10%;">Status</td>
 				{{if $allowed}}
-				<th>Ações</th>
+				<td style="vertical-align:middle;width: 25%;">Ações</td>
 				{{end}}
             </tr>
-            </thead>
-            <tbody>
             {{range $index, $status := .Statuss}}
             <tr>
-                <td>#{{$status.Order}}</td>
-                <td>{{$status.Id}}</td>
-                <td>{{$status.Name}}<input type="hidden" value="{{$status.Description}}"></td>
-                <td>{{$status.Stereotype}}</td>
-                <td>{{$status.AuthorName}}</td>
-                <td>{{$status.C_CreatedAt}}</td>
-                <td>{{$status.CStatus}}</td>
+                <td style="vertical-align:middle">#{{$status.Order}}</td>
+                <td style="vertical-align:middle">{{$status.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$status.Name}}<input type="hidden" value="{{$status.Description}}"></td>
+                <td style="vertical-align:middle">{{$status.Stereotype}}</td>
+                <td style="vertical-align:middle">{{$status.AuthorName}}</td>
+                <td style="vertical-align:middle">{{$status.C_CreatedAt}}</td>
+                <td style="vertical-align:middle">{{$status.CStatus}}</td>
 				{{if $allowed}}
-                <td>
+                <td style="vertical-align:middle">
                     <button class="w3-btn w3-teal" onclick="editStatus(this);">Editar</button>
                     <button class="w3-btn w3-red" onclick="deleteStatus(this)">Apagar</button>
                 </td>
 				{{end}}
             </tr>
             {{end}}
-            </tbody>
         </table>
     </div>
 </div>

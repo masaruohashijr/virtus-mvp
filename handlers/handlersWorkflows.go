@@ -264,28 +264,15 @@ func DeleteWorkflowHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Workflow")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM activities_roles " +
-			" WHERE activity_id IN (" +
-			" SELECT id FROM activities WHERE workflow_id = $1)"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		errMsg := "Workflow vinculado a registro não pode ser removido."
+		sqlStatement := "DELETE FROM workflows WHERE id=$1"
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.WorkflowsRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.WorkflowsRoute+"?msg=Workflow removido com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-		sqlStatement = "DELETE FROM activities WHERE workflow_id = $1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		deleteForm.Exec(id)
-		sqlStatement = "DELETE FROM workflows WHERE id=$1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
-		http.Redirect(w, r, route.WorkflowsRoute, 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -295,6 +282,7 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Workflows")
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listWorkflows") {
+		msg := r.FormValue("msg")
 		errMsg := r.FormValue("errMsg")
 		sql := "SELECT " +
 			" a.id, " +
@@ -396,8 +384,10 @@ func ListWorkflowsHandler(w http.ResponseWriter, r *http.Request) {
 			rows.Scan(&feature.Id, &feature.Name)
 			features = append(features, feature)
 		}
-
 		var page mdl.PageWorkflows
+		if msg != "" {
+			page.Msg = msg
+		}
 		if errMsg != "" {
 			page.ErrMsg = errMsg
 		}

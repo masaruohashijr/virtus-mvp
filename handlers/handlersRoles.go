@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 	mdl "virtus/models"
 	route "virtus/routes"
@@ -113,25 +114,22 @@ func removeFeature(features []mdl.Feature, featureToBeRemoved mdl.Feature) []mdl
 }
 
 func DeleteRoleHandler(w http.ResponseWriter, r *http.Request) {
-	sec.IsAuthenticated(w, r)
 	log.Println("Delete Perfil")
-	if r.Method == "POST" {
+	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM features_roles WHERE role_id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		errMsg := "Perfil vinculado a registro não pode ser removido."
+		sqlStatement := "DELETE FROM roles WHERE id=$1"
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		log.Println(err.Error())
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.RolesRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.RolesRoute+"?msg=Perfil removido com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-		sqlStatement = "DELETE FROM roles WHERE id=$1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
+	} else {
+		http.Redirect(w, r, "/logout", 301)
 	}
-	http.Redirect(w, r, route.RolesRoute, 301)
 }
 
 func ListPerfisHandler(w http.ResponseWriter, r *http.Request) {

@@ -231,28 +231,16 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 func DeleteComponenteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete Componente")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
+		errMsg := "O Componente está associado a um registro e não pôde ser removido."
 		id := r.FormValue("Id")
-		sqlStatement := "DELETE FROM tipos_notas_componentes WHERE componente_id=$1"
-		deleteForm, err := Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
+		sqlStatement := "DELETE FROM componentes WHERE id=$1"
+		deleteForm, _ := Db.Prepare(sqlStatement)
+		_, err := deleteForm.Exec(id)
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
+			http.Redirect(w, r, route.ComponentesRoute+"?errMsg="+errMsg, 301)
+		} else {
+			http.Redirect(w, r, route.ComponentesRoute+"?msg=Componente removido com sucesso.", 301)
 		}
-		deleteForm.Exec(id)
-
-		sqlStatement = "DELETE FROM elementos_componentes WHERE componente_id=$1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		deleteForm.Exec(id)
-
-		sqlStatement = "DELETE FROM componentes WHERE id=$1"
-		deleteForm, err = Db.Prepare(sqlStatement)
-		if err != nil {
-			log.Println(err.Error())
-		}
-		deleteForm.Exec(id)
-		log.Println("DELETE: Id: " + id)
 	}
 	http.Redirect(w, r, route.ComponentesRoute+"?msg=Componente removido com sucesso.", 301)
 }

@@ -41,7 +41,7 @@ func CreateEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 				currentUser.Id,
 				time.Now())
 		}
-		http.Redirect(w, r, route.EscritoriosRoute, 301)
+		http.Redirect(w, r, route.EscritoriosRoute+"?msg=Escritório criado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -82,7 +82,7 @@ func UpdateEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 			updtForm.Exec(nome, descricao, abreviatura, id)
 		}
 		log.Println("UPDATE: Id: " + id + " | Nome: " + nome + " | Abreviatura: " + abreviatura + " | Descrição: " + descricao + " | Chefe: " + chefe)
-		http.Redirect(w, r, route.EscritoriosRoute, 301)
+		http.Redirect(w, r, route.EscritoriosRoute+"?msg=Escritório atualizado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}
@@ -101,11 +101,10 @@ func DeleteEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err.Error())
 		}
-		if strings.Contains(err.Error(), "violates foreign key") {
+		if err != nil && strings.Contains(err.Error(), "violates foreign key") {
 			http.Redirect(w, r, route.EscritoriosRoute+"?errMsg=Escritório vinculado a Membro ou Jurisdicão não pode ser removido.", 301)
 		} else {
-			log.Println("DELETE: Id: " + id)
-			http.Redirect(w, r, route.EscritoriosRoute, 301)
+			http.Redirect(w, r, route.EscritoriosRoute+"?msg=Escritório removido com sucesso.", 301)
 		}
 	} else {
 		http.Redirect(w, r, "/logout", 301)
@@ -117,12 +116,9 @@ func ListEscritoriosHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "listEscritorios") {
 		errMsg := r.FormValue("errMsg")
+		msg := r.FormValue("msg")
 		var page mdl.PageEscritorios
-		if errMsg != "" {
-			page = listEscritorios(errMsg)
-		} else {
-			page = listEscritorios("")
-		}
+		page = listEscritorios(errMsg, msg)
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
 		var tmpl = template.Must(template.ParseGlob("tiles/escritorios/*"))
 		tmpl.ParseGlob("tiles/*")
@@ -154,7 +150,7 @@ func LoadMembrosByEscritorioId(w http.ResponseWriter, r *http.Request) {
 	log.Println("JSON Membros")
 }
 
-func listEscritorios(errorMsg string) mdl.PageEscritorios {
+func listEscritorios(errorMsg string, msg string) mdl.PageEscritorios {
 	sql := "SELECT " +
 		" a.id, " +
 		" a.nome, " +

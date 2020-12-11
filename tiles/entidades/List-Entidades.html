@@ -61,20 +61,20 @@
             {{range $index, $entidade := .Entidades}}
             <tr>
                 <td style="vertical-align:middle">#{{$entidade.Order}}</td>
-                <td style="vertical-align:middle"><input type="text" value="{{$entidade.Id}}">{{$entidade.Codigo}}</td>
+                <td style="vertical-align:middle"><input type="hidden" value="{{$entidade.Id}}">{{$entidade.Codigo}}</td>
                 <td style="vertical-align:middle;text-align:left">
 					{{$entidade.Sigla}}
 				</td>
                 <td style="vertical-align:middle;text-align:left">
 					{{$entidade.Nome}}
-					<input type="text" value="{{$entidade.Descricao}}">
+					<input type="hidden" value="{{$entidade.Descricao}}">
 				</td>
                 <td style="vertical-align:middle;text-align:left">
 					{{$entidade.CicloNome}}
-					<input type="text" value="{{$entidade.Situacao}}">
-					<input type="text" value="{{$entidade.ESI}}">
-					<input type="text" value="{{$entidade.Municipio}}">
-					<input type="text" value="{{$entidade.SiglaUF}}">
+					<input type="hidden" value="{{$entidade.Situacao}}">
+					<input type="hidden" value="{{$entidade.ESI}}">
+					<input type="hidden" value="{{$entidade.Municipio}}">
+					<input type="hidden" value="{{$entidade.SiglaUF}}">
 				</td>
 				{{if $allowed}}
                 <td style="vertical-align:middle">
