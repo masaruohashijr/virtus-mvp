@@ -1,3 +1,5 @@
+var anotacao_radar_tobe_deleted;
+
 class AnotacaoRadar{
 	constructor(order, id, radarId, entidadeId, anotacaoId, observacoes, registroEmAta, autor, criadoEm, status){
 		this.order = order;		
@@ -165,13 +167,12 @@ function updateAnotacaoRadar() {
 		alert(erros);
 		return;
 	}
-	let observacoes = document.getElementById('ObservacoesForUpdate');
-	let registroEmAta = document.getElementById('RegistroEmAtaForUpdate');
+	let observacoes = document.getElementById('ObservacoesForUpdate').value;
+	let registroEmAta = document.getElementById('RegistroEmAtaForUpdate').value;
 	anotacaoRadar = new AnotacaoRadar(order, id, radarId, entidadeId, anotacaoId, observacoes, registroEmAta, '', '', '');
 	anotacoesRadar[order] = anotacaoRadar;
 	updateAnotacaoRadarRow("table-anotacoes-radar-"+contexto,order);
 	//limparCamposAnotacaoRadarForm();
-	alert(document.getElementById(contexto+'-anotacao-radar-form').id);
 	document.getElementById('edit-anotacao-radar-form').style.display='none';
 }
 
@@ -210,6 +211,8 @@ function updateAnotacaoRadarRow(tableID, order){
 	json = json.split('{').join('');
 	json = json.split('}').join('');
 	console.log(json);
+	celula.innerHTML = '<input type="hidden" name="entidadeId" value="'+anotacaoRadar.entidadeId+'"/>'+celula.innerHTML;
+	console.log('anotacaoRadar.anotacaoId: '+anotacaoRadar.anotacaoId);
 	celula.innerHTML = '<input type="hidden" name="anotacaoRadar'+order+'" value="'+json+'"/>'+celula.innerHTML;
 	console.log('anotacaoRadar.anotacaoId: '+anotacaoRadar.anotacaoId);
 	celula.innerHTML = '<input type="hidden" name="anotacaoId" value="'+anotacaoRadar.anotacaoId+'"/>'+celula.innerHTML;
@@ -237,4 +240,35 @@ function showDeleteAnotacaoRadarForm(e){
 	let deleteAnotacaoRadarForm = document.getElementById('delete-anotacao-radar-form');
 	deleteAnotacaoRadarForm.style.display = 'block';
 	anotacao_radar_tobe_deleted = e;
+}
+
+function deleteAnotacaoRadar() {
+	console.log('deleteAnotacaoRadar');
+	var order = anotacao_radar_tobe_deleted.parentNode.parentNode.childNodes[0].childNodes[0].value;
+	var newAnotacoesRadar = [];
+	let tbl = anotacao_radar_tobe_deleted.parentNode.parentNode.parentNode;
+	let linhas = tbl.childNodes;
+	contadorLinha = 1;
+	for(y=0;y<linhas.length;y++){
+		if(linhas[y].childNodes[0]){
+			let inputOrder = linhas[y].childNodes[0].childNodes[0];
+			if(inputOrder && inputOrder.tagName=='INPUT'){ 
+				if(inputOrder.value==order){
+					if(inputOrder.value == order){
+						tbl.deleteRow(contadorLinha);
+						break;
+					}
+				}
+				contadorLinha ++;
+			}
+		}
+	}
+	for(i=0;i<anotacoesRadar.length;i++){
+		if(i != order){
+			newAnotacoesRadar.push(anotacoesRadar[i]);
+		}
+	}
+	anotacoesRadar = newAnotacoesRadar;
+	var deleteAnotacaoRadarForm = document.getElementById('delete-anotacao-radar-form');
+	deleteAnotacaoRadarForm.style.display = 'none';
 }
