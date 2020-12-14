@@ -1,0 +1,85 @@
+{{define "Edit-Versao"}}
+<!-- Edit Versao -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar versão</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" id="formulario-edit" action="/updateVersao" method="POST">
+                <input type="hidden" name="Id" id="VersaoIdForUpdate" value="">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" name="Nome" id="NomeVersaoForUpdate" value="">
+                <label class="w3-label">Objetivo</label>
+                <textarea class="w3-input" name="Objetivo" id="ObjetivoVersaoForUpdate" rows="5" value=""></textarea>
+                <label class="w3-label">Definição de Pronto</label>
+                <textarea class="w3-input" name="DefinicaoPronto" id="DefinicaoProntoVersaoForUpdate" rows="5" value=""></textarea>
+                <label class="w3-label">Inicia em</label>
+                <input class="w3-input" type="date" name="IniciaEm" id="IniciaEmVersaoForUpdate" value="">
+                <label class="w3-label">Termina em</label>
+                <input class="w3-input" type="date" name="TerminaEm" id="TerminaEmVersaoForUpdate" value="">
+				<table style="width: 100%">
+					<tr>
+						<td>
+			                <label class="w3-label">Autor</label>
+			                <input class="w3-input" type="text" disabled id="AuthorNameVersaoForUpdate" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Criado Em</label>
+			                <input class="w3-input" type="text" disabled id="CriadoEmVersaoForUpdate" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Status</label>
+			                <input class="w3-input" type="text" disabled id="StatusVersaoForUpdate" value="">
+						</td>
+					</tr>
+				</table>
+				<br>
+		        <header class="w3-container w3-center w3-teal">
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Chamados</h4>
+		                <div style="margin-top: 8px" id="edit-form-chamado-btn" >
+	                        <a href="#" onclick="contexto='edit';document.getElementById('edit-chamado-versao-form').style.display='block'">
+	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+	                        </a>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-chamado-versao-edit">
+		            <tr>
+		                <td style="vertical-align:middle;width: 5%;">Tipo</td>
+		                <td style="vertical-align:middle;width: 5%;">Prioridade</td>
+		                <td style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Título" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'table-chamado-versao-edit', 1, 0)"></td>
+		                <td style="vertical-align:middle;width: 5%;">Inicia em</td>
+		                <td style="vertical-align:middle;width: 5%;">Termina em</td>
+		                <td style="vertical-align:middle;width: 10%;">Relator</td>
+		                <td style="vertical-align:middle;width: 5%;">Responsável</td>
+		                <td style="vertical-align:middle;width: 5%;">Autor</td>
+		                <td style="vertical-align:middle;width: 5%;">Criado Em</td>
+						<td style="vertical-align:middle;width: 25%;">Ações</td>
+		            </tr>
+		        </table>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right"
+					type="submit">Criar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

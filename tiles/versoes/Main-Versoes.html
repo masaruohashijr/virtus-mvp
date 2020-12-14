@@ -1,0 +1,13 @@
+{{ define "Main-Versoes" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Edit-Versao" }}
+{{ template "Create-Versao" }}
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Message" .Msg }}
+{{ template "List-Versoes" . }}
+</body>
+</html>
+{{end}}

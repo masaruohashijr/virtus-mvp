@@ -1,6 +1,12 @@
 var actions_array = [];
 var activity;
 var activities = [];
+var anotacao;
+var anotacoes = [];
+var anotacaoRadar;
+var anotacoesRadar = [];
+var anotacoesMap;
+var anotacoesSiglasMap;
 var item;
 var itens = [];
 var contexto;
@@ -16,6 +22,7 @@ var tiposNotasMap;
 var elementosMap;
 var itensMap;
 var auditoresMap;
+var siglasMap;
 var cicloEntidade;
 var ciclosEntidade = [];
 var pilarCiclo;
@@ -33,3 +40,8 @@ var membros = [];
 var tipo;
 var tipos = [];
 var matriz;
+
+function parseNome2Valor(nome){
+	let letra = nome.substr(0,1);
+	return letra;
+}

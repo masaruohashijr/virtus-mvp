@@ -45,6 +45,17 @@ body {
   color: #0070ff;
 }
 
+.menuAdm a {
+  color:#fff;
+  padding-left: 15px;
+  background-color:#80C6F0;
+}
+
+.menuAdm a:hover {
+  color:#fff;
+  background-color: #0070ff;
+}
+
 .sidenav .closebtn {
   position: absolute;
   top: 0;

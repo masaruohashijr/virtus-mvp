@@ -1,0 +1,16 @@
+{{ define "Main-Radares" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Menu" . }}
+{{ template "Delete-Radar" }}
+{{ template "Create-Radar" }}
+{{ template "Edit-Radar" }}
+{{ template "Create-Anotacao-Radar" . }}
+{{ template "Edit-Anotacao-Radar" . }}
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Message" .Msg }}
+{{ template "List-Radares" . }}
+</body>
+</html>
+{{end}}

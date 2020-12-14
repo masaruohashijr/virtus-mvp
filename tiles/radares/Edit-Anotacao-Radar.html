@@ -1,0 +1,39 @@
+{{define "Edit-Anotacao-Radar"}}
+<!-- Edit Anotacao Radar Form -->
+<div class="w3-container">
+    <div id="edit-anotacao-radar-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar vínculo com a anotação</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-anotacao-radar-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-anotacao-radar-edit">
+				<input type="hidden" id="IdForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="OrderForUpdate" value="" readonly="readonly" disabled="disabled">
+				<input type="hidden" id="RadarIdForUpdate" value="" readonly="readonly" disabled="disabled">
+				<label class="w3-label">EFPC</label>
+	            <select class="w3-input" id="EFPCForUpdate" onchange="preencherAnotacoesSelect(this, 'edit')">
+	            </select>
+				<script type="text/javascript">
+					carregarEFPC('EFPCForUpdate');
+				</script>
+                <label class="w3-label">Anotações</label>
+	            <select class="w3-input" name="AnotacoesForUpdate" id="AnotacoesForUpdate">
+	            </select>
+                <label class="w3-label">Observações</label>
+                <textarea class="w3-input" name="Oservacoes" id="ObservacoesForUpdate" rows="5" value=""></textarea>
+                <label class="w3-label">Registro em Ata</label>
+                <textarea class="w3-input" name="RegistroEmAta" id="RegistroEmAtaForUpdate" rows="5" value=""></textarea>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="updateAnotacaoRadar()"
+					>Salvar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -25,6 +25,10 @@ func createRoles() {
 		" SELECT 5, 'Visualizador', 'Visualizador' , now()::timestamp " +
 		" WHERE NOT EXISTS (SELECT id FROM roles WHERE name = 'Visualizador')"
 	db.Exec(query)
+	query = " INSERT INTO roles (id, name, description, created_at) " +
+		" SELECT 6, 'Desenvolvedor', 'Desenvolvedor' , now()::timestamp " +
+		" WHERE NOT EXISTS (SELECT id FROM roles WHERE name = 'Desenvolvedor')"
+	db.Exec(query)
 }
 
 func updateRoles() {

@@ -57,6 +57,16 @@ func main() {
 	r.HandleFunc("/listAvaliarPlanos", hd.ListAvaliarPlanosHandler).Methods("GET")
 	r.HandleFunc("/avaliarPlanos", hd.AvaliarPlanosHandler).Methods("POST")
 	r.HandleFunc("/updateAvaliarPlanos", hd.UpdateAvaliarPlanosHandler).Methods("POST")
+	// ----------------- CHAMADOS
+	r.HandleFunc(route.ChamadosRoute, hd.ListChamadosHandler).Methods("GET")
+	r.HandleFunc("/createChamado", hd.CreateChamadoHandler).Methods("POST")
+	r.HandleFunc("/updateChamado", hd.UpdateChamadoHandler).Methods("POST")
+	r.HandleFunc("/deleteChamado", hd.DeleteChamadoHandler).Methods("POST")
+	// ----------------- CHAMADOS
+	r.HandleFunc(route.ChamadosRoute, hd.ListChamadosHandler).Methods("GET")
+	r.HandleFunc("/createChamado", hd.CreateChamadoHandler).Methods("POST")
+	r.HandleFunc("/updateChamado", hd.UpdateChamadoHandler).Methods("POST")
+	r.HandleFunc("/deleteChamado", hd.DeleteChamadoHandler).Methods("POST")
 	// ----------------- MATRIZES
 	r.HandleFunc("/listMatrizes", hd.ListMatrizesHandler).Methods("GET")
 	r.HandleFunc("/executarMatriz", hd.ExecutarMatrizHandler).Methods("POST")
@@ -111,11 +121,26 @@ func main() {
 	r.HandleFunc("/createPilar", hd.CreatePilarHandler).Methods("POST")
 	r.HandleFunc("/updatePilar", hd.UpdatePilarHandler).Methods("POST")
 	r.HandleFunc("/deletePilar", hd.DeletePilarHandler).Methods("POST")
+	// ----------------- QUESTOES
+	r.HandleFunc(route.AnotacoesRoute, hd.ListAnotacoesHandler).Methods("GET")
+	r.HandleFunc("/createAnotacao", hd.CreateAnotacaoHandler).Methods("POST")
+	r.HandleFunc("/updateAnotacao", hd.UpdateAnotacaoHandler).Methods("POST")
+	r.HandleFunc("/deleteAnotacao", hd.DeleteAnotacaoHandler).Methods("POST")
+	// ----------------- RADARES
+	r.HandleFunc(route.RadaresRoute, hd.ListRadaresHandler).Methods("GET")
+	r.HandleFunc("/createRadar", hd.CreateRadarHandler).Methods("POST")
+	r.HandleFunc("/updateRadar", hd.UpdateRadarHandler).Methods("POST")
+	r.HandleFunc("/deleteRadar", hd.DeleteRadarHandler).Methods("POST")
 	// ----------------- ROLES
 	r.HandleFunc(route.RolesRoute, hd.ListPerfisHandler).Methods("GET")
 	r.HandleFunc("/createRole", hd.CreateRoleHandler).Methods("POST")
 	r.HandleFunc("/updateRole", hd.UpdateRoleHandler).Methods("POST")
 	r.HandleFunc("/deleteRole", hd.DeleteRoleHandler).Methods("POST")
+	// ----------------- VERSOES
+	r.HandleFunc(route.VersoesRoute, hd.ListVersoesHandler).Methods("GET")
+	r.HandleFunc("/createVersao", hd.CreateVersaoHandler).Methods("POST")
+	r.HandleFunc("/updateVersao", hd.UpdateVersaoHandler).Methods("POST")
+	r.HandleFunc("/deleteVersao", hd.DeleteVersaoHandler).Methods("POST")
 	// ----------------- STATUS
 	r.HandleFunc(route.StatusRoute, hd.ListStatusHandler).Methods("GET")
 	r.HandleFunc("/createStatus", hd.CreateStatusHandler).Methods("POST")

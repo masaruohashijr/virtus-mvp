@@ -1,0 +1,136 @@
+{{define "Edit-Anotacao"}}
+<!-- Edit Anotacao -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar radar</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-edit" action="/updateAnotacao" method="POST">
+                <input type="hidden" name="Id" id="AnotacaoIdForUpdate" value="">
+                <label class="w3-label">EFPC</label>
+				<select class="w3-select" 
+					id="EntidadeAnotacaoForUpdate"
+					name="Entidade">
+	                <option value=""></option>
+					{{range $index, $entidade := .Entidades }}
+	                <option
+						value="{{$entidade.Id}}">
+						{{$entidade.Sigla}} - {{$entidade.Nome}}
+					</option>
+	            	{{end}}
+	            </select>
+                <label class="w3-label">Assunto</label>
+                <input class="w3-input" type="text" name="Assunto" id="AssuntoAnotacaoForUpdate" value="">
+				<table style="width: 100%">
+					<tr>
+						<td style="width: 25%">
+			                <label class="w3-label">Risco</label>
+							<select class="w3-select" 
+								id="RiscoAnotacaoForUpdate"
+								name="Risco"
+								onchange="sinalizarAlteracao(this);">
+								<option value="A">Alto</option>
+								<option value="M">Médio</option>
+								<option value="B">Baixo</option>
+				            </select>
+						</td>
+						<td style="width: 25%">
+			                <label class="w3-label">Tendência</label>
+							<select class="w3-select" 
+								id="TendenciaAnotacaoForUpdate"
+								name="Tendencia"						
+								onchange="sinalizarAlteracao(this);">
+								<option value="P">Piora</option>
+								<option value="E">Estabilidade</option>
+								<option value="M">Melhora</option>
+				            </select>
+						</td>
+						<td style="width: 25%;">
+							<label class="w3-label">Relator</label>
+							<select class="w3-select" 
+								id="RelatorAnotacaoForUpdate"
+								name="Relator">
+				                <option value=""></option>
+								{{$currentUserId := .LoggedUser.User.Id }}
+								{{range $index, $relator := .Relatores }}
+				                <option
+									{{if eq $relator.Id $currentUserId }} selected {{end}}  
+									value="{{$relator.Id}}">
+									{{$relator.Name}} [{{$relator.RoleName}}]
+								</option>
+				            	{{end}}
+				            </select>
+						</td>
+						<td style="width: 25%;">
+							<label class="w3-label">Responsável</label>
+							<select class="w3-select" 
+								id="ResponsavelAnotacaoForUpdate"
+								name="Responsavel">
+				                <option value=""></option>
+								{{$currentUserRole := .LoggedUser.User.Role }}
+								{{range $index, $responsavel := .Responsaveis }}
+				                <option
+									{{if eq $responsavel.Role $currentUserRole }} selected {{end}}  
+									value="{{$responsavel.Id}}">
+									{{$responsavel.Name}} [{{$responsavel.RoleName}}]
+								</option>
+				            	{{end}}
+				            </select>
+						</td>
+					</tr>
+				<table style="width: 100%;">
+					<tr>
+						<td style="width: 75%;vertical-align: bottom;border: 1px solid">
+			                <label class="w3-label">Descrição</label>
+			                <textarea class="w3-input" name="Descricao" id="DescricaoAnotacaoForUpdate" rows="10" value=""></textarea>
+						<td style="width: 25%;vertical-align: bottom;border: 1px solid">
+						    <label class="w3-label">Matriz</label>
+                			<textarea class="w3-input" name="Matriz" id="MatrizAnotacaoForUpdate" rows="10" value=""></textarea>
+						</td>
+					</tr>
+				</table>
+				<br>
+		        <header class="w3-container w3-center w3-teal">
+					<div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Atualizações</h4>
+		                <div style="margin-top: 8px">
+		                    <div class="w3-right" id="edit-form-atualizacao-btn" >
+		                        <a href="#" onclick="contexto='edit';document.getElementById('edit-atualizacao-anotacao-form').style.display='block'">
+		                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+		                        </a>
+		                    </div>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-atualizacao-anotacao-edit">
+		            <tr>
+		                <td style="vertical-align:middle;width: 60%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Texto" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'table-atualizacao-anotacao-edit', 1, 0)"></td>
+		                <td style="vertical-align:middle;width: 10%;">Autor</td>
+		                <td style="vertical-align:middle;width: 10%;">Criado Em</td>
+						<td style="vertical-align:middle;width: 20%;">Ações</td>
+		            </tr>
+		        </table>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right"
+					type="submit">Salvar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -1,0 +1,77 @@
+{{define "Edit-Radar"}}
+<!-- Edit Radar -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar radar</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-edit" action="/updateRadar" method="POST">
+                <input type="hidden" name="Id" id="RadarIdForUpdate" value="">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" name="Nome" id="NomeRadarForUpdate" value="">
+                <label class="w3-label">Data</label>
+                <input class="w3-input" type="date" name="DataRadar" id="DataRadarForUpdate" value="">
+                <label class="w3-label">Descrição</label>
+                <textarea class="w3-input" name="Descricao" id="DescricaoRadarForUpdate" rows="5" value=""></textarea>
+                <label class="w3-label">Link de Referência</label>
+                <input class="w3-input" type="text" name="Referencia" id="ReferenciaRadarForUpdate" value="">
+				<table style="width: 100%">
+					<tr>
+						<td>
+			                <label class="w3-label">Autor</label>
+			                <input class="w3-input" type="text" disabled id="AuthorNameRadarForUpdate" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Criado Em</label>
+			                <input class="w3-input" type="text" disabled id="CriadoEmRadarForUpdate" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Status</label>
+			                <input class="w3-input" type="text" disabled id="StatusRadarForUpdate" value="">
+						</td>
+					</tr>
+				</table>
+		        <header class="w3-container w3-center w3-teal">
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Anotações</h4>
+		                <div style="margin-top: 8px" id="edit-form-anotacao-btn" >
+	                        <a href="#" onclick="contexto='edit';document.getElementById('edit-anotacao-radar-form').style.display='block'">
+	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+	                        </a>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-questao-radar-edit">
+		            <tr>
+		                <th style="vertical-align:middle;width: 30%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'table-questao-radar-edit', 1, 0)"></th>
+		                <th style="vertical-align:middle;width: 10%;">Tipo de Média</th>
+		                <th style="vertical-align:middle;width: 10%;">Peso Padrão</th>
+		                <th style="vertical-align:middle;width: 5%;">Autor</th>
+		                <th style="vertical-align:middle;width: 10%;">Criado Em</th>
+						<th style="vertical-align:middle;width: 25%;">Ações</th>
+		            </tr>
+		        </table>
+				<button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="submit">Salvar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

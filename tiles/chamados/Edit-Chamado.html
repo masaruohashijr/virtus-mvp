@@ -1,0 +1,117 @@
+{{define "Edit-Chamado"}}
+<!-- Edit Chamado -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Editar chamado</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-edit" action="/updateChamado" method="POST">
+				<input type="hidden" name="Id" id="ChamadoIdForUpdate" value="">
+                <label class="w3-label">Tipo do Chamado</label>
+				<select class="w3-select" 
+					id="TipoChamadoForUpdate"
+					name="TipoChamado">
+					<option value="0"></option>
+					<option value="A">Adequação</option>
+					<option value="C">Correção</option>
+					<option value="D">Dúvida</option>
+					<option value="M">Melhoria</option>
+					<option value="T">Tarefa</option>
+	            </select>
+                <label class="w3-label">Título</label>
+                <input class="w3-input" type="text" name="Titulo" id="TituloChamadoForUpdate" value="">
+                <label class="w3-label">Descrição</label>
+                <textarea class="w3-input" name="Descricao" id="DescricaoChamadoForUpdate"  rows="5" value=""></textarea>
+				<table style="width:100%">
+					<tr>
+						<td style="width: 25%">
+			                <label class="w3-label">Prioridade</label>
+							<select class="w3-select" 
+								id="PrioridadeChamadoForUpdate"
+								name="Prioridade">
+								<option value="0"></option>
+								<option value="A">Alta</option>
+								<option value="M">Média</option>
+								<option value="B">Baixa</option>
+				            </select>
+						</td>
+						<td style="width: 25%">
+			                <label class="w3-label">Relator</label>
+							<select class="w3-select" 
+								id="RelatorChamadoForUpdate"
+								name="Relator">
+				                <option value=""></option>
+								{{$currentUserId := .LoggedUser.User.Id }}
+								{{range $index, $relator := .Relatores }}
+				                <option
+									{{if eq $relator.Id $currentUserId }} selected {{end}}  
+									value="{{$relator.Id}}">
+									{{$relator.Name}} [{{$relator.RoleName}}]
+								</option>
+				            	{{end}}
+				            </select>
+						</td>
+						<td style="width: 25%">
+			                <label class="w3-label">Responsável</label>
+							<select class="w3-select" 
+								id="ResponsavelChamadoForUpdate"
+								name="Responsavel">
+				                <option value=""></option>
+								{{range $index, $responsavel := .Responsaveis }}
+				                <option
+									{{if eq $responsavel.Role 6 }} selected {{end}} 
+									value="{{$responsavel.Id}}">
+									{{$responsavel.Name}} [{{$responsavel.RoleName}}]
+								</option>
+					            {{end}}
+				            </select>
+						</td>
+						<td style="width: 25%;vertical-align: bottom;">
+			                <label class="w3-label">Estimativa em Story Points</label>
+			                <input class="w3-input" type="number" 
+								name="Estimativa" 
+								id="EstimativaChamadoForUpdate" value="">
+						</td>						
+					</tr>
+				</table>
+				<table style="width:100%">
+					<tr>
+						<td>
+			                <label class="w3-label">Inicia em</label>
+            			    <input class="w3-input" type="date" name="IniciaEm" id="IniciaEmChamadoForUpdate" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Pronto em</label>
+			                <input class="w3-input" type="date" name="ProntoEm" id="ProntoEmChamadoForUpdate" value="">
+						</td>
+					</tr>
+				</table>
+				<table style="width: 100%">
+					<tr>
+						<td>
+			                <label class="w3-label">Autor</label>
+			                <input class="w3-input" type="text" disabled id="AuthorNameChamadoForUpdate" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Criado Em</label>
+			                <input class="w3-input" type="text" disabled id="CriadoEmChamadoForUpdate" value="">
+						</td>
+						<td>
+			                <label class="w3-label">Status</label>
+			                <input class="w3-input" type="text" disabled id="StatusChamadoForUpdate" value="">
+						</td>
+					</tr>
+				</table>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right"
+					type="submit">Salvar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -1,0 +1,83 @@
+{{define "List-Chamados"}}
+<!-- List Chamados -->
+<div id="main" class="w3-row-padding">
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				    <h3>{{.Title}}</h3>
+				<div style="margin-top: 10px;">
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+					{{$allowed := (call .LoggedUser.HasPermission "createChamado")}}
+					{{if $allowed}}
+					    <a style="margin-top: 6px" href="#" onclick="openCreateChamado()">
+							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
+						</a>&nbsp;
+					{{end}}
+				    <a style="margin-top: 6px" href="/logout">
+						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
+					</a>
+				</div>
+		    </div>
+		</header>
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-Chamados">
+            <tr>
+                <td style="vertical-align:middle;width: 5%;">Ord</td>
+                <td style="vertical-align:middle;width: 5%;">Id</td>
+                <td style="vertical-align:middle;width: 5%;">Tipo</td>
+                <td style="vertical-align:middle;width: 5%;">Prioridade</td>
+                <td style="vertical-align:middle;width: 20%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Titulo" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-chamados', 1, 2)"></td>
+				<td style="display:none">Descrição</td>
+                <td style="vertical-align:middle;width: 5%;">Responsável</td>
+                <td style="vertical-align:middle;width: 5%;">Relator</td>
+                <td style="vertical-align:middle;width: 5%;">Inicia Em</td>
+                <td style="vertical-align:middle;width: 5%;">Pronto Em</td>
+                <td style="vertical-align:middle;width: 5%;">Estimativa</td>
+                <td style="vertical-align:middle;width: 5%;">Autor</td>
+                <td style="vertical-align:middle;width: 5%;">Criado Em</td>
+				<td style="vertical-align:middle;width: 5%;">Status</td>
+				{{if $allowed}}
+					<td style="vertical-align:middle;width: 25%;">Ações</td>
+				{{end}}
+            </tr>
+            {{range $index, $chamado := .Chamados}}
+            <tr>
+                <td style="vertical-align:middle">#{{$chamado.Order}}</td>
+                <td style="vertical-align:middle">{{$chamado.Id}}</td>
+                <td style="vertical-align:middle">{{$chamado.TipoChamadoId}}</td>
+                <td style="vertical-align:middle">{{$chamado.PrioridadeId}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$chamado.Titulo}}</td>
+				<td style="display:none">{{$chamado.Descricao}}</td>
+                <td style="vertical-align:middle">{{$chamado.ResponsavelName}}
+					<input type="hidden" value="{{$chamado.ResponsavelId}}">
+				</td>
+                <td style="vertical-align:middle">{{$chamado.RelatorName}}
+					<input type="hidden" value="{{$chamado.RelatorId}}">
+				</td>
+                <td style="vertical-align:middle">{{$chamado.IniciaEm}}</td>
+                <td style="vertical-align:middle">{{$chamado.ProntoEm}}</td>
+                <td style="vertical-align:middle">{{$chamado.Estimativa}}</td>
+                <td style="vertical-align:middle">{{$chamado.AuthorName}}</td>
+                <td style="vertical-align:middle">{{$chamado.C_CriadoEm}}</td>
+				<td style="vertical-align:middle">{{$chamado.CStatus}}</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editChamado(this)">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteChamado(this)">Apagar</button>
+                </td>
+				{{end}}
+            </tr>
+            {{end}}
+        </table>
+    </div>
+</div>
+{{end}}

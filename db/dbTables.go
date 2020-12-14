@@ -43,6 +43,24 @@ func createTable() {
 			" activity_id integer," +
 			" role_id integer)")
 
+	// Table CHAMADOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS chamados (" +
+			" id integer DEFAULT nextval('chamados_id_seq'::regclass) NOT NULL," +
+			" titulo character varying(255) NOT NULL," +
+			" descricao character varying(4000)," +
+			" responsavel_id integer," +
+			" relator_id integer," +
+			" tipo_chamado_id character(1)," +
+			" prioridade_id character(1)," +
+			" estimativa integer," +
+			" inicia_em timestamp without time zone," +
+			" pronto_em timestamp without time zone," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table CICLOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS ciclos (" +
@@ -65,6 +83,30 @@ func createTable() {
 			" supervisor_id integer," + // TODO FK
 			" inicia_em timestamp without time zone," +
 			" termina_em timestamp without time zone," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table COMENTARIOS ANOTACOES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS comentarios_anotacoes (" +
+			" id integer DEFAULT nextval('comentarios_anotacoes_id_seq'::regclass) NOT NULL," +
+			" anotacao_id integer," +
+			" texto character varying(4000)," +
+			" referencia character varying(255)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table COMENTARIOS CHAMADOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS comentarios_chamados (" +
+			" id integer DEFAULT nextval('comentarios_chamados_id_seq'::regclass) NOT NULL," +
+			" chamado_id integer," +
+			" texto character varying(4000)," +
+			" referencia character varying(255)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
@@ -273,6 +315,19 @@ func createTable() {
 			" id_versao_origem integer," +
 			" status_id integer)")
 
+	// Table PROCESSOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS processos (" +
+			" id integer DEFAULT nextval('processos_id_seq'::regclass) NOT NULL," +
+			" questao_id integer," +
+			" numero character varying(255) NOT NULL," +
+			" descricao character varying(4000)," +
+			" referencia character varying(255)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table PRODUTOS_CICLOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS produtos_ciclos (" +
@@ -418,6 +473,58 @@ func createTable() {
 			" id_versao_origem integer," +
 			" status_id integer)")
 
+	// Table ANOTACOES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS anotacoes (" +
+			" id integer DEFAULT nextval('anotacoes_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer NOT NULL," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" componente_id integer," +
+			" plano_id integer," +
+			" tipo_nota_id integer," +
+			" elemento_id integer," +
+			" item_id integer," +
+			" assunto character varying(255) NOT NULL," +
+			" risco character(1)," +
+			" tendencia character(1)," +
+			" relator_id integer," +
+			" responsavel_id integer," +
+			" descricao character varying(4000)," +
+			" matriz character varying(255)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table ANOTACOES_RADARES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS anotacoes_radares (" +
+			" id integer DEFAULT nextval('anotacoes_radares_id_seq'::regclass) NOT NULL," +
+			" radar_id integer," +
+			" anotacao_id integer," +
+			" observacoes character varying(4000)," +
+			" registro_ata character varying(4000)," +
+			" ultima_atualizacao timestamp without time zone," +
+			" ultimo_atualizador_id integer," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table RADARES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS radares  (" +
+			" id integer DEFAULT nextval('radares_id_seq'::regclass) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
+			" descricao character varying(4000)," +
+			" referencia character varying(255)," +
+			" data_radar timestamp without time zone," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table ROLES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS roles  (" +
@@ -426,6 +533,20 @@ func createTable() {
 			" description character varying(4000)," +
 			" author_id integer," +
 			" created_at timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
+	// Table VERSOES
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS versoes (" +
+			" id integer DEFAULT nextval('versoes_id_seq'::regclass) NOT NULL," +
+			" nome character varying(255) NOT NULL," +
+			" objetivo character varying(4000)," +
+			" definicao_pronto character varying(4000)," +
+			" inicia_em timestamp without time zone," +
+			" termina_em timestamp without time zone," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
 			" status_id integer)")
 
@@ -440,6 +561,7 @@ func createTable() {
 			" id_versao_origem integer," +
 			" status_id integer," +
 			" stereotype character varying(255))")
+
 	// Table TIPOS DE NOTAS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS tipos_notas (" +

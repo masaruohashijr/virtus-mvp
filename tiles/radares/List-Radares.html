@@ -1,0 +1,73 @@
+{{define "List-Radares"}}
+<!-- List Radares -->
+<div id="main" class="w3-row-padding">
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				    <h3>{{.Title}}</h3>
+				<div style="margin-top: 10px;">
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+					{{$allowed := (call .LoggedUser.HasPermission "createRadar")}}
+					{{if $allowed}}
+					    <a style="margin-top: 6px" href="#" onclick="openCreateRadar()">
+							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
+						</a>&nbsp;
+					{{end}}
+				    <a style="margin-top: 6px" href="/logout">
+						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
+					</a>
+				</div>
+		    </div>
+		</header>
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-ciclos">
+            <thead>
+            <tr>
+                <th style="vertical-align:middle;width: 5%;">Ord</th>
+                <th style="vertical-align:middle;width: 5%;">Id</th>
+                <th style="vertical-align:middle;width: 20%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Nome" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-ciclos', 1, 2)"></th>
+				<th style="vertical-align:middle;width: 10%;">Data do Radar</th>
+				<th style="display:none">Descrição</th>
+				<th style="display:none">Referência</th>
+                <th style="vertical-align:middle;width: 15%;">Autor</th>
+                <th style="vertical-align:middle;width: 20%;">Criado Em</th>
+				<th style="vertical-align:middle;width: 10%;">Status</th>
+				{{if $allowed}}
+				<th style="vertical-align:middle;width: 20%;">Ações</th>
+				{{end}}
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $radar := .Radares}}
+            <tr>
+                <td style="vertical-align:middle">#{{$radar.Order}}</td>
+                <td style="vertical-align:middle">{{$radar.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$radar.Nome}}</td>
+                <td style="vertical-align:middle">{{$radar.DataRadar}}</td>
+				<td style="display:none">{{$radar.Descricao}}</td>
+				<td style="display:none">{{$radar.Referencia}}</td>
+                <td style="vertical-align:middle">{{$radar.AuthorName}}</td>
+                <td style="vertical-align:middle">{{$radar.C_CriadoEm}}</td>
+				<td style="vertical-align:middle">{{$radar.CStatus}}</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editRadar(this)">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteRadar(this)">Apagar</button>
+                </td>
+				{{end}}
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}

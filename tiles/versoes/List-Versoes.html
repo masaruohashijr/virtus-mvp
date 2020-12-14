@@ -1,0 +1,71 @@
+{{define "List-Versoes"}}
+<!-- List Versoes -->
+<div id="main" class="w3-row-padding">
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				    <h3>{{.Title}}</h3>
+				<div style="margin-top: 10px;">
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+					{{$allowed := (call .LoggedUser.HasPermission "createVersao")}}
+					{{if $allowed}}
+					    <a style="margin-top: 6px" href="#" onclick="openCreateVersao()">
+							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
+						</a>&nbsp;
+					{{end}}
+				    <a style="margin-top: 6px" href="/logout">
+						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
+					</a>
+				</div>
+		    </div>
+		</header>
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-versoes">
+            <tr>
+                <th style="vertical-align:middle;width: 5%;">Ord</th>
+                <th style="vertical-align:middle;width: 5%;">Id</th>
+                <th style="vertical-align:middle;width: 40%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Titulo" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-versoes', 1, 2)"></th>
+				<th style="display:none">Objetivo</th>
+				<th style="display:none">DefinicaoPronto</th>
+                <th style="vertical-align:middle;width: 5%;">Inicia Em</th>
+                <th style="vertical-align:middle;width: 5%;">Termina Em</th>
+                <th style="vertical-align:middle;width: 5%;">Autor</th>
+                <th style="vertical-align:middle;width: 5%;">Criado Em</th>
+				<th style="vertical-align:middle;width: 5%;">Status</th>
+				{{if $allowed}}
+				<th style="vertical-align:middle;width: 25%;">Ações</th>
+				{{end}}
+            </tr>
+            {{range $index, $versao := .Versoes}}
+            <tr>
+                <td style="vertical-align:middle">#{{$versao.Order}}</td>
+                <td style="vertical-align:middle">{{$versao.Id}}</td>
+                <td style="vertical-align:middle;text-align:left">{{$versao.Nome}}</td>
+				<td style="display:none">{{$versao.Objetivo}}</td>
+				<td style="display:none">{{$versao.DefinicaoPronto}}</td>
+                <td style="vertical-align:middle">{{$versao.IniciaEm}}</td>
+                <td style="vertical-align:middle">{{$versao.TerminaEm}}</td>
+                <td style="vertical-align:middle">{{$versao.AuthorName}}</td>
+                <td style="vertical-align:middle">{{$versao.C_CriadoEm}}</td>
+				<td style="vertical-align:middle">{{$versao.CStatus}}</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editVersao(this)">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteVersao(this)">Apagar</button>
+                </td>
+				{{end}}
+            </tr>
+            {{end}}
+        </table>
+    </div>
+</div>
+{{end}}

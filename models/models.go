@@ -66,6 +66,29 @@ type Activity struct {
 	CFeatureNames        string `json:"featureNames"`
 }
 
+type Chamado struct {
+	Order           int
+	Id              int64  `json:"id"`
+	Titulo          string `json:"titulo"`
+	Descricao       string `json:"descricao"`
+	IniciaEm        string `json:"iniciaEm"`
+	ProntoEm        string `json:"prontoEm"`
+	TipoChamadoId   string `json:"tipoChamadoId"`
+	PrioridadeId    string `json:"prioridadeId"`
+	Estimativa      int    `json:"estimativa"`
+	ResponsavelId   int64  `json:"responsavelId"`
+	ResponsavelName string `json:"responsavelName"`
+	RelatorId       int64  `json:"relatorId"`
+	RelatorName     string `json:"relatorName"`
+	AuthorId        int64  `json:"authorId"`
+	AuthorName      string `json:"authorName"`
+	CriadoEm        string `json:"criadoEm"`
+	C_CriadoEm      string `json:"c_criadoEm"`
+	IdVersaoOrigem  int64  `json:"idVersaoOrigem"`
+	StatusId        int64  `json:"statusId"`
+	CStatus         string `json:"cStatus"`
+}
+
 type Ciclo struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -402,6 +425,22 @@ type PilarCiclo struct {
 	CStatus        string `json:"cStatus"`
 }
 
+type Processo struct {
+	Order          int
+	Id             int64  `json:"id"`
+	AnotacaoId     int64  `json:"anotacaoId"`
+	Numero         string `json:"numero"`
+	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CriadoEm       string `json:"criadoEm"`
+	C_CriadoEm     string `json:"c_criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
 type ProdutoCiclo struct {
 	Order           int
 	Id              int64   `json:"id"`
@@ -666,6 +705,66 @@ type ElementoDaMatriz struct {
 	CStatus                 string `json:"cStatus"`
 }
 
+type Publicacao struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Mensagem       string `json:"mensagem"`
+	IniciaEm       string `json:"iniciaEm"`
+	TerminaEm      string `json:"terminaEm"`
+	AuthorId       int64  `json:"autorId"`
+	AuthorName     string `json:"autorNome"`
+	CriadoEm       string `json:"criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
+type Anotacao struct {
+	Order           int
+	Id              int64  `json:"id"`
+	EntidadeId      int    `json:"entidadeId"`
+	EntidadeSigla   string `json:"entidadeSigla"`
+	CicloId         int    `json:"cicloId"`
+	PilarId         int    `json:"pilarId"`
+	ComponenteId    int    `json:"componenteId"`
+	PlanoId         int    `json:"planoId"`
+	TipoNotaId      int    `json:"tipoNotaId"`
+	ElementoId      int    `json:"elementoId"`
+	ItemId          int    `json:"itemId"`
+	Assunto         string `json:"assunto"`
+	Descricao       string `json:"descricao"`
+	Matriz          string `json:"matriz"`
+	Risco           string `json:"risco"`
+	Tendencia       string `json:"tendencia"`
+	ResponsavelId   int64  `json:"responsevelId"`
+	ResponsavelName string `json:"responsavelName"`
+	RelatorId       int64  `json:"relatorId"`
+	RelatorName     string `json:"relatorName"`
+	AuthorId        int64  `json:"authorId"`
+	AuthorName      string `json:"authorName"`
+	CriadoEm        string `json:"criadoEm"`
+	C_CriadoEm      string `json:"c_criadoEm"`
+	IdVersaoOrigem  int64  `json:"idVersaoOrigem"`
+	StatusId        int64  `json:"statusId"`
+	CStatus         string `json:"cStatus"`
+}
+
+type Radar struct {
+	Order          int
+	Id             int64  `json:"id"`
+	Nome           string `json:"nome"`
+	Descricao      string `json:"descricao"`
+	Referencia     string `json:"referencia"`
+	DataRadar      string `json:"dataRadar"`
+	AuthorId       int64  `json:"authorId"`
+	AuthorName     string `json:"authorName"`
+	CriadoEm       string `json:"criadoEm"`
+	C_CriadoEm     string `json:"c_criadoEm"`
+	IdVersaoOrigem int64  `json:"idVersaoOrigem"`
+	StatusId       int64  `json:"statusId"`
+	CStatus        string `json:"cStatus"`
+}
+
 type Role struct {
 	Order          int
 	Id             int64  `json:"id"`
@@ -680,6 +779,23 @@ type Role struct {
 	CStatus        string `json:"cStatus"`
 	Selected       bool
 	Features       []Feature
+}
+
+type Versao struct {
+	Order           int
+	Id              int64  `json:"id"`
+	Nome            string `json:"nome"`
+	Objetivo        string `json:"objetivo"`
+	DefinicaoPronto string `json:"definicaoPronto"`
+	IniciaEm        string `json:"iniciaEm"`
+	TerminaEm       string `json:"terminaEm"`
+	AuthorId        int64  `json:"authorId"`
+	AuthorName      string `json:"authorName"`
+	CriadoEm        string `json:"criadoEm"`
+	C_CriadoEm      string `json:"c_criadoEm"`
+	IdVersaoOrigem  int64  `json:"idVersaoOrigem"`
+	StatusId        int64  `json:"statusId"`
+	CStatus         string `json:"cStatus"`
 }
 
 type Status struct {
@@ -771,6 +887,17 @@ type PageActions struct {
 	LoggedUser LoggedUser
 }
 
+type PageChamados struct {
+	ErrMsg       string
+	Msg          string
+	AppName      string
+	Title        string
+	Chamados     []Chamado
+	Relatores    []User
+	Responsaveis []User
+	LoggedUser   LoggedUser
+}
+
 type PageCiclos struct {
 	ErrMsg     string
 	Msg        string
@@ -859,6 +986,15 @@ type PageMatriz struct {
 	LoggedUser        LoggedUser
 }
 
+type PageProcessos struct {
+	ErrMsg     string
+	Msg        string
+	AppName    string
+	Title      string
+	Processos  []Processo
+	LoggedUser LoggedUser
+}
+
 type PageProdutosItens struct {
 	ErrMsg       string
 	Msg          string
@@ -904,6 +1040,28 @@ type PagePlanos struct {
 	LoggedUser LoggedUser
 }
 
+type PageAnotacoes struct {
+	ErrMsg       string
+	Msg          string
+	AppName      string
+	Title        string
+	Entidades    []Entidade
+	Anotacoes    []Anotacao
+	Relatores    []User
+	Responsaveis []User
+	LoggedUser   LoggedUser
+}
+
+type PageRadares struct {
+	ErrMsg     string
+	Msg        string
+	AppName    string
+	Title      string
+	Radares    []Radar
+	Anotacoes  []Anotacao
+	LoggedUser LoggedUser
+}
+
 type PageRoles struct {
 	ErrMsg     string
 	Msg        string
@@ -911,6 +1069,25 @@ type PageRoles struct {
 	Title      string
 	Roles      []Role
 	Features   []Feature
+	LoggedUser LoggedUser
+}
+
+type PageSobre struct {
+	ErrMsg      string
+	Msg         string
+	AppName     string
+	Title       string
+	Versoes     []Versao
+	Publicacoes []Publicacao
+	LoggedUser  LoggedUser
+}
+
+type PageVersoes struct {
+	ErrMsg     string
+	Msg        string
+	AppName    string
+	Title      string
+	Versoes    []Versao
 	LoggedUser LoggedUser
 }
 

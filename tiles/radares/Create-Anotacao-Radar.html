@@ -1,0 +1,54 @@
+{{define "Create-Anotacao-Radar"}}
+<!-- Create Anotacao Radar Form -->
+<div class="w3-container">
+    <div id="create-anotacao-radar-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="top:50px ;width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Adicionar nova anotação</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-anotacao-radar-form').style.display='none'">&times;</span>
+            </div>
+			<script type="text/javascript">
+				anotacoesMap = new Map();
+				anotacoesSiglasMap = new Map();
+				siglasMap = new Map();				
+			</script>
+			{{range $index, $p := .Anotacoes }}
+			<script type="text/javascript">
+				anotacoes = anotacoesSiglasMap.get('{{$p.EntidadeSigla}}')
+				anotacao = new Anotacao('{{$p.Id}}', '{{$p.EntidadeId}}', '{{$p.EntidadeSigla}}', '{{$p.Assunto}}', '{{$p.Risco}}', '{{$p.Tendencia}}');
+				if(!anotacoes){
+					anotacoes = new Array();				
+				}
+				anotacoes.push(anotacao);
+				siglasMap.set('{{$p.EntidadeId}}','{{$p.EntidadeSigla}}');
+				anotacoesSiglasMap.set('{{$p.EntidadeId}}',anotacoes);
+				anotacoesMap.set('{{$p.Id}}',anotacao);
+			</script>
+			{{end}}
+            <form class="w3-container" id="formulario-anotacao-radar-create">
+                <label class="w3-label">EFPC</label>
+	            <select class="w3-input" id="EFPCForInsert" onchange="preencherAnotacoesSelect(this, 'create')">
+	            </select>
+				<script type="text/javascript">
+					carregarEFPC('EFPCForInsert');
+				</script>
+                <label class="w3-label">Anotações</label>
+	            <select class="w3-input" name="AnotacoesForInsert" id="AnotacoesForInsert">
+	            </select>
+                <label class="w3-label">Observações</label>
+                <textarea class="w3-input" name="Oservacoes" id="ObservacoesForInsert" rows="5" value=""></textarea>
+                <label class="w3-label">Registro em Ata</label>
+                <textarea class="w3-input" name="RegistroEmAta" id="RegistroEmAtaForInsert" rows="5" value=""></textarea>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					type="button"
+					onclick="criarAnotacaoRadar()"
+					>Criar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

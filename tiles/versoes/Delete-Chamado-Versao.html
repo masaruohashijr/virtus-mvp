@@ -1,0 +1,24 @@
+{{define "Delete-Pilar-Ciclo"}}
+<!-- Delete Pilar Ciclo Form -->
+<div class="w3-container">
+    <div id="delete-pilar-ciclo-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px; top:50px">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Tem certeza?</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('delete-pilar-ciclo-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container">
+                <div class="w3-center">
+                    <button class="w3-btn w3-red w3-margin-top w3-margin-bottom" type="button" onclick="deletePilarCiclo()">Apagar</button>
+                    <button type="button" class="w3-btn w3-teal w3-margin-top w3-margin-bottom"
+                            onclick="document.getElementById('delete-pilar-ciclo-form').style.display='none'">Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

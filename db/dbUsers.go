@@ -12,7 +12,7 @@ func createUsers() {
 	db.Exec(sql)
 	sql = "INSERT INTO users (username, password, email, mobile, name, role_id, author_id, criado_em) " +
 		" SELECT 'masaru', '$2a$14$C1DIYDsmE0QHjje4wR5uwOAC7m8/YAUe8DYw/yuKIAQgRDibeCDMy', " +
-		" 'masaru@gmail.com', '61 984385415', 'Masaru Ohashi Jr', 1, 1, now()::timestamp  " +
+		" 'masaru@gmail.com', '61 984385415', 'Masaru Ohashi Jr', 6, 1, now()::timestamp  " +
 		" WHERE NOT EXISTS (SELECT id FROM users WHERE username = 'masaru')"
 	db.Exec(sql)
 	sql = "INSERT INTO users (username, password, email, mobile, name, role_id, author_id, criado_em) " +

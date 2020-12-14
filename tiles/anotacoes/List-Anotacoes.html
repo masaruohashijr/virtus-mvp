@@ -1,0 +1,79 @@
+{{define "List-Anotacoes"}}
+<!-- List Anotacoes -->
+<div id="main" class="w3-row-padding">
+		<header class="w3-container w3-center w3-teal">
+		    <div class="aria">
+				<div style="margin-top: 6px;text-align: left;z-index:1">
+		    		<a style="font-size:28px;cursor:pointer" onclick="navGadget()">
+						&#9776; {{.AppName}}
+		    		</a>
+				</div>
+				    <h3>{{.Title}}</h3>
+				<div style="margin-top: 10px;">
+                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+					{{$allowed := (call .LoggedUser.HasPermission "createAnotacao")}}
+					{{if $allowed}}
+					    <a style="margin-top: 6px" href="#" onclick="openCreateAnotacao()">
+							<span class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></span>
+						</a>&nbsp;
+					{{end}}
+				    <a style="margin-top: 6px" href="/logout">
+						<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
+					</a>
+				</div>
+		    </div>
+		</header>
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable"
+			id="tabela-anotacoes">
+            <tr>
+                <td style="vertical-align:middle;width: 5%;">Ord</td>
+                <td style="vertical-align:middle;width: 5%;">Id</td>
+                <td style="vertical-align:middle;width: 5%;">EFPC</td>
+                <td style="vertical-align:middle;width: 20%;"><input 
+						type="text" 
+						value="" 
+						placeholder="Assunto" 
+						style="width:100%"
+						onkeyup="filtraTabela(this, 'tabela-anotacoes', 1, 2)"></td>
+				<td style="vertical-align:middle;width: 10%;">Matriz</td>
+				<td style="vertical-align:middle;width: 5%;">Risco</td>
+				<td style="vertical-align:middle;width: 5%;">Tendência</td>
+				<td style="display:none">Descrição</td>
+				<td style="display:none">Referência</td>
+                <td style="vertical-align:middle;width: 10%;">Autor</td>
+                <td style="vertical-align:middle;width: 10%;">Criado Em</td>
+				<td style="vertical-align:middle;width: 10%;">Status</td>
+				{{if $allowed}}
+				<td style="vertical-align:middle;width: 20%;">Ações</td>
+				{{end}}
+            </tr>
+            {{range $index, $anotacao := .Anotacoes}}
+            <tr>
+                <td style="vertical-align:middle">#{{$anotacao.Order}}</td>
+                <td style="vertical-align:middle">{{$anotacao.Id}}</td>
+                <td style="vertical-align:middle">{{$anotacao.EntidadeSigla}}
+					<input type="hidden" value="{{$anotacao.EntidadeId}}">
+				</td>
+                <td style="vertical-align:middle;text-align:left">{{$anotacao.Assunto}}</td>
+				<td style="vertical-align:middle">{{$anotacao.Matriz}}</td>
+                <td style="vertical-align:middle">{{$anotacao.Risco}}</td>
+                <td style="vertical-align:middle">{{$anotacao.Tendencia}}</td>
+				<td style="display:none">{{$anotacao.Descricao}}</td>
+                <td style="vertical-align:middle">{{$anotacao.AuthorName}}
+					<input type="hidden" value="{{$anotacao.RelatorId}}">
+					<input type="hidden" value="{{$anotacao.ResponsavelId}}">
+				</td>
+                <td style="vertical-align:middle">{{$anotacao.C_CriadoEm}}</td>
+				<td style="vertical-align:middle">{{$anotacao.CStatus}}</td>
+				{{if $allowed}}
+                <td style="vertical-align:middle">
+                    <button class="w3-btn w3-teal" onclick="contexto='edit';editAnotacao(this)">Editar</button>
+                    <button class="w3-btn w3-red" onclick="deleteAnotacao(this)">Apagar</button>
+                </td>
+				{{end}}
+            </tr>
+            {{end}}
+        </table>
+    </div>
+</div>
+{{end}}

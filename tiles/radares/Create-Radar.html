@@ -1,0 +1,63 @@
+{{define "Create-Radar"}}
+<!-- Create Radar -->
+<div class="w3-container">
+    <div id="create-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Criar novo radar</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-form').style.display='none'">&times;</span>
+            </div>
+            <form class="w3-container" id="formulario-create" action="/createRadar" method="POST">
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" name="Nome" id="NomeRadarForInsert" value="">
+                <label class="w3-label">Data</label>
+                <input class="w3-input" type="date" name="DataRadar" id="DataRadarForInsert" value="">
+                <label class="w3-label">Descrição</label>
+                <textarea class="w3-input" name="Descricao" id="DescricaoRadarForInsert" rows="5" value=""></textarea>
+                <label class="w3-label">Link</label>
+                <input class="w3-input" type="text" name="Referencia" id="ReferenciaRadarForInsert" value="">
+				<br>
+		        <header class="w3-container w3-center w3-teal">
+		            <div class="aria">
+						<div style="margin-top: 6px;text-align: left;z-index:1">
+				    		<a style="font-size:28px">
+								&nbsp;
+				    		</a>
+		                </div>
+	                	<h4>Anotações</h4>
+		                <div style="margin-top: 8px" id="create-form-anotacao-btn" >
+	                        <a href="#" onclick="contexto='create';document.getElementById('create-anotacao-radar-form').style.display='block'">
+	                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn"></i>
+	                        </a>
+		                </div>
+		            </div>
+		        </header>
+		        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" 
+					id="table-anotacoes-radar-create">
+		            <tr>
+		                <td style="vertical-align:middle;width: 5%;font-weight:bold">EFPC</td>
+		                <td style="vertical-align:middle;width: 25%;font-weight:bold"><input 
+								type="text" 
+								value="" 
+								placeholder="Assunto" 
+								style="width:100%"
+								onkeyup="filtraTabela(this, 'tabela-anotacoes', 1, 2)"></td>
+						<td style="vertical-align:middle;width: 5%;font-weight:bold">Risco</td>
+						<td style="vertical-align:middle;width: 5%;font-weight:bold">Tendência</td>
+		                <td style="vertical-align:middle;width: 10%;font-weight:bold">Autor</td>
+		                <td style="vertical-align:middle;width: 10%;font-weight:bold">Criado Em</td>
+						<td style="vertical-align:middle;width: 10%;font-weight:bold">Status</td>
+						<td style="vertical-align:middle;width: 20%;font-weight:bold">Ações</td>
+		            </tr>
+		        </table>
+                <button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right"
+					type="submit">Criar
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}
