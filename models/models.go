@@ -128,6 +128,7 @@ type Componente struct {
 	Nome           string `json:"nome"`
 	Descricao      string `json:"descricao"`
 	Referencia     string `json:"referencia"`
+	PGA            string `json:"pga"`
 	AuthorId       int64  `json:"authorId"`
 	AuthorName     string `json:"authorName"`
 	CriadoEm       string `json:"criadoEm"`
@@ -520,6 +521,7 @@ type ProdutoComponente struct {
 	StatusId          int64   `json:"statusId"`
 	CStatus           string  `json:"cStatus"`
 	Configurado       string  `json:"configurado"`
+	SomentePGA        string  `json:"somentePGA"`
 }
 
 type ProdutoPlano struct {

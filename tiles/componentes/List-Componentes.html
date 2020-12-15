@@ -39,8 +39,9 @@
 				</th>
                 <th style="display:none">Descrição</th>
 				<th style="display:none">Referência</th>
+				<th style="vertical-align:middle;width: 5%;">Só PGA</th>
                 <th style="vertical-align:middle;width: 15%;">Autor</th>
-                <th style="vertical-align:middle;width: 15%;">Criado Em</th>
+                <th style="vertical-align:middle;width: 10%;">Criado Em</th>
                 <th style="vertical-align:middle;width: 10%;">Status</th>
 				{{if $allowed}}
 				<th style="vertical-align:middle;width: 20%;">Ações</th>
@@ -55,6 +56,7 @@
                 <td style="vertical-align:middle;text-align:left">{{$componente.Nome}}</td>
                 <td style="display:none">{{$componente.Descricao}}</td>
                 <td style="display:none">{{$componente.Referencia}}</td>
+                <td style="vertical-align:middle">{{$componente.PGA}}</td>
                 <td style="vertical-align:middle">{{$componente.AuthorName}}</td>
                 <td style="vertical-align:middle">{{$componente.C_CriadoEm}}</td>
                 <td style="vertical-align:middle">{{$componente.CStatus}}</td>

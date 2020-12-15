@@ -119,6 +119,7 @@ func createTable() {
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" referencia character varying(500)," +
+			" pga character varying(1)," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +

@@ -16,12 +16,12 @@ function updateConfigPlanos(){
 	}
 	console.log("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId+"_"+auditorId);
 	// atualizar os planos através de Ajax
-	atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores);
+	atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores, false);
 	document.getElementsByName("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId+"_"+auditorId)[0].value = valores;
 	console.log("Saindo");
 }
 
-function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores){
+function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores, superUser){
 	console.log("atualizarConfigPlanos");
 	var xmlhttp;
 	xmlhttp=new XMLHttpRequest();
@@ -30,13 +30,59 @@ function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valor
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
 				var messageText = xmlhttp.responseText;
+				if( ! messageText.includes("não pode ser removido")){
+					callback_MudaCorBotaoAcionador();
+				} else {
+					if(isChefe){
+						superUser = true;
+						alterarOkConfirm(entidadeId, cicloId, pilarId, componenteId, valores, superUser);
+					}
+				}
 				document.getElementById("messageText").innerText = messageText;
-				document.getElementById("message").style.display="block";				
-				callback_MudaCorBotaoAcionador();
+				document.getElementById("message").style.display="block";		
 			}
 	}
-	xmlhttp.open("GET","/updateConfigPlanos?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId+"&planos="+valores,true);
+	xmlhttp.open("GET","/updateConfigPlanos?entidadeId="+
+			entidadeId+"&cicloId="+cicloId+"&pilarId="+
+			pilarId+"&componenteId="+componenteId+"&planos="+
+			valores+"&superUser="+superUser, true);
 	xmlhttp.send();
+}
+
+var minhaFuncaoBtnOk;
+
+function alterarOkConfirm(entidadeId, cicloId, pilarId, componenteId, valores, superUser){
+	let divElement = document.getElementById('divOKConfirm');
+	let btns = divElement.getElementsByTagName("button");
+	existeBtnNao = false;
+	let btnNao; 
+	for(i=0;i<btns.length;i++){
+		if(btns[i].innerText == "Não"){
+			existeBtnNao = true;
+			btnNao = btns[i]; 
+			break;
+		}
+	}
+	if(!existeBtnNao){
+		btnNao = document.createElement("button");
+		btnNao.id = "__btnNao";
+		btnNao.classList = btns[0].classList;
+		minhaFuncaoBtnSim = btns[0].onclick
+		btnNao.onclick = minhaFuncaoBtnSim;
+		btnNao.innerText = "Não"; 
+	}
+	btns[0].innerText = "Sim";
+	btns[0].addEventListener("click", function() {
+	  	atualizarConfigPlanos(entidadeId,cicloId,pilarId,componenteId,valores,superUser);
+		document.getElementById("__btnNao");
+		btnNao.remove();
+		btnOk = this.cloneNode(true);
+		btnOk.innerText = "OK";
+		btnOk.addEventListener("click",minhaFuncaoBtnOk);
+		divElement.appendChild(btnOk);
+		this.remove();
+	});
+	divElement.appendChild(btnNao)
 }
 
 function callback_MudaCorBotaoAcionador(){
@@ -101,6 +147,8 @@ function openConfigPlanos(btn){
 	//console.log(componenteId);
 	//console.log(document.getElementById('Planos_AuditorComponente'+componenteId));
 	document.getElementById('ConfigPlanos').selectedIndex = -1;
+	let soPGA = document.getElementById('SomentePGA_'+entidadeId+'_'+cicloId+'_'+pilarId+'_'+componenteId).value;
+	configurarOpcoesNaoPGA('ConfigPlanos', soPGA);
 	document.getElementById('EntidadeConfigPlanos').value = entidadesMap.get(entidadeId);
 	document.getElementById('CicloConfigPlanos').value = ciclosMap.get(cicloId);
 	document.getElementById('PilarConfigPlanos').value = pilaresMap.get(pilarId);
@@ -108,6 +156,26 @@ function openConfigPlanos(btn){
 	document.getElementById('ComponenteRefConfigPlanos').value = entidadeId+'_'+cicloId+'_'+pilarId+'_'+componenteId;
 	document.getElementById('config-planos-form').style.display='block';
 	loadConfigPlanos(entidadeId, cicloId, pilarId, componenteId);
+}
+
+function configurarOpcoesNaoPGA(nomeCampoSelect, soPGA){
+	let campo = document.getElementById(nomeCampoSelect);
+	let opcoes = campo.options;
+	for(i=0;i<opcoes.length;i++){
+		txt = opcoes[i].text;
+		console.log('cnpb: '+txt);
+		if(txt.substr(0,1)!='9'){
+			if(soPGA == 'S'){
+				console.log('S');
+				opcoes[i].disabled = true;
+				opcoes[i].style = "display:none";
+			} else {
+				console.log('N');
+				opcoes[i].disabled = false;
+				opcoes[i].style = "display:outline";
+			}
+		}
+	}
 }
 
 function loadConfigPlanos(entidadeId, cicloId, pilarId, componenteId){
@@ -145,7 +213,6 @@ class ConfigPlano {
 		this.planoId = planoId;
 	}
 }
-
 	
 class Plano {
 	constructor(order, id, entidadeId, nome, descricao, cnpb, c_recursoGarantidor, recursoGarantidor, modalidade, autorId, autorNome, criadoEm, status, cStatus) {

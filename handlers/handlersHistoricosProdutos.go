@@ -292,7 +292,18 @@ func ListHistoricosComponente(filtro mdl.Historico) []mdl.Historico {
 			"	a.author_id,  " +
 			"	coalesce(b.name,'') as author_name, " +
 			"	coalesce(to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS')) as alterado_em,  " +
-			"	justificativa " +
+			"	case " +
+			" 		when tipo_alteracao = 'R' then justificativa " +
+			"       when tipo_alteracao = 'I' then motivacao_cronograma " +
+			"       when tipo_alteracao = 'T' then motivacao_cronograma " +
+			"       when tipo_alteracao = 'P' then motivacao_config " +
+			"	end, " +
+			"	case " +
+			" 		when tipo_alteracao = 'R' then 'Remoção' " +
+			"       when tipo_alteracao = 'I' then 'Inicia Em' " +
+			"       when tipo_alteracao = 'T' then 'Termina Em' " +
+			"       when tipo_alteracao = 'P' then 'Planos' " +
+			"	end " +
 			"	FROM produtos_componentes_historicos a " +
 			"	LEFT JOIN users b ON a.author_id = b.id " +
 			"	WHERE a.entidade_id = " + filtro.EntidadeId + " AND " +

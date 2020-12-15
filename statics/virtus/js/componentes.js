@@ -7,10 +7,14 @@ function editComponente(e) {
     var componenteNome = e.parentNode.parentNode.childNodes[5].innerText;
     var componenteDescricao = e.parentNode.parentNode.childNodes[7].innerText;
     var componenteReferencia = e.parentNode.parentNode.childNodes[9].innerText;
+    var componentePGA = e.parentNode.parentNode.childNodes[11].innerText;
 	document.getElementById('ComponenteIdForUpdate').value = componenteId;
     document.getElementById('ComponenteNomeForUpdate').value = componenteNome;
     document.getElementById('ComponenteDescricaoForUpdate').value = componenteDescricao;
     document.getElementById('ComponenteReferenciaForUpdate').value = componenteReferencia;
+	if(componentePGA=="Sim"){
+	    document.getElementById('ComponentePGAForUpdate').checked = true;
+	}
 	document.getElementById('ComponenteNomeForUpdate').focus();
 	loadElementosByComponenteId(componenteId);
 	loadTiposNotaByComponenteId(componenteId);

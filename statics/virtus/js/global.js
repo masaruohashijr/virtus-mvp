@@ -1,3 +1,4 @@
+var isChefe = false;
 var actions_array = [];
 var activity;
 var activities = [];

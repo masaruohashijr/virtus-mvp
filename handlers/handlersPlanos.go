@@ -140,6 +140,7 @@ func ListPlanosByEntidadeId(entidadeId string) []mdl.Plano {
 		" FROM planos a LEFT JOIN users b ON a.author_id = b.id " +
 		" LEFT JOIN status c ON a.status_id = c.id " +
 		" WHERE a.entidade_id = $1 " +
+		" AND left(cnpb,1) not in ('4','5') " +
 		" ORDER BY a.recurso_garantidor DESC"
 	log.Println(sql)
 	rows, err := Db.Query(sql, entidadeId)
@@ -214,8 +215,8 @@ func removePlano(planos []mdl.Plano, planoToBeRemoved mdl.Plano) []mdl.Plano {
 }
 
 // AJAX
-func ListConfigPlanos(entidadeId string, cicloId string, pilarId string, componenteId string) []mdl.ConfigPlano {
-	log.Println("entidadeId: " + entidadeId + " - cicloId: " + cicloId + " - pilar: " + pilarId + " - componenteId: " + componenteId)
+func ListConfigPlanos(entidadeId string, cicloId string, pilarId string, componenteId string, soPGA string) []mdl.ConfigPlano {
+	log.Println("entidadeId: " + entidadeId + " - cicloId: " + cicloId + " - pilar: " + pilarId + " - componenteId: " + componenteId + " - soPGA: " + soPGA)
 	log.Println("List Config Planos")
 	sql := "SELECT " +
 		" a.id, " +

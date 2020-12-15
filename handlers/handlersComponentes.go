@@ -21,9 +21,9 @@ func CreateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		descricao := r.FormValue("Descricao")
 		referencia := r.FormValue("Referencia")
 		statusComponenteId := GetStartStatus("componente")
-		sqlStatement := "INSERT INTO componentes(nome, descricao, referencia, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+		sqlStatement := "INSERT INTO componentes(nome, descricao, referencia, pga, author_id, criado_em, status_id) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 		idComponente := 0
-		err := Db.QueryRow(sqlStatement, nome, descricao, referencia, currentUser.Id, time.Now(), statusComponenteId).Scan(&idComponente)
+		err := Db.QueryRow(sqlStatement, nome, descricao, referencia, 'N', currentUser.Id, time.Now(), statusComponenteId).Scan(&idComponente)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -104,12 +104,19 @@ func UpdateComponenteHandler(w http.ResponseWriter, r *http.Request) {
 		nome := r.FormValue("Nome")
 		descricao := r.FormValue("Descricao")
 		referencia := r.FormValue("Referencia")
-		sqlStatement := "UPDATE componentes SET nome=$1, descricao=$2, referencia=$3 WHERE id=$4"
+		log.Println("Referencia: " + referencia)
+		pga := r.FormValue("PGA")
+		log.Println("PGA: " + pga)
+		somentePGA := "N"
+		if pga != "" {
+			somentePGA = "S"
+		}
+		sqlStatement := "UPDATE componentes SET nome=$1, descricao=$2, referencia=$3, pga=$4 WHERE id=$5"
 		updtForm, err := Db.Prepare(sqlStatement)
 		if err != nil {
 			log.Println(err.Error())
 		}
-		updtForm.Exec(nome, descricao, referencia, componenteId)
+		updtForm.Exec(nome, descricao, referencia, somentePGA, componenteId)
 		log.Println("UPDATE: Id: " + componenteId + " | Nome: " + nome + " | Descrição: " + descricao)
 
 		// Elementos Componentes
@@ -256,6 +263,7 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 			" a.nome, " +
 			" coalesce(a.descricao,''), " +
 			" coalesce(a.referencia,''), " +
+			" case when a.pga = 'S' then 'Sim' else 'Não' end as PGA, " +
 			" a.author_id, " +
 			" b.name, " +
 			" to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS'), " +
@@ -278,6 +286,7 @@ func ListComponentesHandler(w http.ResponseWriter, r *http.Request) {
 				&componente.Nome,
 				&componente.Descricao,
 				&componente.Referencia,
+				&componente.PGA,
 				&componente.AuthorId,
 				&componente.AuthorName,
 				&componente.C_CriadoEm,

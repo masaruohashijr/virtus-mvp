@@ -12,6 +12,11 @@
 					    <h3>{{.Title}}</h3>
 					<div style="margin-top: 10px;">
 	                    <span style="position:absolute; top:34px; right:120px">{{.LoggedUser.User.Name}} ( {{.LoggedUser.User.RoleName}} )</span>
+						{{ if eq .LoggedUser.User.RoleName "Chefe"}}
+						<script type="text/javascript">
+							isChefe = true;
+						</script>
+						{{end}}
 						{{$allowed := (call .LoggedUser.HasPermission "distribuirAtividades")}}
 					    <a style="margin-top: 6px" href="/logout">
 							<span class="icon ion-log-out w3-xxlarge hoverbtn"></span>
@@ -109,11 +114,14 @@
 								id="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								name="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								value="">
-								{{if eq $produto.Configurado "S"}}
-	                    		<button class="w3-btn w3-green"
-								{{else}}
-								<button class="w3-btn w3-red"
-								{{end}}
+							<input type="hidden"								
+								id="SomentePGA_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}"
+								value="{{$produto.SomentePGA}}">
+							{{if eq $produto.Configurado "S"}}
+	                    	<button class="w3-btn w3-green"
+							{{else}}
+							<button class="w3-btn w3-red"
+							{{end}}
 								type="button"
 								name="BtnPlanos_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								onclick="openConfigPlanos(this)">Planos</button>&nbsp;								

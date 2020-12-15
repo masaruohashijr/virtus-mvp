@@ -118,7 +118,7 @@ func UpdateDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 						" AND ciclo_id=" + cicloId +
 						" AND pilar_id=" + pilarId +
 						" AND componente_id= " + componenteId
-					//log.Println(sqlStatement)
+					log.Println(sqlStatement)
 					updtForm, _ := Db.Prepare(sqlStatement)
 					_, err := updtForm.Exec()
 					if err != nil {
@@ -204,6 +204,7 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" a.componente_id, e.nome as componente_nome, " +
 			" coalesce(b.nome,''), a.entidade_id, " +
 			" coalesce(R.configurado,'N'), " +
+			" coalesce(e.pga,'') as pga, " +
 			" coalesce(h.supervisor_id,0) as super_id, coalesce(f.name,'') as supervisor_nome, " +
 			" coalesce(a.auditor_id,0) as audit_id, coalesce(g.name,'') as auditor_nome,  " +
 			" coalesce(to_char(a.inicia_em,'YYYY-MM-DD'),'') as inicia_em, " +
@@ -245,6 +246,7 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.EntidadeNome,
 				&produto.EntidadeId,
 				&produto.Configurado,
+				&produto.SomentePGA,
 				&produto.SupervisorId,
 				&produto.SupervisorName,
 				&produto.AuditorId,
@@ -297,7 +299,7 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		sql = " SELECT id, cnpb, modalidade_id, CASE WHEN recurso_garantidor < 1000000000 THEN recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE recurso_garantidor::numeric::MONEY/1000000000||' bi' END " +
-			" FROM planos WHERE entidade_id = $1 ORDER BY recurso_garantidor DESC "
+			" FROM planos WHERE entidade_id = $1 AND left(cnpb,1) not in ('4','5') ORDER BY recurso_garantidor DESC "
 		log.Println(sql)
 		rows, _ = Db.Query(sql, entidadeId)
 		defer rows.Close()
@@ -328,7 +330,8 @@ func LoadConfigPlanos(w http.ResponseWriter, r *http.Request) {
 	var cicloId = r.FormValue("cicloId")
 	var pilarId = r.FormValue("pilarId")
 	var componenteId = r.FormValue("componenteId")
-	configPlanos := ListConfigPlanos(entidadeId, cicloId, pilarId, componenteId)
+	var soPGA = r.FormValue("soPGA")
+	configPlanos := ListConfigPlanos(entidadeId, cicloId, pilarId, componenteId, soPGA)
 	jsonConfigPlanos, _ := json.Marshal(configPlanos)
 	w.Write([]byte(jsonConfigPlanos))
 	log.Println("JSON Config Planos")
@@ -343,7 +346,7 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 	var pilarId = r.FormValue("pilarId")
 	var componenteId = r.FormValue("componenteId")
 	var planos = r.FormValue("planos")
-	var forcar = r.FormValue("forcar")
+	var superUser = r.FormValue("superUser")
 	planos = strings.TrimSpace(planos)
 	array := strings.Split(planos, "_")
 	log.Println("planos: " + planos)
@@ -404,7 +407,7 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 
 	if len(planosPage) < len(planosBD) {
 		if len(planosPage) == 0 {
-			if forcar != "" {
+			if superUser == "true" {
 				force = true
 			}
 			for _, valor := range planosBD {

@@ -9,16 +9,17 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('message').style.display='none'">&times;</span>
             </div>
-                <div class="w3-center">
-					<h4 id="messageText">{{.}}</h4>
-                    <button type="button" class="w3-btn w3-teal w3-margin-top w3-margin-bottom"
-                            onclick="document.getElementById('message').style.display='none'">OK
-                    </button>
-                </div>
+            <div class="w3-center" id="divOKConfirm">
+				<h4 id="messageText">{{.}}</h4>
+				<input type="hidden" id="IsAdmin" value="">
+                <button type="button" class="w3-btn w3-teal w3-margin-top w3-margin-bottom"
+                    onclick="document.getElementById('message').style.display='none'">OK
+                </button>
+            </div>
         </div>
     </div>
 </div>
-<script>
+<script type="text/javascript">
 	if('{{.}}'!=''){
 		document.getElementById('message').style.display='block';
 	}
