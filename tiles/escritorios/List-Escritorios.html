@@ -41,14 +41,14 @@
 						style="width:100%"
 						onkeyup="filtraTabela(this, 'tabela-escritorios', 1, 3)"></td>
 				<td style="display: none;">Descrição</td>
-                <td style="vertical-align:middle;width: 25%;"><input 
+                <td style="vertical-align:middle;width: 20%;"><input 
 						type="text" 
 						value="" 
 						placeholder="Chefe" 
 						style="width:100%"
 						onkeyup="filtraTabela(this, 'tabela-escritorios', 1, 4)"></td>
 				{{if $allowed}}
-				<td style="vertical-align:middle;width: 25%;">Ações</td>
+				<td style="vertical-align:middle;width: 30%;">Ações</td>
 				{{end}}
             </tr>
             {{range $index, $escritorio := .Escritorios}}
@@ -60,11 +60,11 @@
 				<td style="display: none;">{{$escritorio.Descricao}}</td>
                 <td style="vertical-align:middle;text-align:left">{{$escritorio.ChefeNome}}<input type="hidden" value="{{$escritorio.ChefeId}}"></td>
 				{{if $allowed}}
-                <td style="vertical-align:middle">
-                    <button class="w3-btn w3-teal" onclick="contexto='edit';editEscritorio(this)">Editar</button>
-                    <button class="w3-btn w3-teal" onclick="contexto='edit';editJurisdicaoEscritorio(this)">Jurisdição</button>
-                    <button class="w3-btn w3-teal" onclick="contexto='edit';editMembrosEscritorio(this)">Membros</button>
-                    <button class="w3-btn w3-red" onclick="deleteEscritorio(this)">Apagar</button>
+                <td style="vertical-align:middle;padding: 5px; margin: 5px;">
+	        		<button class="w3-btn w3-teal" style="padding: 5px; margin: 5px;" onclick="contexto='edit';editEscritorio(this)">Editar</button>
+	                <button class="w3-btn w3-teal" style="padding: 5px; margin: 5px;" onclick="contexto='edit';editJurisdicaoEscritorio(this)">Jurisdição</button>
+	                <button class="w3-btn w3-teal" style="padding: 5px; margin: 5px;" onclick="contexto='edit';editMembrosEscritorio(this)">Membros</button>
+		            <button class="w3-btn w3-red" style="padding: 5px; margin: 5px;" onclick="deleteEscritorio(this)">Apagar</button>
                 </td>
 				{{end}}
             </tr>

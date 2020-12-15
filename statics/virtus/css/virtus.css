@@ -45,13 +45,24 @@ body {
   color: #0070ff;
 }
 
-.menuAdm a {
+.menu a {
   color:#fff;
   padding-left: 15px;
   background-color:#80C6F0;
 }
 
-.menuAdm a:hover {
+.menu a:hover {
+  color:#fff;
+  background-color: #0070ff;
+}
+
+.submenu a {
+  color:#fff;
+  padding-left: 15px;
+  background-color:#80C6F0;
+}
+
+.submenu a:hover {
   color:#fff;
   background-color: #0070ff;
 }

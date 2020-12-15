@@ -36,5 +36,25 @@ function editRadar(e){
     document.getElementById('CriadoEmRadarForUpdate').value = radarCriadoEm;
     document.getElementById('StatusRadarForUpdate').value = radarStatus;
     document.getElementById('NomeRadarForUpdate').focus();
-	//loadPilaresByCicloId(radarId);	
+	loadAnotacoesRadaresByRadarId(radarId);	
+}
+
+function loadAnotacoesRadaresByRadarId(radarId){
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				var anotacoesRadarJson = JSON.parse(xmlhttp.responseText);
+				wipeRows("table-anotacoes-radar-edit")
+				anotacoesRadar = [];
+				for(order = 0;anotacoesRadarJson != null && order<anotacoesRadarJson.length;order++){
+					anotacoesRadar[order]=anotacoesRadarJson[order];
+					addAnotacaoRadarRow("table-anotacoes-radar-edit");
+				}
+			}
+	}
+	xmlhttp.open("GET","/loadAnotacoesRadaresByRadarId?radarId="+radarId,true);
+	xmlhttp.send();
 }

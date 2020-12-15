@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -21,11 +21,23 @@ func CreateRadarHandler(w http.ResponseWriter, r *http.Request) {
 		descricao := r.FormValue("Descricao")
 		referencia := r.FormValue("Referencia")
 		dataRadar := r.FormValue("DataRadar")
-		sqlStatement := "INSERT INTO radares(" +
-			" nome, descricao, referencia, data_radar, author_id, criado_em) " +
-			" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+		sqlStatement := "INSERT INTO radares(nome, descricao, referencia, "
+		if dataRadar != "" {
+			sqlStatement += "data_radar, "
+		}
+		sqlStatement += " author_id, criado_em) " +
+			" VALUES ('" + nome + "', '" + descricao + "', '" + referencia + "',"
+		if dataRadar != "" {
+			sqlStatement += "'" + dataRadar + "',"
+		}
+		sqlStatement += " $1, $2) RETURNING id"
 		idRadar := 0
-		Db.QueryRow(sqlStatement, nome, descricao, referencia, dataRadar, currentUser.Id, time.Now()).Scan(&idRadar)
+		row := Db.QueryRow(sqlStatement, currentUser.Id, time.Now())
+		err := row.Scan(&idRadar)
+		if err != nil {
+			log.Println(err.Error())
+			http.Redirect(w, r, route.RadaresRoute+"?errMsg=Erro na criação do Radar.", 301)
+		}
 		log.Println(sqlStatement + " - " + nome)
 		log.Println("INSERT: Id: " + strconv.Itoa(idRadar) + " - Nome: " + nome)
 
@@ -34,22 +46,25 @@ func CreateRadarHandler(w http.ResponseWriter, r *http.Request) {
 				array := strings.Split(value[0], "#")
 				log.Println(value[0])
 				anotacaoRadarId := 0
-				anotacaoId := strings.Split(array[3], ":")[1]
-				observacoes := strings.Split(array[4], ":")[1]
-				registroAta := strings.Split(array[5], ":")[1]
+				entidadeId := strings.Split(array[3], ":")[1]
+				anotacaoId := strings.Split(array[4], ":")[1]
+				observacoes := strings.Split(array[5], ":")[1]
+				registroAta := strings.Split(array[6], ":")[1]
 				sqlStatement := " INSERT INTO " +
 					" anotacoes_radares( " +
 					" radar_id, " +
+					" entidade_id, " +
 					" anotacao_id, " +
 					" observacoes, " +
 					" registro_ata, " +
 					" author_id, " +
 					" criado_em ) " +
-					" VALUES ($1, $2, $3, $4, $5, $6) RETURNING id"
+					" VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id"
 				log.Println(sqlStatement)
 				err := Db.QueryRow(
 					sqlStatement,
 					idRadar,
+					entidadeId,
 					anotacaoId,
 					observacoes,
 					registroAta,
@@ -69,100 +84,90 @@ func CreateRadarHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateRadarHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Radar")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
-		//currentUser := GetUserInCookie(w, r)
+		currentUser := GetUserInCookie(w, r)
 		radarId := r.FormValue("Id")
+		log.Println(radarId)
 		nome := r.FormValue("Nome")
+		log.Println(nome)
 		dataRadar := r.FormValue("DataRadar")
+		log.Println(dataRadar)
 		descricao := r.FormValue("Descricao")
+		log.Println(descricao)
 		referencia := r.FormValue("Referencia")
-		sqlStatement := "UPDATE radares SET nome = $1, " +
-			" dataRadar = $2, " +
-			" descricao = $3, " +
-			" referencia = $4 " +
-			" WHERE id = $5 "
+		log.Println(referencia)
+		sqlStatement := " UPDATE radares SET nome = '" + nome + "', "
+		if dataRadar != "" {
+			sqlStatement = sqlStatement + " data_radar = '" + dataRadar + "', "
+		}
+		sqlStatement += " descricao = '" + descricao + "', " +
+			" referencia = '" + referencia + "' " +
+			" WHERE id = " + radarId
+		log.Println(sqlStatement)
 		updtForm, _ := Db.Prepare(sqlStatement)
-		updtForm.Exec(nome, dataRadar, descricao, referencia, radarId)
+		_, err := updtForm.Exec()
+		if err != nil {
+			log.Println(err.Error())
+		}
 		log.Println("UPDATE: Id: " + radarId + " | Nome: " + nome + " | Descrição: " + descricao)
 
-		// Questoes Radares
-		/*var questoesRadarDB = ListQuestoesByRadarId(radarId)
-		var questoesRadarPage []mdl.PilarRadar
-		var pilarRadarPage mdl.PilarRadar
+		// Anotações Radares
+		var anotacoesRadarDB = ListAnotacoesRadarByRadarId(radarId)
+		var anotacoesRadarPage []mdl.AnotacaoRadar
+		var anotacaoRadarPage mdl.AnotacaoRadar
 		for key, value := range r.Form {
-			if strings.HasPrefix(key, "pilarRadar") {
+			if strings.HasPrefix(key, "anotacaoRadar") {
 				log.Println(value[0])
 				array := strings.Split(value[0], "#")
 				id := strings.Split(array[1], ":")[1]
 				log.Println("Id -------- " + id)
-				pilarRadarPage.Id, _ = strconv.ParseInt(id, 10, 64)
-				pilarRadarPage.RadarId, _ = strconv.ParseInt(radarId, 10, 64)
-				pilarId := strings.Split(array[3], ":")[1]
-				log.Println("pilarId -------- " + pilarId)
-				pilarRadarPage.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
-				pilarNome := strings.Split(array[4], ":")[1]
-				log.Println("pilarNome -------- " + pilarNome)
-				pilarRadarPage.PilarNome = pilarNome
-				tipoMediaId := strings.Split(array[5], ":")[1]
-				log.Println("tipoMediaId -------- " + tipoMediaId)
-				pilarRadarPage.TipoMediaId, _ = strconv.Atoi(tipoMediaId)
-				tipoMedia := strings.Split(array[6], ":")[1]
-				log.Println("tipoMedia -------- " + tipoMedia)
-				pilarRadarPage.TipoMedia = tipoMedia
-				pesoPadrao := strings.Split(array[7], ":")[1]
-				log.Println("pesoPadrao -------- " + pesoPadrao)
-				pilarRadarPage.PesoPadrao = pesoPadrao
-				authorId := strings.Split(array[8], ":")[1]
-				log.Println("authorId -------- " + authorId)
-				pilarRadarPage.AuthorId, _ = strconv.ParseInt(authorId, 10, 64)
-				authorName := strings.Split(array[9], ":")[1]
-				log.Println("authorName -------- " + authorName)
-				pilarRadarPage.AuthorName = authorName
-				criadoEm := strings.Split(array[10], ":")[1]
-				log.Println("criadoEm -------- " + criadoEm)
-				pilarRadarPage.CriadoEm = criadoEm
-				idVersaoOrigem := strings.Split(array[11], ":")[1]
-				log.Println("idVersaoOrigem -------- " + idVersaoOrigem)
-				pilarRadarPage.IdVersaoOrigem, _ = strconv.ParseInt(idVersaoOrigem, 10, 64)
-				statusId := strings.Split(array[12], ":")[1]
-				log.Println("StatusId -------- " + statusId)
-				pilarRadarPage.StatusId, _ = strconv.ParseInt(statusId, 10, 64)
-				cStatus := strings.Split(array[13], ":")[1]
-				log.Println("cStatus -------- " + cStatus)
-				pilarRadarPage.CStatus = cStatus
-				questoesRadarPage = append(questoesRadarPage, pilarRadarPage)
+				anotacaoRadarPage.Id, _ = strconv.ParseInt(id, 10, 64)
+				anotacaoRadarPage.RadarId, _ = strconv.ParseInt(radarId, 10, 64)
+				entidadeId := strings.Split(array[3], ":")[1]
+				log.Println("entidadeId -------- " + entidadeId)
+				anotacaoRadarPage.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
+				anotacaoId := strings.Split(array[4], ":")[1]
+				log.Println("anotacaoId -------- " + anotacaoId)
+				anotacaoRadarPage.AnotacaoId, _ = strconv.ParseInt(anotacaoId, 10, 64)
+				observacoes := strings.Split(array[5], ":")[1]
+				log.Println("observacoes -------- " + observacoes)
+				anotacaoRadarPage.Observacoes = observacoes
+				registroAta := strings.Split(array[6], ":")[1]
+				log.Println("registroAta -------- " + registroAta)
+				anotacaoRadarPage.RegistroAta = registroAta
+				anotacoesRadarPage = append(anotacoesRadarPage, anotacaoRadarPage)
 			}
 		}
-		if len(questoesRadarPage) < len(questoesRadarDB) {
-			log.Println("Quantidade de Questoes do Radar da Página: " + strconv.Itoa(len(questoesRadarPage)))
-			if len(questoesRadarPage) == 0 {
-				DeleteQuestoesRadarByRadarId(radarId) //DONE
+		if len(anotacoesRadarPage) < len(anotacoesRadarDB) {
+			log.Println("Quantidade de Anotacoes do Radar da Página: " + strconv.Itoa(len(anotacoesRadarPage)))
+			if len(anotacoesRadarPage) == 0 {
+				DeleteAnotacoesRadarByRadarId(radarId) //DONE
 			} else {
-				var diffDB []mdl.PilarRadar = questoesRadarDB
-				for n := range questoesRadarPage {
-					if containsPilarRadar(diffDB, questoesRadarPage[n]) {
-						diffDB = removePilarRadar(diffDB, questoesRadarPage[n])
+				var diffDB []mdl.AnotacaoRadar = anotacoesRadarDB
+				for n := range anotacoesRadarPage {
+					if containsAnotacaoRadar(diffDB, anotacoesRadarPage[n]) {
+						diffDB = removeAnotacaoRadar(diffDB, anotacoesRadarPage[n])
 					}
 				}
-				DeleteQuestoesRadarHandler(diffDB) //DONE
+				DeleteAnotacoesRadarHandler(diffDB) //DONE
 			}
 		} else {
-			var diffPage []mdl.PilarRadar = questoesRadarPage
-			for n := range questoesRadarDB {
-				if containsPilarRadar(diffPage, questoesRadarDB[n]) {
-					diffPage = removePilarRadar(diffPage, questoesRadarDB[n])
+			var diffPage []mdl.AnotacaoRadar = anotacoesRadarPage
+			for n := range anotacoesRadarDB {
+				if containsAnotacaoRadar(diffPage, anotacoesRadarDB[n]) {
+					diffPage = removeAnotacaoRadar(diffPage, anotacoesRadarDB[n])
 				}
 			}
-			var pilarRadar mdl.PilarRadar
-			pilarRadarId := 0
+			var anotacaoRadar mdl.AnotacaoRadar
+			anotacaoRadarId := 0
 			// statusItemId := GetStartStatus("plano")
 			for i := range diffPage {
-				pilarRadar = diffPage[i]
+				anotacaoRadar = diffPage[i]
 				log.Println("Radar Id: " + radarId)
-				sqlStatement := "INSERT INTO questoes_radares ( " +
-					" ciclo_id, " +
-					" pilar_id, " +
-					" tipo_media, " +
-					" peso_padrao, " +
+				sqlStatement := "INSERT INTO anotacoes_radares ( " +
+					" anotacao_id, " +
+					" radar_id, " +
+					" observacoes, " +
+					" registro_ata, " +
 					" author_id, " +
 					" criado_em " +
 					" ) " +
@@ -171,14 +176,15 @@ func UpdateRadarHandler(w http.ResponseWriter, r *http.Request) {
 				Db.QueryRow(
 					sqlStatement,
 					radarId,
-					pilarRadar.PilarId,
-					pilarRadar.TipoMediaId,
-					pilarRadar.PesoPadrao,
+					anotacaoRadar.AnotacaoId,
+					anotacaoRadar.RadarId,
+					anotacaoRadar.Observacoes,
+					anotacaoRadar.RegistroAta,
 					currentUser.Id,
-					time.Now()).Scan(&pilarRadarId)
+					time.Now()).Scan(&anotacaoRadarId)
 			}
 		}
-		UpdateQuestoesRadarHandler(questoesRadarPage, questoesRadarDB)*/
+		UpdateAnotacoesRadarHandler(anotacoesRadarPage, anotacoesRadarDB, currentUser.Id)
 
 		http.Redirect(w, r, route.RadaresRoute+"?msg=Radar atualizado com sucesso.", 301)
 	} else {
@@ -309,13 +315,13 @@ func ListRadaresHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LoadQuestoesByRadarId(w http.ResponseWriter, r *http.Request) {
-	log.Println("Load Questoes Radares By Radar Id")
+func LoadAnotacoesRadaresByRadarId(w http.ResponseWriter, r *http.Request) {
+	log.Println("Load Anotacoes Radares By Radar Id")
 	r.ParseForm()
 	var radarId = r.FormValue("radarId")
 	log.Println("radarId: " + radarId)
-	/*questoesRadar := ListQuestoesByRadarId(radarId)
-	jsonQuestoesRadar, _ := json.Marshal(questoesRadar)
-	w.Write([]byte(jsonQuestoesRadar))*/
-	log.Println("JSON Questoes de Radares")
+	anotacoesRadar := ListAnotacoesRadarByRadarId(radarId)
+	jsonAnotacoesRadar, _ := json.Marshal(anotacoesRadar)
+	w.Write([]byte(jsonAnotacoesRadar))
+	log.Println("JSON Anotacoes de Radares")
 }

@@ -14,17 +14,18 @@
 				anotacoesSiglasMap = new Map();
 				siglasMap = new Map();				
 			</script>
-			{{range $index, $p := .Anotacoes }}
+			{{range $index, $a := .Anotacoes }}
 			<script type="text/javascript">
-				anotacoes = anotacoesSiglasMap.get('{{$p.EntidadeSigla}}')
-				anotacao = new Anotacao('{{$p.Id}}', '{{$p.EntidadeId}}', '{{$p.EntidadeSigla}}', '{{$p.Assunto}}', '{{$p.Risco}}', '{{$p.Tendencia}}');
+				anotacoes = anotacoesSiglasMap.get('{{$a.EntidadeSigla}}')
+				anotacao = new Anotacao('{{$a.Id}}', '{{$a.EntidadeId}}', '{{$a.EntidadeSigla}}', '{{$a.Assunto}}', '{{$a.Risco}}', '{{$a.Tendencia}}');
 				if(!anotacoes){
 					anotacoes = new Array();				
 				}
 				anotacoes.push(anotacao);
-				siglasMap.set('{{$p.EntidadeId}}','{{$p.EntidadeSigla}}');
-				anotacoesSiglasMap.set('{{$p.EntidadeId}}',anotacoes);
-				anotacoesMap.set('{{$p.Id}}',anotacao);
+				siglasMap.set('{{$a.EntidadeId}}','{{$a.EntidadeSigla}}');
+				anotacoesSiglasMap.set('{{$a.EntidadeId}}',anotacoes);
+				console.log('anotacao.entidadeId: '+anotacao.entidadeId);
+				anotacoesMap.set('{{$a.Id}}',anotacao);
 			</script>
 			{{end}}
             <form class="w3-container" id="formulario-anotacao-radar-create">

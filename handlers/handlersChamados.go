@@ -304,6 +304,7 @@ func ListChamadosHandler(w http.ResponseWriter, r *http.Request) {
 			"   when a.tipo_chamado_id = 'C' then 'Correção' " +
 			"   when a.tipo_chamado_id = 'D' then 'Dúvida' " +
 			"   when a.tipo_chamado_id = 'M' then 'Melhoria' " +
+			"   when a.tipo_chamado_id = 'S' then 'Sugestão' " +
 			"   else 'Tarefa' " +
 			" end, " +
 			" case " +

@@ -719,6 +719,25 @@ type Publicacao struct {
 	CStatus        string `json:"cStatus"`
 }
 
+type AnotacaoRadar struct {
+	Order                 int
+	Id                    int64  `json:"id"`
+	RadarId               int64  `json:"radarId"`
+	EntidadeId            int64  `json:"entidadeId"`
+	AnotacaoId            int64  `json:"anotacaoId"`
+	Observacoes           string `json:"observacoes"`
+	RegistroAta           string `json:"registroEmAta"`
+	AuthorId              int64  `json:"autorId"`
+	AuthorName            string `json:"autorNome"`
+	CriadoEm              string `json:"criadoEm"`
+	StatusId              int64  `json:"statusId"`
+	CStatus               string `json:"cStatus"`
+	UltimaAtualizacao     string `json:"ultimaAtualizacao"`
+	UltimoAtualizadorId   int    `json:"ultimoAtualizador"`
+	UltimoAtualizadorNome string `json:"ultimoAtualizadorNome"`
+	IdVersaoOrigem        int64  `json:"idVersaoOrigem"`
+}
+
 type Anotacao struct {
 	Order           int
 	Id              int64  `json:"id"`

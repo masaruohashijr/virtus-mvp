@@ -7,17 +7,59 @@ function updateConfigPlanos(){
 	let cicloId = splitted[2];
 	let pilarId = splitted[3];
 	let componenteId = splitted[4];
+	let auditorId = splitted[5];
 	let planosSelecionados = document.getElementById('ConfigPlanos');
 	let selecionados = getSelectedOptions(planosSelecionados);
 	let valores = '';
 	for(n=0;n<selecionados.length;n++){
 		valores = selecionados[n].value+'_'+ valores;
 	}
-	console.log("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId);
-	document.getElementsByName("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId)[0].value = valores;
+	console.log("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId+"_"+auditorId);
+	// atualizar os planos através de Ajax
+	atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores);
+	document.getElementsByName("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId+"_"+auditorId)[0].value = valores;
+	console.log("Saindo");
+}
+
+function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores){
+	console.log("atualizarConfigPlanos");
+	var xmlhttp;
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function()
+	{
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				var configPlanos = JSON.parse(xmlhttp.responseText);
+				var cfg = document.getElementById('ConfigPlanos');
+				console.log(cfg);
+				console.log(configPlanos);
+				console.log(configPlanos.length);
+				console.log(cfg.options.length);
+				for(i=0;i<configPlanos.length;i++){
+					for(j=0;j<cfg.options.length;j++){
+						if(cfg.options[j].value == configPlanos[i].planoId){
+							cfg.options[j].selected = true; 
+							console.log(configPlanos[i]+' :: '+cfg.options[j].selected);
+						}
+					}
+				}
+				return planos;
+			}
+	}
+	xmlhttp.open("GET","/updateConfigPlanos?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId+"&planos="+valores,true);
+	xmlhttp.send();
+}
+
+function callback_MudaCorBotaoAcionador(){
+	let acionadoPor = document.getElementById("AcionadoPor").value;
+	console.log(document.getElementsByName(acionadoPor)[0]);
+	let classList = document.getElementsByName(acionadoPor)[0].classList;
 	if(selecionados.length>0){
-		let acionadoPor = document.getElementById("AcionadoPor").value;
-		document.getElementById(acionadoPor).value;
+		classList.remove('w3-red');
+		classList.add('w3-green');
+	} else {
+		classList.remove('w3-green');
+		classList.add('w3-red');
 	}
 }
 
@@ -32,8 +74,15 @@ function updateTodosConfigPlanos(){
 	let col = document.getElementsByTagName("input");
 	for(n=0;n<col.length;n++){
 		console.log(col[n].name);
-		if(col[n].name.startsWith("Planos_")){
+		if(col[n].name.startsWith("Planos_AuditorComponente_")){
 			col[n].value = valores;
+		}
+	}
+	col = document.getElementsByTagName("button");
+	for(n=0;n<col.length;n++){
+		if(col[n].name.startsWith("BtnPlanos_")){
+			document.getElementsByName(col[n].name)[0].classList.remove('w3-red');
+			document.getElementsByName(col[n].name)[0].classList.add('w3-green');
 		}
 	}
 }
@@ -94,7 +143,7 @@ function loadConfigPlanos(entidadeId, cicloId, pilarId, componenteId){
 				return planos;
 			}
 	}
-		xmlhttp.open("GET","/loadConfigPlanos?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId,true);
+	xmlhttp.open("GET","/loadConfigPlanos?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId,true);
 	xmlhttp.send();
 }
 

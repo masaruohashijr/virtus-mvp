@@ -89,7 +89,7 @@ func createRoleFeatures() {
 		" SELECT 1  " +
 		" FROM features_roles b " +
 		" WHERE b.role_id = 2 AND b.feature_id = a.id) " +
-		" AND a.code IN ('designarEquipes','distribuirAtividades','avaliarPlanos','viewMatriz','listEntidades','createEntidade','homeSupervisor') "
+		" AND a.code IN ('designarEquipes','distribuirAtividades','avaliarPlanos','viewMatriz','listEntidades','createEntidade','homeSupervisor','homeChefe','homeAuditor') "
 	//log.Println(stmt1)
 	db.Exec(stmt1)
 	stmt1 = " INSERT INTO features_roles (role_id, feature_id) " +

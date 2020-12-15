@@ -11,6 +11,12 @@ import (
 	sec "virtus/security"
 )
 
+type PlanosCfg struct {
+	numPlano   string
+	cnpb       string
+	podeApagar bool
+}
+
 func ListDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("List Distribuir Atividades Handler")
 	currentUser := GetUserInCookie(w, r)
@@ -265,4 +271,189 @@ func LoadConfigPlanos(w http.ResponseWriter, r *http.Request) {
 	jsonConfigPlanos, _ := json.Marshal(configPlanos)
 	w.Write([]byte(jsonConfigPlanos))
 	log.Println("JSON Config Planos")
+}
+
+func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
+	log.Println("Update Config Planos ===>>> ATUALIZANDO")
+	r.ParseForm()
+	currentUser := GetUserInCookie(w, r)
+	var entidadeId = r.FormValue("entidadeId")
+	var cicloId = r.FormValue("cicloId")
+	var pilarId = r.FormValue("pilarId")
+	var componenteId = r.FormValue("componenteId")
+	var planos = r.FormValue("planos")
+	var forcar = r.FormValue("forcar")
+	planos = strings.TrimSpace(planos)
+	array := strings.Split(planos, "_")
+	log.Println("planos: " + planos)
+	var planosPage []PlanosCfg
+	var planoPage PlanosCfg
+	if planos != "" {
+		for _, valor := range array {
+			planoPage.numPlano = valor
+			planosPage = append(planosPage, planoPage)
+		}
+	}
+
+	planos = strings.Join(array, ",")
+	if len(planos) > 0 {
+		planos = planos[:len(planos)-1]
+	}
+	sql := " select a.plano_id, c.cnpb, " +
+		" case when count(b.id) = 0 then true else false end as pode_apagar " +
+		" from produtos_elementos a " +
+		" left join produtos_elementos_historicos b on " +
+		" (a.entidade_id = b.entidade_id and a.ciclo_id = b.ciclo_id " +
+		" and a.pilar_id = b.pilar_id and a.componente_id = b.componente_id " +
+		" and a.plano_id = b.plano_id) " +
+		" inner join planos c on c.id = a.plano_id " +
+		" where a.entidade_id = " + entidadeId +
+		" and a.ciclo_id = " + cicloId +
+		" and a.pilar_id = " + pilarId +
+		" and a.componente_id = " + componenteId +
+		//" and a.plano_id in (" + planos + ") " +
+		" group by 1,2 "
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	defer rows.Close()
+	var planosBD []PlanosCfg
+	var planoBD PlanosCfg
+	for rows.Next() {
+		rows.Scan(&planoBD.numPlano, &planoBD.cnpb, &planoBD.podeApagar)
+		planosBD = append(planosBD, planoBD)
+	}
+	// Não posso simplesmente apagar eu tenho que testar NOW () no banco PAST (1,2,3,4)
+	msgRetorno := ""
+	force := false
+	log.Println("Qtd BD: " + strconv.Itoa(len(planosBD)))
+	log.Println("Qtd Page: " + strconv.Itoa(len(planosPage)))
+	if len(planosPage) < len(planosBD) {
+		if len(planosPage) == 0 {
+			if forcar != "" {
+				force = true
+			}
+			for _, valor := range planosBD {
+				log.Println(valor.cnpb)
+				if valor.podeApagar || force {
+					log.Println("Removendo o " + valor.cnpb)
+					deleteProdutoPlano(entidadeId, cicloId, pilarId, componenteId, valor.numPlano)
+				} else {
+					msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
+				}
+			}
+		} else {
+			var diffDB []PlanosCfg
+			for n := range planosPage {
+				if containsPlanoCfg(diffDB, planosPage[n]) {
+					diffDB = removePlanoCfg(diffDB, planosPage[n])
+				}
+			}
+			for _, valor := range diffDB {
+				if valor.podeApagar || force {
+					deleteProdutoPlano(entidadeId, cicloId, pilarId, componenteId, valor.numPlano)
+				} else {
+					msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
+				}
+			}
+		}
+	} else {
+		var diffPage []PlanosCfg
+		for n := range planosBD {
+			if containsPlanoCfg(diffPage, planosBD[n]) {
+				diffPage = removePlanoCfg(diffPage, planosBD[n])
+			}
+		}
+		var param mdl.ProdutoPlano
+		param.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
+		param.CicloId, _ = strconv.ParseInt(cicloId, 10, 64)
+		param.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
+		param.ComponenteId, _ = strconv.ParseInt(componenteId, 10, 64)
+		for _, v := range diffPage {
+			registrarProdutosPlanos(param, v.numPlano, currentUser)
+		}
+	}
+	w.Write([]byte(msgRetorno))
+	log.Println("JSON Config Planos")
+}
+
+func deleteProdutoPlano(entidadeId string, cicloId string, pilarId string, componenteId string, planoId string) {
+	sqlStatement := "DELETE FROM produtos_itens WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId +
+		" and pilar_id = " + pilarId +
+		" and componente_id = " + componenteId +
+		" and plano_id = " + planoId
+	log.Println(sqlStatement)
+	updtForm, _ := Db.Prepare(sqlStatement)
+	_, err := updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	sqlStatement = "DELETE FROM produtos_elementos_historicos WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId +
+		" and pilar_id = " + pilarId +
+		" and componente_id = " + componenteId +
+		" and plano_id = " + planoId
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	sqlStatement = "DELETE FROM produtos_elementos WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId +
+		" and pilar_id = " + pilarId +
+		" and componente_id = " + componenteId +
+		" and plano_id = " + planoId
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	sqlStatement = "DELETE FROM produtos_tipos_notas WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId +
+		" and pilar_id = " + pilarId +
+		" and componente_id = " + componenteId +
+		" and plano_id = " + planoId
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	sqlStatement = "DELETE FROM produtos_planos WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId +
+		" and pilar_id = " + pilarId +
+		" and componente_id = " + componenteId +
+		" and plano_id = " + planoId
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+}
+
+func removePlanoCfg(planos []PlanosCfg, planoCfgToBeRemoved PlanosCfg) []PlanosCfg {
+	var newPlanosCfg []PlanosCfg
+	for i := range planos {
+		if planos[i].numPlano != planoCfgToBeRemoved.numPlano {
+			newPlanosCfg = append(newPlanosCfg, planos[i])
+		}
+	}
+	return newPlanosCfg
+}
+
+func containsPlanoCfg(planosCfg []PlanosCfg, planoCfgCompared PlanosCfg) bool {
+	for n := range planosCfg {
+		if planosCfg[n].numPlano == planoCfgCompared.numPlano {
+			return true
+		}
+	}
+	return false
 }

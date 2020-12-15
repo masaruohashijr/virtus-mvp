@@ -1,7 +1,7 @@
 var anotacao_radar_tobe_deleted;
 
 class AnotacaoRadar{
-	constructor(order, id, radarId, entidadeId, anotacaoId, observacoes, registroEmAta, autor, criadoEm, status){
+	constructor(order, id, radarId, entidadeId, anotacaoId, observacoes, registroEmAta, autorId, autorNome, criadoEm, statusId, cStatus, ultimaAtualizacao, ultimoAtualizador, ultimoAtualizadorNome){
 		this.order = order;		
 		this.id = id;		
 		this.radarId = radarId;		
@@ -9,9 +9,14 @@ class AnotacaoRadar{
 		this.anotacaoId = anotacaoId;		
 		this.observacoes = observacoes;		
 		this.registroEmAta = registroEmAta;		
-		this.autor = autor;		
+		this.autorId = autorId;		
+		this.autorNome = autorNome;		
 		this.criadoEm = criadoEm;		
-		this.status = status;		
+		this.statusId = statusId;	
+		this.cStatus = cStatus;	
+		this.ultimaAtualizacao = ultimaAtualizacao;
+		this.ultimoAtualizador = ultimoAtualizador;
+		this.ultimoAtualizadorNome = ultimoAtualizadorNome;
 	}
 }
 
@@ -38,7 +43,7 @@ function criarAnotacaoRadar(){
 	let registroEmAta = document.getElementById('RegistroEmAtaForInsert').value;
 	console.log("variável observações: "+observacoes);
 	anotacaoRadarId = getMaxId(anotacoesRadar);
-	anotacaoRadar = new AnotacaoRadar(0, anotacaoRadarId, 0, entidadeId, anotacaoId, observacoes, registroEmAta,'','','');
+	anotacaoRadar = new AnotacaoRadar(0, anotacaoRadarId, 0, entidadeId, anotacaoId, observacoes, registroEmAta,'','','','','','','','');
 	anotacoesRadar.push(anotacaoRadar);
 	console.log(contexto);
 	addAnotacaoRadarRow("table-anotacoes-radar-"+contexto);
@@ -52,9 +57,17 @@ function addAnotacaoRadarRow(tableID) {
 	let newRow = tableRef.childNodes[1].insertRow(-1);
 	order = anotacoesRadar.length-1;
 	anotacaoRadar = anotacoesRadar[order];
-	// Sigla
+	// sigla
 	let newCell = newRow.insertCell(0);
-	let anotacao = anotacoesMap.get(anotacaoRadar.anotacaoId);
+	console.log('anotacaoRadar.anotacaoId: '+anotacaoRadar.anotacaoId.toString());
+	let anotacao = anotacoesMap.get(anotacaoRadar.anotacaoId.toString());
+	console.log(anotacao);
+	console.log('anotacao.id: '+anotacao.id);
+	console.log('anotacao.entidadeId: '+anotacao.entidadeId);
+	console.log('anotacao.entidadeSigla: '+anotacao.entidadeSigla);
+	console.log('anotacao.assunto: '+anotacao.assunto);
+	console.log('anotacao.risco: '+anotacao.risco);
+	console.log('anotacao.tendencia: '+anotacao.tendencia);
 	let newText = document.createTextNode(anotacao.entidadeSigla);
 	newCell.appendChild(newText);
 	let json = JSON.stringify(anotacaoRadar);
@@ -68,7 +81,7 @@ function addAnotacaoRadarRow(tableID) {
 	newCell.innerHTML = '<input type="hidden" name="radarId" value="'+anotacaoRadar.radarId+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="id" value="'+anotacaoRadar.id+'"/>'+newCell.innerHTML;
 	newCell.innerHTML = '<input type="hidden" name="order" value="'+order+'"/>'+newCell.innerHTML;
-	newCell.style = "vertical-align: middle; text-align: left";
+	newCell.style = "vertical-align: middle;";
 	// Assunto
 	newCell = newRow.insertCell(1);
 	newText = document.createTextNode(anotacao.assunto);
@@ -79,28 +92,28 @@ function addAnotacaoRadarRow(tableID) {
 	// Risco
 	newCell = newRow.insertCell(2);
 	newText = document.createTextNode(anotacao.risco);
-	newCell.style = "vertical-align: middle; text-align: left";
+	newCell.style = "vertical-align: middle;";
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+anotacaoRadar.risco+'"/>'+newCell.innerHTML;
 	// Tendência
 	newCell = newRow.insertCell(3);
 	newText = document.createTextNode(anotacao.tendencia);
-	newCell.style = "vertical-align: middle; text-align: left";
+	newCell.style = "vertical-align: middle;";
 	newCell.appendChild(newText);
 	// Autor
 	newCell = newRow.insertCell(4);
-	newText = document.createTextNode(anotacaoRadar.autor);
-	newCell.style = "vertical-align: middle; text-align: left";
+	newText = document.createTextNode(anotacaoRadar.autorNome);
+	newCell.style = "vertical-align: middle;";
 	newCell.appendChild(newText);
 	// Criado Em
 	newCell = newRow.insertCell(5);
 	newText = document.createTextNode(anotacaoRadar.criadoEm);
-	newCell.style = "vertical-align: middle; text-align: left";
+	newCell.style = "vertical-align: middle;";
 	newCell.appendChild(newText);
 	// Status
 	newCell = newRow.insertCell(6);
-	newText = document.createTextNode(anotacaoRadar.status);
-	newCell.style = "vertical-align: middle; text-align: left";
+	newText = document.createTextNode(anotacaoRadar.cStatus);
+	newCell.style = "vertical-align: middle;";
 	newCell.appendChild(newText);
 	// Botões
 	newCell = newRow.insertCell(7);

@@ -109,6 +109,24 @@ func createTablesHistoricos() {
 			" id_versao_origem integer," +
 			" status_id integer)")
 
+	// Table PRODUTOS_TIPOS_PLANOS
+	db.Exec(
+		" CREATE TABLE IF NOT EXISTS produtos_planos_historicos (" +
+			" id integer DEFAULT nextval('produtos_planos_historicos_id_seq'::regclass) NOT NULL," +
+			" entidade_id integer," +
+			" ciclo_id integer," +
+			" pilar_id integer," +
+			" componente_id integer," +
+			" plano_id integer," +
+			" tipo_pontuacao_id integer," +
+			" peso double precision," +
+			" nota double precision," +
+			" anexo character varying(4000)," +
+			" author_id integer," +
+			" criado_em timestamp without time zone," +
+			" id_versao_origem integer," +
+			" status_id integer)")
+
 	// Table PRODUTOS_TIPOS_NOTAS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS produtos_tipos_notas_historicos (" +

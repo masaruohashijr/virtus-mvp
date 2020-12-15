@@ -43,7 +43,7 @@ function preencherAnotacoesSelect(e, contexto){
 			opt.innerHTML = value[0].assunto;
 			select.appendChild(opt);	
 		}
-	})
+	});
 }
 
 function resetAnotacaoForms(){

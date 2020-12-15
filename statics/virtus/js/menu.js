@@ -20,18 +20,24 @@ function closeNav() {
   document.body.style.backgroundColor = "white";
 }
 
-function expandirSubMenu(e, menu, inf, sup){
-	let anchor = e;
-	let tabela = e.parentNode.parentNode.parentNode;
-	let nivel = inf;
+function expandirSubMenu(row, menu){
+	let tabela = row.parentNode;
+	console.log(tabela.rows.length);		
+	let nivelSubmenu = row.rowIndex+1;
+	console.log(nivelSubmenu);
+	let anchor = row.childNodes[0].childNodes[1];
+	console.log(anchor.innerHTML);		
 	if(anchor.innerHTML.includes('dropright')){
-		anchor.innerHTML = '<i style="font-size:1.3em;" class="ion-android-arrow-dropdown hoverbtn"></i>&nbsp;'+menu;		
-		for(n=nivel;n<sup && n<tabela.rows.length;n++){
+		console.log('entrei dropright');		
+		anchor.innerHTML = '<i style="font-size:1.3em;" class="ion-android-arrow-dropdown hoverbtn"></i>&nbsp;'+menu;
+		console.log('entrei dropright');		
+		for(n=nivelSubmenu;n<tabela.rows.length && tabela.rows[n] && tabela.rows[n].classList.contains("submenu");n++){
 			tabela.rows[n].style = 'display:table-row';	
 		}
 	} else {
+		console.log('entrei dropdown');		
 		anchor.innerHTML = '<i style="font-size:1.3em;" class="ion-android-arrow-dropright hoverbtn"></i>&nbsp;&nbsp;'+menu;
-		for(n=nivel;n<sup && n<tabela.rows.length;n++){
+		for(n=nivelSubmenu;tabela.rows.length && tabela.rows[n] && tabela.rows[n].classList.contains("submenu");n++){
 			tabela.rows[n].style = 'display:none';	
 		}
 	}

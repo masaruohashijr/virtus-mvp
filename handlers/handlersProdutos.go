@@ -270,8 +270,13 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 		produto.PlanoId,
 		produto.ComponenteId,
 		produto.ElementoId)
+	pesosAtuais := atualizarPesoAcimaElemento(produto, currentUser)
+	return pesosAtuais
+}
+
+func atualizarPesoAcimaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) mdl.PesosAtuais {
 	// PESOS TIPOS NOTAS
-	sqlStatement = "UPDATE produtos_tipos_notas as p SET peso = R1.peso " +
+	sqlStatement := "UPDATE produtos_tipos_notas as p SET peso = R1.peso " +
 		"FROM " +
 		"(WITH TMP AS " +
 		"     (SELECT entidade_id, " +
@@ -326,7 +331,7 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 		"        AND p.ciclo_id = R1.ciclo_id " +
 		"        AND p.entidade_id = R1.entidade_id "
 	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -510,7 +515,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" pilar_id, " +
 		" componente_id, " +
 		" plano_id, " +
-		" peso, " +
+		//" peso, " +
 		" nota, " +
 		" tipo_pontuacao_id, " +
 		" author_id, " +
@@ -520,7 +525,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		strconv.FormatInt(param.PilarId, 10) + ", " +
 		strconv.FormatInt(param.ComponenteId, 10) + ", " +
 		" p.id, " +
-		" p.recurso_garantidor as peso, 0 as nota, " +
+		//" p.recurso_garantidor as peso, 0 as nota, " +
 		" $1, $2, $3 " +
 		" FROM " +
 		" PILARES_CICLOS a " +
@@ -558,7 +563,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" componente_id, " +
 		" plano_id, " +
 		" tipo_nota_id, " +
-		" peso, " +
+		//" peso, " +
 		" nota, " +
 		" tipo_pontuacao_id, " +
 		" author_id, " +
@@ -569,8 +574,8 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" p.componente_id, " +
 		" p.plano_id, " +
 		" d.tipo_nota_id, " +
-		" round(CAST(avg(d.peso_padrao) AS numeric),2), 0, " +
-		" $1, $2, $3 " +
+		//" round(CAST(avg(d.peso_padrao) AS numeric),2), " +
+		" 0, $1, $2, $3 " +
 		" FROM " +
 		" PILARES_CICLOS a " +
 		" LEFT JOIN COMPONENTES_PILARES b ON a.pilar_id = b.pilar_id " +
@@ -706,6 +711,14 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 	}
 
 	log.Println("INICIANDO CICLO --  UPDATE NOTA")
+	var produto mdl.ProdutoElemento
+	produto.EntidadeId = param.EntidadeId
+	produto.CicloId = param.CicloId
+	produto.PilarId = param.PilarId
+	produto.ComponenteId = param.ComponenteId
+	produto.PlanoId = param.PlanoId
+	// Atualizando os pesos
+	atualizarPesoAcimaElemento(produto, currentUser)
 	sqlStatement = "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
 		" sum(nota*peso)/sum(peso) as media " +
