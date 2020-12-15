@@ -38,8 +38,10 @@ function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valor
 						alterarOkConfirm(entidadeId, cicloId, pilarId, componenteId, valores, superUser);
 					}
 				}
-				document.getElementById("messageText").innerText = messageText;
-				document.getElementById("message").style.display="block";		
+				if(messageText!=''){
+					document.getElementById("messageText").innerText = messageText;
+					document.getElementById("message").style.display="block";		
+				}
 			}
 	}
 	xmlhttp.open("GET","/updateConfigPlanos?entidadeId="+
