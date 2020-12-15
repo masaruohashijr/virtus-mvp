@@ -109,7 +109,11 @@
 								id="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								name="Planos_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								value="">
-		                    <button class="w3-btn w3-red"
+								{{if eq $produto.Configurado "S"}}
+	                    		<button class="w3-btn w3-green"
+								{{else}}
+								<button class="w3-btn w3-red"
+								{{end}}
 								type="button"
 								name="BtnPlanos_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}"
 								onclick="openConfigPlanos(this)">Planos</button>&nbsp;								
@@ -126,10 +130,10 @@
 				           		{{end}}
 			            	</select>
 							<input type="hidden" name="MotivacaoRemocao" value="">
-							<input type="hidden" name="Entidade_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.EntidadeId}}"/>
-							<input type="hidden" name="Ciclo_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.CicloId}}"/>
-							<input type="hidden" name="Pilar_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.PilarId}}"/>
-							<input type="hidden" name="Componente_AuditorComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.ComponenteId}}"/>
+							<input type="hidden" name="Entidade_Componente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.EntidadeId}}"/>
+							<input type="hidden" name="Ciclo_Componente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.CicloId}}"/>
+							<input type="hidden" name="Pilar_Componente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.PilarId}}"/>
+							<input type="hidden" name="Componente_Componente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.AuditorId}}" value="{{$produto.ComponenteId}}"/>
 						</td>
 						<td style="vertical-align:middle; border:1px solid #ddd;">
 							<table width="100%">
@@ -138,14 +142,16 @@
 										<input 
 											class="w3-input" 
 											type="date" 
-											name="Inicio_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+											onchange="motivarReprogramacao(this);"
+											name="IniciaEmComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.IniciaEm}}" 
 											value="{{$produto.IniciaEm}}">
 									</td>
 									<td>
 										<input 
 											class="w3-input" 
 											type="date" 
-											name="Termino_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+											onchange="motivarReprogramacao(this);"
+											name="TerminaEmComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TerminaEm}}" 
 											value="{{$produto.TerminaEm}}">
 									</td>
 								</tr>
@@ -155,7 +161,7 @@
 		                <td style="border:1px solid #ddd;vertical-align:middle; ">
 							<button type="button" 
 								class="w3-btn w3-brown" 
-								name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
+								name="HistoricoComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}" 
 								onclick="openHistComponente(this)">Histórico</button>
 		                </td>
 						{{end}}
@@ -164,7 +170,8 @@
 					<tr>
 						<td colspan="7" style="text-align: center">
 							<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom"
-								onclick="validarPlanosSelecionados()">
+								type="submit"
+								onclick="">
 								Salvar
 							</button>
 						</td>

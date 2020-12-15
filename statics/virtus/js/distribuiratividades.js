@@ -19,3 +19,24 @@ function validarDistribuirAtividades(e){
 		return true;
 	}
 }
+
+function motivarReprogramacao(campo){
+	let entidadeId = campo.name.split("_")[1];
+	let cicloId = campo.name.split("_")[2];
+	let pilarId = campo.name.split("_")[3];
+	let componenteId = campo.name.split("_")[4];
+	let dataAnterior = campo.name.split("_")[5];
+	if(campo.value != dataAnterior && dataAnterior != ""){
+		document.getElementById("AcionadoPor").value = campo.name;
+		document.getElementById("motRepro_callback").value = campo.name;
+		document.getElementById("motReproEntidade").value = entidadesMap.get(entidadeId);
+		document.getElementById("motReproCiclo").value = ciclosMap.get(cicloId);
+		document.getElementById("motReproPilar").value = pilaresMap.get(pilarId);
+		document.getElementById("motReproComponente").value = componentesMap.get(componenteId);
+		document.getElementById("motReproDataAnterior").value = formatarData(dataAnterior);
+		document.getElementById("motReproNovaData").value = formatarData(campo.value);
+		document.getElementById('motivar-reprogramacao-form').style.display='block';
+		document.getElementById("motRepro_text").value='';
+		document.getElementById("motRepro_text").focus();
+	}
+}

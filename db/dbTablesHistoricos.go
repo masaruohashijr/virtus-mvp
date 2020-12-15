@@ -54,12 +54,16 @@ func createTablesHistoricos() {
 			" peso double precision," +
 			" nota double precision," +
 			" tipo_alteracao character(1)," +
+			" motivacao_config character varying(4000)," +
+			" motivacao_cronograma character varying(4000)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" justificativa character varying(4000)," +
 			" supervisor_id integer," +
 			" auditor_id integer," +
 			" auditor_anterior_id integer," +
+			" inicia_em timestamp without time zone," +
+			" termina_em timestamp without time zone," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +

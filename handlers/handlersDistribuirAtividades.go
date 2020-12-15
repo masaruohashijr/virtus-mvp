@@ -93,24 +93,57 @@ func UpdateDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Distribuir Atividades Handler")
 	if r.Method == "POST" && sec.IsAuthenticated(w, r) {
 		r.ParseForm()
+		faltouConfigurarPlano := false
 		for fieldName, value := range r.Form {
-			log.Println("-------------- fieldName: " + fieldName)
-			if strings.HasPrefix(fieldName, "AuditorComponente") {
+			// log.Println("-------------- fieldName: " + fieldName)
+			if strings.HasPrefix(fieldName, "AuditorComponente_") {
+				fname := fieldName[7:len(fieldName)]
+				//log.Println(fname)
 				supervisorId := r.FormValue("SupervisorComponenteId")
-				log.Println(supervisorId)
-				entidadeId := r.FormValue("Entidade_" + fieldName)
-				log.Println(entidadeId)
-				cicloId := r.FormValue("Ciclo_" + fieldName)
-				log.Println(cicloId)
-				pilarId := r.FormValue("Pilar_" + fieldName)
-				log.Println(pilarId)
-				planosIds := r.FormValue("Planos_" + fieldName)
-				log.Println("planosIds: " + planosIds)
-				componenteId := r.FormValue("Componente_" + fieldName)
-				log.Println(fieldName + " - value: " + value[0])
+				//log.Println(supervisorId)
+				entidadeId := r.FormValue("Entidade_" + fname)
+				//log.Println(entidadeId)
+				cicloId := r.FormValue("Ciclo_" + fname)
+				//log.Println(cicloId)
+				pilarId := r.FormValue("Pilar_" + fname)
+				//log.Println(pilarId)
+				planosIds := r.FormValue("Planos_" + fname)
+				//log.Println("planosIds: " + planosIds)
+				componenteId := r.FormValue("Componente_" + fname)
+				//log.Println(fieldName + " - value: " + value[0])
 				if value[0] != "" {
 					sqlStatement := "UPDATE produtos_componentes SET " +
 						" auditor_id=" + value[0] + ", supervisor_id=" + supervisorId +
+						" WHERE entidade_id=" + entidadeId +
+						" AND ciclo_id=" + cicloId +
+						" AND pilar_id=" + pilarId +
+						" AND componente_id= " + componenteId
+					//log.Println(sqlStatement)
+					updtForm, _ := Db.Prepare(sqlStatement)
+					_, err := updtForm.Exec()
+					if err != nil {
+						log.Println(err.Error())
+					}
+				}
+				planos := strings.ReplaceAll(planosIds, "_", ",")
+				if len(planos) == 0 {
+					faltouConfigurarPlano = true
+				}
+			} else if strings.HasPrefix(fieldName, "IniciaEmComponente_") {
+				fname := fieldName[8:len(fieldName)]
+				// log.Println(fname)
+				partes := strings.Split(fname, "_")
+				entidadeId := partes[1]
+				// log.Println(entidadeId)
+				cicloId := partes[2]
+				// log.Println(cicloId)
+				pilarId := partes[3]
+				// log.Println(pilarId)
+				componenteId := partes[4]
+				// log.Println(fieldName + " - value: " + value[0])
+				if value[0] != "" {
+					sqlStatement := "UPDATE produtos_componentes SET " +
+						" inicia_em='" + value[0] + "' " +
 						" WHERE entidade_id=" + entidadeId +
 						" AND ciclo_id=" + cicloId +
 						" AND pilar_id=" + pilarId +
@@ -122,19 +155,36 @@ func UpdateDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 						log.Println(err.Error())
 					}
 				}
-				planos := strings.ReplaceAll(planosIds, "_", ",")
-				if len(planos) >= 1 {
-					planos = planos[0 : len(planos)-1]
-					var produto mdl.ProdutoPlano
-					produto.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
-					produto.CicloId, _ = strconv.ParseInt(cicloId, 10, 64)
-					produto.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
-					produto.ComponenteId, _ = strconv.ParseInt(componenteId, 10, 64)
-					registrarProdutosPlanos(produto, planos, GetUserInCookie(w, r))
-				} else {
-					http.Redirect(w, r, "/listDistribuirAtividades"+"?errMsg=Faltou configurar quais os planos que serão avaliados.", 301)
+			} else if strings.HasPrefix(fieldName, "TerminaEmComponente_") {
+				fname := fieldName[9:len(fieldName)]
+				// log.Println(fname)
+				partes := strings.Split(fname, "_")
+				entidadeId := partes[1]
+				// log.Println(entidadeId)
+				cicloId := partes[2]
+				// log.Println(cicloId)
+				pilarId := partes[3]
+				// log.Println(pilarId)
+				componenteId := partes[4]
+				// log.Println(fieldName + " - value: " + value[0])
+				if value[0] != "" {
+					sqlStatement := "UPDATE produtos_componentes SET " +
+						" termina_em='" + value[0] + "' " +
+						" WHERE entidade_id=" + entidadeId +
+						" AND ciclo_id=" + cicloId +
+						" AND pilar_id=" + pilarId +
+						" AND componente_id= " + componenteId
+					log.Println(sqlStatement)
+					updtForm, _ := Db.Prepare(sqlStatement)
+					_, err := updtForm.Exec()
+					if err != nil {
+						log.Println(err.Error())
+					}
 				}
 			}
+		}
+		if faltouConfigurarPlano {
+			http.Redirect(w, r, "/listDistribuirAtividades"+"?errMsg=Faltou configurar quais os planos que serão avaliados.", 301)
 		}
 		http.Redirect(w, r, "/listDistribuirAtividades"+"?msg=Os demais produtos dos níveis do ciclo foram criados com Sucesso.", 301)
 	} else {
@@ -153,10 +203,11 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" a.pilar_id, d.nome as pilar_nome, " +
 			" a.componente_id, e.nome as componente_nome, " +
 			" coalesce(b.nome,''), a.entidade_id, " +
+			" coalesce(R.configurado,'N'), " +
 			" coalesce(h.supervisor_id,0) as super_id, coalesce(f.name,'') as supervisor_nome, " +
 			" coalesce(a.auditor_id,0) as audit_id, coalesce(g.name,'') as auditor_nome,  " +
-			" to_char(a.inicia_em,'DD/MM/YYYY HH24:MI:SS') as inicia_em, " +
-			" to_char(a.termina_em,'DD/MM/YYYY HH24:MI:SS') as termina_em " +
+			" coalesce(to_char(a.inicia_em,'YYYY-MM-DD'),'') as inicia_em, " +
+			" coalesce(to_char(a.termina_em,'YYYY-MM-DD'),'') as termina_em " +
 			" FROM produtos_componentes a " +
 			" LEFT JOIN entidades b ON a.entidade_id = b.id " +
 			" LEFT JOIN ciclos c ON a.ciclo_id = c.id " +
@@ -165,6 +216,16 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			" LEFT JOIN ciclos_entidades h ON (a.entidade_id = h.entidade_id AND a.ciclo_id = h.ciclo_id) " +
 			" LEFT JOIN users f ON h.supervisor_id = f.id " +
 			" LEFT JOIN users g ON a.auditor_id = g.id " +
+			" LEFT JOIN (select a.entidade_id, a.ciclo_id, a.pilar_id, a.componente_id, " +
+			" 	CASE WHEN COUNT(i.id)>0 THEN 'S' ELSE 'N' END AS configurado from produtos_componentes a " +
+			" 	INNER JOIN produtos_planos i ON (a.entidade_id = i.entidade_id " +
+			" 	AND a.ciclo_id = i.ciclo_id " +
+			" 	AND a.pilar_id = i.pilar_id " +
+			" 	AND a.componente_id = i.componente_id) " +
+			" 	GROUP BY 1,2,3,4) R on (a.entidade_id = R.entidade_id " +
+			" 	AND a.ciclo_id = R.ciclo_id " +
+			" 	AND a.pilar_id = R.pilar_id " +
+			" 	AND a.componente_id = R.componente_id) " +
 			" WHERE a.entidade_id = " + entidadeId + " AND a.ciclo_id = " + cicloId +
 			" ORDER BY d.nome, e.nome "
 		log.Println(sql)
@@ -183,6 +244,7 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.ComponenteNome,
 				&produto.EntidadeNome,
 				&produto.EntidadeId,
+				&produto.Configurado,
 				&produto.SupervisorId,
 				&produto.SupervisorName,
 				&produto.AuditorId,
@@ -191,7 +253,6 @@ func DistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.TerminaEm)
 			produto.Order = i
 			i++
-			// log.Println(produto)
 			produtos = append(produtos, produto)
 		}
 		page.Produtos = produtos
@@ -288,18 +349,32 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 	log.Println("planos: " + planos)
 	var planosPage []PlanosCfg
 	var planoPage PlanosCfg
-	if planos != "" {
-		for _, valor := range array {
+	sql := " select id, cnpb from planos where entidade_id = " + entidadeId + " order by cnpb "
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	defer rows.Close()
+	m := make(map[string]string)
+	id := 0
+	cnpb := ""
+	for rows.Next() {
+		rows.Scan(&id, &cnpb)
+		m[strconv.Itoa(id)] = cnpb
+	}
+	for i, valor := range array {
+		log.Println("i: " + strconv.Itoa(i))
+		if strings.TrimSpace(valor) != "" {
 			planoPage.numPlano = valor
+			planoPage.cnpb = m[planoPage.numPlano]
 			planosPage = append(planosPage, planoPage)
 		}
 	}
+	log.Println("Qtd Page: " + strconv.Itoa(len(planosPage)))
 
 	planos = strings.Join(array, ",")
 	if len(planos) > 0 {
 		planos = planos[:len(planos)-1]
 	}
-	sql := " select a.plano_id, c.cnpb, " +
+	sql = " select a.plano_id, c.cnpb, " +
 		" case when count(b.id) = 0 then true else false end as pode_apagar " +
 		" from produtos_elementos a " +
 		" left join produtos_elementos_historicos b on " +
@@ -314,7 +389,7 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 		//" and a.plano_id in (" + planos + ") " +
 		" group by 1,2 "
 	log.Println(sql)
-	rows, _ := Db.Query(sql)
+	rows, _ = Db.Query(sql)
 	defer rows.Close()
 	var planosBD []PlanosCfg
 	var planoBD PlanosCfg
@@ -326,7 +401,7 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 	msgRetorno := ""
 	force := false
 	log.Println("Qtd BD: " + strconv.Itoa(len(planosBD)))
-	log.Println("Qtd Page: " + strconv.Itoa(len(planosPage)))
+
 	if len(planosPage) < len(planosBD) {
 		if len(planosPage) == 0 {
 			if forcar != "" {
@@ -337,12 +412,13 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 				if valor.podeApagar || force {
 					log.Println("Removendo o " + valor.cnpb)
 					deleteProdutoPlano(entidadeId, cicloId, pilarId, componenteId, valor.numPlano)
+					msgRetorno += "O plano " + valor.cnpb + " foi removido com Sucesso.\n"
 				} else {
 					msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
 				}
 			}
 		} else {
-			var diffDB []PlanosCfg
+			var diffDB []PlanosCfg = planosBD
 			for n := range planosPage {
 				if containsPlanoCfg(diffDB, planosPage[n]) {
 					diffDB = removePlanoCfg(diffDB, planosPage[n])
@@ -350,16 +426,22 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 			}
 			for _, valor := range diffDB {
 				if valor.podeApagar || force {
+					log.Println("Removendo o " + valor.cnpb)
 					deleteProdutoPlano(entidadeId, cicloId, pilarId, componenteId, valor.numPlano)
+					msgRetorno += "O plano " + valor.cnpb + " foi removido com Sucesso.\n"
 				} else {
 					msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
+					log.Println(msgRetorno)
 				}
 			}
 		}
 	} else {
-		var diffPage []PlanosCfg
+		log.Println("Registrar Produtos Planos")
+		var diffPage []PlanosCfg = planosPage
 		for n := range planosBD {
+			log.Println("CNPB: " + planosBD[n].cnpb)
 			if containsPlanoCfg(diffPage, planosBD[n]) {
+				log.Println("Removendo " + planosBD[n].cnpb)
 				diffPage = removePlanoCfg(diffPage, planosBD[n])
 			}
 		}
@@ -368,8 +450,29 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 		param.CicloId, _ = strconv.ParseInt(cicloId, 10, 64)
 		param.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
 		param.ComponenteId, _ = strconv.ParseInt(componenteId, 10, 64)
-		for _, v := range diffPage {
-			registrarProdutosPlanos(param, v.numPlano, currentUser)
+		for _, v := range planosPage {
+			log.Println("Registrar diffPage como Produtos Planos")
+			log.Println("Plano: " + v.numPlano)
+			retorno := registrarProdutosPlanos(param, v.numPlano, currentUser)
+			if retorno != 0 {
+				msgRetorno += "O plano " + v.cnpb + " foi adicionado com Sucesso.\n"
+			}
+		}
+		var diffDB []PlanosCfg = planosBD
+		for n := range planosPage {
+			if containsPlanoCfg(diffDB, planosPage[n]) {
+				diffDB = removePlanoCfg(diffDB, planosPage[n])
+			}
+		}
+		for _, valor := range diffDB {
+			if valor.podeApagar || force {
+				log.Println("Removendo o " + valor.cnpb)
+				deleteProdutoPlano(entidadeId, cicloId, pilarId, componenteId, valor.numPlano)
+				msgRetorno += "O plano " + valor.cnpb + " foi removido com Sucesso.\n"
+			} else {
+				msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
+				log.Println(msgRetorno)
+			}
 		}
 	}
 	w.Write([]byte(msgRetorno))
@@ -451,6 +554,8 @@ func removePlanoCfg(planos []PlanosCfg, planoCfgToBeRemoved PlanosCfg) []PlanosC
 
 func containsPlanoCfg(planosCfg []PlanosCfg, planoCfgCompared PlanosCfg) bool {
 	for n := range planosCfg {
+		log.Println(planosCfg[n].numPlano)
+		log.Println(planoCfgCompared.numPlano)
 		if planosCfg[n].numPlano == planoCfgCompared.numPlano {
 			return true
 		}

@@ -29,21 +29,10 @@ function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valor
 	{
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
-				var configPlanos = JSON.parse(xmlhttp.responseText);
-				var cfg = document.getElementById('ConfigPlanos');
-				console.log(cfg);
-				console.log(configPlanos);
-				console.log(configPlanos.length);
-				console.log(cfg.options.length);
-				for(i=0;i<configPlanos.length;i++){
-					for(j=0;j<cfg.options.length;j++){
-						if(cfg.options[j].value == configPlanos[i].planoId){
-							cfg.options[j].selected = true; 
-							console.log(configPlanos[i]+' :: '+cfg.options[j].selected);
-						}
-					}
-				}
-				return planos;
+				var messageText = xmlhttp.responseText;
+				document.getElementById("messageText").innerText = messageText;
+				document.getElementById("message").style.display="block";				
+				callback_MudaCorBotaoAcionador();
 			}
 	}
 	xmlhttp.open("GET","/updateConfigPlanos?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId+"&planos="+valores,true);
@@ -51,6 +40,7 @@ function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valor
 }
 
 function callback_MudaCorBotaoAcionador(){
+	let selecionados = document.getElementById("ConfigPlanos").value;
 	let acionadoPor = document.getElementById("AcionadoPor").value;
 	console.log(document.getElementsByName(acionadoPor)[0]);
 	let classList = document.getElementsByName(acionadoPor)[0].classList;
@@ -110,6 +100,7 @@ function openConfigPlanos(btn){
 	let componenteId = btn.name.split("_")[4];
 	//console.log(componenteId);
 	//console.log(document.getElementById('Planos_AuditorComponente'+componenteId));
+	document.getElementById('ConfigPlanos').selectedIndex = -1;
 	document.getElementById('EntidadeConfigPlanos').value = entidadesMap.get(entidadeId);
 	document.getElementById('CicloConfigPlanos').value = ciclosMap.get(cicloId);
 	document.getElementById('PilarConfigPlanos').value = pilaresMap.get(pilarId);
@@ -126,17 +117,17 @@ function loadConfigPlanos(entidadeId, cicloId, pilarId, componenteId){
 	{
 			if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			{
-				var configPlanos = JSON.parse(xmlhttp.responseText);
+				var configPlanosJson = JSON.parse(xmlhttp.responseText);
 				var cfg = document.getElementById('ConfigPlanos');
-				console.log(cfg);
-				console.log(configPlanos);
-				console.log(configPlanos.length);
-				console.log(cfg.options.length);
-				for(i=0;i<configPlanos.length;i++){
-					for(j=0;j<cfg.options.length;j++){
-						if(cfg.options[j].value == configPlanos[i].planoId){
-							cfg.options[j].selected = true; 
-							console.log(configPlanos[i]+' :: '+cfg.options[j].selected);
+				if(configPlanosJson.length == 0){
+					callback_MudaCorBotaoAcionador();
+				} else {
+					for(i=0;i<configPlanosJson.length;i++){
+						for(j=0;j<cfg.options.length;j++){
+							if(cfg.options[j].value == configPlanosJson[i].planoId){
+								cfg.options[j].selected = true; 
+								console.log(configPlanosJson[i]+' :: '+cfg.options[j].selected);
+							}
 						}
 					}
 				}
@@ -401,10 +392,8 @@ function validarPlanosSelecionados(){
 	let col = document.getElementsByTagName("input");
 	for(n=0;n<col.length;n++){
 		console.log(col[n].name);
-		if(col[n].name.startsWith("Planos_")){
+		if(col[n].name.startsWith("Planos_AuditorComponente_")){
 			if(col[n].value == ''){
-				document.getElementById("Errors").innerText = '';
-				document.getElementById("error-message").style.display = 'block';				
 				return false;
 			}
 		}

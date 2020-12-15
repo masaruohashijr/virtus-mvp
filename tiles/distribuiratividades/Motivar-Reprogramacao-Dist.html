@@ -1,0 +1,63 @@
+{{define "Motivar-Reprogramacao-Dist"}}
+<!-- Motivar Reprogramacao -->
+<div class="w3-container">
+    <div id="motivar-reprogramacao-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1200px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Motivar reprogramação</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('motivar-reprogramacao-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" id="formulario-edit">
+				<input type="hidden" id="motRepro_callback" value="">
+				<table width="100%">
+					<tr>
+						<td width="50%" colspan="2">
+							<label class="w3-label">EFPC</label>					
+	                		<input class="w3-input" type="text" name="Nome" id="motReproEntidade" readonly="readonly" disabled="disabled" value="">
+						</td>
+						<td width="50%" rowspan="7" style="vertical-align: top;">
+							<label class="w3-label">Motivação Reprogração</label>
+							<br>
+							<textarea id="motRepro_text" class="w3-input" rows="20" cols="55"></textarea>
+						</td>
+					</tr>	
+					<tr>
+                		<td colspan="2">
+							<label class="w3-label">Ciclo</label>
+							<input class="w3-input" type="text" name="Nome" id="motReproCiclo" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Pilar</label>
+                			<input class="w3-input" type="text" name="Pilar" id="motReproPilar" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Componente</label>
+                			<input class="w3-input" type="text" name="Componente" id="motReproComponente" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td>
+							<label class="w3-label">Data Anterior</label>
+                			<input class="w3-input" type="text" name="DataAnterior" id="motReproDataAnterior" readonly="readonly" disabled="disabled" value="">
+						</td>
+						<td>
+							<label class="w3-label">Nova Data</label>
+                			<input class="w3-input" type="text" name="NovaData" id="motReproNovaData" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>
+				</table>	
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					onClick="salvarReprogramacao();" 
+					type="button">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

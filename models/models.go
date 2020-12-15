@@ -519,6 +519,7 @@ type ProdutoComponente struct {
 	IdVersaoOrigem    int64   `json:"idVersaoOrigem"`
 	StatusId          int64   `json:"statusId"`
 	CStatus           string  `json:"cStatus"`
+	Configurado       string  `json:"configurado"`
 }
 
 type ProdutoPlano struct {

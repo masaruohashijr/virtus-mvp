@@ -507,8 +507,8 @@ func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId st
 	}
 }
 
-func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser mdl.User) {
-
+func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser mdl.User) int {
+	produtoPlanoId := 0
 	sqlStatement := "INSERT INTO produtos_planos ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
@@ -525,7 +525,8 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		strconv.FormatInt(param.PilarId, 10) + ", " +
 		strconv.FormatInt(param.ComponenteId, 10) + ", " +
 		" p.id, " +
-		//" p.recurso_garantidor as peso, 0 as nota, " +
+		//" p.recurso_garantidor as peso," +
+		" 0 as nota, " +
 		" $1, $2, $3 " +
 		" FROM " +
 		" PILARES_CICLOS a " +
@@ -534,28 +535,30 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" LEFT JOIN PLANOS p ON (p.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
 		" AND p.id IN (" + planos + ")) " +
 		" WHERE  " +
-		" a.ciclo_id = " + strconv.FormatInt(param.CicloId, 10) +
+		" p.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
+		" AND p.id IN (" + planos + ") " +
 		" AND NOT EXISTS " +
 		"  (SELECT 1 " +
 		"   FROM produtos_planos e " +
 		"   WHERE e.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
-		"     AND e.ciclo_id = a.ciclo_id " +
-		"     AND e.pilar_id = a.pilar_id " +
-		"     AND e.plano_id IN (" + planos + ") " +
-		"     AND e.componente_id = b.componente_id) " +
+		"     AND e.ciclo_id = " + strconv.FormatInt(param.CicloId, 10) +
+		"     AND e.pilar_id = " + strconv.FormatInt(param.PilarId, 10) +
+		"     AND e.componente_id = " + strconv.FormatInt(param.ComponenteId, 10) +
+		"     AND e.plano_id IN (" + planos + ")) " +
 		" GROUP BY 1,2,3,4,5,6 ORDER BY 1,2,3,4,5,6" +
 		" RETURNING id"
 	log.Println(sqlStatement)
-	produtoPlanoId := 0
 	err := Db.QueryRow(
 		sqlStatement,
 		mdl.Calculada,
 		currentUser.Id,
 		time.Now()).Scan(&produtoPlanoId)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 	}
-
+	if produtoPlanoId == 0 {
+		return produtoPlanoId
+	}
 	sqlStatement = "INSERT INTO produtos_tipos_notas ( " +
 		" entidade_id, " +
 		" ciclo_id, " +
@@ -586,6 +589,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" AND p.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
 		" AND p.pilar_id = " + strconv.FormatInt(param.PilarId, 10) +
 		" AND p.componente_id = " + strconv.FormatInt(param.ComponenteId, 10) +
+		" AND p.plano_id IN (" + planos + ") " +
 		" AND NOT EXISTS " +
 		"  (SELECT 1 " +
 		"   FROM produtos_tipos_notas e " +
@@ -643,14 +647,15 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" AND d.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
 		" AND d.pilar_id = " + strconv.FormatInt(param.PilarId, 10) +
 		" AND d.componente_id = " + strconv.FormatInt(param.ComponenteId, 10) +
+		" AND d.plano_id IN (" + planos + ") " +
 		" AND NOT EXISTS " +
 		"  (SELECT 1 " +
 		"   FROM produtos_elementos e " +
 		"   WHERE e.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
 		"     AND e.ciclo_id = a.ciclo_id " +
 		"     AND e.pilar_id = a.pilar_id " +
-		"     AND d.plano_id IN (" + planos + ") " +
 		"     AND e.componente_id = b.componente_id " +
+		"     AND e.plano_id IN (" + planos + ") " +
 		"     AND e.elemento_id = c.elemento_id) RETURNING id"
 	log.Println(sqlStatement)
 	produtoElementoId := 0
@@ -691,6 +696,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" AND p.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
 		" AND p.pilar_id = " + strconv.FormatInt(param.PilarId, 10) +
 		" AND p.componente_id = " + strconv.FormatInt(param.ComponenteId, 10) +
+		" AND p.plano_id IN ( " + planos + ") " +
 		" AND NOT EXISTS (SELECT 1 " +
 		"     FROM produtos_itens e " +
 		"     WHERE e.entidade_id = " + strconv.FormatInt(param.EntidadeId, 10) +
@@ -767,6 +773,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		log.Println(err.Error())
 	}
 	updtForm.Exec(strconv.FormatInt(param.EntidadeId, 10), strconv.FormatInt(param.CicloId, 10))
+	return produtoPlanoId
 }
 
 func loadNotasAtuais(produto mdl.ProdutoElemento) mdl.NotasAtuais {
