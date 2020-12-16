@@ -18,7 +18,6 @@
 				</div>
 		    </div>
 		</header>
-		<form action="/updateMatriz" method="POST">
         <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" width="1200px">
 			{{$primeiroPlano := true}}
 			{{$primeiraLinha := true}}
@@ -46,7 +45,9 @@
             <tr>
 				{{range $index, $m := .ElementosDaMatriz}}
 					{{if ne $auxPilar $m.PilarId }}
-						<td style="font-size:0.8em;border: 1px solid lightgrey" colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
+						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey"
+							onclick="loadVisaoPilar('{{$m.EntidadeId}}','{{$m.CicloId}}','{{$m.PilarId}}')" 
+							colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
 						{{$auxPilar = $m.PilarId}}
 					{{end}}
 				{{end}}
@@ -94,6 +95,10 @@
 					{{end}}
 				{{end}}
         </table>
+		<form action="/executarMatriz" method="POST" id="formulario-executar-matriz">
+			<input type="hidden" id="EntidadeId" name="EntidadeId">
+			<input type="hidden" id="CicloId" name="CicloId">
+			<input type="hidden" id="PilarId" name="PilarId">
 		</form>
     </div>
 </div>

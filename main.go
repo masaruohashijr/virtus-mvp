@@ -70,7 +70,6 @@ func main() {
 	// ----------------- MATRIZES
 	r.HandleFunc("/listMatrizes", hd.ListMatrizesHandler).Methods("GET")
 	r.HandleFunc("/executarMatriz", hd.ExecutarMatrizHandler).Methods("POST")
-	r.HandleFunc("/updateMatriz", hd.UpdateMatrizHandler).Methods("POST")
 	// ----------------- EQUIPES
 	r.HandleFunc("/listDistribuirAtividades", hd.ListDistribuirAtividadesHandler).Methods("GET")
 	r.HandleFunc("/distribuirAtividades", hd.DistribuirAtividadesHandler).Methods("POST")
