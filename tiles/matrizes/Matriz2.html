@@ -1,4 +1,4 @@
-{{define "Matriz"}}
+{{define "Matriz2"}}
 <!-- Matriz -->
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
@@ -48,23 +48,78 @@
             <tr>
 				{{$primeiraLinha := true}}
 				{{range $index, $m := .ElementosDaMatriz}}
+					{{if ne $auxPlano $m.PlanoId}}
+						{{ if and (ne $auxPlano 0) $primeiroPlano }}
+							{{$primeiroPlano = false}}
+						{{ end }}
+						{{ $auxPlano = $m.PlanoId }}
+					{{end}}
+					{{if $primeiraLinha}}
+						{{$primeiraLinha = false}}
+						{{$notaCiclo = $m.CicloNota}}
+						{{$cicloColSpan = $m.CicloColSpan}}
+					{{end}}
 					{{if and $primeiroPlano (ne $auxPilar $m.PilarId)}}
 						{{$auxPilar = $m.PilarId}}
 						<td style="font-size:1.4em;border: 1px solid lightgrey" colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
 					{{end}}
 				{{end}}
             </tr>
+			{{$auxPlano = 0}}
+			{{$primeiroPlano = true}}
 			<tr>
 				{{range $index, $m := .ElementosDaMatriz}}
-					{{if ne $auxComponente $m.ComponenteId}}
+					{{if ne $auxPlano $m.PlanoId}}
+						{{ if and (ne $auxPlano 0) $primeiroPlano }}
+							{{$primeiroPlano = false}}
+						{{ end }}
+						{{ $auxPlano = $m.PlanoId }}
+					{{end}}				
+					{{if and $primeiroPlano (ne $auxComponente $m.ComponenteId)}}
 						{{$auxComponente = $m.ComponenteId}}
 						<td style="font-size:1.1em;border: 1px solid lightgrey" colspan="{{$m.ComponenteColSpan}}">{{$m.ComponenteNome}}</td>
 					{{end}}
 				{{end}}
 			</tr>
 			{{$auxPlano = 0}}
+			{{$primeiroPlano = true}}			
+			<tr>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if ne $auxPlano $m.PlanoId}}
+						{{ if and (ne $auxPlano 0) $primeiroPlano }}
+							{{$primeiroPlano = false}}
+						{{ end }}
+						{{ $auxPlano = $m.PlanoId }}
+					{{end}}					
+					{{if and $primeiroPlano (ne $auxComponente $m.ComponenteId)}}
+						{{$auxComponente = $m.ComponenteId}}
+							<td style="border: 1px solid lightgrey" 
+								colspan="{{$m.ComponenteColSpan}}">
+								{{$m.ComponenteNota}}</td> 
+					{{end}}
+				{{end}}
+			</tr>
+			{{$auxPlano = 0}}
+			{{$primeiroPlano = true}}						
+			<tr>
+				{{range $index, $m := .ElementosDaMatriz}}
+					{{if ne $auxPlano $m.PlanoId}}
+						{{ if and (ne $auxPlano 0) $primeiroPlano }}
+							{{$primeiroPlano = false}}
+						{{ end }}
+						{{ $auxPlano = $m.PlanoId }}
+					{{end}}					
+					{{ $bgColor := (printf "%v%v" "#" $m.TipoNotaCorLetra ) }}
+					{{if and ($primeiroPlano) (or (ne $auxTipoNota $m.TipoNotaId) (ne $auxComponente $m.ComponenteId)) }}
+						{{$auxTipoNota = $m.TipoNotaId}}
+						{{$auxComponente = $m.ComponenteId}}
+							<td style="background-color:{{print $bgColor}};border: 1px solid lightgrey">{{$m.TipoNotaLetra}}</td> 
+					{{end}}
+				{{end}}
+			</tr>
+			{{$auxPlano = 0}}
 			{{$primeiroPlano = true}}
-			{{$auxTipoNota = 0}}		
+			{{$auxTipoNota = 0}}				
 			<tr>
 				{{range $index, $m := .ElementosDaMatriz}}
 					{{if ne $auxPlano $m.PlanoId}}
@@ -72,16 +127,25 @@
 						</tr>
 						{{ end }}		
 						<tr>
-					{{end}}	
+					{{end}}
+					{{if ne $auxEntidade $m.EntidadeId}}
+						{{$auxEntidade = $m.EntidadeId}}
+							<td style="font-size:1.5em; vertical-align:middle" rowspan="{{$m.EntidadeQtdPlanos}}">{{$m.EntidadeNome}}</td>
+					{{end}}					
 					{{if ne $auxPlano $m.PlanoId}}						
 							<td style="border: 1px solid lightgrey" title="{{$m.Modalidade}} - {{$m.RecursoGarantidor}}">{{$m.CNPB}}</td>
 							{{$auxPlano = $m.PlanoId}}
-					{{end}}							
-					{{if ne $auxTipoNota $m.TipoNotaId}}
+					{{end}}
+					{{if or (ne $auxTipoNota $m.TipoNotaId) (ne $auxComponente $m.ComponenteId)}}
 						{{$auxTipoNota = $m.TipoNotaId}}
-						<td style="border: 1px solid lightgrey">{{$index}}: {{$m.PlanoId}} {{$m.ComponenteNome}} {{$m.TipoNotaId}}</td> 
+						{{$auxComponente = $m.ComponenteId}}
+							<td style="border: 1px solid lightgrey">{{$m.TipoNotaNota}}</td> 
 					{{end}}
 				{{end}}
+			</tr>
+			<tr>
+				<td style="border:1px solid lightgrey; vertical-align:middle" colspan="2">NOTA EFPC</td>
+				<td colspan="{{$cicloColSpan}}" style="font-size:2em;border: 1px solid lightgrey">{{$notaCiclo}}</td>
 			</tr>
         </table>
 		</form>

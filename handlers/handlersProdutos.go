@@ -705,7 +705,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		"       AND e.pilar_id = a.pilar_id " +
 		"       AND e.componente_id = b.componente_id " +
 		"	   AND e.elemento_id = c.elemento_id " +
-		"	   AND e.item_id = d.id) "
+		"	   AND e.item_id = d.id) RETURNING id"
 	log.Println(sqlStatement)
 	produtoItemId := 0
 	err = Db.QueryRow(

@@ -17,6 +17,7 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := GetUserInCookie(w, r)
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "designarEquipes") {
 		log.Println("--------------")
+		msg := r.FormValue("msg")
 		errMsg := r.FormValue("errMsg")
 		var page mdl.PageEntidadesCiclos
 		sql := " SELECT b.entidade_id, c.nome, c.codigo, a.abreviatura " +
@@ -101,6 +102,9 @@ func ListDesignarEquipesHandler(w http.ResponseWriter, r *http.Request) {
 			rows.Scan(&supervisor.Id, &supervisor.Name, &supervisor.RoleName)
 			supervisores = append(supervisores, supervisor)
 		}
+		if msg != "" {
+			page.Msg = msg
+		}
 		if errMsg != "" {
 			page.ErrMsg = errMsg
 		}
@@ -132,6 +136,15 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(sqlStatement)
 			updtForm, _ := Db.Prepare(sqlStatement)
 			sqlResult, err := updtForm.Exec()
+			log.Println(sqlResult.RowsAffected())
+			if err != nil {
+				log.Println(err.Error())
+			}
+			sqlStatement = "UPDATE produtos_componentes SET supervisor_id=" + supervisorId +
+				" WHERE entidade_id=" + entidadeId + " AND ciclo_id=" + cicloId
+			log.Println(sqlStatement)
+			updtForm, _ = Db.Prepare(sqlStatement)
+			sqlResult, err = updtForm.Exec()
 			log.Println(sqlResult.RowsAffected())
 			if err != nil {
 				log.Println(err.Error())
@@ -259,8 +272,7 @@ func UpdateDesignarEquipeHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		UpdateIntegrantesHandler(integrantesPage, integrantesDB)
-
-		http.Redirect(w, r, "/listDesignarEquipes", 301)
+		http.Redirect(w, r, "/listDesignarEquipes?msg=Equipe atualizada com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

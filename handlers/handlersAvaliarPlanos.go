@@ -50,8 +50,8 @@ const sqlAvaliarPlanos = " SELECT a.entidade_id, " +
 	"   a.ciclo_id = g.ciclo_id AND  " +
 	"   a.entidade_id = g.entidade_id  " +
 	" ) " +
-	" INNER JOIN users h ON g.supervisor_id = h.id " +
-	" INNER JOIN users i ON g.auditor_id = i.id " +
+	" LEFT JOIN users h ON g.supervisor_id = h.id " +
+	" LEFT JOIN users i ON g.auditor_id = i.id " +
 	" INNER JOIN planos j ON a.plano_id = j.id " +
 	" INNER JOIN elementos k ON a.elemento_id = k.id   " +
 	" INNER JOIN itens l ON a.item_id = l.id   " +
