@@ -78,7 +78,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		var page mdl.PageMatriz
 		sql := " SELECT R1.ciclo_id, " +
 			"        COALESCE(R1.ciclo_nome, ''), " +
-			"        COALESCE(CI.nota, 0) AS ciclo_nota, " +
+			"        (SELECT coalesce(nota,0) from produtos_ciclos where  ciclo_id = " + cicloId + " AND entidade_id = " + entidadeId + ") AS ciclo_nota, " +
 			"   (SELECT count(1) " +
 			"    FROM " +
 			"      (SELECT pilar_id " +
@@ -151,10 +151,11 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			"                       AND R1.PILAR_ID = R2.PILAR_ID " +
 			"                       AND R1.COMPONENTE_ID = R2.COMPONENTE_ID) " +
 			" LEFT JOIN produtos_tipos_notas TN ON (R1.ciclo_id = TN.CICLO_ID " +
-			"                                       AND R1.pilar_id = TN.ciclo_id " +
+			"                                       AND R1.pilar_id = TN.pilar_id " +
 			"                                       AND R1.componente_id = TN.componente_id " +
 			"                                       AND R1.tipo_nota_id = TN.tipo_nota_id " +
-			"                                       AND tn.entidade_id = R2.entidade_id) " +
+			"                                       AND TN.entidade_id = R2.entidade_id " +
+			"                                       AND TN.plano_id = R2.plano_id) " +
 			" LEFT JOIN produtos_componentes CO ON (R1.componente_id = CO.componente_id " +
 			"                                       AND R1.pilar_id = CO.pilar_id " +
 			"                                       AND R1.ciclo_id = CO.ciclo_id " +

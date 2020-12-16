@@ -94,6 +94,10 @@
 					{{$auxPlano = $linha.PlanoId}}
 					{{end}}
 				{{end}}
+				<tr>
+					<td style="border:1px solid lightgrey; vertical-align:middle" colspan="2">NOTA EFPC</td>
+					<td colspan="{{$cicloColSpan}}" style="font-size:2em;border: 1px solid lightgrey">{{$notaCiclo}}</td>
+				</tr>
         </table>
 		<form action="/executarMatriz" method="POST" id="formulario-executar-matriz">
 			<input type="hidden" id="EntidadeId" name="EntidadeId">
