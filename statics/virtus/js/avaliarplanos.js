@@ -280,6 +280,7 @@ function salvarRemocao(){
 		let xmlhttp;
 		let acionadoPor = document.getElementById('AcionadoPor').value;
 		let sel = document.getElementsByName(acionadoPor)[0];
+		let auditorNovo = sel.value;
 		let valores = acionadoPor.split("_");
 		xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange=function()
@@ -288,7 +289,7 @@ function salvarRemocao(){
 				{
 					let messageText = "O auditor foi alterado com sucesso de "+
 						auditoresMap.get(auditorAnterior) +
-						" para "+auditoresMap.get(auditorNovo)+".";
+						" para "+auditoresMap.get(auditorNovo.toString())+".";
 					document.getElementById("messageText").innerText = messageText;
 					document.getElementById("message").style.display="block";
 					atualizarFieldName(sel, auditorNovo); 
@@ -299,7 +300,6 @@ function salvarRemocao(){
 		let pilarId = valores[3];
 		let componenteId = valores[4];
 		let auditorAnterior = valores[5];
-		let auditorNovo = sel.value;
 		xmlhttp.open("GET","/salvarAuditorComponente?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId+"&motivacao="+motivacao+"&auditorNovo="+auditorNovo+"&auditorAnterior="+auditorAnterior,true);
 		xmlhttp.send();
 	} else {

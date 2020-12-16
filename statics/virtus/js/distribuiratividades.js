@@ -1,10 +1,14 @@
 function submeterDistribuirAtividadesForm(e){
 	console.log(e.parentNode.parentNode.childNodes[3].childNodes[0].value);
 	console.log(e.parentNode.parentNode.childNodes[7].childNodes[1].value);
+	console.log("ANTES");
 	console.log(document.getElementById("EntidadeId").value);
 	console.log(document.getElementById("CicloId").value);
 	document.getElementById("EntidadeId").value=e.parentNode.parentNode.childNodes[3].childNodes[0].value;
 	document.getElementById("CicloId").value=e.parentNode.parentNode.childNodes[7].childNodes[1].value;
+	console.log("DEPOIS");
+	console.log(document.getElementById("EntidadeId").value);
+	console.log(document.getElementById("CicloId").value);
 	document.getElementById("formulario-distribuir-atividades").submit();
 }
 

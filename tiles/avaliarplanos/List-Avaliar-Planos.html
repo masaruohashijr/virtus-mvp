@@ -66,6 +66,11 @@
 				itensMap = new Map();
 				auditoresMap = new Map();
 			</script>
+			{{range $i, $auditor := $.Auditores }}
+			<script type="text/javascript">
+				auditoresMap.set("{{$auditor.Id}}","{{$auditor.Name}}");
+			</script>
+			{{end}}			
             {{range $index, $produto := .Produtos}}
 			<script type="text/javascript">
 				entidadesMap.set("{{$produto.EntidadeId}}","{{$produto.EntidadeNome}}");
@@ -76,7 +81,6 @@
 				tiposNotasMap.set("{{$produto.TipoNotaId}}","{{$produto.TipoNotaNome}}");
 				elementosMap.set("{{$produto.ElementoId}}","{{$produto.ElementoNome}}");
 				itensMap.set("{{$produto.ItemId}}","{{$produto.ItemNome}}");
-				auditoresMap.set("{{$produto.AuditorId}}","{{$produto.AuditorName}}");
 			</script>
 			{{if $primeiraLinha}}
             <tr style="background-color: aliceblue">
