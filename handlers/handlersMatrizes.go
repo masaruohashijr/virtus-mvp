@@ -75,91 +75,94 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		entidadeId := r.FormValue("EntidadeId")
 		cicloId := r.FormValue("CicloId")
 		var page mdl.PageMatriz
-		sql := " SELECT  " +
-			"      a.ciclo_id, " +
-			" 	   coalesce(c.nome,'') as ciclo_nome, " +
-			"      a.pilar_id, " +
-			" 	   coalesce(d.nome,'') as pilar_nome, " +
-			"      a.componente_id, " +
-			" 	   coalesce(e.nome,'') as componente_nome, " +
-			" 	   coalesce(j.peso,0) as componente_peso, coalesce(j.nota,0) as componente_nota,  " +
-			" 	   (SELECT count(1) FROM (SELECT tipo_nota_id FROM elementos_componentes WHERE componente_id = a.componente_id GROUP BY tipo_nota_id) R) as qtdTiposNotas, " +
-			" 	   coalesce(k.peso,0) as pilar_peso, coalesce(k.nota,0) as pilar_nota, " +
-			" 	   (SELECT count(1) FROM (SELECT componente_id FROM componentes_pilares WHERE pilar_id = a.pilar_id GROUP BY componente_id) R) as qtdComponentes, " +
-			" 	   coalesce(l.nota,0) as ciclo_nota, " +
-			" 	   (SELECT count(1) FROM (SELECT pilar_id FROM pilares_ciclos WHERE ciclo_id = a.ciclo_id GROUP BY pilar_id) R) as qtdPilares, " +
-			" 	   a.elemento_id, f.nome as elemento_nome, " +
-			" 	   coalesce(n.peso,0) as elemento_peso, coalesce(n.nota,0) as elemento_nota, " +
-			" 	   coalesce(o.peso,0) as tipo_nota_peso, coalesce(o.nota,0) as tipo_nota_nota, " +
-			" 	   ec.tipo_nota_id, m.letra, m.cor_letra, " +
-			"      ec.peso_padrao, " +
-			" 	   cp.tipo_media, cp.peso_padrao, " +
-			" 	   pc.tipo_media, pc.peso_padrao, " +
-			" 	   coalesce(ce.tipo_media,0), " +
-			" 	   coalesce(to_char(ce.inicia_em,'DD/MM/YYYY')) as inicia_em, " +
-			" 	   coalesce(to_char(ce.termina_em,'DD/MM/YYYY')) as termina_em, " +
-			"      a.item_id, g.nome as item_nome, " +
-			" 	   coalesce(j.supervisor_id,0) as super_id, coalesce(h.name,'') as supervisor_nome,  " +
-			" 	   coalesce(j.auditor_id,0) as audit_id, coalesce(i.name,'') as auditor_nome,    " +
-			" 	   a.entidade_id, coalesce(b.nome,'') as entidade_nome, " +
-			" 	   a.plano_id, " +
-			" 	   z.cnpb, " +
-			" 	   CASE WHEN z.recurso_garantidor < 1000000000 THEN z.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE z.recurso_garantidor::numeric::MONEY/1000000000||' bi' END, " +
-			" 	   z.modalidade_id, " +
-			" 	   (SELECT count(1) FROM (SELECT DISTINCT plano_id FROM produtos_itens GROUP BY plano_id) R) as EntidadeQtdPlanos " +
-			" FROM produtos_itens a " +
-			" LEFT JOIN entidades b ON a.entidade_id = b.id  " +
-			" LEFT JOIN ciclos c ON a.ciclo_id = c.id  " +
-			" LEFT JOIN pilares d ON a.pilar_id = d.id  " +
-			" LEFT JOIN componentes e ON a.componente_id = e.id " +
-			" LEFT JOIN itens g ON a.item_id = g.id " +
-			" LEFT JOIN produtos_componentes j ON  " +
-			" ( a.componente_id = j.componente_id AND  " +
-			"   a.pilar_id = j.pilar_id AND  " +
-			"   a.ciclo_id = j.ciclo_id AND  " +
-			"   a.entidade_id = j.entidade_id ) " +
-			" LEFT JOIN produtos_pilares k ON  " +
-			" ( a.pilar_id = k.pilar_id AND  " +
-			"   a.ciclo_id = k.ciclo_id AND  " +
-			"   a.entidade_id = k.entidade_id ) " +
-			" LEFT JOIN produtos_ciclos l ON  " +
-			" ( a.ciclo_id = l.ciclo_id AND  " +
-			"   a.entidade_id = l.entidade_id )  " +
-			" LEFT JOIN produtos_elementos n ON  " +
-			" ( a.elemento_id = n.elemento_id AND  " +
-			"   a.componente_id = n.componente_id AND  " +
-			"   a.plano_id = n.plano_id AND  " +
-			"   a.pilar_id = n.pilar_id AND  " +
-			"   a.ciclo_id = n.ciclo_id AND  " +
-			"   a.entidade_id = n.entidade_id )  " +
-			" LEFT JOIN produtos_tipos_notas o ON  " +
-			" ( a.tipo_nota_id = o.tipo_nota_id AND  " +
-			"   a.componente_id = o.componente_id AND  " +
-			"   a.plano_id = o.plano_id AND  " +
-			"   a.pilar_id = o.pilar_id AND  " +
-			"   a.ciclo_id = o.ciclo_id AND  " +
-			"   a.entidade_id = o.entidade_id )   " +
-			" LEFT JOIN elementos f ON a.elemento_id = f.id   " +
-			" LEFT JOIN elementos_componentes ec ON  " +
-			" ( a.elemento_id = ec.elemento_id AND a.componente_id = ec.componente_id ) " +
-			" LEFT JOIN tipos_notas m ON ec.tipo_nota_id = m.id " +
-			" LEFT JOIN componentes_pilares cp ON  " +
-			" ( a.componente_id = cp.componente_id AND a.pilar_id = cp.pilar_id ) " +
-			" LEFT JOIN pilares_ciclos pc ON  " +
-			" ( a.pilar_id = pc.pilar_id AND a.ciclo_id = pc.ciclo_id ) " +
-			" LEFT JOIN ciclos_entidades ce ON (a.ciclo_id = ce.ciclo_id and a.entidade_id = ce.entidade_id) " +
-			" LEFT JOIN users h ON j.supervisor_id = h.id   " +
-			" LEFT JOIN users i ON j.auditor_id = i.id " +
-			" LEFT JOIN planos z ON a.plano_id = z.id " +
-			" WHERE a.entidade_id = " + entidadeId + " AND a.ciclo_id = " + cicloId +
-			" ORDER BY  " +
-			" a.plano_id,  " +
-			" a.ciclo_id, " +
-			" a.pilar_id,  " +
-			" a.componente_id, " +
-			" a.elemento_id, " +
-			" a.tipo_nota_id, " +
-			" a.item_id "
+		sql := " SELECT R1.ciclo_id, " +
+			"        COALESCE(R1.ciclo_nome, ''), " +
+			"        COALESCE(CI.nota, 0) AS ciclo_nota, " +
+			"   (SELECT count(1) " +
+			"    FROM " +
+			"      (SELECT pilar_id " +
+			"       FROM pilares_ciclos " +
+			"       WHERE ciclo_id = R1.ciclo_id " +
+			"       GROUP BY pilar_id) R) AS qtdPilares, " +
+			"        R1.pilar_id, " +
+			"        COALESCE(R1.pilar_nome, ''), " +
+			"        COALESCE(PI.peso, 0) AS pilar_peso, " +
+			"        COALESCE(PI.nota, 0) AS pilar_nota, " +
+			"   (SELECT count(1) " +
+			"    FROM " +
+			"      (SELECT componente_id " +
+			"       FROM componentes_pilares " +
+			"       WHERE pilar_id = R1.pilar_id " +
+			"       GROUP BY componente_id) R) AS qtdComponentes, " +
+			"        R1.componente_id, " +
+			"        COALESCE(R1.componente_nome, ''), " +
+			"        COALESCE(CO.peso, 0) AS componente_peso, " +
+			"        COALESCE(CO.nota, 0) AS componente_nota, " +
+			"   (SELECT count(1) " +
+			"    FROM " +
+			"      (SELECT tipo_nota_id " +
+			"       FROM elementos_componentes " +
+			"       WHERE componente_id = R1.componente_id " +
+			"       GROUP BY tipo_nota_id) R) AS qtdTiposNotas, " +
+			"        R1.tipo_nota_id, " +
+			"        COALESCE(m.letra,'') AS tipo_nota_letra, " +
+			"        COALESCE(m.cor_letra,'') as tipo_nota_cor_letra, " +
+			"        COALESCE(TN.peso, 0) AS tipo_nota_peso, " +
+			"        COALESCE(TN.nota, 0) AS tipo_nota_nota, " +
+			"        COALESCE(R2.entidade_id, 0) AS entidade_id, " +
+			"        COALESCE(y.nome,'') as entidade_nome, " +
+			"        COALESCE(R2.plano_id, 0) AS plano_id, " +
+			"        COALESCE(z.cnpb,'') AS cnpb, " +
+			"        CASE WHEN z.recurso_garantidor < 1000000000 THEN z.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE z.recurso_garantidor::numeric::MONEY/1000000000||' bi' END, " +
+			"        COALESCE(z.modalidade_id,'') as modalidade, " +
+			"        (SELECT count(1) FROM (SELECT DISTINCT plano_id FROM produtos_planos GROUP BY plano_id) S) as EntidadeQtdPlanos " +
+			" FROM " +
+			"   (SELECT a.id AS ciclo_id, " +
+			"           a.nome AS ciclo_nome, " +
+			"           b.id AS pilar_id, " +
+			"           c.nome AS pilar_nome, " +
+			"           d.id AS componente_id, " +
+			"           e.nome AS componente_nome, " +
+			"           g.id AS tipo_nota_id, " +
+			"           g.nome AS tipo_nota_nome " +
+			"    FROM ciclos a " +
+			"    INNER JOIN pilares_ciclos b ON b.ciclo_id = a.id " +
+			"    INNER JOIN pilares c ON c.id = b.pilar_id " +
+			"    INNER JOIN componentes_pilares d ON d.pilar_id = c.id " +
+			"    INNER JOIN componentes e ON d.componente_id = e.id " +
+			"    INNER JOIN tipos_notas_componentes f ON e.id = f.componente_id " +
+			"    INNER JOIN tipos_notas g ON g.id = f.tipo_nota_id " +
+			"    WHERE a.id = 1) R1 " +
+			" LEFT JOIN " +
+			"   (SELECT DISTINCT entidade_id, " +
+			"                    ciclo_id, " +
+			"                    PILAR_ID, " +
+			"                    COMPONENTE_ID, " +
+			"                    plano_id " +
+			"    FROM produtos_planos " +
+			"    WHERE ciclo_id = " + cicloId +
+			"      AND entidade_id = " + entidadeId +
+			"    ORDER BY 1) R2 ON (R1.CICLO_id = R2.ciclo_id " +
+			"                       AND R1.PILAR_ID = R2.PILAR_ID " +
+			"                       AND R1.COMPONENTE_ID = R2.COMPONENTE_ID) " +
+			" LEFT JOIN produtos_tipos_notas TN ON (R1.ciclo_id = TN.CICLO_ID " +
+			"                                       AND R1.pilar_id = TN.ciclo_id " +
+			"                                       AND R1.componente_id = TN.componente_id " +
+			"                                       AND R1.tipo_nota_id = TN.tipo_nota_id " +
+			"                                       AND tn.entidade_id = R2.entidade_id) " +
+			" LEFT JOIN produtos_componentes CO ON (R1.componente_id = CO.componente_id " +
+			"                                       AND R1.pilar_id = CO.pilar_id " +
+			"                                       AND R1.ciclo_id = CO.ciclo_id " +
+			"                                       AND CO.entidade_id = R2.entidade_id) " +
+			" LEFT JOIN produtos_pilares PI ON (R1.pilar_id = PI.pilar_id " +
+			"                                   AND R1.ciclo_id = PI.ciclo_id " +
+			"                                   AND PI.entidade_id = R2.entidade_id) " +
+			" LEFT JOIN produtos_ciclos CI ON (R1.ciclo_id = CI.ciclo_id " +
+			"                                  AND R2.entidade_id = CI.entidade_id) " +
+			" LEFT JOIN tipos_notas m ON R1.tipo_nota_id = m.id " +
+			" LEFT JOIN planos z ON R2.plano_id = z.id " +
+			" LEFT JOIN entidades y ON y.id = R2.entidade_id " +
+			" ORDER BY ciclo_id,pilar_id,componente_id,tipo_nota_id "
 		log.Println(sql)
 		rows, _ := Db.Query(sql)
 		defer rows.Close()
@@ -170,41 +173,23 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			rows.Scan(
 				&elementoMatriz.CicloId,
 				&elementoMatriz.CicloNome,
+				&elementoMatriz.CicloNota,
+				&elementoMatriz.CicloQtdPilares,
 				&elementoMatriz.PilarId,
 				&elementoMatriz.PilarNome,
+				&elementoMatriz.PilarPeso,
+				&elementoMatriz.PilarNota,
+				&elementoMatriz.PilarQtdComponentes,
 				&elementoMatriz.ComponenteId,
 				&elementoMatriz.ComponenteNome,
 				&elementoMatriz.ComponentePeso,
 				&elementoMatriz.ComponenteNota,
 				&elementoMatriz.ComponenteQtdTiposNotas,
-				&elementoMatriz.PilarPeso,
-				&elementoMatriz.PilarNota,
-				&elementoMatriz.PilarQtdComponentes,
-				&elementoMatriz.CicloNota,
-				&elementoMatriz.CicloQtdPilares,
-				&elementoMatriz.ElementoId,
-				&elementoMatriz.ElementoNome,
-				&elementoMatriz.ElementoPeso,
-				&elementoMatriz.ElementoNota,
-				&elementoMatriz.TipoNotaPeso,
-				&elementoMatriz.TipoNotaNota,
 				&elementoMatriz.TipoNotaId,
 				&elementoMatriz.TipoNotaLetra,
 				&elementoMatriz.TipoNotaCorLetra,
-				&elementoMatriz.PesoPadraoEC,
-				&elementoMatriz.TipoMediaCPId,
-				&elementoMatriz.PesoPadraoCP,
-				&elementoMatriz.TipoMediaPCId,
-				&elementoMatriz.PesoPadraoPC,
-				&elementoMatriz.TipoMediaCEId,
-				&elementoMatriz.IniciaEm,
-				&elementoMatriz.TerminaEm,
-				&elementoMatriz.ItemId,
-				&elementoMatriz.ItemNome,
-				&elementoMatriz.SupervisorId,
-				&elementoMatriz.SupervisorName,
-				&elementoMatriz.AuditorId,
-				&elementoMatriz.AuditorName,
+				&elementoMatriz.TipoNotaPeso,
+				&elementoMatriz.TipoNotaNota,
 				&elementoMatriz.EntidadeId,
 				&elementoMatriz.EntidadeNome,
 				&elementoMatriz.PlanoId,
@@ -217,6 +202,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			//log.Println(elementoMatriz)
 			elementosMatriz = append(elementosMatriz, elementoMatriz)
 		}
+		page.Linhas = elementosMatriz
 		page.ElementosDaMatriz = preencherColspans(elementosMatriz, cicloId)
 
 		sql = " SELECT " +

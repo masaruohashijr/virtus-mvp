@@ -19,7 +19,7 @@
 		    </div>
 		</header>
 		<form action="/updateMatriz" method="POST">
-        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" max-width="100%">
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable" width="1200px">
 			{{$primeiroPlano := true}}
 			{{$primeiraLinha := true}}
 			{{$auxEntidade := 0}}
@@ -31,58 +31,68 @@
 			{{$componenteColSpan := ""}}
 			{{$pilarColSpan := ""}}
 			{{$cicloColSpan := ""}}
-			{{$elementoNota := ""}}
-			{{$elementoPeso := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
             <tr>
-				<td style="vertical-align:middle; border: 1px solid lightgrey" rowspan="5" colspan="2">EFPC</td>
+				<td style="vertical-align:middle; border: 1px solid lightgrey" rowspan="4" colspan="2">EFPC</td>
 				{{range $index, $m := .ElementosDaMatriz}}
 					{{if $primeiraLinha}}
 						{{$primeiraLinha = false}}
 						{{$notaCiclo = $m.CicloNota}}
 						{{$cicloColSpan = $m.CicloColSpan}}
-						<td style="font-size:2em;border: 1px solid lightgrey" colspan="{{$m.CicloColSpan}}">{{$m.CicloNome}}</td>
+						<td style="font-size:0.8em;border: 1px solid lightgrey" colspan="{{$m.CicloColSpan}}">{{$m.CicloNome}}</td>
 					{{end}}
 				{{end}}
             </tr>
             <tr>
-				{{$primeiraLinha := true}}
 				{{range $index, $m := .ElementosDaMatriz}}
-					{{if and $primeiroPlano (ne $auxPilar $m.PilarId)}}
+					{{if ne $auxPilar $m.PilarId }}
+						<td style="font-size:0.8em;border: 1px solid lightgrey" colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
 						{{$auxPilar = $m.PilarId}}
-						<td style="font-size:1.4em;border: 1px solid lightgrey" colspan="{{$m.PilarColSpan}}">{{$m.PilarNome}}</td>
 					{{end}}
 				{{end}}
             </tr>
-			<tr>
+            <tr>
 				{{range $index, $m := .ElementosDaMatriz}}
-					{{if ne $auxComponente $m.ComponenteId}}
+					{{if ne $auxComponente $m.ComponenteId }}
+						<td style="font-size:0.8em;border: 1px solid lightgrey" colspan="{{$m.ComponenteColSpan}}">{{$m.ComponenteNome}}</td>
 						{{$auxComponente = $m.ComponenteId}}
-						<td style="font-size:1.1em;border: 1px solid lightgrey" colspan="{{$m.ComponenteColSpan}}">{{$m.ComponenteNome}}</td>
 					{{end}}
 				{{end}}
-			</tr>
-			{{$auxPlano = 0}}
-			{{$primeiroPlano = true}}
-			{{$auxTipoNota = 0}}		
-			<tr>
+            </tr>
+            <tr>
+				{{$auxComponente = 0}}
 				{{range $index, $m := .ElementosDaMatriz}}
-					{{if ne $auxPlano $m.PlanoId}}
-						{{ if ne $auxPlano 0 }}
-						</tr>
-						{{ end }}		
-						<tr>
-					{{end}}	
-					{{if ne $auxPlano $m.PlanoId}}						
-							<td style="border: 1px solid lightgrey" title="{{$m.Modalidade}} - {{$m.RecursoGarantidor}}">{{$m.CNPB}}</td>
-							{{$auxPlano = $m.PlanoId}}
-					{{end}}							
-					{{if ne $auxTipoNota $m.TipoNotaId}}
+					{{if or (ne $auxTipoNota $m.TipoNotaId) (ne $auxComponente $m.ComponenteId) }}
+						<td style="font-size:0.8em;border: 1px solid lightgrey">{{$m.TipoNotaLetra}}</td>
 						{{$auxTipoNota = $m.TipoNotaId}}
-						<td style="border: 1px solid lightgrey">{{$index}}: {{$m.PlanoId}} {{$m.ComponenteNome}} {{$m.TipoNotaId}}</td> 
+						{{$auxComponente = $m.ComponenteId}}
 					{{end}}
 				{{end}}
-			</tr>
+            </tr>
+				{{$linhas := .Linhas}}
+				{{$cols := .ElementosDaMatriz}}
+				{{range $linha := $linhas}}
+					{{if and (ne $auxPlano $linha.PlanoId) (ne $linha.PlanoId 0) }}
+		            <tr>	
+						{{if ne $auxEntidade $linha.EntidadeId}}
+							<td style="font-size:0.8em; vertical-align:middle" rowspan="{{$linha.EntidadeQtdPlanos}}">{{$linha.EntidadeNome}}</td>
+							{{$auxEntidade = $linha.EntidadeId}}
+						{{end}}				
+						<td style="font-size:0.8em;border: 1px solid lightgrey"
+							title="{{$linha.Modalidade}} - {{$linha.RecursoGarantidor}}">{{$linha.CNPB}}</td>
+						{{range $c := $cols}}
+							<td style="font-size:0.8em;border: 1px solid lightgrey">
+								{{if eq $linha.PlanoId $c.PlanoId }}
+									{{$c.TipoNotaNota}}
+								{{else}}
+									-
+								{{end}}
+							</td>
+						{{end}}
+		            </tr>
+					{{$auxPlano = $linha.PlanoId}}
+					{{end}}
+				{{end}}
         </table>
 		</form>
     </div>
