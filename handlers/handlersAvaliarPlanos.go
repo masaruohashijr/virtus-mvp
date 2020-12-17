@@ -34,7 +34,13 @@ const sqlAvaliarPlanos = " SELECT a.entidade_id, " +
 	" 	   a.item_id, coalesce(l.nome,'') as item_nome, " +
 	"      a.plano_id, " +
 	"	   j.cnpb, CASE WHEN j.recurso_garantidor < 1000000000 THEN j.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE j.recurso_garantidor::numeric::MONEY/1000000000||' bi' END, j.modalidade_id, " +
-	" 	   coalesce(p.peso,0) as plano_peso, coalesce(p.nota,0) as plano_nota " +
+	" 	   coalesce(p.peso,0) as plano_peso, coalesce(p.nota,0) as plano_nota, " +
+	"	   CASE " +
+	"	    WHEN now()::TIMESTAMP BETWEEN coalesce(g.inicia_em,to_date('0001-01-01','YYYY-MM-DD')) " +
+	"	    AND coalesce(g.termina_em,to_date('9999-12-31','YYYY-MM-DD')) " +
+	"	    THEN TRUE " +
+	"	    ELSE FALSE " +
+	"	   END AS periodo_permitido " +
 	" FROM produtos_itens a " +
 	" INNER JOIN entidades b ON a.entidade_id = b.id " +
 	" INNER JOIN ciclos c ON a.ciclo_id = c.id " +
@@ -211,7 +217,8 @@ func AvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.RecursoGarantidor,
 				&produto.PlanoModalidade,
 				&produto.PlanoPeso,
-				&produto.PlanoNota)
+				&produto.PlanoNota,
+				&produto.PeriodoPermitido)
 			produto.Order = i
 			i++
 			//log.Println(produto)

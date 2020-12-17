@@ -399,6 +399,7 @@
 					{{$elementoNota = $produto.ElementoNota}}
 					<select style="width: 75px; text-align:center" 
 						class="w3-input" 
+						{{if eq $produto.PeriodoPermitido false }}disabled{{end}}
 						{{if or (and (ne $produto.AuditorId $currentUser) (ne $produto.SupervisorId $currentUser) (ne $curUserRole "Chefe")) (eq $elementoPeso "0")}}readonly disabled{{end}}
 						name="ElementoNota_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.PlanoId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}"
 						onchange="sinalizarAlteracao(this); motivarNota(this);">
