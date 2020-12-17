@@ -1,0 +1,26 @@
+{{define "Warn-Message"}}
+<!-- Warn-Message -->
+<div class="w3-container">
+    <div id="warn-message" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 400px;">
+            <div class="w3-container w3-orange">
+                <h2>Aviso</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('warn-message').style.display='none'">&times;</span>
+            </div>
+            <div class="w3-center">
+				<h4 id="Warns">{{.}}</h4>
+                <button type="button" class="w3-btn w3-orange w3-margin-top w3-margin-bottom"
+                        onclick="document.getElementById('warn-message').style.display='none'">OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+	if('{{.}}'!=''){
+		document.getElementById('warn-message').style.display='block';
+	}
+</script>
+{{end}}
+

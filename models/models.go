@@ -987,6 +987,7 @@ type PageEscritorios struct {
 }
 
 type PageEntidadesCiclos struct {
+	WarnMsg      string
 	ErrMsg       string
 	Msg          string
 	AppName      string

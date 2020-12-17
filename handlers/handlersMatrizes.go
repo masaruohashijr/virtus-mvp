@@ -130,7 +130,7 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		"           a.nome AS ciclo_nome, " +
 		"           b.id AS pilar_id, " +
 		"           c.nome AS pilar_nome, " +
-		"           d.id AS componente_id, " +
+		"           e.id AS componente_id, " +
 		"           e.nome AS componente_nome, " +
 		"           g.id AS tipo_nota_id, " +
 		"           g.nome AS tipo_nota_nome, " +
@@ -284,7 +284,7 @@ func loadTiposNotasMatriz(entidadeId string, cicloId string, pilarId string) []m
 		"           a.nome AS ciclo_nome, " +
 		"           b.id AS pilar_id, " +
 		"           c.nome AS pilar_nome, " +
-		"           d.id AS componente_id, " +
+		"           e.id AS componente_id, " +
 		"           e.nome AS componente_nome, " +
 		"           g.id AS tipo_nota_id, " +
 		"           g.nome AS tipo_nota_nome " +

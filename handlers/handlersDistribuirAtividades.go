@@ -23,8 +23,8 @@ func ListDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 	if sec.IsAuthenticated(w, r) && HasPermission(currentUser, "distribuirAtividades") {
 		log.Println("--------------")
 		msg := r.FormValue("msg")
-		log.Println("msg: " + msg)
 		errMsg := r.FormValue("errMsg")
+		warnMsg := r.FormValue("warnMsg")
 		var page mdl.PageEntidadesCiclos
 		sql := "SELECT DISTINCT d.codigo, b.entidade_id, d.nome, a.abreviatura " +
 			" FROM escritorios a " +
@@ -70,6 +70,9 @@ func ListDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			entidade.CiclosEntidade = ciclosEntidade
 			entidadesCiclos = append(entidadesCiclos, entidade)
+		}
+		if warnMsg != "" {
+			page.WarnMsg = warnMsg
 		}
 		if errMsg != "" {
 			page.ErrMsg = errMsg
@@ -184,7 +187,7 @@ func UpdateDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if faltouConfigurarPlano {
-			http.Redirect(w, r, "/listDistribuirAtividades"+"?alertaMsg=Faltou configurar quais os planos que serão avaliados.", 301)
+			http.Redirect(w, r, "/listDistribuirAtividades"+"?msg=Os demais produtos dos níveis do ciclo foram criados com Sucesso.&warnMsg=Faltou configurar quais os planos que serão avaliados.", 301)
 		}
 		http.Redirect(w, r, "/listDistribuirAtividades"+"?msg=Os demais produtos dos níveis do ciclo foram criados com Sucesso.", 301)
 	} else {

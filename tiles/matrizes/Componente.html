@@ -78,8 +78,10 @@
 				{{$linhas := .ElementosDaMatriz}}
 				{{$cols := .ElementosDaMatriz}}
 				{{$elementos := .ElementosDaMatriz}}
+				{{$existePlano := false}}
 				{{range $linha := $linhas}}
 					{{if and (ne $auxPlano $linha.PlanoId) (ne $linha.PlanoId 0) }}
+					{{$existePlano := true}}
 		            <tr>	
 						{{if ne $auxEntidade $linha.EntidadeId}}
 							<td style="font-size:0.8em; vertical-align:middle" 
@@ -113,7 +115,13 @@
 					{{end}}
 				{{end}}
 				<tr>
-					<td style="border:1px solid lightgrey; vertical-align:middle" colspan="4">NOTA EFPC</td>
+					<td style="border:1px solid lightgrey; vertical-align:middle"
+						{{if $existePlano }} 
+							colspan="5">
+						{{else}}
+							colspan="4">
+						{{end}}
+					NOTA EFPC</td>
 					<td colspan="{{$cicloColSpan}}" style="font-size:2em;border: 1px solid lightgrey">{{$notaCiclo}}</td>
 				</tr>
         </table>
