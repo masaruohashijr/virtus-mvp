@@ -1003,7 +1003,6 @@ type PageMatriz struct {
 	AppName           string
 	Title             string
 	ElementosDaMatriz []ElementoDaMatriz
-	Linhas            []ElementoDaMatriz
 	Supervisores      []User
 	Auditores         []User
 	LoggedUser        LoggedUser

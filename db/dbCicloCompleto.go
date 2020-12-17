@@ -154,7 +154,7 @@ func createCicloCompleto() {
 				nome = cicloESI.Pilares[j].Componentes[k].TiposNotas[l].Nome
 				letra := nome[0:1]
 				descricao = "Descricao do " + nome
-				corletra := "FFFFFF"
+				corletra := "C0D0C0"
 				stmt := " INSERT INTO tipos_notas ( " +
 					" nome, descricao, letra, cor_letra, author_id, criado_em, status_id) " +
 					" SELECT  $1, $2, $3, $4, $5, $6, $7 " +

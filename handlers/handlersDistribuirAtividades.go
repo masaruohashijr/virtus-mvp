@@ -418,6 +418,10 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 					msgRetorno += "O plano " + valor.cnpb + " foi removido com Sucesso.\n"
 				} else {
 					msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
+					log.Println("RoleName: " + currentUser.RoleName)
+					if currentUser.RoleName == "Chefe" || currentUser.Role == 2 {
+						msgRetorno += "Deseja prosseguir com a remoção?\n"
+					}
 				}
 			}
 		} else {
@@ -434,6 +438,10 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 					msgRetorno += "O plano " + valor.cnpb + " foi removido com Sucesso.\n"
 				} else {
 					msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
+					log.Println("RoleName: " + currentUser.RoleName)
+					if currentUser.RoleName == "Chefe" || currentUser.Role == 2 {
+						msgRetorno += "Deseja prosseguir com a remoção?\n"
+					}
 					log.Println(msgRetorno)
 				}
 			}
@@ -474,6 +482,10 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 				msgRetorno += "O plano " + valor.cnpb + " foi removido com Sucesso.\n"
 			} else {
 				msgRetorno += "O plano " + valor.cnpb + " não pode ser removido por já ter sido avaliado antes.\n"
+				log.Println("RoleName: " + currentUser.RoleName)
+				if currentUser.RoleName == "Chefe" || currentUser.Role == 2 {
+					msgRetorno += "Deseja prosseguir com a remoção?\n"
+				}
 				log.Println(msgRetorno)
 			}
 		}
@@ -537,6 +549,36 @@ func deleteProdutoPlano(entidadeId string, cicloId string, pilarId string, compo
 		" and pilar_id = " + pilarId +
 		" and componente_id = " + componenteId +
 		" and plano_id = " + planoId
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	sqlStatement = "DELETE FROM produtos_componentes WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId +
+		" and pilar_id = " + pilarId +
+		" and componente_id = " + componenteId
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	sqlStatement = "DELETE FROM produtos_pilares WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId +
+		" and pilar_id = " + pilarId
+	log.Println(sqlStatement)
+	updtForm, _ = Db.Prepare(sqlStatement)
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	sqlStatement = "DELETE FROM produtos_ciclos WHERE " +
+		" entidade_id = " + entidadeId +
+		" and ciclo_id = " + cicloId
 	log.Println(sqlStatement)
 	updtForm, _ = Db.Prepare(sqlStatement)
 	_, err = updtForm.Exec()

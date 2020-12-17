@@ -397,7 +397,6 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			elementosMatriz = loadTiposNotasMatriz(entidadeId, cicloId, pilarId)
 		}
-		page.Linhas = elementosMatriz
 		page.ElementosDaMatriz = preencherColspans(elementosMatriz, cicloId)
 
 		sql := " SELECT " +
