@@ -1,0 +1,10 @@
+{{ define "Main-Pilar" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Menu" . }}
+{{ template "Pilar" . }}
+</body>
+</html>
+{{end}}

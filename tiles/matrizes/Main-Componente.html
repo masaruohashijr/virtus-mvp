@@ -1,0 +1,10 @@
+{{ define "Main-Componente" }}
+<html lang="pt">
+	{{ template "Header" .Title }}
+<body>
+{{ template "Error-Message" .ErrMsg }}
+{{ template "Menu" . }}
+{{ template "Componente" . }}
+</body>
+</html>
+{{end}}

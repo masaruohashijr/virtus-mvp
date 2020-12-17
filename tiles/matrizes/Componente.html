@@ -1,4 +1,4 @@
-{{define "Matriz"}}
+{{define "Componente"}}
 <!-- Matriz -->
 <div id="main" class="w3-row-padding">
 		<header class="w3-container w3-center w3-teal">
@@ -27,18 +27,20 @@
 			{{$auxPilar := 0}}
 			{{$auxComponente := 0}}
 			{{$auxTipoNota := 0}}
+			{{$auxElemento := 0}}
 			{{$componenteColSpan := ""}}
 			{{$pilarColSpan := ""}}
 			{{$cicloColSpan := ""}}
 			{{$currentUser := .LoggedUser.User.Id}}
             <tr>
-				<td style="vertical-align:middle; border: 1px solid lightgrey" rowspan="4" colspan="2">EFPC</td>
+				<td style="vertical-align:middle; border: 1px solid lightgrey" rowspan="4" colspan="4">EFPC</td>
 				{{range $index, $m := .ElementosDaMatriz}}
 					{{if $primeiraLinha}}
 						{{$primeiraLinha = false}}
 						{{$notaCiclo = $m.CicloNota}}
 						{{$cicloColSpan = $m.CicloColSpan}}
-						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey" 
+						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey"
+							onclick="loadMatriz('{{$m.EntidadeId}}','{{$m.CicloId}}')" 
 							colspan="{{$m.CicloColSpan}}">{{$m.CicloNome}}</td>
 					{{end}}
 				{{end}}
@@ -75,15 +77,28 @@
             </tr>
 				{{$linhas := .Linhas}}
 				{{$cols := .ElementosDaMatriz}}
+				{{$elementos := .ElementosDaMatriz}}
 				{{range $linha := $linhas}}
 					{{if and (ne $auxPlano $linha.PlanoId) (ne $linha.PlanoId 0) }}
 		            <tr>	
 						{{if ne $auxEntidade $linha.EntidadeId}}
-							<td style="font-size:0.8em; vertical-align:middle" rowspan="{{$linha.EntidadeQtdPlanos}}">{{$linha.EntidadeNome}}</td>
+							<td style="font-size:0.8em; vertical-align:middle" 
+								rowspan="{{$linha.EntidadeQtdPlanos}}">{{$linha.EntidadeNome}}</td>
 							{{$auxEntidade = $linha.EntidadeId}}
 						{{end}}				
-						<td style="font-size:0.8em;border: 1px solid lightgrey"
+						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey"
 							title="{{$linha.Modalidade}} - {{$linha.RecursoGarantidor}}">{{$linha.CNPB}}</td>
+						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey">
+							{{$linha.RecursoGarantidor}}
+						</td>
+						{{$auxElemento = 0}}
+						{{range $e := $elementos}}
+							{{if ne $auxElemento $e.ElementoId}}
+								<td style="font-size:0.8em;border: 1px solid lightgrey">
+									{{$e.ElementoNome}}
+								</td>
+							{{end}}
+						{{end}}
 						{{range $c := $cols}}
 							<td style="font-size:0.8em;border: 1px solid lightgrey">
 								{{if eq $linha.PlanoId $c.PlanoId }}
@@ -98,12 +113,12 @@
 					{{end}}
 				{{end}}
 				<tr>
-					<td style="border:1px solid lightgrey; vertical-align:middle" colspan="2">NOTA EFPC</td>
+					<td style="border:1px solid lightgrey; vertical-align:middle" colspan="4">NOTA EFPC</td>
 					<td colspan="{{$cicloColSpan}}" style="font-size:2em;border: 1px solid lightgrey">{{$notaCiclo}}</td>
 				</tr>
         </table>
 		<form action="/executarMatriz" method="POST" id="formulario-executar-matriz">
-			<input type="hidden" id="EntidadeId" name="EntidadeId" value="{{$auxEntidade}}">
+			<input type="hidden" id="EntidadeId" name="EntidadeId">
 			<input type="hidden" id="CicloId" name="CicloId">
 			<input type="hidden" id="PilarId" name="PilarId">
 			<input type="hidden" id="ComponenteId" name="ComponenteId">
