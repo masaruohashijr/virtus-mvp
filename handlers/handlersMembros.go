@@ -146,7 +146,7 @@ func UpdateMembrosEscritorioHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		UpdateMembrosHandler(membrosPage, membrosDB)
 
-		http.Redirect(w, r, route.EscritoriosRoute, 301)
+		http.Redirect(w, r, route.EscritoriosRoute+"?msg=A equipe do escritório foi atualizada com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

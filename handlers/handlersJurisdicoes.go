@@ -142,7 +142,7 @@ func UpdateJurisdicaoHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		UpdateJurisdicoesHandler(jurisdicoesPage, jurisdicoesDB)
 
-		http.Redirect(w, r, route.EscritoriosRoute, 301)
+		http.Redirect(w, r, route.EscritoriosRoute+"?msg=A jurisdição do escritório foi atualizada com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)
 	}

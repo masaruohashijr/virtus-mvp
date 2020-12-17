@@ -47,8 +47,105 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 		log.Println(err.Error())
 	}
 	updtForm.Exec(produto.Motivacao)
+	atualizarTipoNotaNota(produto)
+	atualizarPlanoNota(produto)
+	atualizarComponenteNota(produto)
+	atualizarPilarNota(produto)
+	atualizarCicloNota(produto)
+
+	// NOTAS ATUAIS
+	notasAtuais := loadNotasAtuais(produto)
+	return notasAtuais
+}
+
+func atualizarPilarNota(produto mdl.ProdutoElemento) {
+	// PRODUTOS_PILARES
+	sqlStatement := "UPDATE produtos_pilares a " +
+		" SET nota = (select  " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) AS media " +
+		" FROM produtos_componentes b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" AND a.ciclo_id = b.ciclo_id  " +
+		" AND a.pilar_id = b.pilar_id " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	updtForm.Exec(produto.EntidadeId, produto.CicloId)
+}
+
+func atualizarComponenteNota(produto mdl.ProdutoElemento) {
+	// PRODUTOS_COMPONENTES
+	sqlStatement := "UPDATE produtos_componentes a " +
+		" set nota = (select  " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
+		" FROM produtos_tipos_notas b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" and a.ciclo_id = b.ciclo_id  " +
+		" and a.pilar_id = b.pilar_id " +
+		//" and a.plano_id = b.plano_id " +
+		" and a.componente_id = b.componente_id " +
+		" and a.id_versao_origem is null " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id, " +
+		//" b.plano_id, " +
+		" b.componente_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = $1 " +
+		" AND a.ciclo_id = $2 "
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	updtForm.Exec(produto.EntidadeId, produto.CicloId)
+}
+
+func atualizarPlanoNota(produto mdl.ProdutoElemento) {
+	// PRODUTOS_PLANOS
+	sqlStatement := "UPDATE produtos_planos a " +
+		" set nota = (select  " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
+		" FROM produtos_tipos_notas b " +
+		" WHERE " +
+		" a.entidade_id = b.entidade_id " +
+		" AND a.ciclo_id = b.ciclo_id  " +
+		" AND a.pilar_id = b.pilar_id " +
+		" AND a.componente_id = b.componente_id " +
+		" AND a.plano_id = b.plano_id " +
+		" GROUP BY b.entidade_id,  " +
+		" b.ciclo_id, " +
+		" b.pilar_id, " +
+		" b.plano_id, " +
+		" b.componente_id " +
+		" HAVING sum(peso)>0) " +
+		" WHERE a.entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) +
+		" AND a.ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) +
+		" AND a.pilar_id = " + strconv.FormatInt(produto.PilarId, 10) +
+		" AND a.componente_id = " + strconv.FormatInt(produto.ComponenteId, 10) +
+		" AND a.plano_id = " + strconv.FormatInt(produto.PlanoId, 10)
+	log.Println(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	updtForm.Exec()
+
+}
+
+func atualizarTipoNotaNota(produto mdl.ProdutoElemento) {
 	// PRODUTOS_TIPOS_NOTAS
-	sqlStatement = "UPDATE produtos_tipos_notas a " +
+	sqlStatement := "UPDATE produtos_tipos_notas a " +
 		" set nota = (select  " +
 		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
 		" FROM produtos_elementos b " +
@@ -73,88 +170,16 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 		" AND a.plano_id = " + strconv.FormatInt(produto.PlanoId, 10) +
 		" AND a.tipo_nota_id = " + strconv.FormatInt(produto.TipoNotaId, 10)
 	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		log.Println(err.Error())
 	}
 	updtForm.Exec()
-	// PRODUTOS_PLANOS
-	sqlStatement = "UPDATE produtos_planos a " +
-		" set nota = (select  " +
-		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
-		" FROM produtos_tipos_notas b " +
-		" WHERE " +
-		" a.entidade_id = b.entidade_id " +
-		" AND a.ciclo_id = b.ciclo_id  " +
-		" AND a.pilar_id = b.pilar_id " +
-		" AND a.componente_id = b.componente_id " +
-		" AND a.plano_id = b.plano_id " +
-		" GROUP BY b.entidade_id,  " +
-		" b.ciclo_id, " +
-		" b.pilar_id, " +
-		" b.plano_id, " +
-		" b.componente_id " +
-		" HAVING sum(peso)>0) " +
-		" WHERE a.entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) +
-		" AND a.ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) +
-		" AND a.pilar_id = " + strconv.FormatInt(produto.PilarId, 10) +
-		" AND a.componente_id = " + strconv.FormatInt(produto.ComponenteId, 10) +
-		" AND a.plano_id = " + strconv.FormatInt(produto.PlanoId, 10)
-	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	updtForm.Exec()
-	// PRODUTOS_COMPONENTES
-	sqlStatement = "UPDATE produtos_componentes a " +
-		" set nota = (select  " +
-		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
-		" FROM produtos_tipos_notas b " +
-		" WHERE " +
-		" a.entidade_id = b.entidade_id " +
-		" and a.ciclo_id = b.ciclo_id  " +
-		" and a.pilar_id = b.pilar_id " +
-		//" and a.plano_id = b.plano_id " +
-		" and a.componente_id = b.componente_id " +
-		" and a.id_versao_origem is null " +
-		" GROUP BY b.entidade_id,  " +
-		" b.ciclo_id, " +
-		" b.pilar_id, " +
-		//" b.plano_id, " +
-		" b.componente_id " +
-		" HAVING sum(peso)>0) " +
-		" WHERE a.entidade_id = $1 " +
-		" AND a.ciclo_id = $2 "
-	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	updtForm.Exec(produto.EntidadeId, produto.CicloId)
-	// PRODUTOS_PILARES
-	sqlStatement = "UPDATE produtos_pilares a " +
-		" SET nota = (select  " +
-		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) AS media " +
-		" FROM produtos_componentes b " +
-		" WHERE " +
-		" a.entidade_id = b.entidade_id " +
-		" AND a.ciclo_id = b.ciclo_id  " +
-		" AND a.pilar_id = b.pilar_id " +
-		" GROUP BY b.entidade_id,  " +
-		" b.ciclo_id, " +
-		" b.pilar_id " +
-		" HAVING sum(peso)>0) " +
-		" WHERE a.entidade_id = $1 " +
-		" AND a.ciclo_id = $2 "
-	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	updtForm.Exec(produto.EntidadeId, produto.CicloId)
+}
+
+func atualizarCicloNota(produto mdl.ProdutoElemento) {
 	// PRODUTOS_CICLOS
-	sqlStatement = "UPDATE produtos_ciclos a " +
+	sqlStatement := "UPDATE produtos_ciclos a " +
 		" SET nota = (select  " +
 		" round(CAST(sum(nota*peso)*100/sum(peso) as numeric),2) AS media " +
 		" FROM produtos_pilares b " +
@@ -167,14 +192,12 @@ func registrarNotaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 		" WHERE a.entidade_id = $1 " +
 		" AND a.ciclo_id = $2 "
 	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		log.Println(err.Error())
 	}
 	updtForm.Exec(produto.EntidadeId, produto.CicloId)
-	// NOTAS ATUAIS
-	notasAtuais := loadNotasAtuais(produto)
-	return notasAtuais
+
 }
 
 func registrarTiposPontuacao(produto mdl.ProdutoElemento, currentUser mdl.User) {
@@ -566,7 +589,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" componente_id, " +
 		" plano_id, " +
 		" tipo_nota_id, " +
-		//" peso, " +
+		" peso, " +
 		" nota, " +
 		" tipo_pontuacao_id, " +
 		" author_id, " +
@@ -577,7 +600,7 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 		" p.componente_id, " +
 		" p.plano_id, " +
 		" d.tipo_nota_id, " +
-		//" round(CAST(avg(d.peso_padrao) AS numeric),2), " +
+		" round(CAST(avg(d.peso_padrao) AS numeric),2), " +
 		" 0, $1, $2, $3 " +
 		" FROM " +
 		" PILARES_CICLOS a " +

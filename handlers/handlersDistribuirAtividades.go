@@ -184,7 +184,7 @@ func UpdateDistribuirAtividadesHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if faltouConfigurarPlano {
-			http.Redirect(w, r, "/listDistribuirAtividades"+"?errMsg=Faltou configurar quais os planos que serão avaliados.", 301)
+			http.Redirect(w, r, "/listDistribuirAtividades"+"?alertaMsg=Faltou configurar quais os planos que serão avaliados.", 301)
 		}
 		http.Redirect(w, r, "/listDistribuirAtividades"+"?msg=Os demais produtos dos níveis do ciclo foram criados com Sucesso.", 301)
 	} else {
@@ -555,36 +555,14 @@ func deleteProdutoPlano(entidadeId string, cicloId string, pilarId string, compo
 	if err != nil {
 		log.Println(err.Error())
 	}
-	sqlStatement = "DELETE FROM produtos_componentes WHERE " +
-		" entidade_id = " + entidadeId +
-		" and ciclo_id = " + cicloId +
-		" and pilar_id = " + pilarId +
-		" and componente_id = " + componenteId
-	log.Println(sqlStatement)
-	updtForm, _ = Db.Prepare(sqlStatement)
-	_, err = updtForm.Exec()
-	if err != nil {
-		log.Println(err.Error())
-	}
-	sqlStatement = "DELETE FROM produtos_pilares WHERE " +
-		" entidade_id = " + entidadeId +
-		" and ciclo_id = " + cicloId +
-		" and pilar_id = " + pilarId
-	log.Println(sqlStatement)
-	updtForm, _ = Db.Prepare(sqlStatement)
-	_, err = updtForm.Exec()
-	if err != nil {
-		log.Println(err.Error())
-	}
-	sqlStatement = "DELETE FROM produtos_ciclos WHERE " +
-		" entidade_id = " + entidadeId +
-		" and ciclo_id = " + cicloId
-	log.Println(sqlStatement)
-	updtForm, _ = Db.Prepare(sqlStatement)
-	_, err = updtForm.Exec()
-	if err != nil {
-		log.Println(err.Error())
-	}
+	var produto mdl.ProdutoElemento
+	produto.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
+	produto.CicloId, _ = strconv.ParseInt(cicloId, 10, 64)
+	produto.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
+	produto.ComponenteId, _ = strconv.ParseInt(componenteId, 10, 64)
+	atualizarComponenteNota(produto)
+	atualizarPilarNota(produto)
+	atualizarCicloNota(produto)
 }
 
 func removePlanoCfg(planos []PlanosCfg, planoCfgToBeRemoved PlanosCfg) []PlanosCfg {

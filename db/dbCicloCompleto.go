@@ -241,14 +241,14 @@ func createCicloCompleto() {
 		" WHERE tipos_notas_componentes.componente_id = R2.componente_id " +
 		"   AND tipos_notas_componentes.tipo_nota_id = R2.tipo_nota_id "
 	log.Println("stmt UPDATE tipos notas componentes: " + stmt)
-	//updtForm, err := db.Prepare(stmt)
-	//	if err != nil {
-	//		log.Println(err.Error())
-	//	}
-	//	_, err = updtForm.Exec()
-	//	if err != nil {
-	//		log.Println(err.Error())
-	//	}
+	updtForm, err := db.Prepare(stmt)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	_, err = updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func BulkInsert(unsaved []string, pStmt string) {
