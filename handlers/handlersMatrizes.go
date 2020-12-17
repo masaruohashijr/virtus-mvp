@@ -278,7 +278,7 @@ func loadTiposNotasMatriz(entidadeId string, cicloId string, pilarId string) []m
 		"        COALESCE(z.cnpb,'') AS cnpb, " +
 		"        CASE WHEN z.recurso_garantidor < 1000000000 THEN z.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE z.recurso_garantidor::numeric::MONEY/1000000000||' bi' END as rg, " +
 		"        COALESCE(z.modalidade_id,'') as modalidade, " +
-		"        (SELECT count(1) FROM (SELECT DISTINCT plano_id FROM produtos_planos WHERE entidade_id = " + entidadeId + " AND ciclo_id = " + ciclo_id + " GROUP BY plano_id) S) as EntidadeQtdPlanos " +
+		"        (SELECT count(1) FROM (SELECT DISTINCT plano_id FROM produtos_planos WHERE entidade_id = " + entidadeId + " AND ciclo_id = " + cicloId + " GROUP BY plano_id) S) as EntidadeQtdPlanos " +
 		" FROM " +
 		"   (SELECT a.id AS ciclo_id, " +
 		"           a.nome AS ciclo_nome, " +
