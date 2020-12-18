@@ -71,6 +71,12 @@ func ListMatrizesHandler(w http.ResponseWriter, r *http.Request) {
 
 func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, componenteId string) []mdl.ElementoDaMatriz {
 	sql := " SELECT " +
+		" 	     coalesce(R3.author_id,0) as author_id, " +
+		" 	     coalesce(q.name,'') as author_name, " +
+		" 	     coalesce(R3.motivacao_peso,'') as motivacao_peso, " +
+		" 	     coalesce(R3.motivacao_nota,'') as motivacao_nota, " +
+		" 	     coalesce(CO.supervisor_id,0) as super_id, coalesce(o.name,'') as supervisor_nome, " +
+		" 	     coalesce(CO.auditor_id,0) as auditor_id, coalesce(p.name,'') as auditor_nome, " +
 		"		 R1.elemento_id as elemento_id, " +
 		"		 COALESCE((SELECT count(1) FROM elementos_componentes " +
 		"				WHERE componente_id = " + componenteId + "),0) AS qtdElementos, " +
@@ -185,7 +191,7 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		" LEFT JOIN produtos_componentes CO ON (R1.componente_id = CO.componente_id " +
 		"                                       AND R1.pilar_id = CO.pilar_id " +
 		"                                       AND R1.ciclo_id = CO.ciclo_id " +
-		"                                       AND CO.entidade_id = R2.entidade_id) " +
+		"                                       AND CO.entidade_id = " + entidadeId + ") " +
 		" LEFT JOIN produtos_pilares PI ON (R1.pilar_id = PI.pilar_id " +
 		"                                   AND R1.ciclo_id = PI.ciclo_id " +
 		"                                   AND PI.entidade_id = R2.entidade_id) " +
@@ -195,6 +201,19 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		" LEFT JOIN elementos n ON R1.elemento_id = n.id " +
 		" LEFT JOIN planos z ON R2.plano_id = z.id " +
 		" LEFT JOIN entidades y ON y.id = " + entidadeId +
+		" LEFT JOIN users o ON co.supervisor_id = o.id " +
+		" LEFT JOIN users p ON co.auditor_id = p.id " +
+		" LEFT JOIN (SELECT R1.id, R1.entidade_id, R1.ciclo_id, R1.pilar_id, R1.plano_id, R1.componente_id, R1.tipo_nota_id, R1.elemento_id, motivacao_peso, motivacao_nota, author_id, criado_em " +
+		" FROM produtos_elementos_historicos R1 " +
+		" INNER JOIN (SELECT peh.entidade_id, peh.ciclo_id, peh.pilar_id, peh.componente_id, peh.plano_id, peh.elemento_id, max(peh.id) as id " +
+		" FROM produtos_elementos_historicos PEH group by 1,2,3,4,5,6) R2 " +
+		" ON R1.id = R2.id) R3 ON (R3.ciclo_id = EL.CICLO_ID " +
+		" AND R3.pilar_id = EL.pilar_id " +
+		" AND R3.componente_id = EL.componente_id " +
+		" AND R3.tipo_nota_id = EL.tipo_nota_id " +
+		" AND R3.entidade_id = EL.entidade_id " +
+		" AND R3.plano_id = EL.plano_id) " +
+		" LEFT JOIN users q ON R3.author_id = q.id " +
 		" ORDER BY ciclo_id, pilar_id, componente_id, elemento_id, tipo_nota_id, rg "
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
@@ -204,6 +223,14 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 	var i = 1
 	for rows.Next() {
 		rows.Scan(
+			&elementoMatriz.AutorNotaId,
+			&elementoMatriz.AutorNotaName,
+			&elementoMatriz.MotivacaoPeso,
+			&elementoMatriz.MotivacaoNota,
+			&elementoMatriz.SupervisorId,
+			&elementoMatriz.SupervisorName,
+			&elementoMatriz.AuditorId,
+			&elementoMatriz.AuditorName,
 			&elementoMatriz.ElementoId,
 			&elementoMatriz.ComponenteQtdElementos,
 			&elementoMatriz.CicloId,

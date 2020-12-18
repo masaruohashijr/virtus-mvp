@@ -702,8 +702,10 @@ type ElementoDaMatriz struct {
 	AuditorName             string `json:"auditorName"`
 	SupervisorId            int64  `json:"supervisorId"`
 	SupervisorName          string `json:"supervisorName"`
-	AuthorId                int64  `json:"autorId"`
-	AuthorName              string `json:"autorNome"`
+	AutorNotaId             int64  `json:"autorNotaId"`
+	AutorNotaName           string `json:"autorNotaNome"`
+	MotivacaoPeso           string `json:"motivacaoPeso"`
+	MotivacaoNota           string `json:"motivacaoNota"`
 	CriadoEm                string `json:"criadoEm"`
 	IdVersaoOrigem          int64  `json:"idVersaoOrigem"`
 	StatusId                int64  `json:"statusId"`

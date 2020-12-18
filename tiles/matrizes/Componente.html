@@ -42,6 +42,7 @@
 						{{$colspan := $m.ComponenteQtdTiposNotas}}
 						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey"
 							id="NmCiclo"
+							title="{{$m.SupervisorName}}"
 							colspan="{{$colspan = call $somarTxt 5 $colspan}}{{$colspan}}"
 							onclick="loadMatriz('{{$m.EntidadeId}}','{{$m.CicloId}}')">
 							{{$m.CicloNome}}
@@ -55,6 +56,7 @@
 						{{$colspan := $m.ComponenteQtdTiposNotas}}
 						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey"
 							id="NmPilar"
+							title="{{$m.SupervisorName}}"
 							colspan="{{$colspan := call $somarTxt 5 $colspan}}{{$colspan}}"
 							onclick="loadVisaoPilar('{{$m.EntidadeId}}','{{$m.CicloId}}','{{$m.PilarId}}')">
 							{{$m.PilarNome}}
@@ -67,6 +69,7 @@
 						{{$colspan := $m.ComponenteQtdTiposNotas}}
 						<td style="cursor:pointer;font-size:0.8em;border: 1px solid lightgrey"
 							id="NmComponente"
+							title="{{$m.AuditorName}}"
 							colspan="{{$colspan := call $somarTxt 5 $colspan}}{{$colspan}}"
 							onclick="loadVisaoComponente('{{$m.EntidadeId}}','{{$m.CicloId}}','{{$m.PilarId}}','{{$m.ComponenteId}}')">
 							{{$m.ComponenteNome}}
@@ -105,10 +108,8 @@
 						<td class="borda">{{$m.ElementoPeso}}</td>
 						{{$auxTipoNota = 0}}
 						{{range $numero, $e := $matrizElementos}}	
-							{{if eq $m.ElementoId $e.ElementoId }}
-							{{end}}
 							{{if ne $auxTipoNota $e.TipoNotaId }}
-								<td class="borda">
+								<td class="borda" title="{{$m.AutorNotaName}} - {{$m.MotivacaoNota}}">
 								{{if eq $m.TipoNotaId $e.TipoNotaId}}
 									{{$m.ElementoNota}}
 								{{else}}
