@@ -109,7 +109,7 @@
 						{{$auxTipoNota = 0}}
 						{{range $numero, $e := $matrizElementos}}	
 							{{if ne $auxTipoNota $e.TipoNotaId }}
-								<td class="borda" title="{{$m.AutorNotaName}} - {{$m.MotivacaoNota}}">
+								<td class="borda" style="cursor:pointer" title="{{$m.AutorNotaName}} - {{$m.MotivacaoNota}}">
 								{{if eq $m.TipoNotaId $e.TipoNotaId}}
 									{{$m.ElementoNota}}
 								{{else}}
