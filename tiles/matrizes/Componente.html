@@ -34,7 +34,8 @@
 			{{$auxPlano := 0}}
 			{{$auxTipoNota := 0}}
 			{{$auxElemento := 0}}
-			{{$tiposNotas := .ElementosDaMatriz}}
+			{{$matrizElementos := .ElementosDaMatriz}}
+			{{$matrizTiposNotas := .ElementosDaMatriz}}
 			{{range $index, $m := .ElementosDaMatriz}}
 				{{if ne $m.CicloId $auxCiclo}}
 		            <tr>
@@ -80,10 +81,10 @@
 						<td class="borda">Recursos Garantidores</td>	
 						<td class="borda">Elementos</td>
 						<td class="borda">Peso</td>	
-						{{range $i, $t := $tiposNotas}}
-							{{if and (eq $t.PlanoId $m.PlanoId) (eq $t.ElementoId $m.ElementoId) (eq $t.ComponenteId $m.ComponenteId) (eq $t.PilarId $m.PilarId) (eq $t.CicloId $m.CicloId) (ne $auxTipoNota $t.TipoNotaId) }}
-								<td class="borda">{{$t.TipoNotaNome}}</td>	
-								{{$auxTipoNota = $t.TipoNotaId}}	
+						{{range $i, $e := $matrizElementos}}
+							{{if and (eq $e.PlanoId $m.PlanoId) (eq $e.ComponenteId $m.ComponenteId) (eq $e.PilarId $m.PilarId) (eq $e.CicloId $m.CicloId) (ne $auxTipoNota $e.TipoNotaId) }}
+								<td class="borda">{{$e.TipoNotaNome}}</td>	
+								{{$auxTipoNota = $e.TipoNotaId}}	
 							{{end}}
 						{{end}}
 					{{end}}	
@@ -103,11 +104,19 @@
 						<td class="borda">{{$m.ElementoNome}}</td>	
 						<td class="borda">{{$m.ElementoPeso}}</td>
 						{{$auxTipoNota = 0}}
-						{{range $i, $t := $tiposNotas}}	
-							{{if and (eq $t.PlanoId $m.PlanoId) (eq $t.ElementoId $m.ElementoId) (eq $t.ComponenteId $m.ComponenteId) (eq $t.PilarId $m.PilarId) (eq $t.CicloId $m.CicloId) (ne $auxTipoNota $t.TipoNotaId) }}
-								<td class="borda">{{$m.ElementoNota}}</td>
-								{{$auxTipoNota = $t.TipoNotaId}}	
+						{{range $numero, $e := $matrizElementos}}	
+							{{if eq $m.ElementoId $e.ElementoId }}
 							{{end}}
+							{{if ne $auxTipoNota $e.TipoNotaId }}
+								<td class="borda">
+								{{if eq $m.TipoNotaId $e.TipoNotaId}}
+									{{$m.ElementoNota}}
+								{{else}}
+									-
+								{{end}}
+								</td>
+							{{end}}
+							{{$auxTipoNota = $e.TipoNotaId}}	
 						{{end}}	
 		            </tr>
 					{{$auxElemento = $m.ElementoId}}

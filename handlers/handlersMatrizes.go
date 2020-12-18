@@ -147,7 +147,7 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		"    INNER JOIN componentes e ON d.componente_id = e.id " +
 		"    INNER JOIN tipos_notas_componentes f ON e.id = f.componente_id " +
 		"    INNER JOIN tipos_notas g ON g.id = f.tipo_nota_id " +
-		" 	 INNER JOIN elementos_componentes h ON e.id = h.componente_id " +
+		" 	 INNER JOIN elementos_componentes h ON e.id = h.componente_id and g.id = h.tipo_nota_id " +
 		"	 INNER JOIN elementos i ON i.id = h.elemento_id " +
 		"    WHERE a.id = 1 "
 	if pilarId != "" {
