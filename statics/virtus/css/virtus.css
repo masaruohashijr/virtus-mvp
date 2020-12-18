@@ -99,3 +99,17 @@ body {
 	display: flex;
     justify-content: space-between;
 }
+
+
+td.rotate {
+	text-align: center;
+	vertical-align: top;
+	writing-mode: vertical-rl;
+	text-orientation: mixed;
+	border: solid 1px #ccc
+}
+
+td.borda {
+	 border: solid 1px #ccc
+}
+

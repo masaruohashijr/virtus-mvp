@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	//"strconv"
+	"strconv"
 	//"strings"
 	mdl "virtus/models"
 	sec "virtus/security"
@@ -70,7 +70,11 @@ func ListMatrizesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, componenteId string) []mdl.ElementoDaMatriz {
-	sql := " SELECT R1.ciclo_id, " +
+	sql := " SELECT " +
+		"		 R1.elemento_id as elemento_id, " +
+		"		 COALESCE((SELECT count(1) FROM elementos_componentes " +
+		"				WHERE componente_id = " + componenteId + "),0) AS qtdElementos, " +
+		"        R1.ciclo_id, " +
 		"        COALESCE(R1.ciclo_nome, ''), " +
 		"        (SELECT coalesce(nota,0) from produtos_ciclos where  ciclo_id = " + cicloId + " AND entidade_id = " + entidadeId + ") AS ciclo_nota, " +
 		"   (SELECT count(1) " +
@@ -100,11 +104,11 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		"       WHERE componente_id = R1.componente_id " +
 		"       GROUP BY tipo_nota_id) R) AS qtdTiposNotas, " +
 		"        R1.tipo_nota_id, " +
+		"        COALESCE(m.nome,'') AS tipo_nota_nome, " +
 		"        COALESCE(m.letra,'') AS tipo_nota_letra, " +
 		"        COALESCE(m.cor_letra,'') as tipo_nota_cor_letra, " +
 		"        COALESCE(TN.peso, 0) AS tipo_nota_peso, " +
 		"        COALESCE(TN.nota, 0) AS tipo_nota_nota, " +
-		"		 R1.elemento_id, " +
 		"      	 COALESCE(n.nome, '') AS elemento_nome, " +
 		"     	 COALESCE(EL.peso, 0) AS elemento_peso, " +
 		"    	 COALESCE(EL.nota, 0) AS elemento_nota,	" +
@@ -114,7 +118,7 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		"        COALESCE(z.cnpb,'') AS cnpb, " +
 		"        CASE WHEN z.recurso_garantidor < 1000000000 THEN z.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE z.recurso_garantidor::numeric::MONEY/1000000000||' bi' END as rg, " +
 		"        COALESCE(z.modalidade_id,'') as modalidade, " +
-		"        (SELECT count(1) " +
+		"        COALESCE((SELECT count(1) " +
 		"   		FROM " +
 		"     		(SELECT DISTINCT b.elemento_id " +
 		"      			FROM produtos_planos a " +
@@ -124,7 +128,7 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		"      			AND a.entidade_id = " + entidadeId +
 		"	  			AND a.pilar_id = " + pilarId +
 		"	  			AND a.componente_id = " + componenteId +
-		"      				GROUP BY b.elemento_id) R) as EntidadeQtdPlanos " +
+		"      				GROUP BY b.elemento_id) R),0) as EntidadeQtdPlanos " +
 		" FROM " +
 		"   (SELECT a.id AS ciclo_id, " +
 		"           a.nome AS ciclo_nome, " +
@@ -190,8 +194,8 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 		" LEFT JOIN tipos_notas m ON R1.tipo_nota_id = m.id " +
 		" LEFT JOIN elementos n ON R1.elemento_id = n.id " +
 		" LEFT JOIN planos z ON R2.plano_id = z.id " +
-		" LEFT JOIN entidades y ON y.id = R2.entidade_id " +
-		" ORDER BY ciclo_id, pilar_id, componente_id, tipo_nota_id, rg "
+		" LEFT JOIN entidades y ON y.id = " + entidadeId +
+		" ORDER BY ciclo_id, pilar_id, componente_id, elemento_id, tipo_nota_id, rg "
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
 	defer rows.Close()
@@ -200,6 +204,8 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 	var i = 1
 	for rows.Next() {
 		rows.Scan(
+			&elementoMatriz.ElementoId,
+			&elementoMatriz.ComponenteQtdElementos,
 			&elementoMatriz.CicloId,
 			&elementoMatriz.CicloNome,
 			&elementoMatriz.CicloNota,
@@ -215,11 +221,11 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 			&elementoMatriz.ComponenteNota,
 			&elementoMatriz.ComponenteQtdTiposNotas,
 			&elementoMatriz.TipoNotaId,
+			&elementoMatriz.TipoNotaNome,
 			&elementoMatriz.TipoNotaLetra,
 			&elementoMatriz.TipoNotaCorLetra,
 			&elementoMatriz.TipoNotaPeso,
 			&elementoMatriz.TipoNotaNota,
-			&elementoMatriz.ElementoId,
 			&elementoMatriz.ElementoNome,
 			&elementoMatriz.ElementoPeso,
 			&elementoMatriz.ElementoNota,
@@ -232,7 +238,6 @@ func loadElementosDaMatriz(entidadeId string, cicloId string, pilarId string, co
 			&elementoMatriz.EntidadeQtdPlanos)
 		elementoMatriz.Order = i
 		i++
-		//log.Println(elementoMatriz)
 		elementosMatriz = append(elementosMatriz, elementoMatriz)
 	}
 	return elementosMatriz
@@ -257,16 +262,16 @@ func loadTiposNotasMatriz(entidadeId string, cicloId string, pilarId string) []m
 		"       FROM componentes_pilares " +
 		"       WHERE pilar_id = R1.pilar_id " +
 		"       GROUP BY componente_id) R) AS qtdComponentes, " +
-		"        R1.componente_id, " +
-		"        COALESCE(R1.componente_nome, ''), " +
-		"        COALESCE(CO.peso, 0) AS componente_peso, " +
-		"        COALESCE(CO.nota, 0) AS componente_nota, " +
 		"   (SELECT count(1) " +
 		"    FROM " +
 		"      (SELECT tipo_nota_id " +
 		"       FROM elementos_componentes " +
 		"       WHERE componente_id = R1.componente_id " +
 		"       GROUP BY tipo_nota_id) R) AS qtdTiposNotas, " +
+		"        R1.componente_id, " +
+		"        COALESCE(R1.componente_nome, ''), " +
+		"        COALESCE(CO.peso, 0) AS componente_peso, " +
+		"        COALESCE(CO.nota, 0) AS componente_nota, " +
 		"        R1.tipo_nota_id, " +
 		"        COALESCE(m.letra,'') AS tipo_nota_letra, " +
 		"        COALESCE(m.cor_letra,'') as tipo_nota_cor_letra, " +
@@ -329,7 +334,7 @@ func loadTiposNotasMatriz(entidadeId string, cicloId string, pilarId string) []m
 		"                                  AND R2.entidade_id = CI.entidade_id) " +
 		" LEFT JOIN tipos_notas m ON R1.tipo_nota_id = m.id " +
 		" LEFT JOIN planos z ON R2.plano_id = z.id " +
-		" LEFT JOIN entidades y ON y.id = R2.entidade_id " +
+		" LEFT JOIN entidades y ON y.id = " + entidadeId +
 		" ORDER BY ciclo_id,pilar_id,componente_id,tipo_nota_id,rg "
 	log.Println(sql)
 	rows, _ := Db.Query(sql)
@@ -348,11 +353,11 @@ func loadTiposNotasMatriz(entidadeId string, cicloId string, pilarId string) []m
 			&elementoMatriz.PilarPeso,
 			&elementoMatriz.PilarNota,
 			&elementoMatriz.PilarQtdComponentes,
+			&elementoMatriz.ComponenteQtdTiposNotas,
 			&elementoMatriz.ComponenteId,
 			&elementoMatriz.ComponenteNome,
 			&elementoMatriz.ComponentePeso,
 			&elementoMatriz.ComponenteNota,
-			&elementoMatriz.ComponenteQtdTiposNotas,
 			&elementoMatriz.TipoNotaId,
 			&elementoMatriz.TipoNotaLetra,
 			&elementoMatriz.TipoNotaCorLetra,
@@ -398,6 +403,7 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 			elementosMatriz = loadTiposNotasMatriz(entidadeId, cicloId, pilarId)
 		}
 		page.ElementosDaMatriz = preencherColspans(elementosMatriz, cicloId)
+		page.ComponenteQtdTiposNotas = elementosMatriz[0].ComponenteQtdTiposNotas
 
 		sql := " SELECT " +
 			" a.usuario_id, " +
@@ -443,6 +449,26 @@ func ExecutarMatrizHandler(w http.ResponseWriter, r *http.Request) {
 		page.Auditores = auditores
 		page.AppName = mdl.AppName
 		page.LoggedUser = BuildLoggedUser(GetUserInCookie(w, r))
+		page.Dec = func(i int) int {
+			return i - 1
+		}
+		page.Inc = func(i int) int {
+			return i + 1
+		}
+		page.MulTxt = func(i int, j string) int {
+			k, _ := strconv.Atoi(j)
+			return i * k
+		}
+		page.Mul = func(i int, j int) int {
+			return i * j
+		}
+		page.SomarTxt = func(i int, j string) int {
+			k, _ := strconv.Atoi(j)
+			return i + k
+		}
+		page.Somar = func(i int, j int) int {
+			return i + j
+		}
 		var tmpl = template.Must(template.ParseGlob("tiles/matrizes/*"))
 		tmpl.ParseGlob("tiles/*")
 		page.Title = title

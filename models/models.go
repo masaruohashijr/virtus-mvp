@@ -668,6 +668,7 @@ type ElementoDaMatriz struct {
 	PilarNota               string `json:"pilarNota"`
 	PilarColSpan            int    `json:"pilarColSpan"`
 	PilarQtdComponentes     string `json:"pilarQtdComponentes"`
+	ComponenteQtdElementos  string `json:"componenteQtdElementos"`
 	ComponenteId            int64  `json:"componenteId"`
 	ComponenteNome          string `json:"componenteNome"`
 	ComponentePeso          string `json:"componentePeso"`
@@ -1000,14 +1001,21 @@ type PageEntidadesCiclos struct {
 }
 
 type PageMatriz struct {
-	ErrMsg            string
-	Msg               string
-	AppName           string
-	Title             string
-	ElementosDaMatriz []ElementoDaMatriz
-	Supervisores      []User
-	Auditores         []User
-	LoggedUser        LoggedUser
+	ErrMsg                  string
+	Msg                     string
+	AppName                 string
+	Title                   string
+	ComponenteQtdTiposNotas string
+	ElementosDaMatriz       []ElementoDaMatriz
+	Supervisores            []User
+	Auditores               []User
+	LoggedUser              LoggedUser
+	Dec                     func(i int) int
+	Inc                     func(i int) int
+	MulTxt                  func(i int, j string) int
+	Mul                     func(i int, j int) int
+	SomarTxt                func(i int, j string) int
+	Somar                   func(i int, j int) int
 }
 
 type PageProcessos struct {
