@@ -87,18 +87,16 @@ func atualizarComponenteNota(produto mdl.ProdutoElemento) {
 	sqlStatement := "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
 		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
-		" FROM produtos_tipos_notas b " +
+		" FROM produtos_planos b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
 		" and a.ciclo_id = b.ciclo_id  " +
 		" and a.pilar_id = b.pilar_id " +
-		//" and a.plano_id = b.plano_id " +
 		" and a.componente_id = b.componente_id " +
 		" and a.id_versao_origem is null " +
 		" GROUP BY b.entidade_id,  " +
 		" b.ciclo_id, " +
 		" b.pilar_id, " +
-		//" b.plano_id, " +
 		" b.componente_id " +
 		" HAVING sum(peso)>0) " +
 		" WHERE a.entidade_id = $1 " +
@@ -277,9 +275,9 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 		" WHERE entidade_id = $3 AND " +
 		" ciclo_id = $4 AND " +
 		" pilar_id = $5 AND " +
-		" plano_id = $6 AND " +
-		" componente_id = $7 AND " +
-		" elemento_id = $8 "
+		// " plano_id = $6 AND " +
+		" componente_id = $6 AND " +
+		" elemento_id = $7 "
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
@@ -290,14 +288,19 @@ func registrarPesoElemento(produto mdl.ProdutoElemento, currentUser mdl.User) md
 		produto.EntidadeId,
 		produto.CicloId,
 		produto.PilarId,
-		produto.PlanoId,
+		//produto.PlanoId,
 		produto.ComponenteId,
 		produto.ElementoId)
-	pesosAtuais := atualizarPesoAcimaElemento(produto, currentUser)
+	atualizarPesoTiposNotas(produto, currentUser)
+	atualizarPesoPlanos(produto, currentUser)
+	atualizarPesoComponentes(produto, currentUser)
+	// PESOS ATUAIS
+	pesosAtuais := loadPesosAtuais(produto)
+	pesosAtuais.ElementoPeso = produto.Peso
 	return pesosAtuais
 }
 
-func atualizarPesoAcimaElemento(produto mdl.ProdutoElemento, currentUser mdl.User) mdl.PesosAtuais {
+func atualizarPesoTiposNotas(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	// PESOS TIPOS NOTAS
 	sqlStatement := "UPDATE produtos_tipos_notas as p SET peso = R1.peso " +
 		"FROM " +
@@ -359,8 +362,11 @@ func atualizarPesoAcimaElemento(produto mdl.ProdutoElemento, currentUser mdl.Use
 		log.Println(err.Error())
 	}
 	updtForm.Exec()
+}
+
+func atualizarPesoPlanos(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	// PESOS PLANOS
-	sqlStatement = "UPDATE produtos_planos as p SET peso = R1.peso_percentual " +
+	sqlStatement := "UPDATE produtos_planos as p SET peso = R1.peso_percentual " +
 		" FROM " +
 		" ( WITH total AS " +
 		"   (SELECT a.entidade_id, " +
@@ -395,14 +401,16 @@ func atualizarPesoAcimaElemento(produto mdl.ProdutoElemento, currentUser mdl.Use
 		"        AND p.ciclo_id = R1.ciclo_id " +
 		"        AND p.entidade_id = R1.entidade_id "
 	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		log.Println(err.Error())
 	}
 	updtForm.Exec()
+}
 
+func atualizarPesoComponentes(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	// PESOS COMPONENTES
-	sqlStatement = "UPDATE produtos_componentes a " +
+	sqlStatement := "UPDATE produtos_componentes a " +
 		" SET peso = (SELECT round(CAST(avg(b.peso) as numeric),2) " +
 		" FROM produtos_elementos b " +
 		" WHERE b.componente_id = a.componente_id AND " +
@@ -414,8 +422,9 @@ func atualizarPesoAcimaElemento(produto mdl.ProdutoElemento, currentUser mdl.Use
 		" ciclo_id = $2 AND " +
 		" pilar_id = $3 AND " +
 		" componente_id = $4 "
+	log.Println("Atualizando o peso do componente!")
 	log.Println(sqlStatement)
-	updtForm, err = Db.Prepare(sqlStatement)
+	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -425,9 +434,6 @@ func atualizarPesoAcimaElemento(produto mdl.ProdutoElemento, currentUser mdl.Use
 		produto.PilarId,
 		produto.PlanoId,
 		produto.ComponenteId)
-	// PESOS ATUAIS
-	pesosAtuais := loadPesosAtuais(produto)
-	return pesosAtuais
 }
 
 func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId string) {
@@ -747,7 +753,9 @@ func registrarProdutosPlanos(param mdl.ProdutoPlano, planos string, currentUser 
 	produto.ComponenteId = param.ComponenteId
 	produto.PlanoId = param.PlanoId
 	// Atualizando os pesos
-	atualizarPesoAcimaElemento(produto, currentUser)
+	atualizarPesoTiposNotas(produto, currentUser)
+	atualizarPesoPlanos(produto, currentUser)
+	atualizarPesoComponentes(produto, currentUser)
 	sqlStatement = "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
 		" sum(nota*peso)/sum(peso) as media " +

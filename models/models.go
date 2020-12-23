@@ -372,6 +372,7 @@ type PesosAtuais struct {
 	ComponentePeso float64 `json:"componentePeso"`
 	PlanoPeso      float64 `json:"planoPeso"`
 	TipoNotaPeso   float64 `json:"tipoNotaPeso"`
+	ElementoPeso   float64 `json:"elementoPeso"`
 }
 
 type Plano struct {
@@ -514,6 +515,8 @@ type ProdutoComponente struct {
 	SupervisorName    string  `json:"supervisorName"`
 	IniciaEm          string  `json:"iniciaEm"`
 	TerminaEm         string  `json:"terminaEm"`
+	IniciaEmAnterior  string  `json:"iniciaEmAnterior"`
+	TerminaEmAnterior string  `json:"terminaEmAnterior"`
 	AuthorId          int64   `json:"autorId"`
 	AuthorName        string  `json:"autorNome"`
 	CriadoEm          string  `json:"criadoEm"`

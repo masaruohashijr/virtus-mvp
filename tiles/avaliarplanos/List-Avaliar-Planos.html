@@ -367,7 +367,7 @@
                 <td>&nbsp;</td>
 				{{ $bgColor := (printf "%v%v" "#" $produto.TipoNotaCorLetra ) }}
                 <td style="vertical-align:middle">
-					<input style="color:white; background-color:{{print $bgColor}};width: 75px; text-align:center"
+					<input style="color:white; background-color:'{{print $bgColor}}';width: 75px; text-align:center"
 						disabled 
 						type="text" 
 						value="{{$produto.TipoNotaLetra}}">

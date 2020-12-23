@@ -72,6 +72,7 @@ function alterarOkConfirm(entidadeId, cicloId, pilarId, componenteId, valores, s
 		minhaFuncaoBtnSim = btns[0].onclick
 		btnNao.onclick = minhaFuncaoBtnSim;
 		btnNao.innerText = "Não"; 
+		btnNao.style = "padding: 5px; margin: 5px;"; 
 	}
 	btns[0].innerText = "Sim";
 	btns[0].addEventListener("click", function() {

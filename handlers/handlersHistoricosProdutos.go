@@ -9,6 +9,55 @@ import (
 	mdl "virtus/models"
 )
 
+func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, currentUser mdl.User) {
+	sqlStatement := "INSERT INTO produtos_componentes_historicos( " +
+		"	entidade_id,  " +
+		"	ciclo_id,  " +
+		"	pilar_id,  " +
+		"	componente_id,  " +
+		"	tipo_pontuacao_id,  " +
+		"	peso,  " +
+		"	nota,  " +
+		"	tipo_alteracao,  " +
+		"	motivacao_cronograma,  " +
+		"	supervisor_id,  " +
+		"	auditor_id,  " +
+		"	author_id,  " +
+		"	criado_em,  " +
+		"	id_versao_origem,  " +
+		"	status_id) " +
+		"SELECT  " +
+		"	entidade_id,  " +
+		"	ciclo_id,  " +
+		"	pilar_id,  " +
+		"	componente_id,  " +
+		"	tipo_pontuacao_id,  " +
+		"	peso,  " +
+		"	nota,  " +
+		"	'C',  " +
+		"	motivacao_cronograma,  " +
+		"	supervisor_id,  " +
+		"	auditor_id,  " +
+		" 	inicia_em,  " +
+		produto.IniciaEmAnterior + ",  " +
+		strconv.FormatInt(currentUser.Id, 10) + ",  " +
+		"	$1,  " +
+		"	id,  " +
+		"	status_id " +
+		"	FROM produtos_componentes " +
+		"	WHERE entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) + " AND " +
+		"	ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) + " AND " +
+		"	pilar_id = " + strconv.FormatInt(produto.PilarId, 10) + " AND " +
+		"	componente_id = " + strconv.FormatInt(produto.ComponenteId, 10) +
+		" RETURNING id"
+	log.Println(sqlStatement)
+	historicoProdutoComponenteId := 0
+	err := Db.QueryRow(sqlStatement, time.Now()).Scan(&historicoProdutoComponenteId)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func registrarHistoricoAuditorComponente(produto mdl.ProdutoComponente, currentUser mdl.User) {
 	sqlStatement := "INSERT INTO produtos_componentes_historicos( " +
 		"	entidade_id,  " +
@@ -157,7 +206,7 @@ func registrarHistoricoPesoElemento(produto mdl.ProdutoElemento, currentUser mdl
 		"	WHERE entidade_id = " + strconv.FormatInt(produto.EntidadeId, 10) + " AND " +
 		"	ciclo_id = " + strconv.FormatInt(produto.CicloId, 10) + " AND " +
 		"	pilar_id = " + strconv.FormatInt(produto.PilarId, 10) + " AND " +
-		"	plano_id = " + strconv.FormatInt(produto.PlanoId, 10) + " AND " +
+		//"	plano_id = " + strconv.FormatInt(produto.PlanoId, 10) + " AND " +
 		"	componente_id = " + strconv.FormatInt(produto.ComponenteId, 10) + " AND " +
 		"	tipo_nota_id = " + strconv.FormatInt(produto.TipoNotaId, 10) + " AND " +
 		"	elemento_id = " + strconv.FormatInt(produto.ElementoId, 10) +

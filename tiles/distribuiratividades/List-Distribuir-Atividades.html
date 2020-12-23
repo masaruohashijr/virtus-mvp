@@ -150,7 +150,7 @@
 										<input 
 											class="w3-input" 
 											type="date" 
-											onchange="motivarReprogramacao(this);"
+											onchange="motivarReprogramacao(this,'início');"
 											name="IniciaEmComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.IniciaEm}}" 
 											value="{{$produto.IniciaEm}}">
 									</td>
@@ -158,7 +158,7 @@
 										<input 
 											class="w3-input" 
 											type="date" 
-											onchange="motivarReprogramacao(this);"
+											onchange="motivarReprogramacao(this,'término');"
 											name="TerminaEmComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TerminaEm}}" 
 											value="{{$produto.TerminaEm}}">
 									</td>

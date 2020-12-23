@@ -9,12 +9,13 @@ class NotasAtuais {
 }
 
 class PesosAtuais {
-	constructor(cicloPeso,pilarPeso,componentePeso,planoPeso,tipoPesoPeso){
+	constructor(cicloPeso,pilarPeso,componentePeso,planoPeso,tipoNotaPeso,elementoPeso){
 		this.cicloPeso = cicloPeso;
 		this.pilarPeso = pilarPeso;
 		this.componentePeso = componentePeso;
 		this.planoPeso = planoPeso;
 		this.tipoNotaPeso = tipoNotaPeso; 
+		this.elementoPeso = elementoPeso; 
 	}
 }
 
@@ -154,6 +155,9 @@ function salvarNotaElemento(){
 		let tipoNotaId = valores[6];
 		let elementoId = valores[7];
 		let novaNota = document.getElementById('motNotaNovaNota').value;
+		let nameAnt = document.getElementsByName(acionadoPor)[0].name;
+		let newName = nameAnt.substr(0,nameAnt.lastIndexOf('_'))+'_'+novaNota;
+		document.getElementsByName(acionadoPor)[0].name = newName;
 		xmlhttp.open("GET","/salvarNotaElemento?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&planoId="+planoId+"&componenteId="+componenteId+"&tipoNotaId="+tipoNotaId+"&elementoId="+elementoId+"&motivacao="+motivacao+"&nota="+novaNota,true);
 		xmlhttp.send();
 	} else {
@@ -230,22 +234,35 @@ function salvarPesoElemento(){
 }
 
 function atualizarPesos(pesosAtuaisJson, valores){
+	console.log('atualizarPesos');
 	let pilarPeso = pesosAtuaisJson.pilarPeso;
 	let componentePeso = pesosAtuaisJson.componentePeso;
 	let planoPeso = pesosAtuaisJson.planoPeso;
 	let tipoNotaPeso = pesosAtuaisJson.tipoNotaPeso;
+	let elementoPeso = pesosAtuaisJson.elementoPeso;
 	let entidadeId = valores[1];
 	let cicloId = valores[2];
 	let pilarId = valores[3];
 	let componenteId = valores[4];
 	let planoId = valores[5];
 	let tipoNotaId = valores[6];
+	let elementoId = valores[7];
 	let campos = document.getElementsByTagName("INPUT");
 	for(i=0;i<campos.length;i++){
 		if(campos[i].name.startsWith('PilarPeso_'+entidadeId+'_'+cicloId+'_'+pilarId)){
 			campos[i] = pilarPeso;
 			break;
-		}	
+		} 
+	}
+	campos = document.getElementsByTagName("SELECT");
+	for(i=0;i<campos.length;i++){
+		if(campos[i].name.startsWith('ElementoPeso_'+entidadeId+'_'+cicloId+'_'+pilarId+'_'+componenteId)){
+			if(campos[i].name.split('_')[7] == elementoId){
+				console.log('Valor de '+campos[i].name);
+				campos[i].value = elementoPeso;
+				atualizarFieldName(campos[i], elementoPeso);
+			}
+		} 
 	}
 	document.getElementById('ComponentePeso_'+entidadeId+'_'+cicloId+'_'+pilarId+"_"+componenteId).value = componentePeso;
 	document.getElementById('PlanoPeso_'+entidadeId+'_'+cicloId+'_'+pilarId+"_"+componenteId+"_"+planoId).value = planoPeso + " %";
@@ -267,7 +284,7 @@ function atualizarFieldName(field, novo){
 	let nameField = field.name;
 	let lastUnderscorePos = nameField.lastIndexOf('_');
 	let newName = nameField.substr(0,lastUnderscorePos);
-	newName = newName + "_"+novo;
+	newName = newName + "_" + novo;
 	field.name = newName;
 }
 

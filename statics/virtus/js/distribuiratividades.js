@@ -24,7 +24,7 @@ function validarDistribuirAtividades(e){
 	}
 }
 
-function motivarReprogramacao(campo){
+function motivarReprogramacao(campo, titulo){
 	let entidadeId = campo.name.split("_")[1];
 	let cicloId = campo.name.split("_")[2];
 	let pilarId = campo.name.split("_")[3];
@@ -39,6 +39,17 @@ function motivarReprogramacao(campo){
 		document.getElementById("motReproComponente").value = componentesMap.get(componenteId);
 		document.getElementById("motReproDataAnterior").value = formatarData(dataAnterior);
 		document.getElementById("motReproNovaData").value = formatarData(campo.value);
+		if(titulo == 'início'){
+			document.getElementById('motReproTituloDataAnterior').value = 'Início Anterior';
+			document.getElementById('motReproTituloNovaData').value = 'Novo Início';
+			document.getElementById("motReproDataAnterior").name = 'InicioAnterior';
+			document.getElementById("motReproNovaData").name = 'Inicio';
+		} else {
+			document.getElementById('motReproTituloDataAnterior').value = 'Término Anterior';
+			document.getElementById('motReproTituloNovaData').value = 'Novo Término';
+			document.getElementById("motReproDataAnterior").name = 'TerminoAnterior';
+			document.getElementById("motReproNovaData").name = 'Termino';
+		}
 		document.getElementById('motivar-reprogramacao-form').style.display='block';
 		document.getElementById("motRepro_text").value='';
 		document.getElementById("motRepro_text").focus();

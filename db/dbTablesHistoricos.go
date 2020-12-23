@@ -64,6 +64,8 @@ func createTablesHistoricos() {
 			" auditor_anterior_id integer," +
 			" inicia_em timestamp without time zone," +
 			" termina_em timestamp without time zone," +
+			" inicia_em_anterior timestamp without time zone," +
+			" termina_em_anterior timestamp without time zone," +
 			" author_id integer," +
 			" criado_em timestamp without time zone," +
 			" id_versao_origem integer," +
