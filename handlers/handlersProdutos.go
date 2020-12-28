@@ -86,7 +86,7 @@ func atualizarComponenteNota(produto mdl.ProdutoElemento) {
 	// PRODUTOS_COMPONENTES
 	sqlStatement := "UPDATE produtos_componentes a " +
 		" set nota = (select  " +
-		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) as media " +
+		" round(CAST(sum(nota*peso)/100 as numeric),2) as media " +
 		" FROM produtos_planos b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
@@ -179,11 +179,14 @@ func atualizarCicloNota(produto mdl.ProdutoElemento) {
 	// PRODUTOS_CICLOS
 	sqlStatement := "UPDATE produtos_ciclos a " +
 		" SET nota = (select  " +
-		" round(CAST(sum(nota*peso)*100/sum(peso) as numeric),2) AS media " +
+		" round(CAST(sum(nota*peso)/sum(peso) as numeric),2) AS media " +
 		" FROM produtos_pilares b " +
 		" WHERE " +
 		" a.entidade_id = b.entidade_id " +
 		" AND a.ciclo_id = b.ciclo_id  " +
+		" AND EXISTS (SELECT 1 FROM produtos_itens c WHERE b.ciclo_id = c.ciclo_id " +
+		" AND b.entidade_id = c.entidade_id " +
+		" AND b.pilar_id = c.pilar_id) " +
 		" GROUP BY b.entidade_id,  " +
 		" b.ciclo_id " +
 		" HAVING sum(peso)>0) " +
@@ -410,6 +413,7 @@ func atualizarPesoPlanos(produto mdl.ProdutoElemento, currentUser mdl.User) {
 
 func atualizarPesoComponentes(produto mdl.ProdutoElemento, currentUser mdl.User) {
 	// PESOS COMPONENTES
+	log.Println("*** ATUALIZAR PESO COMPONENTE ***")
 	sqlStatement := "UPDATE produtos_componentes a " +
 		" SET peso = (SELECT round(CAST(avg(b.peso) as numeric),2) " +
 		" FROM produtos_elementos b " +
@@ -422,18 +426,19 @@ func atualizarPesoComponentes(produto mdl.ProdutoElemento, currentUser mdl.User)
 		" ciclo_id = $2 AND " +
 		" pilar_id = $3 AND " +
 		" componente_id = $4 "
-	log.Println("Atualizando o peso do componente!")
 	log.Println(sqlStatement)
 	updtForm, err := Db.Prepare(sqlStatement)
 	if err != nil {
 		log.Println(err.Error())
 	}
-	updtForm.Exec(
+	_, err = updtForm.Exec(
 		produto.EntidadeId,
 		produto.CicloId,
 		produto.PilarId,
-		produto.PlanoId,
 		produto.ComponenteId)
+	if err != nil {
+		log.Println(err.Error())
+	}
 }
 
 func registrarProdutosCiclos(currentUser mdl.User, entidadeId string, cicloId string) {

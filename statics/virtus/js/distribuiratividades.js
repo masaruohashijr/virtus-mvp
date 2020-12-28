@@ -55,3 +55,49 @@ function motivarReprogramacao(campo, titulo){
 		document.getElementById("motRepro_text").focus();
 	}
 }
+
+function salvarReprogramacao(){
+	let motivacao = document.getElementById('motRepro_text').value;
+	if(motivacao.length>3){
+		document.getElementsByName('MotivacaoNota')[0].value=motivacao;
+		document.getElementById('motivar-reprogramacao-form').style.display='none';
+		let xmlhttp;
+		let acionadoPor = document.getElementById('AcionadoPor').value;
+		let valores = acionadoPor.split("_");
+		xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange=function()
+		{
+				if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					var notasAtuaisJson = JSON.parse(xmlhttp.responseText);
+					atualizarNotas(notasAtuaisJson, valores);
+					let notaAnterior = document.getElementById('motNotaNotaAnterior').value;
+					let novaNota = document.getElementById('motNotaNovaNota').value;
+					let messageText = "A nota foi atualizada com sucesso de "+notaAnterior +" para "+novaNota+".";
+					document.getElementById("messageText").innerText = messageText;
+					document.getElementById("message").style.display="block";
+					let sel = document.getElementsByName(acionadoPor)[0];
+					atualizarFieldName(sel, novaNota); 
+				}
+		}
+		let entidadeId = valores[1];
+		let cicloId = valores[2];
+		let pilarId = valores[3];
+		let componenteId = valores[4];
+		let planoId = valores[5];
+		let tipoNotaId = valores[6];
+		let elementoId = valores[7];
+		let novaNota = document.getElementById('motNotaNovaNota').value;
+		let nameAnt = document.getElementsByName(acionadoPor)[0].name;
+		let newName = nameAnt.substr(0,nameAnt.lastIndexOf('_'))+'_'+novaNota;
+		document.getElementsByName(acionadoPor)[0].name = newName;
+		xmlhttp.open("GET","/salvarNotaElemento?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&planoId="+planoId+"&componenteId="+componenteId+"&tipoNotaId="+tipoNotaId+"&elementoId="+elementoId+"&motivacao="+motivacao+"&nota="+novaNota,true);
+		xmlhttp.send();
+	} else {
+		let errorMsg = "Falta preencher a motivação da nota do elemento.";
+		document.getElementById("Errors").innerText = errorMsg;
+		document.getElementById("error-message").style.display="block";
+		motivacao.focus();
+		return;		
+	}
+}
