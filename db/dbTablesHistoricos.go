@@ -41,7 +41,7 @@ func createTablesHistoricos() {
 			" id_versao_origem integer," +
 			" status_id integer)")
 
-	// Table PRODUTOS_COMPONENTES
+	// Table PRODUTOS_COMPONENTES HISTORICOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS produtos_componentes_historicos (" +
 			" id integer DEFAULT nextval('produtos_componentes_historicos_id_seq'::regclass) NOT NULL," +
@@ -53,6 +53,8 @@ func createTablesHistoricos() {
 			" tipo_pontuacao_id integer," +
 			" peso double precision," +
 			" nota double precision," +
+			" config character varying(300)," +
+			" config_anterior character varying(300)," +
 			" tipo_alteracao character(1)," +
 			" motivacao_config character varying(4000)," +
 			" motivacao_cronograma character varying(4000)," +

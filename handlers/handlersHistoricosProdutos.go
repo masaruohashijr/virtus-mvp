@@ -9,7 +9,51 @@ import (
 	mdl "virtus/models"
 )
 
-func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, currentUser mdl.User) {
+func registrarConfigPlanosHistorico(entidadeId string, cicloId string, pilarId string, componenteId string, currentUser mdl.User, configuracaoAnterior string, motivacao string) {
+	sqlStatement := " INSERT INTO produtos_componentes_historicos( " +
+		"	entidade_id,  " +
+		"	ciclo_id,  " +
+		"	pilar_id,  " +
+		"	componente_id,  " +
+		"	tipo_alteracao,  " +
+		" 	config, " +
+		"	config_anterior, " +
+		"	motivacao_config, " +
+		"	author_id, " +
+		"	criado_em, " +
+		"	id_versao_origem, " +
+		"	status_id) " +
+		" SELECT " +
+		"	a.entidade_id, " +
+		"	a.ciclo_id, " +
+		"	a.pilar_id, " +
+		"	a.componente_id, " +
+		"	'P', " +
+		"	COALESCE(cfg.planos_configurados,''), " +
+		"	'" + configuracaoAnterior + "', " +
+		"	'" + motivacao + "', " +
+		strconv.FormatInt(currentUser.Id, 10) + ", " +
+		"	$1,  " +
+		"	a.id,  " +
+		"	a.status_id " +
+		"	FROM produtos_componentes a " +
+		"	LEFT JOIN (SELECT pp.entidade_id, pp.ciclo_id, pp.pilar_id, pp.componente_id, string_agg(pl.cnpb,', ') planos_configurados " +
+		"	FROM produtos_planos pp INNER JOIN planos pl ON pp.plano_id = pl.id GROUP BY 1,2,3,4) cfg " +
+		" 	ON ( cfg.entidade_id = a.entidade_id AND cfg.pilar_id =  a.pilar_id AND cfg.componente_id = a.componente_id ) " +
+		"	WHERE a.entidade_id = " + entidadeId + " AND " +
+		"	a.ciclo_id = " + cicloId + " AND " +
+		"	a.pilar_id = " + pilarId + " AND " +
+		"	a.componente_id = " + componenteId +
+		" RETURNING id "
+	log.Println(sqlStatement)
+	historicoProdutoComponenteId := 0
+	err := Db.QueryRow(sqlStatement, time.Now()).Scan(&historicoProdutoComponenteId)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, currentUser mdl.User, tipoData string) {
 	sqlStatement := "INSERT INTO produtos_componentes_historicos( " +
 		"	entidade_id,  " +
 		"	ciclo_id,  " +
@@ -21,8 +65,15 @@ func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, curre
 		"	tipo_alteracao,  " +
 		"	motivacao_cronograma,  " +
 		"	supervisor_id,  " +
-		"	auditor_id,  " +
-		"	author_id,  " +
+		"	auditor_id,  "
+	if tipoData == "iniciaEm" {
+		sqlStatement += "	inicia_em, "
+		sqlStatement += "	inicia_em_anterior, "
+	} else {
+		sqlStatement += "	termina_em, "
+		sqlStatement += "	termina_em_anterior, "
+	}
+	sqlStatement += "	author_id,  " +
 		"	criado_em,  " +
 		"	id_versao_origem,  " +
 		"	status_id) " +
@@ -33,14 +84,23 @@ func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, curre
 		"	componente_id,  " +
 		"	tipo_pontuacao_id,  " +
 		"	peso,  " +
-		"	nota,  " +
-		"	'C',  " +
-		"	motivacao_cronograma,  " +
+		"	nota,  "
+	if tipoData == "iniciaEm" {
+		sqlStatement += "	'I',  "
+	} else {
+		sqlStatement += "	'T',  "
+	}
+	sqlStatement += "	motivacao_cronograma,  " +
 		"	supervisor_id,  " +
-		"	auditor_id,  " +
-		" 	inicia_em,  " +
-		produto.IniciaEmAnterior + ",  " +
-		strconv.FormatInt(currentUser.Id, 10) + ",  " +
+		"	auditor_id,  "
+	if tipoData == "iniciaEm" {
+		sqlStatement += " '" + produto.IniciaEm + "',  "
+		sqlStatement += " '" + produto.IniciaEmAnterior + "',  "
+	} else {
+		sqlStatement += " '" + produto.TerminaEm + "',  "
+		sqlStatement += " '" + produto.TerminaEmAnterior + "',  "
+	}
+	sqlStatement += strconv.FormatInt(currentUser.Id, 10) + ",  " +
 		"	$1,  " +
 		"	id,  " +
 		"	status_id " +
@@ -331,12 +391,17 @@ func ListHistoricosComponente(filtro mdl.Historico) []mdl.Historico {
 			"	ciclo_id,  " +
 			"	pilar_id,  " +
 			"	componente_id,  " +
+			"	coalesce(to_char(inicia_em,'DD/MM/YYYY'),'') as inicia_em,  " +
+			"	coalesce(to_char(inicia_em_anterior,'DD/MM/YYYY'),'') as inicia_em_anterior,  " +
+			"	coalesce(to_char(termina_em,'DD/MM/YYYY'),'') as termina_em,  " +
+			"	coalesce(to_char(termina_em_anterior,'DD/MM/YYYY'),'') as termina_em_anterior,  " +
+			"	coalesce(config,'') as config,  " +
+			"	coalesce(config_anterior,'') as config_anterior,  " +
 			"	coalesce(peso,0),  " +
-			"	tipo_pontuacao_id,  " +
+			"	coalesce(tipo_pontuacao_id,0),  " +
 			"	coalesce(nota,0),  " +
 			"	tipo_alteracao,  " +
-			"	supervisor_id,  " +
-			"	auditor_id,  " +
+			"	coalesce(auditor_id,0),  " +
 			"	coalesce(auditor_anterior_id,0),  " +
 			"	a.author_id,  " +
 			"	coalesce(b.name,'') as author_name, " +
@@ -346,13 +411,7 @@ func ListHistoricosComponente(filtro mdl.Historico) []mdl.Historico {
 			"       when tipo_alteracao = 'I' then motivacao_cronograma " +
 			"       when tipo_alteracao = 'T' then motivacao_cronograma " +
 			"       when tipo_alteracao = 'P' then motivacao_config " +
-			"	end, " +
-			"	case " +
-			" 		when tipo_alteracao = 'R' then 'Remoção' " +
-			"       when tipo_alteracao = 'I' then 'Inicia Em' " +
-			"       when tipo_alteracao = 'T' then 'Termina Em' " +
-			"       when tipo_alteracao = 'P' then 'Planos' " +
-			"	end " +
+			"	end as motivacao " +
 			"	FROM produtos_componentes_historicos a " +
 			"	LEFT JOIN users b ON a.author_id = b.id " +
 			"	WHERE a.entidade_id = " + filtro.EntidadeId + " AND " +
@@ -372,11 +431,16 @@ func ListHistoricosComponente(filtro mdl.Historico) []mdl.Historico {
 			&historico.CicloId,
 			&historico.PilarId,
 			&historico.ComponenteId,
+			&historico.IniciaEm,
+			&historico.IniciaEmAnterior,
+			&historico.TerminaEm,
+			&historico.TerminaEmAnterior,
+			&historico.Config,
+			&historico.ConfigAnterior,
 			&historico.Peso,
 			&historico.Metodo,
 			&historico.Nota,
 			&historico.TipoAlteracao,
-			&historico.SupervisorId,
 			&historico.AuditorNovoId,
 			&historico.AuditorAnteriorId,
 			&historico.AutorId,

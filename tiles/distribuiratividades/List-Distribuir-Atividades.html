@@ -150,7 +150,7 @@
 										<input 
 											class="w3-input" 
 											type="date" 
-											onchange="motivarReprogramacao(this,'início');"
+											onchange="motivarReprogramacao(this);"
 											name="IniciaEmComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.IniciaEm}}" 
 											value="{{$produto.IniciaEm}}">
 									</td>
@@ -158,12 +158,13 @@
 										<input 
 											class="w3-input" 
 											type="date" 
-											onchange="motivarReprogramacao(this,'término');"
+											onchange="motivarReprogramacao(this);"
 											name="TerminaEmComponente_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.ComponenteId}}_{{$produto.TerminaEm}}" 
 											value="{{$produto.TerminaEm}}">
 									</td>
 								</tr>
 							</table>
+							<input type="hidden" id="MotivacaoCronograma" name="MotivacaoCronograma" value="">
 						</td>
 						{{if $allowed}}
 		                <td style="border:1px solid #ddd;vertical-align:middle; ">

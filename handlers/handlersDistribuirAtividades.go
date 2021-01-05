@@ -344,12 +344,13 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 	log.Println("Update Config Planos ===>>> ATUALIZANDO")
 	r.ParseForm()
 	currentUser := GetUserInCookie(w, r)
-	var entidadeId = r.FormValue("entidadeId")
-	var cicloId = r.FormValue("cicloId")
-	var pilarId = r.FormValue("pilarId")
-	var componenteId = r.FormValue("componenteId")
-	var planos = r.FormValue("planos")
-	var superUser = r.FormValue("superUser")
+	entidadeId := r.FormValue("entidadeId")
+	cicloId := r.FormValue("cicloId")
+	pilarId := r.FormValue("pilarId")
+	componenteId := r.FormValue("componenteId")
+	planos := r.FormValue("planos")
+	superUser := r.FormValue("superUser")
+	motivacao := r.FormValue("motivacao")
 	planos = strings.TrimSpace(planos)
 	array := strings.Split(planos, "_")
 	log.Println("planos: " + planos)
@@ -407,6 +408,10 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 	msgRetorno := ""
 	force := false
 	log.Println("Qtd BD: " + strconv.Itoa(len(planosBD)))
+
+	configuracaoAnterior := loadConfigPlanos(entidadeId, cicloId, pilarId, componenteId)
+
+	log.Println(configuracaoAnterior)
 
 	if len(planosPage) < len(planosBD) {
 		if len(planosPage) == 0 {
@@ -493,6 +498,9 @@ func UpdateConfigPlanos(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+
+	registrarConfigPlanosHistorico(entidadeId, cicloId, pilarId, componenteId, currentUser, configuracaoAnterior, motivacao)
+
 	w.Write([]byte(msgRetorno))
 	log.Println("JSON Config Planos")
 }
@@ -587,4 +595,36 @@ func containsPlanoCfg(planosCfg []PlanosCfg, planoCfgCompared PlanosCfg) bool {
 		}
 	}
 	return false
+}
+
+func SalvarReprogramacaoComponente(w http.ResponseWriter, r *http.Request) {
+	log.Println("Salvar Reprogramação Componente")
+	r.ParseForm()
+	var entidadeId = r.FormValue("entidadeId")
+	var cicloId = r.FormValue("cicloId")
+	var pilarId = r.FormValue("pilarId")
+	var componenteId = r.FormValue("componenteId")
+	motivacao := r.FormValue("motivacao")
+	tipoData := r.FormValue("tipoData")
+	dataAnterior := r.FormValue("dataAnterior")
+	novaData := r.FormValue("novaData")
+	var produtoComponente mdl.ProdutoComponente
+	produtoComponente.EntidadeId, _ = strconv.ParseInt(entidadeId, 10, 64)
+	produtoComponente.CicloId, _ = strconv.ParseInt(cicloId, 10, 64)
+	produtoComponente.PilarId, _ = strconv.ParseInt(pilarId, 10, 64)
+	produtoComponente.ComponenteId, _ = strconv.ParseInt(componenteId, 10, 64)
+	produtoComponente.Motivacao = motivacao
+	currentUser := GetUserInCookie(w, r)
+	if tipoData == "iniciaEm" {
+		produtoComponente.IniciaEm = novaData
+		produtoComponente.IniciaEmAnterior = dataAnterior
+	} else {
+		produtoComponente.TerminaEm = novaData
+		produtoComponente.TerminaEmAnterior = dataAnterior
+	}
+	registrarCronogramaComponente(produtoComponente, currentUser, tipoData)
+	registrarHistoricoCronogramaComponente(produtoComponente, currentUser, tipoData)
+	jsonOK, _ := json.Marshal("OK")
+	w.Write(jsonOK)
+	log.Println("----------")
 }

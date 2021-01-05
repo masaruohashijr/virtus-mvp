@@ -24,13 +24,15 @@ function validarDistribuirAtividades(e){
 	}
 }
 
-function motivarReprogramacao(campo, titulo){
-	let entidadeId = campo.name.split("_")[1];
-	let cicloId = campo.name.split("_")[2];
-	let pilarId = campo.name.split("_")[3];
-	let componenteId = campo.name.split("_")[4];
-	let dataAnterior = campo.name.split("_")[5];
-	if(campo.value != dataAnterior && dataAnterior != ""){
+function motivarReprogramacao(campo){
+	let valores = campo.name.split("_");
+	let nomeCampo = valores[0];
+	let entidadeId = valores[1];
+	let cicloId = valores[2];
+	let pilarId = valores[3];
+	let componenteId = valores[4];
+	let dataAnterior = valores[5];
+	if(dataAnterior != "" && campo.value != dataAnterior){
 		document.getElementById("AcionadoPor").value = campo.name;
 		document.getElementById("motRepro_callback").value = campo.name;
 		document.getElementById("motReproEntidade").value = entidadesMap.get(entidadeId);
@@ -39,7 +41,7 @@ function motivarReprogramacao(campo, titulo){
 		document.getElementById("motReproComponente").value = componentesMap.get(componenteId);
 		document.getElementById("motReproDataAnterior").value = formatarData(dataAnterior);
 		document.getElementById("motReproNovaData").value = formatarData(campo.value);
-		if(titulo == 'início'){
+		if(nomeCampo.startsWith('Inicia')){
 			document.getElementById('motReproTituloDataAnterior').value = 'Início Anterior';
 			document.getElementById('motReproTituloNovaData').value = 'Novo Início';
 			document.getElementById("motReproDataAnterior").name = 'InicioAnterior';
@@ -59,39 +61,44 @@ function motivarReprogramacao(campo, titulo){
 function salvarReprogramacao(){
 	let motivacao = document.getElementById('motRepro_text').value;
 	if(motivacao.length>3){
-		document.getElementsByName('MotivacaoNota')[0].value=motivacao;
+		document.getElementsByName('MotivacaoCronograma')[0].value=motivacao;
 		document.getElementById('motivar-reprogramacao-form').style.display='none';
 		let xmlhttp;
 		let acionadoPor = document.getElementById('AcionadoPor').value;
+		let campoData = document.getElementsByName(acionadoPor)[0];
 		let valores = acionadoPor.split("_");
 		xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange=function()
 		{
 				if (xmlhttp.readyState==4 && xmlhttp.status==200)
 				{
-					var notasAtuaisJson = JSON.parse(xmlhttp.responseText);
-					atualizarNotas(notasAtuaisJson, valores);
-					let notaAnterior = document.getElementById('motNotaNotaAnterior').value;
-					let novaNota = document.getElementById('motNotaNovaNota').value;
-					let messageText = "A nota foi atualizada com sucesso de "+notaAnterior +" para "+novaNota+".";
+					if(tipoData=='iniciaEm') {
+						tipoData = 'início';						
+					} else {
+						tipoData = 'término';						
+					}
+					let messageText = "O início "+tipoData+" do cronograma do componente foi alterado com sucesso de "+
+						dataAnterior +
+						" para "+novaData+".";
 					document.getElementById("messageText").innerText = messageText;
 					document.getElementById("message").style.display="block";
-					let sel = document.getElementsByName(acionadoPor)[0];
-					atualizarFieldName(sel, novaNota); 
+					atualizarFieldName(campoData, novaData); 
 				}
+		}
+		let tipoData = valores[0];
+		if(tipoData.startsWith('IniciaEm')){
+			tipoData = 'iniciaEm';
+		} else {
+			tipoData = 'terminaEm';
 		}
 		let entidadeId = valores[1];
 		let cicloId = valores[2];
 		let pilarId = valores[3];
 		let componenteId = valores[4];
-		let planoId = valores[5];
-		let tipoNotaId = valores[6];
-		let elementoId = valores[7];
-		let novaNota = document.getElementById('motNotaNovaNota').value;
-		let nameAnt = document.getElementsByName(acionadoPor)[0].name;
-		let newName = nameAnt.substr(0,nameAnt.lastIndexOf('_'))+'_'+novaNota;
-		document.getElementsByName(acionadoPor)[0].name = newName;
-		xmlhttp.open("GET","/salvarNotaElemento?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&planoId="+planoId+"&componenteId="+componenteId+"&tipoNotaId="+tipoNotaId+"&elementoId="+elementoId+"&motivacao="+motivacao+"&nota="+novaNota,true);
+		let novaData = formatarData(document.getElementById('motReproNovaData').value);
+		let nameAnt = campoData.name;
+		let dataAnterior = nameAnt.substr(nameAnt.lastIndexOf('_')+1);
+		xmlhttp.open("GET","/salvarReprogramacao?entidadeId="+entidadeId+"&cicloId="+cicloId+"&pilarId="+pilarId+"&componenteId="+componenteId+"&motivacao="+motivacao+"&tipoData="+tipoData+"&dataAnterior="+dataAnterior+"&novaData="+novaData,true);
 		xmlhttp.send();
 	} else {
 		let errorMsg = "Falta preencher a motivação da nota do elemento.";
@@ -101,3 +108,18 @@ function salvarReprogramacao(){
 		return;		
 	}
 }
+
+function motivarConfigPlanos(){
+	let entidade = document.getElementById('EntidadeConfigPlanos').value;
+	let ciclo = document.getElementById('CicloConfigPlanos').value;
+	let pilar = document.getElementById('PilarConfigPlanos').value;
+	let componente = document.getElementById('ComponenteConfigPlanos').value;
+	document.getElementById("motReconfEntidade").value = entidade;
+	document.getElementById("motReconfCiclo").value = ciclo;
+	document.getElementById("motReconfPilar").value = pilar;
+	document.getElementById("motReconfComponente").value = componente;
+	document.getElementById('motivar-reconfiguracao-form').style.display='block';
+	document.getElementById("motReconf_text").value='';
+	document.getElementById("motReconf_text").focus();
+}
+

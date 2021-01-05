@@ -8,6 +8,26 @@ import (
 	mdl "virtus/models"
 )
 
+func registrarCronogramaComponente(produto mdl.ProdutoComponente, currentUser mdl.User, tipoData string) {
+	sqlStatement := "UPDATE produtos_componentes SET "
+	if tipoData == "iniciaEm" {
+		sqlStatement += " inicia_em ='" + produto.IniciaEm + "', "
+	} else {
+		sqlStatement += " termina_em ='" + produto.TerminaEm + "', "
+	}
+	sqlStatement += " motivacao_cronograma='" + produto.Motivacao + "'" +
+		" WHERE entidade_id= " + strconv.FormatInt(produto.EntidadeId, 10) +
+		" AND ciclo_id= " + strconv.FormatInt(produto.CicloId, 10) +
+		" AND pilar_id= " + strconv.FormatInt(produto.PilarId, 10) +
+		" AND componente_id= " + strconv.FormatInt(produto.ComponenteId, 10)
+	log.Println(sqlStatement)
+	updtForm, _ := Db.Prepare(sqlStatement)
+	_, err := updtForm.Exec()
+	if err != nil {
+		log.Println(err.Error())
+	}
+}
+
 func registrarAuditorComponente(produto mdl.ProdutoComponente, currentUser mdl.User) {
 	sqlStatement := "UPDATE produtos_componentes SET " +
 		" auditor_id=" + strconv.FormatInt(produto.AuditorId, 10) + ", justificativa='" + produto.Motivacao + "'" +
@@ -1003,4 +1023,21 @@ func getDescricao(rota string) mdl.Descricao {
 		rows.Scan(&retorno.Texto, &retorno.Link)
 	}
 	return retorno
+}
+
+func loadConfigPlanos(entidadeId string, cicloId string, pilarId string, componenteId string) string {
+	sql := "SELECT planos_configurados FROM (SELECT a.componente_id, string_agg(b.cnpb,', ') planos_configurados " +
+		" FROM produtos_planos a " +
+		" INNER JOIN planos b ON a.plano_id = b.id " +
+		" WHERE a.entidade_id = " + entidadeId + " AND a.ciclo_id = " + cicloId +
+		" AND a.pilar_id = " + pilarId + " AND a.componente_id = " + componenteId +
+		" GROUP BY 1) R "
+	log.Println(sql)
+	rows, _ := Db.Query(sql)
+	defer rows.Close()
+	var configuracaoPlanos string
+	if rows.Next() {
+		rows.Scan(&configuracaoPlanos)
+	}
+	return configuracaoPlanos
 }

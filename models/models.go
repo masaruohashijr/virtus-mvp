@@ -266,6 +266,12 @@ type Historico struct {
 	Nota              string `json:"nota"`
 	Metodo            string `json:"metodo"`
 	Peso              string `json:"peso"`
+	IniciaEm          string `json:"iniciaEm"`
+	IniciaEmAnterior  string `json:"iniciaEmAnterior"`
+	TerminaEm         string `json:"terminaEm"`
+	TerminaEmAnterior string `json:"terminaEmAnterior"`
+	Config            string `json:"config"`
+	ConfigAnterior    string `json:"configAnterior"`
 	AuditorNovoId     string `json:"auditorNovoId"`
 	AuditorAnteriorId string `json:"auditorAnteriorId"`
 	SupervisorId      string `json:"supervisorId"`

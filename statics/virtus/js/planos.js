@@ -2,6 +2,8 @@ var plano_tobe_deleted;
 
 function updateConfigPlanos(){
 	document.getElementById('config-planos-form').style.display='none';
+	document.getElementById('motivar-reconfiguracao-form').style.display='none';
+	let motivo = document.getElementById('motReconf_text').value;
 	let splitted = document.getElementById('AcionadoPor').value.split('_');
 	let entidadeId = splitted[1];
 	let cicloId = splitted[2];
@@ -16,12 +18,12 @@ function updateConfigPlanos(){
 	}
 	console.log("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId+"_"+auditorId);
 	// atualizar os planos através de Ajax
-	atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores, false);
+	atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores, false, motivo);
 	document.getElementsByName("Planos_AuditorComponente_"+entidadeId+"_"+cicloId+"_"+pilarId+"_"+componenteId+"_"+auditorId)[0].value = valores;
 	console.log("Saindo");
 }
 
-function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores, superUser){
+function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valores, superUser, motivacao){
 	console.log("atualizarConfigPlanos");
 	var xmlhttp;
 	xmlhttp=new XMLHttpRequest();
@@ -47,7 +49,8 @@ function atualizarConfigPlanos(entidadeId, cicloId, pilarId, componenteId, valor
 	xmlhttp.open("GET","/updateConfigPlanos?entidadeId="+
 			entidadeId+"&cicloId="+cicloId+"&pilarId="+
 			pilarId+"&componenteId="+componenteId+"&planos="+
-			valores+"&superUser="+superUser, true);
+			valores+"&superUser="+superUser+
+			"&motivacao="+motivacao, true);
 	xmlhttp.send();
 }
 
@@ -469,4 +472,3 @@ function validarPlanosSelecionados(){
 		}
 	}
 }
-

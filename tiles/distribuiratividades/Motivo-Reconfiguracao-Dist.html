@@ -1,0 +1,56 @@
+{{define "Motivo-Remocao-Dist"}}
+<!-- Motivo-Remocao -->
+<div class="w3-container">
+    <div id="motivo-remocao-form" class="w3-submodal" style="padding-top: 150 px;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Motivo da alteração</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('motivo-remocao-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" id="formulario-edit">
+				<table width="100%">
+					<tr>
+						<td colspan="2">
+							<label class="w3-label">Alteração de</label>					
+	                		<input class="w3-input" type="text" id="mot_hist_rem_alteracao" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<label class="w3-label">De</label>					
+	                		<input class="w3-input" type="text" id="mot_hist_rem_de" readonly="readonly" disabled="disabled" value="">
+						</td>
+						<td>
+							<label class="w3-label">Para</label>					
+	                		<input class="w3-input" type="text" id="mot_hist_rem_para" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<label class="w3-label">Autor</label>					
+	                		<input class="w3-input" type="text" id="mot_hist_rem_autor" readonly="readonly" disabled="disabled" value="">
+						</td>
+						<td>
+							<label class="w3-label">Alterado em</label>					
+	                		<input class="w3-input" type="text" id="mot_hist_rem_alterado_em" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>
+						<td colspan="4">
+							<label class="w3-label">Motivação</label>
+							<br>
+							<textarea id="mot_rem_text" readonly disabled class="w3-input" rows="20" cols="55"></textarea>
+						</td>
+					</tr>	
+				</table>
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					onClick="document.getElementById('motivo-remocao-form').style.display='none'" 
+					type="button">Fechar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

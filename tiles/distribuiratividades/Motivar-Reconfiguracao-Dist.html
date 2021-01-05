@@ -1,0 +1,53 @@
+{{define "Motivar-Reconfiguracao-Dist"}}
+<!-- Motivar Reconfiguracao -->
+<div class="w3-container">
+    <div id="motivar-reconfiguracao-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 640px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Motivar reconfiguração</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('motivar-reconfiguracao-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" id="formulario-edit">
+				<input type="hidden" id="motReconf_callback" value="">
+				<table width="100%">
+					<tr>
+						<td width="50%" colspan="2">
+							<label class="w3-label">EFPC</label>					
+	                		<input class="w3-input" type="text" name="Nome" id="motReconfEntidade" readonly="readonly" disabled="disabled" value="">
+						</td>
+						<td width="50%" rowspan="4" style="vertical-align: top;">
+							<label class="w3-label">Motivação Reconfiguração</label>
+							<br>
+							<textarea id="motReconf_text" class="w3-input" rows="20" cols="55"></textarea>
+						</td>
+					</tr>	
+					<tr>
+                		<td colspan="2">
+							<label class="w3-label">Ciclo</label>
+							<input class="w3-input" type="text" name="Nome" id="motReconfCiclo" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Pilar</label>
+                			<input class="w3-input" type="text" name="Pilar" id="motReconfPilar" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+					<tr>						
+						<td colspan="2">
+							<label class="w3-label">Componente</label>
+                			<input class="w3-input" type="text" name="Componente" id="motReconfComponente" readonly="readonly" disabled="disabled" value="">
+						</td>
+					</tr>	
+				</table>	
+				<button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" 
+					onClick="updateConfigPlanos();" 
+					type="button">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}

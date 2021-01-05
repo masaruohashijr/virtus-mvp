@@ -168,6 +168,7 @@ func main() {
 	r.HandleFunc("/salvarPesoElemento", hd.SalvarPesoElemento).Methods("GET")
 	r.HandleFunc("/salvarNotaElemento", hd.SalvarNotaElemento).Methods("GET")
 	r.HandleFunc("/salvarAuditorComponente", hd.SalvarAuditorComponente).Methods("GET")
+	r.HandleFunc("/salvarReprogramacao", hd.SalvarReprogramacaoComponente).Methods("GET")
 	r.HandleFunc("/loadAnotacoesRadaresByRadarId", hd.LoadAnotacoesRadaresByRadarId).Methods("GET")
 	r.HandleFunc("/loadConfigPlanos", hd.LoadConfigPlanos).Methods("GET")
 	r.HandleFunc("/updateConfigPlanos", hd.UpdateConfigPlanos).Methods("GET")

@@ -380,6 +380,7 @@ func createTable() {
 			" analise character varying(4000)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
+			" motivacao_reprogramacao character varying(4000)," +
 			" justificativa character varying(4000)," +
 			" supervisor_id integer," +
 			" auditor_id integer," +

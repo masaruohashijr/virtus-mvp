@@ -1,5 +1,5 @@
 class Historico {
-	constructor(id, entidadeId, cicloId, pilarId, componenteId, elementoId, nota, metodo, peso, auditorAnteriorId, auditorNovoId, autorId, autorNome, alteradoEm, motivacao, tipoAlteracao) {
+	constructor(id, entidadeId, cicloId, pilarId, componenteId, elementoId, nota, metodo, peso, auditorAnteriorId, auditorNovoId, iniciaEm, iniciaEmAnterior, terminaEm, terminaEmAnterior, config, configAnterior, autorId, autorNome, alteradoEm, motivacao, tipoAlteracao) {
 		this.id = id;
 		this.entidadeId = entidadeId;
 		this.cicloId = cicloId;
@@ -11,6 +11,12 @@ class Historico {
 		this.peso = peso;
 		this.auditorAnteriorId = auditorAnteriorId;
 		this.auditorNovoId = auditorNovoId;
+		this.iniciaEm = iniciaEm;
+		this.iniciaEmAnterior = iniciaEmAnterior;
+		this.terminaEm = terminaEm;
+		this.terminaEmAnterior = terminaEmAnterior;
+		this.config = config;
+		this.configAnterior = configAnterior;
 		this.autorId = autorId;
 		this.autorNome = autorNome;
 		this.alteradoEm = alteradoEm;
@@ -19,34 +25,58 @@ class Historico {
 	}
 }
 
-function addHistoricoRemocaoRow(tableID) {
-	console.log('addHistoricoRemocaoRow');
+function addHistoricoComponenteRow(tableID) {
+	console.log('addHistoricoComponenteRow');
 	let tableRef = document.getElementById(tableID);
 	let newRow = tableRef.childNodes[1].insertRow(-1);
 	order = historicos.length-1;
 	historico = historicos[order];
+	let tipoAlteracao = historico.tipoAlteracao;
+	let novoValor = '';
+	let valorAnterior = '';
+	let alterou = '';
+	if(tipoAlteracao == 'R'){
+		valorAnterior = auditoresMap.get(historico.auditorAnteriorId);
+		novoValor = auditoresMap.get(historico.auditorNovoId);
+		alterou = 'Auditor';
+	} else if (tipoAlteracao == 'I') {
+		valorAnterior = historico.iniciaEmAnterior;
+		novoValor = historico.iniciaEm;
+		alterou = 'Iniciar Em';
+	} else if (tipoAlteracao == 'T') {
+		valorAnterior = historico.terminaEmAnterior;
+		novoValor = historico.terminaEm;
+		alterou = 'Terminar Em';
+	} else if (tipoAlteracao == 'P') {
+		valorAnterior = historico.configAnterior;
+		novoValor = historico.config;
+		alterou = 'Planos';
+	}
 	let newCell = newRow.insertCell(0);
-	let newText = document.createTextNode(auditoresMap.get(historico.auditorAnteriorId));
+	let newText = document.createTextNode(alterou);
 	newCell.appendChild(newText);
 	newCell = newRow.insertCell(1);
-	newText = document.createTextNode(auditoresMap.get(historico.auditorNovoId));
+	newText = document.createTextNode(valorAnterior);
 	newCell.appendChild(newText);
 	newCell = newRow.insertCell(2);
-	newText = document.createTextNode(historico.autorNome);
+	newText = document.createTextNode(novoValor);
 	newCell.appendChild(newText);
 	newCell = newRow.insertCell(3);
+	newText = document.createTextNode(historico.autorNome);
+	newCell.appendChild(newText);
+	newCell = newRow.insertCell(4);
 	newText = document.createTextNode(historico.alteradoEm);
 	newCell.appendChild(newText);
 	newCell.innerHTML = '<input type="hidden" value="'+historico.motivacao+'"/>'+newCell.innerHTML;
 	// Botões
-	newCell = newRow.insertCell(4);
+	newCell = newRow.insertCell(5);
 	// Botão Motivo
 	let btnMotivo = document.createElement('input');
 	btnMotivo.type = "button";
 	btnMotivo.className = "w3-btn w3-teal";
 	btnMotivo.style = "margin-right: 10px";
 	btnMotivo.value = "Motivo";
-	btnMotivo.onclick = function() {openMotivoRemocao(btnMotivo)};
+	btnMotivo.onclick = function() {openMotivoComponente(btnMotivo)};
 	newCell.appendChild(btnMotivo);
 }
 
@@ -105,14 +135,14 @@ function openMotivo(e){
 	document.getElementById('mot_text').value=motivacao;
 }
 
-function openMotivoRemocao(e){
+function openMotivoComponente(e){
 	document.getElementById('motivo-remocao-form').style.display='block';
-	let tipoAlteracao = 'Remoção';
-	let de = e.parentNode.parentNode.childNodes[0].innerText;
-	let para = e.parentNode.parentNode.childNodes[1].innerText;
-	let autor = e.parentNode.parentNode.childNodes[2].innerText;
-	let alteradoEm = e.parentNode.parentNode.childNodes[3].innerText;
-	let motivacao = e.parentNode.parentNode.childNodes[3].childNodes[0].value;
+	let tipoAlteracao = e.parentNode.parentNode.childNodes[0].innerText;
+	let de = e.parentNode.parentNode.childNodes[1].innerText;
+	let para = e.parentNode.parentNode.childNodes[2].innerText;
+	let autor = e.parentNode.parentNode.childNodes[3].innerText;
+	let alteradoEm = e.parentNode.parentNode.childNodes[4].innerText;
+	let motivacao = e.parentNode.parentNode.childNodes[4].childNodes[0].value;
 	document.getElementById('mot_hist_rem_alteracao').value=tipoAlteracao;
 	document.getElementById('mot_hist_rem_de').value=de;
 	document.getElementById('mot_hist_rem_para').value=para;
@@ -211,7 +241,7 @@ function loadHistoricosComponente(btn){
 				historicos = [];
 				for(i = 0;historicosJson != null && i<historicosJson.length;i++){
 					historicos[i]=historicosJson[i];
-					addHistoricoRemocaoRow("table-historicos-componente-edit");
+					addHistoricoComponenteRow("table-historicos-componente-edit");
 				}
 			}
 	}
