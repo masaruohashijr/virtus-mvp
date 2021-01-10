@@ -292,7 +292,7 @@ function loadIntegrantesByEntidadeCicloId(entidadeId, cicloId){
 				integrantes = [];
 				for(order = 0;integrantesJson != null && order<integrantesJson.length;order++){
 					integrantes[order]=integrantesJson[order];
-					removerOpcoesUsuarios("UsuarioForInsert",integrantes[order].usuarioId);
+					//removerOpcoesUsuarios("UsuarioForInsert",integrantes[order].usuarioId);
 					addIntegranteRow("table-integrantes-edit");
 				}
 			}

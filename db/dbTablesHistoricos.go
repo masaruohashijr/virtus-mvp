@@ -57,7 +57,7 @@ func createTablesHistoricos() {
 			" config_anterior character varying(300)," +
 			" tipo_alteracao character(1)," +
 			" motivacao_config character varying(4000)," +
-			" motivacao_cronograma character varying(4000)," +
+			" motivacao_reprogramacao character varying(4000)," +
 			" motivacao_peso character varying(4000)," +
 			" motivacao_nota character varying(4000)," +
 			" justificativa character varying(4000)," +

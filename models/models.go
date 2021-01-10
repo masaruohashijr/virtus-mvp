@@ -1011,6 +1011,14 @@ type PageEntidadesCiclos struct {
 	LoggedUser   LoggedUser
 }
 
+type PageLogin struct {
+	WarnMsg string
+	ErrMsg  string
+	Msg     string
+	AppName string
+	Title   string
+}
+
 type PageMatriz struct {
 	ErrMsg                  string
 	Msg                     string
@@ -1154,6 +1162,7 @@ type PageTiposNotas struct {
 }
 
 type PageUsers struct {
+	WarnMsg     string
 	ErrMsg      string
 	Msg         string
 	AppName     string

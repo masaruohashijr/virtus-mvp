@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastro de novo usuário</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/statics/virtus/css/virtus.css">
+    <link rel="stylesheet" href="/statics/ionicons/css/w3.css">
+    <link rel="stylesheet" href="/statics/ionicons/css/ionicons.min.css">
+    <script type="text/javascript">
+        function cancelar() {
+            document.getElementById('formulario-register').action = '/logout';
+            document.getElementById('formulario-register').submit();
+        }
+
+		function salvarRegistroUsuario(){
+			let form = document.getElementById("formulario-register");
+			let nameField = document.getElementById("Name");
+			let usernameField = document.getElementById("Username");
+			let passwordField = document.getElementById("Password");
+			let confirmationField = document.getElementById("Confirmation");
+			let emailField = document.getElementById("Email");
+			let errMsg = "";
+			if(nameField.value == ""){
+				errMsg += "\nO nome não pode estar vazio.";
+			}
+			if(usernameField.value == ""){
+				errMsg += "\nO username não pode estar vazio.";
+			}
+			if(passwordField.value == ""){
+				errMsg += "\nA senha não pode estar vazia.";
+			}
+			if(emailField.value == ""){
+				errMsg += "\nO e-mail não pode estar vazio.";
+			}
+			if(passwordField.value != confirmationField.value){
+				errMsg += "\nA senha está diferente da sua confirmação.";
+			}
+			if(errMsg.length>0){
+				document.getElementById("Errors").innerText = errMsg;
+				document.getElementById("Errors").style.display="block";
+				confirmationField.focus();
+				return false;
+			} else {
+				document.getElementById("Errors").innerText = "";
+				document.getElementById("Errors").style.display="none";
+				form.submit();
+			}
+		}
+    </script>
+</head>
+<body>
+    <div id="register-new-user-form" class="w3-modal" style="display: block;">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="width: 1000px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Registre-se</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('register-new-user-form').style.display='none';cancelar();">&times;</span>
+            </div>
+            <form id="formulario-register" class="w3-container" action="/registerNewUser" method="POST">
+                <label id="Errors" style="display:none;color:red" class="w3-label"></label>
+                <label class="w3-label">Nome</label>
+                <input class="w3-input" type="text" id="Name" name="Name" value="">
+                <label class="w3-label">Usuário</label>
+                <input class="w3-input" type="text" id="Username" name="Username" value="">
+                <label class="w3-label">Informe a Senha</label>
+                <input class="w3-input" type="password" id="Password" name="Password" value="">
+                <label class="w3-label">Confirme a Senha</label>
+                <input class="w3-input" type="password" id="Confirmation" name="Confirmation" value="">
+                <label class="w3-label">E-mail</label>
+                <input class="w3-input" type="text" id="Email" name="Email" value="">
+                <label class="w3-label">Celular</label>
+                <input class="w3-input" type="text" name="Mobile" value="">
+                <br>
+                <div style="width: 100%; text-align: right;">
+                    <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" onclick="salvarRegistroUsuario()" type="button">Registrar-se</button>
+                    <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" onclick="cancelar();" type="button">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

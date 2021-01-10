@@ -11,13 +11,13 @@
 	<table width="100%">
 		<tr><td><a href="/about">Sobre</a></td></tr>
 		{{if (call .LoggedUser.HasPermission "homeChefe")}}
-		<tr><td><a href="/homeChefe">Home</a></td></tr>
+		<!--tr><td><a href="/homeChefe">Home</a></td></tr-->
 		{{end}}
 		{{if (call .LoggedUser.HasPermission "homeSupervisor")}}
-		<tr><td><a href="/homeSupervisor">Home</a></td></tr>
+		<!--tr><td><a href="/homeSupervisor">Home</a></td></tr-->
 		{{end}}
 		{{if (call .LoggedUser.HasPermission "homeAuditor")}}
-		<tr><td><a href="/homeAuditor">Home</a></td></tr>
+		<!--tr><td><a href="/homeAuditor">Home</a></td></tr-->
 		{{end}}
 		{{if or (eq .LoggedUser.User.RoleName "Supervisor") (eq .LoggedUser.User.RoleName "Chefe") (eq .LoggedUser.User.RoleName "Admin") }}
 		<tr class="menu" onclick="expandirSubMenu(this,'Coordenação')"><td class="menu">

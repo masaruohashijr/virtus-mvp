@@ -53,7 +53,7 @@ func registrarConfigPlanosHistorico(entidadeId string, cicloId string, pilarId s
 	}
 }
 
-func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, currentUser mdl.User, tipoData string) {
+func registrarHistoricoReprogramacaoComponente(produto mdl.ProdutoComponente, currentUser mdl.User, tipoData string) {
 	sqlStatement := "INSERT INTO produtos_componentes_historicos( " +
 		"	entidade_id,  " +
 		"	ciclo_id,  " +
@@ -63,7 +63,7 @@ func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, curre
 		"	peso,  " +
 		"	nota,  " +
 		"	tipo_alteracao,  " +
-		"	motivacao_cronograma,  " +
+		"	motivacao_reprogramacao,  " +
 		"	supervisor_id,  " +
 		"	auditor_id,  "
 	if tipoData == "iniciaEm" {
@@ -90,7 +90,7 @@ func registrarHistoricoCronogramaComponente(produto mdl.ProdutoComponente, curre
 	} else {
 		sqlStatement += "	'T',  "
 	}
-	sqlStatement += "	motivacao_cronograma,  " +
+	sqlStatement += "	motivacao_reprogramacao,  " +
 		"	supervisor_id,  " +
 		"	auditor_id,  "
 	if tipoData == "iniciaEm" {
@@ -408,8 +408,8 @@ func ListHistoricosComponente(filtro mdl.Historico) []mdl.Historico {
 			"	coalesce(to_char(a.criado_em,'DD/MM/YYYY HH24:MI:SS')) as alterado_em,  " +
 			"	case " +
 			" 		when tipo_alteracao = 'R' then justificativa " +
-			"       when tipo_alteracao = 'I' then motivacao_cronograma " +
-			"       when tipo_alteracao = 'T' then motivacao_cronograma " +
+			"       when tipo_alteracao = 'I' then motivacao_reprogramacao " +
+			"       when tipo_alteracao = 'T' then motivacao_reprogramacao " +
 			"       when tipo_alteracao = 'P' then motivacao_config " +
 			"	end as motivacao " +
 			"	FROM produtos_componentes_historicos a " +

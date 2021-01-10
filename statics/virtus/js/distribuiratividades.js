@@ -78,8 +78,8 @@ function salvarReprogramacao(){
 						tipoData = 'término';						
 					}
 					let messageText = "O início "+tipoData+" do cronograma do componente foi alterado com sucesso de "+
-						dataAnterior +
-						" para "+novaData+".";
+						formatarData(dataAnterior) +
+						" para "+formatarData(novaData)+".";
 					document.getElementById("messageText").innerText = messageText;
 					document.getElementById("message").style.display="block";
 					atualizarFieldName(campoData, novaData); 

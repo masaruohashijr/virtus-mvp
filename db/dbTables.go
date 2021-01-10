@@ -7,7 +7,7 @@ import (
 func createTable() {
 	// Table ACTIONS
 	db.Exec(" CREATE TABLE IF NOT EXISTS actions (" +
-		" id integer DEFAULT nextval('actions_id_seq'::regclass) NOT NULL, " +
+		" id integer NOT NULL DEFAULT nextval('actions_id_seq'::regclass), " +
 		" name character varying(255) NOT NULL, " +
 		" origin_status_id integer, " +
 		" destination_status_id integer, " +
@@ -21,13 +21,13 @@ func createTable() {
 	// Table ACTIONS_STATUS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS actions_status (" +
-			" id integer DEFAULT nextval('actions_status_id_seq'::regclass)," +
+			" id integer NOT NULL DEFAULT nextval('actions_status_id_seq'::regclass)," +
 			" action_id integer," +
 			" origin_status_id integer," +
 			" destination_status_id integer)")
 
 	// Table ACTIVITIES
-	db.Exec(" CREATE TABLE activities (" +
+	db.Exec(" CREATE TABLE IF NOT EXISTS activities (" +
 		" id integer NOT NULL DEFAULT nextval('activities_id_seq'::regclass)," +
 		" workflow_id integer," +
 		" action_id integer," +
@@ -38,15 +38,15 @@ func createTable() {
 
 	// Table ACTIVITIES_ROLES
 	db.Exec(
-		" CREATE TABLE activities_roles (" +
-			" id integer DEFAULT nextval('activities_roles_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS activities_roles (" +
+			" id integer NOT NULL DEFAULT nextval('activities_roles_id_seq'::regclass)," +
 			" activity_id integer," +
 			" role_id integer)")
 
 	// Table CHAMADOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS chamados (" +
-			" id integer DEFAULT nextval('chamados_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('chamados_id_seq'::regclass)," +
 			" titulo character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" responsavel_id integer," +
@@ -64,7 +64,7 @@ func createTable() {
 	// Table CICLOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS ciclos (" +
-			" id integer DEFAULT nextval('ciclos_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('ciclos_id_seq'::regclass)," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" referencia character varying(500)," +
@@ -75,8 +75,8 @@ func createTable() {
 
 	// Table CICLOS_ENTIDADES
 	db.Exec(
-		" CREATE TABLE ciclos_entidades (" +
-			" id integer DEFAULT nextval('ciclos_entidades_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS ciclos_entidades (" +
+			" id integer NOT NULL DEFAULT nextval('ciclos_entidades_id_seq'::regclass)," +
 			" ciclo_id integer," +
 			" entidade_id integer," +
 			" tipo_media integer," +
@@ -91,7 +91,7 @@ func createTable() {
 	// Table COMENTARIOS ANOTACOES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS comentarios_anotacoes (" +
-			" id integer DEFAULT nextval('comentarios_anotacoes_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('comentarios_anotacoes_id_seq'::regclass)," +
 			" anotacao_id integer," +
 			" texto character varying(4000)," +
 			" referencia character varying(255)," +
@@ -103,7 +103,7 @@ func createTable() {
 	// Table COMENTARIOS CHAMADOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS comentarios_chamados (" +
-			" id integer DEFAULT nextval('comentarios_chamados_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('comentarios_chamados_id_seq'::regclass)," +
 			" chamado_id integer," +
 			" texto character varying(4000)," +
 			" referencia character varying(255)," +
@@ -115,7 +115,7 @@ func createTable() {
 	// Table COMPONENTES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS componentes (" +
-			" id integer DEFAULT nextval('componentes_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('componentes_id_seq'::regclass)," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" referencia character varying(500)," +
@@ -127,8 +127,8 @@ func createTable() {
 
 	// Table COMPONENTES_PILARES
 	db.Exec(
-		" CREATE TABLE componentes_pilares (" +
-			" id integer DEFAULT nextval('componentes_pilares_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS componentes_pilares (" +
+			" id integer NOT NULL DEFAULT nextval('componentes_pilares_id_seq'::regclass)," +
 			" componente_id integer," +
 			" pilar_id integer," +
 			" tipo_media integer," +
@@ -142,7 +142,7 @@ func createTable() {
 	// Table ELEMENTOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS elementos (" +
-			" id integer DEFAULT nextval('elementos_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('elementos_id_seq'::regclass)," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" referencia character varying(500)," +
@@ -153,8 +153,8 @@ func createTable() {
 
 	// Table ELEMENTOS_COMPONENTES
 	db.Exec(
-		" CREATE TABLE elementos_componentes (" +
-			" id integer DEFAULT nextval('elementos_componentes_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS elementos_componentes (" +
+			" id integer NOT NULL DEFAULT nextval('elementos_componentes_id_seq'::regclass)," +
 			" componente_id integer," +
 			" elemento_id integer," +
 			" tipo_nota_id integer," +
@@ -167,7 +167,7 @@ func createTable() {
 	// Table ENTIDADES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS entidades (" +
-			" id integer DEFAULT nextval('entidades_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('entidades_id_seq'::regclass)," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" sigla character varying(25)," +
@@ -184,7 +184,7 @@ func createTable() {
 	// Table ESCRITORIOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS escritorios (" +
-			" id integer DEFAULT nextval('escritorios_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('escritorios_id_seq'::regclass)," +
 			" nome character varying(255) NOT NULL," +
 			" abreviatura character (4)," +
 			" descricao character varying(4000)," +
@@ -197,7 +197,7 @@ func createTable() {
 	// Table FEATURES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS features  (" +
-			" id integer DEFAULT nextval('features_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('features_id_seq'::regclass)," +
 			" name character varying(255) NOT NULL," +
 			" code character varying(255) NOT NULL," +
 			" description character varying(4000)," +
@@ -208,22 +208,22 @@ func createTable() {
 
 	// Table FEATURES_ROLES
 	db.Exec(
-		" CREATE TABLE features_roles (" +
-			" id integer DEFAULT nextval('features_roles_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS features_roles (" +
+			" id integer NOT NULL DEFAULT nextval('features_roles_id_seq'::regclass)," +
 			" feature_id integer," +
 			" role_id integer)")
 
 	// Table FEATURES_ACTIVITIES
 	db.Exec(
-		" CREATE TABLE features_activities (" +
-			" id integer DEFAULT nextval('features_activities_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS features_activities (" +
+			" id integer NOT NULL DEFAULT nextval('features_activities_id_seq'::regclass)," +
 			" feature_id integer," +
 			" activity_id integer)")
 
 	// Table INTEGRANTES
 	db.Exec(
-		" CREATE TABLE integrantes (" +
-			" id integer DEFAULT nextval('integrantes_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS integrantes (" +
+			" id integer NOT NULL DEFAULT nextval('integrantes_id_seq'::regclass)," +
 			" entidade_id integer," +
 			" ciclo_id integer," +
 			" usuario_id integer," +
@@ -238,7 +238,7 @@ func createTable() {
 	// Table ITENS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS itens (" +
-			" id integer DEFAULT nextval('itens_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('itens_id_seq'::regclass)," +
 			" elemento_id integer," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
@@ -249,8 +249,8 @@ func createTable() {
 
 	// Table JURISDICOES
 	db.Exec(
-		" CREATE TABLE jurisdicoes (" +
-			" id integer DEFAULT nextval('jurisdicoes_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS jurisdicoes (" +
+			" id integer NOT NULL DEFAULT nextval('jurisdicoes_id_seq'::regclass)," +
 			" escritorio_id integer," +
 			" entidade_id integer," +
 			" inicia_em timestamp without time zone," +
@@ -262,8 +262,8 @@ func createTable() {
 
 	// Table MEMBROS
 	db.Exec(
-		" CREATE TABLE membros (" +
-			" id integer DEFAULT nextval('membros_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS membros (" +
+			" id integer NOT NULL DEFAULT nextval('membros_id_seq'::regclass)," +
 			" escritorio_id integer," +
 			" usuario_id integer," +
 			" inicia_em timestamp without time zone," +
@@ -276,7 +276,7 @@ func createTable() {
 	// Table PILARES
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS pilares (" +
-			" id integer DEFAULT nextval('pilares_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('pilares_id_seq'::regclass)," +
 			" nome character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
 			" referencia character varying(500)," +
@@ -287,8 +287,8 @@ func createTable() {
 
 	// Table PILARES_CICLOS
 	db.Exec(
-		" CREATE TABLE pilares_ciclos (" +
-			" id integer DEFAULT nextval('pilares_ciclos_id_seq'::regclass)," +
+		" CREATE TABLE IF NOT EXISTS pilares_ciclos (" +
+			" id integer NOT NULL DEFAULT nextval('pilares_ciclos_id_seq'::regclass)," +
 			" pilar_id integer," +
 			" ciclo_id integer," +
 			" tipo_media integer," +
@@ -301,7 +301,7 @@ func createTable() {
 	// Table PLANOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS planos (" +
-			" id integer DEFAULT nextval('planos_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('planos_id_seq'::regclass)," +
 			" entidade_id integer," +
 			" nome character varying(255)," +
 			" descricao character varying(4000)," +
@@ -319,7 +319,7 @@ func createTable() {
 	// Table PROCESSOS
 	db.Exec(
 		" CREATE TABLE IF NOT EXISTS processos (" +
-			" id integer DEFAULT nextval('processos_id_seq'::regclass) NOT NULL," +
+			" id integer NOT NULL DEFAULT nextval('processos_id_seq'::regclass)," +
 			" questao_id integer," +
 			" numero character varying(255) NOT NULL," +
 			" descricao character varying(4000)," +
@@ -580,7 +580,7 @@ func createTable() {
 
 	// Table TIPOS_NOTAS_COMPONENTES
 	db.Exec(
-		" CREATE TABLE tipos_notas_componentes (" +
+		" CREATE TABLE IF NOT EXISTS tipos_notas_componentes (" +
 			" id integer DEFAULT nextval('tipos_notas_componentes_id_seq'::regclass)," +
 			" componente_id integer," +
 			" tipo_nota_id integer," +

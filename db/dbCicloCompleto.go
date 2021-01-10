@@ -289,7 +289,7 @@ func montarCiclo() CicloESI {
 	componentes = append(componentes, componenteSolvencia, componenteInvestimentosAtivos, componenteAtuarial, componenteResultados, componenteEficienciaOperacional)
 	pilarEF.Componentes = componentes
 	pilares = append(pilares, pilarRC, pilarG, pilarEF)
-	cicloESI.Nome = "Ciclo ESI"
+	cicloESI.Nome = "Ciclo Anual 2021"
 	cicloESI.Pilares = pilares
 	return cicloESI
 }

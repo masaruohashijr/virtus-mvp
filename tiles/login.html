@@ -1,3 +1,4 @@
+{{ define "Login" }}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,13 +26,14 @@
 
         <form class="w3-container" action="/login" method="post">
             <div class="w3-section">
-                <label><b>Username</b></label>
+                <label><b>Login</b></label>
                 <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Username"
                        name="usrname" required>
                 <label><b>Password</b></label>
                 <input class="w3-input w3-border" type="password" placeholder="Enter Password" name="psw" required>
+                <label id="errMsg" style="color: red; display:none"></label>
+                <label id="msg" style="color: blue; display:none"></label>
                 <button class="w3-btn-block w3-teal w3-section w3-padding" type="submit">Login</button>
-                <input class="w3-check w3-margin-top" type="checkbox" checked="checked"> Remember me
             </div>
         </form>
 
@@ -39,10 +41,21 @@
             <!--<button onclick="document.getElementById('login-form').style.display='none'" type="button" class="w3-btn w3-red">-->
                 <!--Cancel-->
             <!--</button>-->
-            <a href="/registerUser" class="w3-btn w3-teal">Register</a>
-            <span class="w3-right w3-padding w3-hide-small">Forgot <a href="/recoverPassword">password?</a></span>
+            <a href="/signUpUser" class="w3-btn w3-teal">Registrar-se</a>
+            <span class="w3-right w3-padding w3-hide-small">Esqueceu a <a href="/recoverPwd">senha?</a></span>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+	if('{{.ErrMsg}}'!=''){
+		document.getElementById('errMsg').style.display='block';
+		document.getElementById('errMsg').innerText = '{{.ErrMsg}}';
+	}
+	if('{{.Msg}}'!=''){
+		document.getElementById('msg').style.display='block';
+		document.getElementById('msg').innerText = '{{.Msg}}';
+	}
+</script>
 </body>
 </html>
+{{end}}

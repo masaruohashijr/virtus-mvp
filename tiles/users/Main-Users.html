@@ -1,13 +1,15 @@
 {{ define "Main-Users" }}
 <html lang="pt">
-	{{ template "Header" .Title}}
+	{{ template "Header" .Title }}
 <body>
 {{ template "Menu" . }}
 {{ template "Delete-User" }}
+{{ template "Change-Password" . }}
 {{ template "Edit-User" . }}
 {{ template "Create-User" . }}
-{{ template "Error-Message" .ErrMsg }}
 {{ template "Message" .Msg }}
+{{ template "Warn-Message" .WarnMsg }}
+{{ template "Error-Message" .ErrMsg }}
 {{ template "List-Users" . }}
 </body>
 </html>

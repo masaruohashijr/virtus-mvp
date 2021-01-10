@@ -15,7 +15,7 @@ func registrarCronogramaComponente(produto mdl.ProdutoComponente, currentUser md
 	} else {
 		sqlStatement += " termina_em ='" + produto.TerminaEm + "', "
 	}
-	sqlStatement += " motivacao_cronograma='" + produto.Motivacao + "'" +
+	sqlStatement += " motivacao_reprogramacao ='" + produto.Motivacao + "'" +
 		" WHERE entidade_id= " + strconv.FormatInt(produto.EntidadeId, 10) +
 		" AND ciclo_id= " + strconv.FormatInt(produto.CicloId, 10) +
 		" AND pilar_id= " + strconv.FormatInt(produto.PilarId, 10) +

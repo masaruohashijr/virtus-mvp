@@ -50,24 +50,32 @@ func CreateChamadoHandler(w http.ResponseWriter, r *http.Request) {
 			" descricao, " +
 			" prioridade_id, " +
 			" relator_id, " +
-			" responsavel_id, " +
-			" inicia_em, " +
-			" pronto_em, " +
-			" estimativa, " +
+			" responsavel_id, "
+		if iniciaEm != "" {
+			sqlStatement += " inicia_em, "
+		}
+		if prontoEm != "" {
+			sqlStatement += " pronto_em, "
+		}
+		sqlStatement += " estimativa, " +
 			" author_id, " +
 			" criado_em) " +
-			" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id"
+			" VALUES ('" +
+			tipoChamado + "', '" +
+			titulo + "', '" +
+			descricao + "', '" +
+			prioridade + "', " +
+			relator + ", " +
+			responsavel + ", "
+		if iniciaEm != "" {
+			sqlStatement += "'" + iniciaEm + "', "
+		}
+		if prontoEm != "" {
+			sqlStatement += "'" + prontoEm + "', "
+		}
+		sqlStatement += estimativa + ", $1, $2 ) RETURNING id"
 		idChamado := 0
 		row := Db.QueryRow(sqlStatement,
-			tipoChamado,
-			titulo,
-			descricao,
-			prioridade,
-			relator,
-			responsavel,
-			iniciaEm,
-			prontoEm,
-			estimativa,
 			currentUser.Id,
 			time.Now())
 		err := row.Scan(&idChamado)
@@ -76,35 +84,6 @@ func CreateChamadoHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Println(sqlStatement + " - ")
 		log.Println("INSERT: Id: " + strconv.Itoa(idChamado) + " - Titulo: " + titulo)
-		/*
-			for key, value := range r.Form {
-				if strings.HasPrefix(key, "questaoChamado") {
-					array := strings.Split(value[0], "#")
-					log.Println(value[0])
-					questaoChamadoId := 0
-					questaoId := strings.Split(array[3], ":")[1]
-					sqlStatement := " INSERT INTO " +
-						" public.questoes_chamados( " +
-						" chamado_id, " +
-						" questao_id, " +
-						" registro_ata, " +
-						" author_id, " +
-						" criado_em ) " +
-						" VALUES ($1, $2, $3, $4, $5) RETURNING id"
-					log.Println(sqlStatement)
-					err := Db.QueryRow(
-						sqlStatement,
-						idChamado,
-						questaoId,
-						tipoMediaId,
-						pesoPadrao,
-						currentUser.Id,
-						time.Now()).Scan(&questaoChamadoId)
-					if err != nil {
-						log.Println(err.Error())
-					}
-				}
-			}*/
 		http.Redirect(w, r, route.ChamadosRoute+"?msg=Chamado criado com sucesso.", 301)
 	} else {
 		http.Redirect(w, r, "/logout", 301)

@@ -3,8 +3,12 @@
 	{{ template "Header" .Title }}
 <body>
 {{ template "Menu" . }}
+{{ template "Delete-Versao" }}
 {{ template "Edit-Versao" }}
 {{ template "Create-Versao" }}
+{{ template "Delete-Chamado-Versao" }}
+{{ template "Edit-Chamado-Versao" }}
+{{ template "Create-Chamado-Versao" }}
 {{ template "Error-Message" .ErrMsg }}
 {{ template "Message" .Msg }}
 {{ template "List-Versoes" . }}

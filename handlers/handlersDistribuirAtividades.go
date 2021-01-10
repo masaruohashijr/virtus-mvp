@@ -623,7 +623,7 @@ func SalvarReprogramacaoComponente(w http.ResponseWriter, r *http.Request) {
 		produtoComponente.TerminaEmAnterior = dataAnterior
 	}
 	registrarCronogramaComponente(produtoComponente, currentUser, tipoData)
-	registrarHistoricoCronogramaComponente(produtoComponente, currentUser, tipoData)
+	registrarHistoricoReprogramacaoComponente(produtoComponente, currentUser, tipoData)
 	jsonOK, _ := json.Marshal("OK")
 	w.Write(jsonOK)
 	log.Println("----------")

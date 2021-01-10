@@ -50,6 +50,12 @@ function addHistoricoComponenteRow(tableID) {
 	} else if (tipoAlteracao == 'P') {
 		valorAnterior = historico.configAnterior;
 		novoValor = historico.config;
+		if(!valorAnterior || valorAnterior == ''){
+			valorAnterior = 'Vazio';
+		}
+		if(!novoValor || novoValor == ''){
+			novoValor = 'Vazio';
+		}
 		alterou = 'Planos';
 	}
 	let newCell = newRow.insertCell(0);

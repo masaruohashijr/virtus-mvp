@@ -468,25 +468,6 @@ function expandir(e, tabelaNome){
 	}
 }
 
-function filtraTabela(input, tabelaNome, offset, colnum){
-  var filter, table, tr, td, i, txtValue;
-  filter = input.value.toUpperCase();
-  table = document.getElementById(tabelaNome);
-  tr = table.getElementsByTagName("tr");
-  for (i = offset; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[colnum];
-	console.log(td.innerText);
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "table-row";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
-  }
-}
-
 function openAnalise(btn){
 	let entidadeId = btn.name.split("_")[2];
 	let cicloId = btn.name.split("_")[3];
@@ -609,7 +590,12 @@ function openDescricao(btn){
 	if(itemId)	{
 		itemName = itensMap.get(itemId);
 	}
-	document.getElementById("descricaoItem").value = itemName;
+	if(!itemName){
+		document.getElementById("descricaoItem").parentNode.parentNode.style.display = 'none';
+	} else {
+		document.getElementById("descricaoItem").parentNode.parentNode.style.display = 'table-row';
+		document.getElementById("descricaoItem").value = itemName;
+	}
 	loadDescricao(btn.name);	
 }
 

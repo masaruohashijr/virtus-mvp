@@ -10,7 +10,7 @@ func createSeq() {
 		" NO MINVALUE" +
 		" NO MAXVALUE" +
 		" CACHE 1")
-	// Sequence ACTIONS_STATUS_ID_SEQ
+	// Sequence ACTIVITIES_ID_SEQ
 	db.Exec("CREATE SEQUENCE IF NOT EXISTS activities_id_seq " +
 		" START WITH 1" +
 		" INCREMENT BY 1" +

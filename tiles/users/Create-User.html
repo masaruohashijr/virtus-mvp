@@ -9,20 +9,21 @@
                 <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
                       onclick="document.getElementById('create-form').style.display='none'">&times;</span>
             </div>
-
-            <form class="w3-container" action="/createUser" method="post">
+            <form id="formulario-create-user" class="w3-container" action="/createUser" method="post">
                 <label class="w3-label">Nome</label>
                 <input class="w3-input" type="text" id="NameUserForInsert" name="Name" value="">
                 <label class="w3-label">Usuário</label>
-                <input class="w3-input" type="text" name="Username" value="">
+                <input class="w3-input" type="text" id="Username" name="Username" value="">
                 <label class="w3-label">Senha</label>
-                <input class="w3-input" type="text" name="Password" value="">
+                <input class="w3-input" type="password" id="Password" name="Password" value="">
+                <label class="w3-label">Confirmar a senha</label>
+                <input class="w3-input" type="password" id="Confirmation" name="Confirmation" value="">
                 <label class="w3-label">E-mail</label>
-                <input class="w3-input" type="text" name="Email" value="">
+                <input class="w3-input" type="text" id="Email" name="Email" value="">
                 <label class="w3-label">Celular</label>
-                <input class="w3-input" type="text" name="Mobile" value="">
+                <input class="w3-input" type="text" id="Mobile" name="Mobile" value="">
 				<label class="w3-label">Perfil</label>
-	            <select class="w3-input" name="RoleForInsert" id="RoleForInsert">
+	            <select class="w3-input" id="RoleForInsert" name="Role">
 					<option value=""></option>
 					{{range $index, $role := .Roles }}
 		                <option value="{{$role.Id}}" {{if eq true $role.Selected}} selected="selected"{{end}}>
@@ -31,7 +32,10 @@
 		            {{end}}
 	            </select>
 				<br>
-                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Criar</button>
+				<button 
+					class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right"
+					onclick="submeterCreateUser()" 
+					type="buttin">Criar</button>
             </form>
         </div>
     </div>

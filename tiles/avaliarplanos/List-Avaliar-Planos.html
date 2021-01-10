@@ -425,6 +425,10 @@
                     <button class="w3-btn w3-brown"
 						name="HistoricoElemento_{{$produto.EntidadeId}}_{{$produto.CicloId}}_{{$produto.PilarId}}_{{$produto.PlanoId}}_{{$produto.ComponenteId}}_{{$produto.TipoNotaId}}_{{$produto.ElementoId}}_{{$elementoNota}}" 
 						onclick="openHistElemento(this)">Histórico</button>
+					<br>
+					{{if eq $produto.PeriodoPermitido false }}
+						<p style="font-size:0.8em; color:red">Inicia em {{$produto.IniciaEm}} e termina em {{$produto.TerminaEm}}.</p>
+					{{end}}
                 </td>
 				{{end}}
             </tr>

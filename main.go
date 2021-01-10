@@ -51,8 +51,8 @@ func main() {
 	r := mux.NewRouter()
 	// ----------------- HOME E SECURITY
 	r.HandleFunc("/", hd.IndexHandler).Methods("GET")
-	r.HandleFunc("/login", hd.LoginHandler).Methods("POST")
-	r.HandleFunc("/logout", hd.LogoutHandler).Methods("GET")
+	r.HandleFunc("/login", hd.LoginHandler)
+	r.HandleFunc("/logout", hd.LogoutHandler)
 	// ----------------- AVALIAÇÕES
 	r.HandleFunc("/listAvaliarPlanos", hd.ListAvaliarPlanosHandler).Methods("GET")
 	r.HandleFunc("/avaliarPlanos", hd.AvaliarPlanosHandler).Methods("POST")
@@ -152,11 +152,14 @@ func main() {
 	r.HandleFunc("/deleteTipoNota", hd.DeleteTipoNotaHandler).Methods("POST")
 	// ----------------- USERS
 	r.HandleFunc(route.UsersRoute, hd.ListUsersHandler).Methods("GET")
+	r.HandleFunc("/signUpUser", hd.SignUpUserHandler).Methods("GET")
+	r.HandleFunc("/registerNewUser", hd.RegisterNewUserHandler).Methods("POST")
+	r.HandleFunc("/recoverPwd", hd.RecoverPasswordHandler).Methods("GET")
+	r.HandleFunc("/sendPassword", hd.SendPasswordHandler).Methods("POST")
+	r.HandleFunc("/changePassword", hd.ChangePasswordHandler).Methods("POST")
 	r.HandleFunc("/createUser", hd.CreateUserHandler).Methods("POST")
 	r.HandleFunc("/updateUser", hd.UpdateUserHandler).Methods("POST")
 	r.HandleFunc("/deleteUser", hd.DeleteUserHandler).Methods("POST")
-	r.HandleFunc("/registerUser", hd.RegisterUserHandler).Methods("GET")
-	r.HandleFunc("/recoverPassword", hd.RecoverUserPasswordHandler).Methods("GET")
 	// ----------------- WORKFLOWS
 	r.HandleFunc(route.WorkflowsRoute, hd.ListWorkflowsHandler).Methods("GET")
 	r.HandleFunc("/createWorkflow", hd.CreateWorkflowHandler).Methods("POST")

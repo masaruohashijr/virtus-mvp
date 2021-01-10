@@ -35,6 +35,7 @@ const sqlAvaliarPlanos = " SELECT a.entidade_id, " +
 	"      a.plano_id, " +
 	"	   j.cnpb, CASE WHEN j.recurso_garantidor < 1000000000 THEN j.recurso_garantidor::numeric::MONEY/1000000||' mi' ELSE j.recurso_garantidor::numeric::MONEY/1000000000||' bi' END, j.modalidade_id, " +
 	" 	   coalesce(p.peso,0) as plano_peso, coalesce(p.nota,0) as plano_nota, " +
+	"	   to_char(g.inicia_em,'DD/MM/YYYY') as inicia_em, to_char(g.termina_em,'DD/MM/YYYY') as termina_em, " +
 	"	   CASE " +
 	"	    WHEN now()::TIMESTAMP BETWEEN coalesce(g.inicia_em,to_date('0001-01-01','YYYY-MM-DD')) " +
 	"	    AND coalesce(g.termina_em,to_date('9999-12-31','YYYY-MM-DD')) " +
@@ -113,6 +114,7 @@ func ListAvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 			" LEFT JOIN entidades d ON d.id = b.entidade_id " +
 			" LEFT JOIN users u ON u.id = c.usuario_id " +
 			" INNER JOIN ciclos_entidades e ON e.entidade_id = b.entidade_id " +
+			" INNER JOIN produtos_planos f ON (f.entidade_id = e.entidade_id AND f.ciclo_id = e.ciclo_id) " +
 			" WHERE (c.usuario_id = $1 AND u.role_id in (3,4)) OR (a.chefe_id = $2)"
 		log.Println(sql)
 		rows, _ := Db.Query(sql, currentUser.Id, currentUser.Id)
@@ -218,6 +220,8 @@ func AvaliarPlanosHandler(w http.ResponseWriter, r *http.Request) {
 				&produto.PlanoModalidade,
 				&produto.PlanoPeso,
 				&produto.PlanoNota,
+				&produto.IniciaEm,
+				&produto.TerminaEm,
 				&produto.PeriodoPermitido)
 			produto.Order = i
 			i++
@@ -336,7 +340,10 @@ func AtualizarPlanosHandler(entidadeId string, cicloId string, w http.ResponseWr
 			&produto.RecursoGarantidor,
 			&produto.PlanoModalidade,
 			&produto.PlanoPeso,
-			&produto.PlanoNota)
+			&produto.PlanoNota,
+			&produto.IniciaEm,
+			&produto.TerminaEm,
+			&produto.PeriodoPermitido)
 		produto.Order = i
 		i++
 		// log.Println(produto)

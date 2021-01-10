@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="/statics/ionicons/css/ionicons.min.css">
     <script type="text/javascript">
         function cancelar() {
-            document.getElementById('formulario-register').action = '/logout';
-            document.getElementById('formulario-register').submit();
+            document.getElementById('formulario-recover-password').action = '/logout';
+            document.getElementById('formulario-recover-password').submit();
         }
     </script>
 </head>
@@ -26,9 +26,9 @@
             <br />
             <br />
             <br />
-            <form id="formulario-register" class="w3-container" action="/RegisterNewUser" method="get">
+            <form id="formulario-recover-password" class="w3-container" action="/sendPassword" method="POST">
                 <label class="w3-label">Informe seu E-mail</label>
-                <input class="w3-input" type="text" name="Email" value="">
+                <input class="w3-input" type="text" name="Email" id="Email" value="">
                 <br>
                 <div style="width: 100%; text-align: right;">
                     <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom" type="submit">Enviar</button>
@@ -38,4 +38,7 @@
         </div>
     </div>
 </body>
+    <script type="text/javascript">
+		document.getElementById('Email').focus();
+    </script>
 </html>

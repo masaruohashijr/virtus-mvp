@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 	mdl "virtus/models"
@@ -30,7 +31,17 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	delete(session.Values, "user")
 	session.Options.MaxAge = -1
 	_ = session.Save(r, w)
-	http.ServeFile(w, r, "tiles/login.html")
+	var page mdl.PageLogin
+	var msg = r.FormValue("msg")
+	if msg != "" {
+		page.Msg = msg
+	}
+	var errMsg = r.FormValue("errMsg")
+	if errMsg != "" {
+		page.ErrMsg = errMsg
+	}
+	var tmpl = template.Must(template.ParseFiles("tiles/login.html"))
+	tmpl.ExecuteTemplate(w, "Login", page)
 }
 
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,41 +63,50 @@ func RecoverUserPasswordHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	var page mdl.PageLogin
 	if r.Method != "POST" {
-		http.ServeFile(w, r, "tiles/login.html")
+		var tmpl = template.Must(template.ParseFiles("tiles/login.html"))
+		tmpl.ExecuteTemplate(w, "Login", page)
 		return
 	}
 	username := r.FormValue("usrname")
+	log.Println(username)
 	password := r.FormValue("psw")
 	var user mdl.User
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	log.Println(string(bytes))
-	Db.QueryRow("SELECT u.id, "+
-		" u.name, "+
-		" u.username, "+
-		" u.password, "+
-		" COALESCE(u.role_id, 0), "+
-		" coalesce(r.name,'') as role_name "+
-		" FROM users u "+
-		" LEFT JOIN roles r ON u.role_id = r.id "+
-		" WHERE username=$1", &username).Scan(
+	sql := "SELECT u.id, " +
+		" u.name, " +
+		" u.username, " +
+		" u.password, " +
+		" COALESCE(u.role_id, 0), " +
+		" coalesce(r.name,'') as role_name " +
+		" FROM users u " +
+		" LEFT JOIN roles r ON u.role_id = r.id " +
+		" WHERE username='" + username + "'"
+	log.Println(sql)
+	Db.QueryRow(sql).Scan(
 		&user.Id, &user.Name,
 		&user.Username,
 		&user.Password,
 		&user.Role,
 		&user.RoleName)
 	// validate password
+	log.Println(user)
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		log.Println("erro do /login")
-		http.Redirect(w, r, "/login", 301)
+		log.Println(err.Error())
+		page.ErrMsg = "Usuário/Senha inválido."
+		var tmpl = template.Must(template.ParseFiles("tiles/login.html"))
+		tmpl.ExecuteTemplate(w, "Login", page)
+		return
+	} else {
+		AddUserInCookie(w, r, user)
+		// Abrindo o Cookie
+		savedUser := GetUserInCookie(w, r)
+		log.Println("MAIN Saved User is " + savedUser.Username)
+		http.Redirect(w, r, route.EntidadesRoute, 301)
 	}
-
-	AddUserInCookie(w, r, user)
-	// Abrindo o Cookie
-	savedUser := GetUserInCookie(w, r)
-	log.Println("MAIN Saved User is " + savedUser.Username)
-	http.Redirect(w, r, route.EntidadesRoute, 301)
 }
 
 func GetUserInCookie(w http.ResponseWriter, r *http.Request) mdl.User {
